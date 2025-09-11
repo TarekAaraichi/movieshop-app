@@ -5,14 +5,6 @@ import { revalidatePath } from "next/cache";
 
 type CartItem = { movieId: string; quantity: number };
 
-interface CookieStore {
-  get?: (name: string) => { value?: string } | undefined;
-  set?: {
-    (opts: { name: string; value: string; path?: string }): void;
-    (name: string, value: string, opts?: { path?: string }): void;
-  };
-}
-
 function parseCart(cookieValue?: string) {
   try {
     return JSON.parse(cookieValue || "[]") as CartItem[];
@@ -25,7 +17,7 @@ export async function addToCart(formData: FormData) {
   const movieId = formData.get("movieId") as string | null;
   if (!movieId) return;
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const cartCookie = cookieStore.get("cart")?.value || "[]";
   const cart = parseCart(cartCookie);
 
@@ -46,7 +38,7 @@ export async function updateCart(formData: FormData) {
   const action = formData.get("action") as string | null; // 'inc'|'dec'|'remove'
   if (!movieId || !action) return;
 
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const cartCookie = cookieStore.get("cart")?.value || "[]";
   const cart = parseCart(cartCookie);
 

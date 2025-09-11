@@ -1,6 +1,6 @@
 // src/app/movies/page.tsx
-import prisma from '@/lib/prisma';
-import Link from 'next/link';
+import prisma from "@/lib/prisma";
+import Link from "next/link";
 
 interface MoviesPageProps {
   searchParams: {
@@ -9,7 +9,7 @@ interface MoviesPageProps {
 }
 
 export default async function MoviesPage({ searchParams }: MoviesPageProps) {
-  const query = searchParams.q ?? '';
+  const query = searchParams.q ?? "";
 
   // Fetch movies, optionally filtering by title
   const movies = await prisma.movie.findMany({
@@ -17,11 +17,11 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
       ? {
           title: {
             contains: query,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         }
       : undefined,
-    orderBy: { releaseDate: 'desc' },
+    orderBy: { releaseDate: "desc" },
     include: {
       people: {
         include: { person: true },
@@ -62,7 +62,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
               defaultValue=""
             >
               <option value="" disabled>
-            Filter by genre
+                Filter by genre
               </option>
               <option value="Action">Action</option>
               <option value="Comedy">Comedy</option>
@@ -77,7 +77,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
         {/* Movies grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {movies.map((movie) => {
-            const director = movie.people.find((p) => p.role === 'DIRECTOR');
+            const director = movie.people.find((p) => p.role === "DIRECTOR");
             return (
               <Link
                 key={movie.id}
@@ -86,31 +86,38 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
               >
                 <div>
                   <img
-                    src={movie.imageUrl}
+                    src={movie.imageUrl ?? "/file.svg"}
                     alt={movie.title}
                     className="w-full h-48 object-cover rounded-t-md"
                   />
                   <div className="p-4">
-                    <h2 className="text-lg font-semibold text-teal-400">{movie.title}</h2>
-                    <p className="text-gray-400">Genre: {movie.genres.map((g) => g.genre.name).join(', ')}</p>
-                    <p className="text-gray-400">Runtime: {movie.runtime} min</p>
-                    <p className="text-gray-400">Price: {Number(movie.price).toFixed(2)}$</p>
+                    <h2 className="text-lg font-semibold text-teal-400">
+                      {movie.title}
+                    </h2>
                     <p className="text-gray-400">
-                      Actors:{' '}
+                      Genre: {movie.genres.map((g) => g.genre.name).join(", ")}
+                    </p>
+                    <p className="text-gray-400">
+                      Runtime: {movie.runtime} min
+                    </p>
+                    <p className="text-gray-400">
+                      Price: {Number(movie.price).toFixed(2)}$
+                    </p>
+                    <p className="text-gray-400">
+                      Actors:{" "}
                       {movie.people
-                        .filter((p) => p.role === 'ACTOR')
-                        .map((p) => (
-                          <a
-                            key={p.person.id}
-                            href={`/persons/${p.person.id}`}
-                            className="text-teal-500 hover:underline"
-                          >
-                            {p.person.fullName}
-                          </a>
-                        ))
-                        .reduce((prev, curr) =>
-                          prev === null ? [curr] : [...prev, ', ', curr], null
-                        )}
+                        .filter((p) => p.role === "ACTOR")
+                        .map((p, i, arr) => (
+                          <span key={p.person.id}>
+                            <a
+                              href={`/persons/${p.person.id}`}
+                              className="text-teal-500 hover:underline"
+                            >
+                              {p.person.fullName}
+                            </a>
+                            {i < arr.length - 1 ? ", " : ""}
+                          </span>
+                        ))}
                     </p>
                     {director && (
                       <p className="text-gray-500">
@@ -123,7 +130,9 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
             );
           })}
           {movies.length === 0 && (
-            <p className="text-gray-400 col-span-full text-center">No movies found.</p>
+            <p className="text-gray-400 col-span-full text-center">
+              No movies found.
+            </p>
           )}
         </div>
       </div>

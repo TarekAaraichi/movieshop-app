@@ -77,11 +77,11 @@ model MoviePerson {
 
 model Order {
   id          String      @id @default(cuid())
-  userId      String      // references Better Auth user
   totalAmount Decimal     @db.Decimal(10, 2)
   status      OrderStatus @default(PENDING)
   orderDate   DateTime    @default(now())
-
+  userId      String
+  user        User        @relation("UserOrders", fields: [userId], references: [id])
   items     OrderItem[]
   address   Address?     @relation(fields: [addressId], references: [id])
   addressId String?
@@ -100,13 +100,27 @@ model OrderItem {
 
 model Address {
   id         String   @id @default(cuid())
-  userId     String   // references Better Auth user
+  userId     String
+  user       User?    @relation(fields: [userId], references: [id])
   line1      String
   line2      String?
   city       String
   postalCode String
   country    String
-  orders     Order[]  // all orders that use this address
+  orders     Order[]
 
   @@index([userId])
+}
+
+model User {
+  id               String   @id @default(cuid())
+  email            String   @unique
+  password         String
+  name             String
+  username         String?  @unique // Better Auth username plugin
+  displayUsername  String?         // Better Auth username plugin
+  isAnonymous      Boolean  @default(false) // Better Auth anonymous plugin
+  role             String   @default("user") // "admin" or "user"
+  addresses        Address[]
+  orders           Order[] @relation("UserOrders")
 }

@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
+import { PersonRole } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 type CartItem = { movieId: string; quantity: number };
@@ -35,10 +36,27 @@ export async function addToCart(formData: FormData) {
   else cart.push({ movieId, quantity: 1 });
 
   if (typeof cs.set === "function") {
+    // `cookies().set` has multiple overloads across runtimes. Try the
+    // object form first, fallback to (name, value, opts).
+    type CookieSetObj = (opts: {
+      name: string;
+      value: string;
+      path?: string;
+    }) => void;
+    type CookieSetArgs = (
+      name: string,
+      value: string,
+      opts?: { path?: string }
+    ) => void;
+    const setFn = cs.set as unknown as CookieSetObj | CookieSetArgs;
     try {
-      (cs as any).set({ name: "cart", value: JSON.stringify(cart), path: "/" });
+      (setFn as CookieSetObj)({
+        name: "cart",
+        value: JSON.stringify(cart),
+        path: "/",
+      });
     } catch {
-      (cs as any).set("cart", JSON.stringify(cart), { path: "/" });
+      (setFn as CookieSetArgs)("cart", JSON.stringify(cart), { path: "/" });
     }
   }
   // ensure cart page revalidation
@@ -112,10 +130,10 @@ export async function updateMovie(formData: FormData) {
       people: {
         deleteMany: {},
         create: [
-          { personId: director.id, role: "DIRECTOR" as const },
+          { personId: director.id, role: PersonRole.DIRECTOR },
           ...actors.map((actor) => ({
             personId: actor.id,
-            role: "ACTOR" as const,
+            role: PersonRole.ACTOR,
           })),
         ],
       },

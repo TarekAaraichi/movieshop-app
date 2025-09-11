@@ -1,24 +1,25 @@
 // app/movies/create/page.tsx
 import prisma from "@/lib/prisma";
+import { PersonRole } from "@prisma/client";
 import AddButton from "./AddButton";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 
 async function createMovie(formData: FormData) {
-  'use server';
+  "use server";
 
   // Extract common fields
-  const title = formData.get('title') as string;
-  const releaseDate = formData.get('releaseDate') as string;
-  const description = formData.get('description') as string;
-  const directorName = formData.get('director') as string;
-  const actorsInput = formData.get('actors') as string;
+  const title = formData.get("title") as string;
+  const releaseDate = formData.get("releaseDate") as string;
+  const description = formData.get("description") as string;
+  const directorName = formData.get("director") as string;
+  const actorsInput = formData.get("actors") as string;
 
-  const imageUrl = formData.get('imageUrl') as string;
-  const runtime = parseInt(formData.get('runtime') as string, 10);
-  const price = parseFloat(formData.get('price') as string);
-  const stock = parseInt(formData.get('stock') as string, 10);
-  const genresInput = formData.get('genres') as string | null;
+  const imageUrl = formData.get("imageUrl") as string;
+  const runtime = parseInt(formData.get("runtime") as string, 10);
+  const price = parseFloat(formData.get("price") as string);
+  const stock = parseInt(formData.get("stock") as string, 10);
+  const genresInput = formData.get("genres") as string | null;
 
   if (
     !title ||
@@ -30,7 +31,7 @@ async function createMovie(formData: FormData) {
     isNaN(price) ||
     isNaN(stock)
   ) {
-    throw new Error('Missing required fields');
+    throw new Error("Missing required fields");
   }
 
   // Upsert director
@@ -42,7 +43,10 @@ async function createMovie(formData: FormData) {
 
   // Upsert actors
   const actorNames = actorsInput
-    ? actorsInput.split(',').map((s) => s.trim()).filter(Boolean)
+    ? actorsInput
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
     : [];
   const actors = await Promise.all(
     actorNames.map((name) =>
@@ -50,23 +54,24 @@ async function createMovie(formData: FormData) {
         where: { fullName: name },
         update: {},
         create: { fullName: name },
-      }),
-    ),
+      })
+    )
   );
 
   // Upsert genres
-  const genreNames = genresInput
-    ?.split(',')
-    .map((name) => name.trim())
-    .filter(Boolean) ?? [];
+  const genreNames =
+    genresInput
+      ?.split(",")
+      .map((name) => name.trim())
+      .filter(Boolean) ?? [];
   const genreRecords = await Promise.all(
     genreNames.map((name) =>
       prisma.genre.upsert({
         where: { name },
         update: {},
         create: { name },
-      }),
-    ),
+      })
+    )
   );
 
   // Create movie with all fields and relationships
@@ -81,10 +86,10 @@ async function createMovie(formData: FormData) {
       stock,
       people: {
         create: [
-          { personId: director.id, role: 'DIRECTOR' },
+          { personId: director.id, role: PersonRole.DIRECTOR },
           ...actors.map((actor) => ({
             personId: actor.id,
-            role: 'ACTOR',
+            role: PersonRole.ACTOR,
           })),
         ],
       },
@@ -94,20 +99,22 @@ async function createMovie(formData: FormData) {
     },
   });
 
-  revalidatePath('/admin');
-  redirect('/admin');
+  revalidatePath("/admin");
+  redirect("/admin");
 }
-  
-  /**
-   * Renders the Create Movie page with a form for adding a new movie.
-   * The form includes fields for title, release date, description, director, actors, image URL, runtime, price, stock, and genres.
-   * On submission, the form calls the createMovie server action to persist the new movie.
-   */
-  export default function CreateMoviePage() {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">
-        <div className="bg-white p-8 rounded-xl shadow-xl">
-      <h1 className="text-3xl font-extrabold mb-6 text-gray-900">Create Movie</h1>
+
+/**
+ * Renders the Create Movie page with a form for adding a new movie.
+ * The form includes fields for title, release date, description, director, actors, image URL, runtime, price, stock, and genres.
+ * On submission, the form calls the createMovie server action to persist the new movie.
+ */
+export default function CreateMoviePage() {
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">
+      <div className="bg-white p-8 rounded-xl shadow-xl">
+        <h1 className="text-3xl font-extrabold mb-6 text-gray-900">
+          Create Movie
+        </h1>
         <form action={createMovie} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -227,5 +234,5 @@ async function createMovie(formData: FormData) {
         </form>
       </div>
     </div>
-    );
+  );
 }

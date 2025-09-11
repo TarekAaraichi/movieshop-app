@@ -6,9 +6,21 @@ type CartItem = { movieId: string; quantity: number };
 
 function readCart(cookieStore: unknown): CartItem[] {
   // `cookies()` may return a ReadonlyRequestCookies or a Promise in different runtimes.
-  const c = cookieStore as unknown as Record<string, any>;
-  const cartCookie =
-    typeof c?.get === "function" ? c.get("cart")?.value || "[]" : "[]";
+  // We only need to support objects that have a `get(name)` method returning { value?: string }.
+  function hasGetMethod(
+    obj: unknown
+  ): obj is { get: (name: string) => { value?: string } | undefined } {
+    return (
+      typeof obj === "object" &&
+      obj !== null &&
+      "get" in obj &&
+      typeof (obj as { get: unknown }).get === "function"
+    );
+  }
+
+  const cartCookie = hasGetMethod(cookieStore)
+    ? cookieStore.get("cart")?.value || "[]"
+    : "[]";
   try {
     return JSON.parse(cartCookie) as CartItem[];
   } catch {

@@ -3,7 +3,8 @@ import { CartCountProvider } from "@/app/cart/CartCountContext";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBarClient from "@/app/components/NavBarClient";
-import Link from "next/link";
+import BetterAuthProvider from "@/app/auth/BetterAuthProvider";
+// ...existing code...
 import SonnerProvider from "@/app/SonnerProvider";
 
 const geistSans = Geist({
@@ -31,20 +32,23 @@ export default function RootLayout({
       <body className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100">
         <SonnerProvider />
         <CartCountProvider>
-          <header className="bg-gray-800 shadow-lg">
-            <NavBarClient />
-          </header>
-          <main className="flex-1">{children}</main>
-          <footer className="p-4 border-t border-gray-700 bg-gray-800 text-center text-gray-400">
-            <span className="text-sm tracking-wide">
-              © 2025{" "}
-              <span className="font-semibold text-teal-400">
-                React Fullstack - G13
-              </span>{" "}
-              | <span className="font-semibold text-teal-400">Delta Team</span>{" "}
-              - Lexicon AB
-            </span>
-          </footer>
+          <BetterAuthProvider>
+            <header className="bg-gray-800 shadow-lg">
+              <NavBarClient />
+            </header>
+            <main className="flex-1">{children}</main>
+            <footer className="p-4 border-t border-gray-700 bg-gray-800 text-center text-gray-400">
+              <span className="text-sm tracking-wide">
+                © 2025{" "}
+                <span className="font-semibold text-teal-400">
+                  React Fullstack - G13
+                </span>{" "}
+                |{" "}
+                <span className="font-semibold text-teal-400">Delta Team</span>{" "}
+                - Lexicon AB
+              </span>
+            </footer>
+          </BetterAuthProvider>
         </CartCountProvider>
       </body>
     </html>
