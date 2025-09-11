@@ -4,7 +4,11 @@ import { useCartCount } from "@/app/cart/CartCountContext";
 import { addToCart } from "@/app/actions/movies";
 import { toast } from "sonner";
 
-export default function AddToCartClientButton({ movieId }: { movieId: string }) {
+export default function AddToCartClientButton({
+  movieId,
+}: {
+  movieId: string;
+}) {
   const [isPending, startTransition] = useTransition();
   const { increment } = useCartCount();
 

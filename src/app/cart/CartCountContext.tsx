@@ -1,13 +1,22 @@
 "use client";
 import React, { createContext, useContext, useState } from "react";
 
-const CartCountContext = createContext<{
-  count: number;
-  setCount: (n: number) => void;
-  increment: () => void;
-} | undefined>(undefined);
+const CartCountContext = createContext<
+  | {
+      count: number;
+      setCount: (n: number) => void;
+      increment: () => void;
+    }
+  | undefined
+>(undefined);
 
-export function CartCountProvider({ children, initialCount = 0 }: { children: React.ReactNode; initialCount?: number }) {
+export function CartCountProvider({
+  children,
+  initialCount = 0,
+}: {
+  children: React.ReactNode;
+  initialCount?: number;
+}) {
   const [count, setCount] = useState(initialCount);
   const increment = () => setCount((c) => c + 1);
   return (
@@ -19,6 +28,7 @@ export function CartCountProvider({ children, initialCount = 0 }: { children: Re
 
 export function useCartCount() {
   const ctx = useContext(CartCountContext);
-  if (!ctx) throw new Error("useCartCount must be used within CartCountProvider");
+  if (!ctx)
+    throw new Error("useCartCount must be used within CartCountProvider");
   return ctx;
 }
