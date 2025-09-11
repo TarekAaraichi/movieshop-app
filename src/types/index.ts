@@ -11,4 +11,8 @@ export type ServerMovie = {
   rating?: number | null;
 };
 
-export type CartClientItem = { movie: ServerMovie; quantity: number; movieId?: string };
+export type CartClientItem = {
+  movie: ServerMovie;
+  quantity: number;
+  movieId?: string;
+};

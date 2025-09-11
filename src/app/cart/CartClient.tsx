@@ -10,7 +10,10 @@ export default function CartClient({
 }: {
   initialItems?: CartClientItem[];
 }) {
-  const [items] = useState<CartClientItem[]>(initialItems || []);
+  const [items, setItems] = useState<CartClientItem[]>(initialItems || []);
+  React.useEffect(() => {
+    if (initialItems) setItems(initialItems);
+  }, [initialItems]);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
@@ -21,6 +24,28 @@ export default function CartClient({
     startTransition(() => {
       // small timeout to let the server action run; router.refresh will get updated data
       setTimeout(() => router.refresh(), 100);
+    });
+  }
+
+  // Optimistically update local items before the server action completes.
+  function optimisticUpdate(movieId: string, action: "inc" | "dec" | "remove") {
+    setItems((prev) => {
+      const copy = prev.map((it) => ({ ...it }));
+      const idx = copy.findIndex((c) => c.movie.id === movieId);
+      if (action === "inc") {
+        if (idx >= 0) copy[idx].quantity += 1;
+        else {
+          // If item wasn't present, we can't fetch movie details here; just keep state unchanged.
+        }
+      } else if (action === "dec") {
+        if (idx >= 0) {
+          copy[idx].quantity -= 1;
+          if (copy[idx].quantity <= 0) copy.splice(idx, 1);
+        }
+      } else if (action === "remove") {
+        if (idx >= 0) copy.splice(idx, 1);
+      }
+      return copy;
     });
   }
 
@@ -88,6 +113,7 @@ export default function CartClient({
                   value="dec"
                   className="px-2 py-1 bg-gray-200 rounded"
                   disabled={isPending}
+                  onClick={() => optimisticUpdate(movie.id, "dec")}
                 >
                   −
                 </button>
@@ -100,6 +126,7 @@ export default function CartClient({
                   value="inc"
                   className="px-2 py-1 bg-gray-200 rounded"
                   disabled={isPending}
+                  onClick={() => optimisticUpdate(movie.id, "inc")}
                 >
                   +
                 </button>
@@ -111,6 +138,7 @@ export default function CartClient({
                   value="remove"
                   className="text-red-500 hover:text-red-700 font-medium"
                   disabled={isPending}
+                  onClick={() => optimisticUpdate(movie.id, "remove")}
                 >
                   Remove
                 </button>
