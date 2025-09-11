@@ -1,11 +1,15 @@
 "use client";
 import React, { useState, useTransition } from "react";
-import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { updateCart } from '@/app/actions/cart';
-import type { CartClientItem } from '@/types';
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { updateCart } from "@/app/actions/cart";
+import type { CartClientItem } from "@/types";
 
-export default function CartClient({ initialItems }: { initialItems?: CartClientItem[] }) {
+export default function CartClient({
+  initialItems,
+}: {
+  initialItems?: CartClientItem[];
+}) {
   const [items] = useState<CartClientItem[]>(initialItems || []);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -39,9 +43,12 @@ export default function CartClient({ initialItems }: { initialItems?: CartClient
           .filter(Boolean)
           .slice(0, 3);
 
-        const year = movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : null;
+        const year = movie.releaseDate
+          ? new Date(movie.releaseDate).getFullYear()
+          : null;
         const runtime = movie.runtime ? `${movie.runtime} min` : null;
-        const rating = typeof movie.rating === 'number' ? movie.rating.toFixed(1) : '—';
+        const rating =
+          typeof movie.rating === "number" ? movie.rating.toFixed(1) : "—";
 
         return (
           <div
@@ -63,9 +70,9 @@ export default function CartClient({ initialItems }: { initialItems?: CartClient
                   {movie.title}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {genreNames.length > 0 ? genreNames.join(', ') : '—'}
-                  {year ? ` · ${year}` : ''}
-                  {runtime ? ` · ${runtime}` : ''}
+                  {genreNames.length > 0 ? genreNames.join(", ") : "—"}
+                  {year ? ` · ${year}` : ""}
+                  {runtime ? ` · ${runtime}` : ""}
                 </p>
                 <p className="text-xs text-gray-400">Rating: {rating}</p>
               </div>
@@ -76,16 +83,37 @@ export default function CartClient({ initialItems }: { initialItems?: CartClient
               </p>
               <form action={updateCart} method="post" onSubmit={onAction}>
                 <input type="hidden" name="movieId" value={movie.id} />
-                <button name="action" value="dec" className="px-2 py-1 bg-gray-200 rounded" disabled={isPending}>−</button>
+                <button
+                  name="action"
+                  value="dec"
+                  className="px-2 py-1 bg-gray-200 rounded"
+                  disabled={isPending}
+                >
+                  −
+                </button>
               </form>
               <span className="px-3">{quantity}</span>
               <form action={updateCart} method="post" onSubmit={onAction}>
                 <input type="hidden" name="movieId" value={movie.id} />
-                <button name="action" value="inc" className="px-2 py-1 bg-gray-200 rounded" disabled={isPending}>+</button>
+                <button
+                  name="action"
+                  value="inc"
+                  className="px-2 py-1 bg-gray-200 rounded"
+                  disabled={isPending}
+                >
+                  +
+                </button>
               </form>
               <form action={updateCart} method="post" onSubmit={onAction}>
                 <input type="hidden" name="movieId" value={movie.id} />
-                <button name="action" value="remove" className="text-red-500 hover:text-red-700 font-medium" disabled={isPending}>Remove</button>
+                <button
+                  name="action"
+                  value="remove"
+                  className="text-red-500 hover:text-red-700 font-medium"
+                  disabled={isPending}
+                >
+                  Remove
+                </button>
               </form>
             </div>
           </div>
