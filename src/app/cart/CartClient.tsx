@@ -1,38 +1,23 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState, useTransition } from "react";
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { updateCart } from '@/app/actions/cart';
+import type { CartClientItem } from '@/types';
 
-type Movie = {
-  id: string;
-  title: string;
-  imageUrl?: string | null;
-  price: number | string;
-  genres?: any[];
-};
+export default function CartClient({ initialItems }: { initialItems?: CartClientItem[] }) {
+  const [items] = useState<CartClientItem[]>(initialItems || []);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
-export default function CartClient() {
-  const [items, setItems] = useState<{ movie: Movie; quantity: number }[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  async function load() {
-    setLoading(true);
-    const res = await fetch("/api/cart");
-    const json = await res.json();
-    setItems(json.items || []);
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    load();
-  }, []);
-
-  async function update(movieId: string, action: "inc" | "dec" | "remove") {
-    setLoading(true);
-    await fetch("/api/cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ movieId, action }),
+  // After a server action form submission we can't directly await the action here,
+  // so trigger a router refresh to re-fetch server-rendered data. We start a transition
+  // so React shows pending UI where used.
+  function onAction() {
+    startTransition(() => {
+      // small timeout to let the server action run; router.refresh will get updated data
+      setTimeout(() => router.refresh(), 100);
     });
-    await load();
   }
 
   const total = items.reduce(
@@ -40,7 +25,7 @@ export default function CartClient() {
     0
   );
 
-  if (loading && items.length === 0)
+  if (isPending && items.length === 0)
     return <p className="text-gray-600">Loading...</p>;
 
   if (items.length === 0)
@@ -48,52 +33,64 @@ export default function CartClient() {
 
   return (
     <div className="space-y-4">
-      {items.map(({ movie, quantity }) => (
-        <div
-          key={movie.id}
-          className="flex items-center justify-between border-b pb-4"
-        >
-          <div className="flex items-center space-x-4">
-            <img
-              src={movie.imageUrl || "https://via.placeholder.com/80"}
-              alt={movie.title}
-              className="w-20 h-20 object-cover rounded-md"
-            />
-            <div>
-              <h2 className="text-lg font-semibold text-blue-500">
-                {movie.title}
-              </h2>
-              <p className="text-sm text-gray-500">
-                Category: {movie.genres?.[0]?.genre?.name ?? "—"}
+      {items.map(({ movie, quantity }) => {
+        const genreNames = (movie.genres || [])
+          .map((g) => g?.genre?.name)
+          .filter(Boolean)
+          .slice(0, 3);
+
+        const year = movie.releaseDate ? new Date(movie.releaseDate).getFullYear() : null;
+        const runtime = movie.runtime ? `${movie.runtime} min` : null;
+        const rating = typeof movie.rating === 'number' ? movie.rating.toFixed(1) : '—';
+
+        return (
+          <div
+            key={movie.id}
+            className="flex items-center justify-between border-b pb-4"
+          >
+            <div className="flex items-center space-x-4">
+              <div className="w-20 h-20 relative">
+                <Image
+                  src={movie.imageUrl || "https://via.placeholder.com/80"}
+                  alt={movie.title}
+                  fill
+                  sizes="80px"
+                  className="object-cover rounded-md"
+                />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-blue-500">
+                  {movie.title}
+                </h2>
+                <p className="text-sm text-gray-500">
+                  {genreNames.length > 0 ? genreNames.join(', ') : '—'}
+                  {year ? ` · ${year}` : ''}
+                  {runtime ? ` · ${runtime}` : ''}
+                </p>
+                <p className="text-xs text-gray-400">Rating: {rating}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <p className="text-lg font-medium text-gray-800">
+                ${Number(movie.price).toFixed(2)}
               </p>
+              <form action={updateCart} method="post" onSubmit={onAction}>
+                <input type="hidden" name="movieId" value={movie.id} />
+                <button name="action" value="dec" className="px-2 py-1 bg-gray-200 rounded" disabled={isPending}>−</button>
+              </form>
+              <span className="px-3">{quantity}</span>
+              <form action={updateCart} method="post" onSubmit={onAction}>
+                <input type="hidden" name="movieId" value={movie.id} />
+                <button name="action" value="inc" className="px-2 py-1 bg-gray-200 rounded" disabled={isPending}>+</button>
+              </form>
+              <form action={updateCart} method="post" onSubmit={onAction}>
+                <input type="hidden" name="movieId" value={movie.id} />
+                <button name="action" value="remove" className="text-red-500 hover:text-red-700 font-medium" disabled={isPending}>Remove</button>
+              </form>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <p className="text-lg font-medium text-gray-800">
-              ${Number(movie.price).toFixed(2)}
-            </p>
-            <button
-              onClick={() => update(movie.id, "dec")}
-              className="px-2 py-1 bg-gray-200 rounded"
-            >
-              −
-            </button>
-            <span className="px-3">{quantity}</span>
-            <button
-              onClick={() => update(movie.id, "inc")}
-              className="px-2 py-1 bg-gray-200 rounded"
-            >
-              +
-            </button>
-            <button
-              onClick={() => update(movie.id, "remove")}
-              className="text-red-500 hover:text-red-700 font-medium"
-            >
-              Remove
-            </button>
-          </div>
-        </div>
-      ))}
+        );
+      })}
 
       <div className="mt-6 flex justify-between items-center">
         <p className="text-lg font-semibold text-gray-800">
