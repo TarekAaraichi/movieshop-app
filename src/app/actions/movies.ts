@@ -43,9 +43,6 @@ export async function addToCart(formData: FormData) {
   }
   // ensure cart page revalidation
   revalidatePath("/cart");
-
-  // keep user on the same movie page after adding
-  redirect(`/movies/${movieId}`);
 }
 
 // Server action to update an existing movie (moved from edit page)
