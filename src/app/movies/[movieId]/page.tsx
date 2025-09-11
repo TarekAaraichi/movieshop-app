@@ -2,7 +2,7 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import AddToCartButton from "./AddToCartButton";
+import AddToCartClientButton from "./AddToCartClientButton";
 import { addToCart } from "@/app/actions/movies";
 
 export default async function MovieDetailPage({
@@ -84,10 +84,7 @@ export default async function MovieDetailPage({
               <p className="text-gray-800 font-medium mb-4">
                 Stock: {movie.stock}
               </p>
-              <form action={addToCart}>
-                <input type="hidden" name="movieId" value={movie.id} />
-                <AddToCartButton />
-              </form>
+              <AddToCartClientButton movieId={movie.id} />
             </div>
           </div>
         </div>
