@@ -34,8 +34,13 @@ export async function addToCart(formData: FormData) {
   if (idx >= 0) cart[idx].quantity += 1;
   else cart.push({ movieId, quantity: 1 });
 
-  if (typeof cs.set === "function")
-    cs.set("cart", JSON.stringify(cart), { path: "/" });
+  if (typeof cs.set === "function") {
+    try {
+      (cs as any).set({ name: "cart", value: JSON.stringify(cart), path: "/" });
+    } catch {
+      (cs as any).set("cart", JSON.stringify(cart), { path: "/" });
+    }
+  }
   // ensure cart page revalidation
   revalidatePath("/cart");
 

@@ -17,13 +17,10 @@ export default function CartClient({
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  // After a server action form submission we can't directly await the action here,
-  // so trigger a router refresh to re-fetch server-rendered data. We start a transition
-  // so React shows pending UI where used.
+  // After a server action form submission, trigger a router refresh to re-fetch server-rendered data.
   function onAction() {
     startTransition(() => {
-      // small timeout to let the server action run; router.refresh will get updated data
-      setTimeout(() => router.refresh(), 100);
+      setTimeout(() => router.refresh(), 120);
     });
   }
 
@@ -48,6 +45,9 @@ export default function CartClient({
       return copy;
     });
   }
+
+  // Client-side updater: send POST to /api/cart and refresh server-rendered state.
+  // handleUpdate removed; server actions only
 
   const total = items.reduce(
     (s, it) => s + Number(it.movie.price) * it.quantity,

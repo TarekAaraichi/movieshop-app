@@ -63,7 +63,21 @@ export async function POST(request: Request) {
   }
 
   // persist cookie
-  const res = NextResponse.json({ ok: true });
+  // after updating cart, fetch the movie records to return a server-canonical view
+  const ids = cart.map((c) => c.movieId);
+  const movies = ids.length
+    ? await prisma.movie.findMany({
+        where: { id: { in: ids } },
+        include: { genres: { include: { genre: true } } },
+      })
+    : [];
+  const movieMap = new Map(movies.map((m) => [m.id, m]));
+  const items = cart
+    .map((c) => ({ ...c, movie: movieMap.get(c.movieId) }))
+    .filter((c) => c.movie)
+    .map((c) => ({ quantity: c.quantity, movie: c.movie }));
+
+  const res = NextResponse.json({ items });
   res.cookies.set("cart", JSON.stringify(cart), { path: "/" });
   return res;
 }

@@ -107,7 +107,7 @@ export default async function EditMoviePage({
               <input
                 name="imageUrl"
                 type="url"
-                defaultValue={movie.imageUrl}
+                defaultValue={movie.imageUrl ?? ""}
                 required
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               />
@@ -134,7 +134,7 @@ export default async function EditMoviePage({
                 type="number"
                 step="0.01"
                 min={0}
-                defaultValue={movie.price}
+                defaultValue={String(movie.price ?? "")}
                 required
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
               />
