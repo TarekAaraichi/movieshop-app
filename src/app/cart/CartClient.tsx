@@ -1,9 +1,10 @@
 "use client";
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { updateCart } from "@/app/actions/cart";
 import type { CartClientItem } from "@/types";
+import { useCartCount } from "@/app/cart/CartCountContext";
 
 export default function CartClient({
   initialItems,
@@ -11,7 +12,14 @@ export default function CartClient({
   initialItems?: CartClientItem[];
 }) {
   const [items, setItems] = useState<CartClientItem[]>(initialItems || []);
-  React.useEffect(() => {
+  const { setCount } = useCartCount();
+
+  // Sync count on mount and when items change
+  useEffect(() => {
+    setCount(items.reduce((sum, it) => sum + it.quantity, 0));
+  }, [items, setCount]);
+
+  useEffect(() => {
     if (initialItems) setItems(initialItems);
   }, [initialItems]);
   const [isPending, startTransition] = useTransition();
@@ -31,9 +39,6 @@ export default function CartClient({
       const idx = copy.findIndex((c) => c.movie.id === movieId);
       if (action === "inc") {
         if (idx >= 0) copy[idx].quantity += 1;
-        else {
-          // If item wasn't present, we can't fetch movie details here; just keep state unchanged.
-        }
       } else if (action === "dec") {
         if (idx >= 0) {
           copy[idx].quantity -= 1;
@@ -42,6 +47,8 @@ export default function CartClient({
       } else if (action === "remove") {
         if (idx >= 0) copy.splice(idx, 1);
       }
+      // Update cart count after optimistic update
+      setCount(copy.reduce((sum, it) => sum + it.quantity, 0));
       return copy;
     });
   }
