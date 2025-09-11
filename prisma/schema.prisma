@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum PersonRole {
+  DIRECTOR
+  ACTOR
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  CANCELLED
+}
+
+model Movie {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  price       Decimal  @db.Decimal(10, 2)
+  releaseDate DateTime
+  imageUrl    String?
+  stock       Int      @default(0)
+  runtime     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  genres     MovieGenre[]
+  people     MoviePerson[]
+  orderItems OrderItem[]
+}
+
+model Genre {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  movies      MovieGenre[]
+}
+
+model MovieGenre {
+  movie   Movie  @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movieId String
+  genre   Genre  @relation(fields: [genreId], references: [id], onDelete: Cascade)
+  genreId String
+
+  @@id([movieId, genreId])
+}
+
+model Person {
+  id       String        @id @default(cuid())
+  fullName String        @unique
+  bio      String?
+  movies   MoviePerson[]
+}
+
+model MoviePerson {
+  movie    Movie      @relation(fields: [movieId], references: [id], onDelete: Cascade)
+  movieId  String
+  person   Person     @relation(fields: [personId], references: [id], onDelete: Cascade)
+  personId String
+  role     PersonRole
+
+  @@id([movieId, personId, role])
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  userId      String      // references Better Auth user
+  totalAmount Decimal     @db.Decimal(10, 2)
+  status      OrderStatus @default(PENDING)
+  orderDate   DateTime    @default(now())
+
+  items     OrderItem[]
+  address   Address?     @relation(fields: [addressId], references: [id])
+  addressId String?
+}
+
+model OrderItem {
+  order           Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId         String
+  movie           Movie   @relation(fields: [movieId], references: [id], onDelete: Restrict)
+  movieId         String
+  quantity        Int
+  priceAtPurchase Decimal @db.Decimal(10, 2)
+
+  @@id([orderId, movieId])
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  userId     String   // references Better Auth user
+  line1      String
+  line2      String?
+  city       String
+  postalCode String
+  country    String
+  orders     Order[]  // all orders that use this address
+
+  @@index([userId])
+}
