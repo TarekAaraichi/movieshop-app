@@ -28,7 +28,9 @@ export default function CartClient({
   // After a server action form submission, trigger a router refresh to re-fetch server-rendered data.
   function onAction() {
     startTransition(() => {
-      setTimeout(() => router.refresh(), 120);
+      setTimeout(() => {
+  router.replace(window.location.pathname);
+      }, 120);
     });
   }
 

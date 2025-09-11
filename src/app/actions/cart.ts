@@ -25,27 +25,15 @@ export async function addToCart(formData: FormData) {
   const movieId = formData.get("movieId") as string | null;
   if (!movieId) return;
 
-  const maybeCookies = cookies();
-  const cookieStore =
-    typeof (maybeCookies as unknown as Promise<unknown>).then === "function"
-      ? await maybeCookies
-      : maybeCookies;
-  const cs = cookieStore as unknown as CookieStore;
-  const cartCookie =
-    typeof cs.get === "function" ? cs.get("cart")?.value || "[]" : "[]";
+  const cookieStore = cookies();
+  const cartCookie = cookieStore.get("cart")?.value || "[]";
   const cart = parseCart(cartCookie);
 
   const idx = cart.findIndex((c) => c.movieId === movieId);
   if (idx >= 0) cart[idx].quantity += 1;
   else cart.push({ movieId, quantity: 1 });
 
-  if (typeof cs.set === "function") {
-    try {
-      (cs.set as any)({ name: "cart", value: JSON.stringify(cart), path: "/" });
-    } catch {
-      (cs.set as any)("cart", JSON.stringify(cart), { path: "/" });
-    }
-  }
+  cookieStore.set("cart", JSON.stringify(cart), { path: "/", maxAge: 60 * 60 * 24 * 7 }); // 1 week
 
   revalidatePath("/cart");
 }
@@ -55,15 +43,9 @@ export async function updateCart(formData: FormData) {
   const action = formData.get("action") as string | null; // 'inc'|'dec'|'remove'
   if (!movieId || !action) return;
 
-  const maybeCookies2 = cookies();
-  const cookieStore2 =
-    typeof (maybeCookies2 as unknown as Promise<unknown>).then === "function"
-      ? await maybeCookies2
-      : maybeCookies2;
-  const cs2 = cookieStore2 as unknown as CookieStore;
-  const cartCookie2 =
-    typeof cs2.get === "function" ? cs2.get("cart")?.value || "[]" : "[]";
-  const cart = parseCart(cartCookie2);
+  const cookieStore = cookies();
+  const cartCookie = cookieStore.get("cart")?.value || "[]";
+  const cart = parseCart(cartCookie);
 
   const idx = cart.findIndex((c) => c.movieId === movieId);
   if (action === "inc") {
@@ -78,30 +60,10 @@ export async function updateCart(formData: FormData) {
     if (idx >= 0) cart.splice(idx, 1);
   }
 
-  if (typeof cs2.set === "function") {
-    if (cart.length === 0) {
-      // Remove the cookie if cart is empty
-      try {
-        (cs2.set as any)({
-          name: "cart",
-          value: "",
-          path: "/",
-          expires: new Date(0),
-        });
-      } catch {
-        (cs2.set as any)("cart", "", { path: "/", expires: new Date(0) });
-      }
-    } else {
-      try {
-        (cs2.set as any)({
-          name: "cart",
-          value: JSON.stringify(cart),
-          path: "/",
-        });
-      } catch {
-        (cs2.set as any)("cart", JSON.stringify(cart), { path: "/" });
-      }
-    }
+  if (cart.length === 0) {
+    cookieStore.delete("cart");
+  } else {
+    cookieStore.set("cart", JSON.stringify(cart), { path: "/", maxAge: 60 * 60 * 24 * 7 }); // 1 week
   }
 
   revalidatePath("/cart");
