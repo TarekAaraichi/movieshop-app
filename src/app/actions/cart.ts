@@ -33,7 +33,10 @@ export async function addToCart(formData: FormData) {
   if (idx >= 0) cart[idx].quantity += 1;
   else cart.push({ movieId, quantity: 1 });
 
-  cookieStore.set("cart", JSON.stringify(cart), { path: "/", maxAge: 60 * 60 * 24 * 7 }); // 1 week
+  cookieStore.set("cart", JSON.stringify(cart), {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 7,
+  }); // 1 week
 
   revalidatePath("/cart");
 }
@@ -63,7 +66,10 @@ export async function updateCart(formData: FormData) {
   if (cart.length === 0) {
     cookieStore.delete("cart");
   } else {
-    cookieStore.set("cart", JSON.stringify(cart), { path: "/", maxAge: 60 * 60 * 24 * 7 }); // 1 week
+    cookieStore.set("cart", JSON.stringify(cart), {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    }); // 1 week
   }
 
   revalidatePath("/cart");

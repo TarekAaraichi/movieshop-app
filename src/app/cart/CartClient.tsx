@@ -29,7 +29,7 @@ export default function CartClient({
   function onAction() {
     startTransition(() => {
       setTimeout(() => {
-  router.replace(window.location.pathname);
+        router.replace(window.location.pathname);
       }, 120);
     });
   }
