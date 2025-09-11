@@ -82,7 +82,12 @@ export async function updateCart(formData: FormData) {
     if (cart.length === 0) {
       // Remove the cookie if cart is empty
       try {
-        (cs2.set as any)({ name: "cart", value: "", path: "/", expires: new Date(0) });
+        (cs2.set as any)({
+          name: "cart",
+          value: "",
+          path: "/",
+          expires: new Date(0),
+        });
       } catch {
         (cs2.set as any)("cart", "", { path: "/", expires: new Date(0) });
       }
