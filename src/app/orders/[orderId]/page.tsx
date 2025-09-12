@@ -9,19 +9,26 @@ type Props = {
 
 function formatPrice(p: unknown) {
   if (p == null) return "0.00";
-  try {
-    // Prisma Decimal -> string
-    return (p as { toString?: () => string }).toString();
-  } catch {
-    return String(p);
+  const maybe = p as { toString?: unknown };
+  if (typeof maybe.toString === "function") {
+    try {
+      return (maybe.toString as () => string)();
+    } catch {
+      return String(p);
+    }
   }
+  return String(p);
 }
 
 export default async function OrderPage({ params }: Props) {
   const { orderId } = params;
   const order = await prisma.order.findUnique({
     where: { id: orderId },
-    include: { items: { include: { movie: true } }, address: true },
+    include: {
+      items: { include: { movie: true } },
+      address: true,
+      user: true,
+    },
   });
 
   if (!order) return notFound();
@@ -31,11 +38,29 @@ export default async function OrderPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-6">
       <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-blue-600 mb-4">Order Confirmed</h1>
+        <h1 className="text-2xl font-bold text-blue-600 mb-4">
+          Order Confirmed
+        </h1>
         <p className="text-sm text-gray-600 mb-4">Order ID: {order.id}</p>
 
         <div className="border rounded p-4 mb-4">
-          <h2 className="font-semibold mb-2">Shipping Address</h2>
+          <h2 className="font-semibold mb-2 text-gray-800">
+            Buyer Information
+          </h2>
+          {order.user ? (
+            <div className="text-sm text-gray-700">
+              <div>Name: {order.user.name}</div>
+              <div>Email: {order.user.email}</div>
+            </div>
+          ) : (
+            <div className="text-sm text-gray-700">
+              No buyer information on file
+            </div>
+          )}
+        </div>
+        
+        <div className="border rounded p-4 mb-4">
+          <h2 className="font-semibold mb-2 text-gray-800">Shipping Address</h2>
           {order.address ? (
             <div className="text-sm text-gray-700">
               <div>{order.address.line1}</div>
@@ -64,8 +89,12 @@ export default async function OrderPage({ params }: Props) {
                   />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-800">{it.movie?.title}</div>
-                  <div className="text-sm text-gray-500">Qty: {it.quantity}</div>
+                  <div className="font-semibold text-gray-800">
+                    {it.movie?.title}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Quantity: {it.quantity}
+                  </div>
                 </div>
               </div>
               <div className="text-gray-800 font-medium">
@@ -76,8 +105,10 @@ export default async function OrderPage({ params }: Props) {
         </div>
 
         <div className="mt-6 flex justify-between items-center">
-          <div className="text-lg font-semibold">Total</div>
-          <div className="text-xl font-bold text-gray-900">${Number(total).toFixed(2)}</div>
+          <div className="text-lg font-semibold text-gray-800">Total</div>
+          <div className="text-xl font-bold text-gray-900">
+            ${Number(total).toFixed(2)}
+          </div>
         </div>
       </div>
     </div>

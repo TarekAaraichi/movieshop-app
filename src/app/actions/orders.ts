@@ -118,15 +118,20 @@ export async function createOrder(formData: FormData): Promise<void> {
 
   // Persist order in transaction and clear cookie
   const result = await prisma.$transaction(async (tx) => {
-    // Create anonymous user to attach order (project does not have auth now)
-    const anon = await tx.user.create({
-      data: {
-        email: parsed.data.email,
-        password: "",
-        name: parsed.data.fullName,
-        isAnonymous: true,
-      },
+    // Create or reuse a user to attach order (project does not have auth now)
+    let anon = await tx.user.findUnique({
+      where: { email: parsed.data.email },
     });
+    if (!anon) {
+      anon = await tx.user.create({
+        data: {
+          email: parsed.data.email,
+          password: "",
+          name: parsed.data.fullName,
+          isAnonymous: true,
+        },
+      });
+    }
     const address = await tx.address.create({
       data: {
         userId: anon.id,

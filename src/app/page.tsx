@@ -3,7 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default async function HomePage() {
-  // Top 5 most purchased (by sum of order items)
   type MovieSummary = {
     id: string;
     title: string;
@@ -20,7 +19,6 @@ export default async function HomePage() {
   `) as unknown;
   const topPurchased = (topPurchasedRaw as MovieSummary[] | undefined) ?? [];
 
-  // Top 5 most recent
   const recentRaw = await prisma.movie.findMany({
     orderBy: { releaseDate: "desc" },
     take: 5,
@@ -60,10 +58,10 @@ export default async function HomePage() {
     return (
       <Link
         href={`/movies/${movie.id}`}
-        className="block bg-gray-800 rounded-md shadow hover:bg-gray-700 transition p-2"
+        className="block bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 p-3"
       >
-        <div className="flex items-center gap-3">
-          <div className="w-20 h-28 relative rounded overflow-hidden">
+        <div className="flex items-center gap-4">
+          <div className="w-24 h-32 relative rounded-lg overflow-hidden shadow-md">
             <Image
               src={movie.imageUrl ?? "/file.svg"}
               alt={movie.title}
@@ -72,15 +70,13 @@ export default async function HomePage() {
             />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-teal-300">
-              {movie.title}
-            </h3>
-            <p className="text-sm text-gray-400">
+            <h3 className="text-xl font-bold text-gray-100">{movie.title}</h3>
+            <p className="text-sm text-gray-300">
               {movie.releaseDate
                 ? new Date(movie.releaseDate).getFullYear()
                 : ""}
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-green-400 font-semibold">
               ${Number(movie.price).toFixed(2)}
             </p>
           </div>
@@ -90,40 +86,50 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100">
-      <main className="flex-grow p-8 max-w-6xl mx-auto">
-        <h1 className="text-4xl font-extrabold mb-8">Welcome to MovieShop</h1>
+    <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-700 text-gray-200">
+      <main className="flex-grow p-8 max-w-7xl mx-auto">
+        <h1 className="text-5xl font-extrabold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
+          Explore Our Movies
+        </h1>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Top 5 Most Purchased</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold mb-6 text-green-400">
+            Top 5 Most Purchased
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {topPurchased.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}
           </div>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Top 5 Most Recent</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold mb-6 text-blue-400">
+            Top 5 Most Recent
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {topRecent.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}
           </div>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Top 5 Oldest</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold mb-6 text-purple-400">
+            Top 5 Oldest
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {topOldest.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}
           </div>
         </section>
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-bold mb-4">Top 5 Cheapest</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold mb-6 text-teal-400">
+            Top 5 Cheapest
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {topCheap.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}
