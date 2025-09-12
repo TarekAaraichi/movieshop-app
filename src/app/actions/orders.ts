@@ -1,0 +1,165 @@
+"use server";
+
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+import prisma from "@/lib/prisma";
+
+const checkoutSchema = z.object({
+  fullName: z.string().min(2),
+  email: z.string().email(),
+  line1: z.string().min(2),
+  line2: z.string().optional(),
+  city: z.string().min(1),
+  postalCode: z.string().min(1),
+  country: z.string().min(1),
+  paymentToken: z.string().optional(),
+});
+
+type CartItem = { movieId: string; quantity: number };
+
+function parseCartCookie(cookieStore: unknown) {
+  function hasGetMethod(
+    obj: unknown
+  ): obj is { get: (name: string) => { value?: string } | undefined } {
+    return (
+      typeof obj === "object" &&
+      obj !== null &&
+      "get" in obj &&
+      typeof (obj as unknown as Record<string, (name: string) => unknown>)
+        .get === "function"
+    );
+  }
+
+  const cookie = hasGetMethod(cookieStore)
+    ? cookieStore.get("cart")?.value || "[]"
+    : "[]";
+  try {
+    return JSON.parse(cookie) as CartItem[];
+  } catch {
+    return [];
+  }
+}
+
+export async function createOrder(formData: FormData): Promise<void> {
+  const raw = Object.fromEntries(formData.entries());
+  const parsed = checkoutSchema.safeParse(raw);
+  if (!parsed.success) {
+    throw new Error("Invalid input");
+  }
+
+  const maybeCookieStore = cookies();
+  const cookieStore =
+    maybeCookieStore instanceof Promise
+      ? await maybeCookieStore
+      : maybeCookieStore;
+  const items = parseCartCookie(cookieStore);
+  if (items.length === 0) throw new Error("empty_cart");
+
+  // Validate stock and compute total
+  const movieIds = items.map((i) => i.movieId);
+  const movies = await prisma.movie.findMany({
+    where: { id: { in: movieIds } },
+  });
+  const moviesById = new Map(movies.map((m) => [m.id, m]));
+
+  let totalCents = 0;
+  const orderItems = [] as {
+    movieId: string;
+    quantity: number;
+    priceAtPurchase: number;
+  }[];
+  for (const it of items) {
+    const movie = moviesById.get(it.movieId);
+    if (!movie) throw new Error(`movie_not_found:${it.movieId}`);
+    if (movie.stock < it.quantity) throw new Error(`out_of_stock:${movie.id}`);
+    const priceNum = Number(movie.price.toString());
+    const cents = Math.round(priceNum * 100);
+    totalCents += cents * it.quantity;
+    orderItems.push({
+      movieId: movie.id,
+      quantity: it.quantity,
+      priceAtPurchase: cents,
+    });
+  }
+
+  // Persist order in transaction and clear cookie
+  const result = await prisma.$transaction(async (tx) => {
+    // Create anonymous user to attach order (project does not have auth now)
+    const anon = await tx.user.create({
+      data: {
+        email: parsed.data.email,
+        password: "",
+        name: parsed.data.fullName,
+        isAnonymous: true,
+      },
+    });
+    const address = await tx.address.create({
+      data: {
+        userId: anon.id,
+        line1: parsed.data.line1,
+        line2: parsed.data.line2 ?? null,
+        city: parsed.data.city,
+        postalCode: parsed.data.postalCode,
+        country: parsed.data.country,
+      },
+    });
+    const order = await tx.order.create({
+      data: {
+        userId: anon.id,
+        totalAmount: `${(totalCents / 100).toFixed(2)}`,
+        addressId: address.id,
+        items: {
+          create: orderItems.map((oi) => ({
+            movieId: oi.movieId,
+            quantity: oi.quantity,
+            priceAtPurchase: `${(oi.priceAtPurchase / 100).toFixed(2)}`,
+          })),
+        },
+      },
+      include: { items: true },
+    });
+
+    for (const it of items) {
+      await tx.movie.update({
+        where: { id: it.movieId },
+        data: { stock: { decrement: it.quantity } },
+      });
+    }
+
+    return order;
+  });
+
+  // Clear cookie cart
+  try {
+    type CookieSetObj = (opts: {
+      name: string;
+      value: string;
+      path?: string;
+      maxAge?: number;
+    }) => void;
+    type CookieSetArgs = (
+      name: string,
+      value: string,
+      opts?: { path?: string; maxAge?: number }
+    ) => void;
+    const cookieObj = cookieStore as unknown as {
+      set?: CookieSetObj | CookieSetArgs;
+    };
+    if (cookieObj && typeof cookieObj.set === "function") {
+      try {
+        (cookieObj.set as CookieSetObj)({
+          name: "cart",
+          value: "",
+          path: "/",
+          maxAge: 0,
+        });
+      } catch {
+        (cookieObj.set as CookieSetArgs)("cart", "", { path: "/", maxAge: 0 });
+      }
+    }
+  } catch {}
+
+  // Redirect to order confirmation page
+  redirect(`/orders/${result.id}`);
+}

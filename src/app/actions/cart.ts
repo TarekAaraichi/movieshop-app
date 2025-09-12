@@ -66,3 +66,63 @@ export async function updateCart(formData: FormData) {
 
   revalidatePath("/cart");
 }
+
+// Server action: return cart items with movie records (for server components)
+export async function getCartItems() {
+  const maybeCookies = cookies();
+  const cookieStore =
+    typeof (maybeCookies as unknown as Promise<unknown>).then === "function"
+      ? await maybeCookies
+      : maybeCookies;
+  const cs = cookieStore as unknown as {
+    get?: (name: string) => { value?: string } | undefined;
+  };
+  const cartCookie =
+    typeof cs.get === "function" ? cs.get("cart")?.value || "[]" : "[]";
+  let cart: { movieId: string; quantity: number }[] = [];
+  try {
+    cart = JSON.parse(cartCookie);
+  } catch {
+    cart = [];
+  }
+
+  const ids = cart.map((c) => c.movieId);
+  // lazy import prisma to avoid cycles
+  const prisma = (await import("@/lib/prisma")).default;
+  const movies = ids.length
+    ? await prisma.movie.findMany({
+        where: { id: { in: ids } },
+        include: { genres: { include: { genre: true } } },
+      })
+    : [];
+  const movieMap = new Map(movies.map((m) => [m.id, m]));
+  const items = cart
+    .map((c) => ({ ...c, movie: movieMap.get(c.movieId) }))
+    .filter((c) => c.movie)
+    .map((c) => ({ quantity: c.quantity, movie: c.movie }));
+  return { items };
+}
+
+// Server action: migrate cookie cart items into a user's DB cart
+export async function migrateCartToUser(
+  userId: string,
+  items: { movieId: string; quantity: number }[]
+) {
+  if (!userId) throw new Error("missing_userId");
+  const prisma = (await import("@/lib/prisma")).default;
+  // find or create cart
+  let cart = await prisma.cart.findUnique({ where: { userId } });
+  if (!cart) {
+    cart = await prisma.cart.create({ data: { userId } });
+  }
+  // replace items: delete existing and insert new
+  await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
+  const ops = items.map((i) =>
+    prisma.cartItem.create({
+      data: { cartId: cart!.id, movieId: i.movieId, quantity: i.quantity },
+    })
+  );
+  await Promise.all(ops);
+  // Optionally clear cookie by instructing consuming code to remove it; server actions don't directly control client cookies here
+  revalidatePath("/cart");
+}

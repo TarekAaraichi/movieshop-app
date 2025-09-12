@@ -41,8 +41,7 @@ export default function RootLayout({
               <span className="font-semibold text-teal-400">
                 React Fullstack - G13
               </span>{" "}
-              |{" "}
-              <span className="font-semibold text-teal-400">Delta Team</span>{" "}
+              | <span className="font-semibold text-teal-400">Delta Team</span>{" "}
               - Lexicon AB
             </span>
           </footer>

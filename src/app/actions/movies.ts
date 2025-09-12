@@ -76,14 +76,25 @@ export async function updateMovie(formData: FormData) {
   const updateMovieSchema = z.object({
     movieId: z.string().min(1),
     title: z.string().min(1),
-    releaseDate: z.string().refine((s) => !Number.isNaN(Date.parse(s)), { message: "Invalid date" }),
+    releaseDate: z
+      .string()
+      .refine((s) => !Number.isNaN(Date.parse(s)), { message: "Invalid date" }),
     description: z.string().min(1),
     director: z.string().min(1),
     actors: z.string().optional().nullable(),
     imageUrl: z.string().optional().nullable(),
-    runtime: z.preprocess((v) => (typeof v === 'string' ? parseInt(v, 10) : v), z.number().int().nonnegative()),
-    price: z.preprocess((v) => (typeof v === 'string' ? parseFloat(v) : v), z.number().nonnegative()),
-    stock: z.preprocess((v) => (typeof v === 'string' ? parseInt(v, 10) : v), z.number().int().nonnegative()),
+    runtime: z.preprocess(
+      (v) => (typeof v === "string" ? parseInt(v, 10) : v),
+      z.number().int().nonnegative()
+    ),
+    price: z.preprocess(
+      (v) => (typeof v === "string" ? parseFloat(v) : v),
+      z.number().nonnegative()
+    ),
+    stock: z.preprocess(
+      (v) => (typeof v === "string" ? parseInt(v, 10) : v),
+      z.number().int().nonnegative()
+    ),
     genres: z.string().optional().nullable(),
   });
 
