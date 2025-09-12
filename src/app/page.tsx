@@ -141,13 +141,13 @@ export default async function HomePage() {
             {/* Render genres if present */}
             {movie.genres && movie.genres.length > 0 && (
               <p className="text-sm text-gray-300">
-                Genre: {movie.genres.map((g) => g.genre.name).join(", ")}
+                {movie.genres.map((g) => g.genre.name).join(", ")}
               </p>
             )}
             {/* Render actors if present */}
             {movie.people && movie.people.length > 0 && (
               <p className="text-sm text-gray-300">
-                Actors:{" "}
+                {" "}
                 {movie.people
                   .filter((p) => p.role === "ACTOR")
                   .map((p, i, arr) => (
@@ -164,10 +164,10 @@ export default async function HomePage() {
               </p>
             )}
             {/* Director if present */}
-            {movie.people &&
+            {/* {movie.people &&
               movie.people.find((p) => p.role === "DIRECTOR") && (
                 <p className="text-sm text-gray-400">
-                  Director:{" "}
+                  {" "}
                   <Link
                     href={`/persons/${
                       movie.people.find((p) => p.role === "DIRECTOR")?.person.id
@@ -180,7 +180,7 @@ export default async function HomePage() {
                     }
                   </Link>
                 </p>
-              )}
+              )} */}
           </div>
         </div>
       </Link>
