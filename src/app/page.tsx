@@ -9,6 +9,9 @@ export default async function HomePage() {
     imageUrl?: string | null;
     price: string;
     releaseDate?: string | null;
+    // optional expanded relations
+    people?: { person: { id: string; fullName: string }; role: string }[];
+    genres?: { genre: { id: string; name: string } }[];
   };
   const topPurchasedRaw = (await prisma.$queryRaw`
     SELECT m.* FROM "Movie" m
@@ -19,17 +22,30 @@ export default async function HomePage() {
   `) as unknown;
   const topPurchased = (topPurchasedRaw as MovieSummary[] | undefined) ?? [];
 
+  // Fetch lists including people and genres so we can show director/actors/genre on the landing page
   const recentRaw = await prisma.movie.findMany({
     orderBy: { releaseDate: "desc" },
     take: 5,
+    include: {
+      people: { include: { person: true } },
+      genres: { include: { genre: true } },
+    },
   });
   const oldestRaw = await prisma.movie.findMany({
     orderBy: { releaseDate: "asc" },
     take: 5,
+    include: {
+      people: { include: { person: true } },
+      genres: { include: { genre: true } },
+    },
   });
   const cheapRaw = await prisma.movie.findMany({
     orderBy: { price: "asc" },
     take: 5,
+    include: {
+      people: { include: { person: true } },
+      genres: { include: { genre: true } },
+    },
   });
 
   function serialize(m: unknown): MovieSummary {
@@ -50,9 +66,52 @@ export default async function HomePage() {
     };
   }
 
-  const topRecent = recentRaw.map((r) => serialize(r));
-  const topOldest = oldestRaw.map((r) => serialize(r));
-  const topCheap = cheapRaw.map((r) => serialize(r));
+  // For recent/oldest/cheap we already included related data; convert to serialized summaries
+  // Helper to serialize a full movie record (including relations) into MovieSummary
+  function serializeFull(m: unknown): MovieSummary {
+    const base = serialize(m);
+    const mm = m as Record<string, unknown>;
+    const people = ((mm.people as unknown) ?? []) as unknown[];
+    const genres = ((mm.genres as unknown) ?? []) as unknown[];
+    return {
+      ...base,
+      people: people.map((p: unknown) => {
+        const pp = p as Record<string, unknown>;
+        const person = pp.person as Record<string, unknown>;
+        return {
+          role: String(pp.role),
+          person: { id: String(person.id), fullName: String(person.fullName) },
+        };
+      }),
+      genres: genres.map((g: unknown) => {
+        const gg = g as Record<string, unknown>;
+        const genre = gg.genre as Record<string, unknown>;
+        return { genre: { id: String(genre.id), name: String(genre.name) } };
+      }),
+    };
+  }
+
+  const topRecent = recentRaw.map((r) => serializeFull(r));
+  const topOldest = oldestRaw.map((r) => serializeFull(r));
+  const topCheap = cheapRaw.map((r) => serializeFull(r));
+
+  // For top purchased we need the detailed movie records (topPurchased currently has ids)
+  const topPurchasedDetailed = (
+    await Promise.all(
+      topPurchased.map((m) =>
+        prisma.movie.findUnique({
+          where: { id: m.id },
+          include: {
+            people: { include: { person: true } },
+            genres: { include: { genre: true } },
+          },
+        })
+      )
+    )
+  ).filter(Boolean) as unknown[];
+  const topPurchasedSummaries = topPurchasedDetailed.map((r) =>
+    serializeFull(r)
+  );
 
   function MovieCard({ movie }: { movie: MovieSummary }) {
     return (
@@ -79,6 +138,49 @@ export default async function HomePage() {
             <p className="text-sm text-green-400 font-semibold">
               ${Number(movie.price).toFixed(2)}
             </p>
+            {/* Render genres if present */}
+            {movie.genres && movie.genres.length > 0 && (
+              <p className="text-sm text-gray-300">
+                Genre: {movie.genres.map((g) => g.genre.name).join(", ")}
+              </p>
+            )}
+            {/* Render actors if present */}
+            {movie.people && movie.people.length > 0 && (
+              <p className="text-sm text-gray-300">
+                Actors:{" "}
+                {movie.people
+                  .filter((p) => p.role === "ACTOR")
+                  .map((p, i, arr) => (
+                    <span key={p.person.id}>
+                      <Link
+                        href={`/persons/${p.person.id}`}
+                        className="text-teal-300 hover:underline"
+                      >
+                        {p.person.fullName}
+                      </Link>
+                      {i < arr.length - 1 ? ", " : ""}
+                    </span>
+                  ))}
+              </p>
+            )}
+            {/* Director if present */}
+            {movie.people &&
+              movie.people.find((p) => p.role === "DIRECTOR") && (
+                <p className="text-sm text-gray-400">
+                  Director:{" "}
+                  <Link
+                    href={`/persons/${
+                      movie.people.find((p) => p.role === "DIRECTOR")?.person.id
+                    }`}
+                    className="text-teal-500 hover:underline"
+                  >
+                    {
+                      movie.people.find((p) => p.role === "DIRECTOR")?.person
+                        .fullName
+                    }
+                  </Link>
+                </p>
+              )}
           </div>
         </div>
       </Link>
@@ -97,7 +199,7 @@ export default async function HomePage() {
             Top 5 Most Purchased
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
-            {topPurchased.map((m) => (
+            {topPurchasedSummaries.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}
           </div>
