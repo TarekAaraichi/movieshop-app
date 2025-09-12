@@ -1,21 +1,33 @@
 import React from "react";
 import { createOrder } from "@/app/actions/orders";
 
-export default function CheckoutPage({
+export default async function CheckoutPage({
   searchParams,
 }: {
-  searchParams?: Record<string, string>;
+  searchParams?:
+    | Record<string, string>
+    | Promise<Record<string, string> | undefined>;
 }) {
+  const sp = await (searchParams ?? {});
   let serverErrors: string[] = [];
-  if (searchParams?.errors) {
+  if (sp?.errors) {
     try {
-      const parsed = JSON.parse(decodeURIComponent(searchParams.errors));
+      const parsed = JSON.parse(decodeURIComponent(sp.errors));
       if (parsed && parsed._type === "validation" && parsed.fields) {
-        serverErrors = Object.values(parsed.fields as Record<string, string>);
+        // flatten validation field messages
+        serverErrors = Object.values(
+          parsed.fields as Record<string, unknown>
+        ).flatMap((f) =>
+          Array.isArray(f)
+            ? (f as unknown[]).map(String)
+            : Object.values(f as Record<string, unknown>).map(String)
+        );
       } else if (parsed && parsed._type === "business" && parsed.message) {
-        serverErrors = [parsed.message];
+        serverErrors = [String(parsed.message)];
       }
-    } catch {}
+    } catch {
+      // ignore parse errors
+    }
   }
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">

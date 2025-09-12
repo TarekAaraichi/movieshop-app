@@ -6,10 +6,12 @@ import Link from "next/link";
 import AddToCartClientButton from "./AddToCartClientButton";
 
 export default async function MovieDetailPage({
-  params: { movieId },
+  params,
 }: {
-  params: { movieId: string };
+  params: { movieId: string } | Promise<{ movieId: string }>;
 }) {
+  const p = await params;
+  const movieId = p.movieId;
   const movie = await prisma.movie.findUnique({
     where: { id: movieId },
     include: {

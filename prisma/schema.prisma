@@ -63,6 +63,7 @@ model Person {
   id       String        @id @default(cuid())
   fullName String        @unique
   bio      String?
+  imageUrl String?
   movies   MoviePerson[]
 }
 

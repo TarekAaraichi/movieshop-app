@@ -5,10 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function PersonPage({
-  params: { personId },
+  params,
 }: {
-  params: { personId: string };
+  params: { personId: string } | Promise<{ personId: string }>;
 }) {
+  const p = await params;
+  const personId = p.personId;
   const person = await prisma.person.findUnique({
     where: { id: personId },
     include: {
