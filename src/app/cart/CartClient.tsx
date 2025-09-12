@@ -70,7 +70,7 @@ export default function CartClient({
     return <p className="text-gray-600">Your cart is empty.</p>;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 text-gray-900">
       {items.map(({ movie, quantity }) => {
         const genreNames = (movie.genres || [])
           .map((g) => g?.genre?.name)
