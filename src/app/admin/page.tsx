@@ -25,6 +25,11 @@ export default async function AdminPage({
   });
 
   const personsPromise = prisma.person.findMany({
+    where: q
+      ? {
+          fullName: { contains: q, mode: "insensitive" },
+        }
+      : undefined,
     orderBy: { fullName: "asc" },
     include: { movies: { include: { movie: true } } },
   });
@@ -49,6 +54,15 @@ export default async function AdminPage({
     revalidatePath("/admin");
   }
 
+  // server action for deleting a user
+  async function deleteUser(formData: FormData) {
+    "use server";
+    const id = formData.get("userId") as string;
+    if (!id) throw new Error("Missing user ID");
+    await prisma.user.delete({ where: { id } });
+    revalidatePath("/admin");
+  }
+
   return (
     <div className="min-h-screen p-6 bg-gray-50">
       {/* page header */}
@@ -57,12 +71,22 @@ export default async function AdminPage({
           Admin Management
         </h1>
         <div className="space-x-2">
-          <Link
-            href="/admin/create"
-            className="bg-indigo-600 text-white py-2 px-4 rounded-md shadow hover:bg-indigo-700"
-          >
-            Create New Movie
-          </Link>
+          {tab === "movies" && (
+            <Link
+              href="/admin/create"
+              className="bg-indigo-600 text-white py-2 px-4 rounded-md shadow hover:bg-indigo-700"
+            >
+              Create New Movie
+            </Link>
+          )}
+          {tab === "users" && (
+            <Link
+              href="/admin/users/create"
+              className="bg-indigo-600 text-white py-2 px-4 rounded-md shadow hover:bg-indigo-700"
+            >
+              Create New User
+            </Link>
+          )}
         </div>
       </div>
 
@@ -105,7 +129,13 @@ export default async function AdminPage({
         <input
           name="q"
           type="search"
-          placeholder="Search by title..."
+          placeholder={
+            tab === "movies"
+              ? "Search by title..."
+              : tab === "persons"
+              ? "Search by person name..."
+              : "Search by name or email..."
+          }
           defaultValue={q}
           className="p-2 border border-gray-300 rounded bg-gray-100 text-gray-800 focus:ring focus:ring-indigo-300"
         />
@@ -121,10 +151,10 @@ export default async function AdminPage({
                   Title
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Director
+                  Genre
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Genre
+                  Director
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Release Date
@@ -149,10 +179,10 @@ export default async function AdminPage({
                   <tr key={movie.id} className="hover:bg-gray-50">
                     <td className="px-4 py-2 text-gray-800">{movie.title}</td>
                     <td className="px-4 py-2 text-gray-600">
-                      {directorLink?.person.fullName ?? "—"}
+                      {movie.genres.map((g) => g.genre.name).join(", ") || "—"}
                     </td>
                     <td className="px-4 py-2 text-gray-600">
-                      {movie.genres.map((g) => g.genre.name).join(", ") || "—"}
+                      {directorLink?.person.fullName ?? "—"}
                     </td>
                     <td className="px-4 py-2 text-gray-600">
                       {movie.releaseDate?.toISOString().split("T")[0]}
@@ -190,14 +220,6 @@ export default async function AdminPage({
 
       {tab === "persons" && (
         <div className="overflow-x-auto">
-          <div className="mb-4">
-            <Link
-              href="/admin/persons/create"
-              className="bg-green-600 text-white py-2 px-4 rounded-md shadow hover:bg-green-700"
-            >
-              Create Person
-            </Link>
-          </div>
           <table className="min-w-full divide-y divide-gray-300 shadow">
             <thead className="bg-gray-100">
               <tr>
@@ -211,51 +233,67 @@ export default async function AdminPage({
                   Movies
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Roles
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {persons.map((person) => (
-                <tr key={person.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 text-gray-800">{person.fullName}</td>
-                  <td className="px-4 py-2 text-gray-600">
-                    {person.bio ? person.bio.slice(0, 80) : "—"}
-                  </td>
-                  <td className="px-4 py-2 text-gray-600">
-                    {(person.movies || [])
-                      .map((m) => m.movie.title)
-                      .slice(0, 3)
-                      .join(", ") || "—"}
-                  </td>
-                  <td className="px-4 py-2 space-x-4">
-                    <Link
-                      href={`/admin/persons/${person.id}/edit`}
-                      className="text-indigo-600 hover:underline"
-                    >
-                      Edit
-                    </Link>
-                    <form
-                      action={async (formData: FormData) => {
-                        "use server";
-                        const id = formData.get("personId") as string;
-                        if (!id) throw new Error("Missing id");
-                        await prisma.person.delete({ where: { id } });
-                        revalidatePath("/admin");
-                      }}
-                      className="inline-block"
-                    >
-                      <input type="hidden" name="personId" value={person.id} />
-                      <button
-                        type="submit"
-                        className="text-red-600 hover:underline"
+              {persons.map((person) => {
+                const roles =
+                  Array.from(
+                    new Set((person.movies || []).map((m) => m.role))
+                  ).join(", ") || "—";
+                return (
+                  <tr key={person.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-2 text-gray-800">
+                      {person.fullName}
+                    </td>
+                    <td className="px-4 py-2 text-gray-600">
+                      {person.bio ? person.bio.slice(0, 80) : "—"}
+                    </td>
+                    <td className="px-4 py-2 text-gray-600">
+                      {(person.movies || [])
+                        .map((m) => m.movie.title)
+                        .slice(0, 3)
+                        .join(", ") || "—"}
+                    </td>
+                    <td className="px-4 py-2 text-gray-600">{roles}</td>
+                    <td className="px-4 py-2 space-x-4">
+                      <Link
+                        href={`/admin/persons/${person.id}/edit`}
+                        className="text-indigo-600 hover:underline"
                       >
-                        Delete
-                      </button>
-                    </form>
-                  </td>
-                </tr>
-              ))}
+                        Edit
+                      </Link>
+                      <form
+                        action={async (formData: FormData) => {
+                          "use server";
+                          const id = formData.get("personId") as string;
+                          if (!id) throw new Error("Missing id");
+                          await prisma.person.delete({ where: { id } });
+                          revalidatePath("/admin");
+                        }}
+                        className="inline-block"
+                      >
+                        <input
+                          type="hidden"
+                          name="personId"
+                          value={person.id}
+                        />
+                        <button
+                          type="submit"
+                          className="text-red-600 hover:underline"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -263,14 +301,25 @@ export default async function AdminPage({
 
       {tab === "users" && (
         <div className="overflow-x-auto">
+          <div className="mb-4">
+            <Link
+              href="/admin/users/create"
+              className="bg-green-600 text-white py-2 px-4 rounded-md shadow hover:bg-green-700"
+            >
+              Create User
+            </Link>
+          </div>
           <table className="min-w-full divide-y divide-gray-300 shadow">
             <thead className="bg-gray-100">
               <tr>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Name
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Email
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Created At
+                  Role
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Actions
@@ -280,11 +329,27 @@ export default async function AdminPage({
             <tbody className="bg-white divide-y divide-gray-200">
               {users.map((u) => (
                 <tr key={u.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 text-gray-800">{u.name ?? "—"}</td>
                   <td className="px-4 py-2 text-gray-800">{u.email}</td>
-                  <td className="px-4 py-2 text-gray-600">{u.name}</td>
+                  <td className="px-4 py-2 text-gray-600">
+                    {u.role ?? "user"}
+                  </td>
                   <td className="px-4 py-2 space-x-4">
-                    {/* future user actions */}
-                    <span className="text-gray-500">—</span>
+                    <Link
+                      href={`/admin/users/${u.id}/edit`}
+                      className="text-indigo-600 hover:underline"
+                    >
+                      Edit
+                    </Link>
+                    <form action={deleteUser} className="inline-block">
+                      <input type="hidden" name="userId" value={u.id} />
+                      <button
+                        type="submit"
+                        className="text-red-600 hover:underline"
+                      >
+                        Delete
+                      </button>
+                    </form>
                   </td>
                 </tr>
               ))}
