@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Prisma } from "@prisma/client";
 import GenreSelect from "@/components/GenreSelect";
+import MovieSearch from "@/components/MovieSearch";
 
 interface MoviesPageProps {
   searchParams: {
@@ -61,22 +62,13 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
 
         {/* Search and filter controls - enhanced inline display */}
         <section className="flex flex-wrap items-center mb-8 p-4 bg-gradient-to-r from-gray-800/30 via-gray-700/20 to-gray-800/30 rounded-lg gap-4">
-          <form method="GET" className="flex flex-wrap items-center gap-4 w-full">
+          <form
+            method="GET"
+            className="flex flex-wrap items-center gap-4 w-full"
+          >
             <div className="flex items-center flex-grow">
-              <input
-          name="q"
-          type="search"
-          placeholder="Search by title...🔍"
-          defaultValue={query}
-          className="p-2 w-full sm:w-64 rounded-lg border border-gray-500 bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
-              />
-              <button
-          type="submit"
-          className="ml-3 px-3 py-2 rounded-lg bg-gray-600 text-gray-200 font-medium hover:bg-gray-500 transition focus:outline-none focus:ring-2 focus:ring-gray-400"
-          aria-label="Search"
-              >
-          Search
-              </button>
+              {/* Client-side controlled search to keep behaviors consistent when combined with genre filter */}
+              <MovieSearch initialQuery={query} selectedGenre={selectedGenre} />
             </div>
             <div className="flex-grow sm:flex-grow-0">
               <GenreSelect selectedGenre={selectedGenre} query={query} />
