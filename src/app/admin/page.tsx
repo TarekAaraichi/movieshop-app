@@ -110,7 +110,7 @@ export default async function AdminPage({
               : "bg-white text-gray-700 border"
           }`}
         >
-          Persons
+          Movies Persons
         </Link>
         <Link
           href="/admin?tab=users"
@@ -301,14 +301,7 @@ export default async function AdminPage({
 
       {tab === "users" && (
         <div className="overflow-x-auto">
-          <div className="mb-4">
-            <Link
-              href="/admin/users/create"
-              className="bg-green-600 text-white py-2 px-4 rounded-md shadow hover:bg-green-700"
-            >
-              Create User
-            </Link>
-          </div>
+          
           <table className="min-w-full divide-y divide-gray-300 shadow">
             <thead className="bg-gray-100">
               <tr>

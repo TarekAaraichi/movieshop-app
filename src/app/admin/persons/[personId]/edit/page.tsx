@@ -16,13 +16,18 @@ export default async function EditPersonPage({
 }) {
   const p = await params;
   const personId = p.personId;
-  const person = await prisma.person.findUnique({ where: { id: personId } });
+  const person = await prisma.person.findUnique({
+    where: { id: personId },
+    select: { id: true, fullName: true, bio: true },
+  });
   if (!person) return <div className="p-6">Person not found</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">
       <div className="bg-white p-6 rounded shadow">
-        <h2 className="text-2xl font-bold mb-4">Edit Person</h2>
+        <h2 className="text-3xl font-extrabold mb-6 text-gray-900">
+          Edit Person
+        </h2>
         <form
           action={async (formData: FormData) => {
             "use server";
@@ -33,7 +38,6 @@ export default async function EditPersonPage({
               data: {
                 fullName: parsed.fullName.trim(),
                 bio: parsed.bio ?? null,
-                imageUrl: parsed.imageUrl ?? null,
               },
             });
             revalidatePath("/admin");
@@ -52,6 +56,7 @@ export default async function EditPersonPage({
               />
             </label>
           </div>
+          {/* Role is stored on MoviePerson relation; not on Person model */}
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Bio
@@ -67,7 +72,9 @@ export default async function EditPersonPage({
             <label className="block text-sm font-medium text-gray-700">
               Image URL
               <input
-                defaultValue={(person as any).imageUrl ?? ""}
+                defaultValue={
+                  (person as unknown as { imageUrl?: string }).imageUrl ?? ""
+                }
                 name="imageUrl"
                 type="url"
                 placeholder="https://..."
