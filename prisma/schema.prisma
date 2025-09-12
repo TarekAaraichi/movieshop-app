@@ -40,6 +40,7 @@ model Movie {
   genres     MovieGenre[]
   people     MoviePerson[]
   orderItems OrderItem[]
+  cartItems  CartItem[]
 }
 
 model Genre {
@@ -82,9 +83,9 @@ model Order {
   orderDate   DateTime    @default(now())
   userId      String
   user        User        @relation("UserOrders", fields: [userId], references: [id])
-  items     OrderItem[]
-  address   Address?     @relation(fields: [addressId], references: [id])
-  addressId String?
+  items       OrderItem[]
+  address     Address?    @relation(fields: [addressId], references: [id])
+  addressId   String?
 }
 
 model OrderItem {
@@ -99,9 +100,9 @@ model OrderItem {
 }
 
 model Address {
-  id         String   @id @default(cuid())
+  id         String  @id @default(cuid())
   userId     String
-  user       User?    @relation(fields: [userId], references: [id])
+  user       User?   @relation(fields: [userId], references: [id])
   line1      String
   line2      String?
   city       String
@@ -113,14 +114,36 @@ model Address {
 }
 
 model User {
-  id               String   @id @default(cuid())
-  email            String   @unique
-  password         String
-  name             String
-  username         String?  @unique // Better Auth username plugin
-  displayUsername  String?         // Better Auth username plugin
-  isAnonymous      Boolean  @default(false) // Better Auth anonymous plugin
-  role             String   @default("user") // "admin" or "user"
-  addresses        Address[]
-  orders           Order[] @relation("UserOrders")
+  id              String    @id @default(cuid())
+  email           String    @unique
+  password        String
+  name            String
+  username        String?   @unique // Better Auth username plugin
+  displayUsername String? // Better Auth username plugin
+  isAnonymous     Boolean   @default(false) // Better Auth anonymous plugin
+  role            String    @default("user") // "admin" or "user"
+  addresses       Address[]
+  orders          Order[]   @relation("UserOrders")
+  cart            Cart?
+}
+
+// Cart stored per authenticated user (migrated from cookie on link)
+model Cart {
+  id        String     @id @default(cuid())
+  user      User?      @relation(fields: [userId], references: [id])
+  userId    String?    @unique
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id       String @id @default(cuid())
+  cart     Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId   String
+  movie    Movie  @relation(fields: [movieId], references: [id], onDelete: Restrict)
+  movieId  String
+  quantity Int
+
+  @@index([cartId])
 }
