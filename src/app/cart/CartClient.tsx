@@ -161,7 +161,16 @@ export default function CartClient({
         <p className="text-lg font-semibold text-gray-800">
           Total: ${total.toFixed(2)}
         </p>
-        <button className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+        <button
+          type="button"
+          onClick={() =>
+            startTransition(() => {
+              router.push("/checkout");
+            })
+          }
+          disabled={isPending}
+          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+        >
           Checkout
         </button>
       </div>

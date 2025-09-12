@@ -19,9 +19,25 @@ export default function AddToCartClientButton({
       try {
         await addToCart(formData);
         increment();
-        toast.success("Added to cart!");
-      } catch (err) {
-        toast.error("Failed to add to cart.");
+        toast.success("Added to cart!", {
+          position: "bottom-right",
+          dismissible: true,
+          duration: 2000,
+          action: {
+            label: "X",
+            onClick: () => toast.dismiss(),
+          },
+        });
+      } catch {
+        toast.error("Failed to add to cart.", {
+          position: "bottom-right",
+          dismissible: true,
+          duration: 2000,
+          action: {
+            label: "X",
+            onClick: () => toast.dismiss(),
+          },
+        });
       }
     });
   }

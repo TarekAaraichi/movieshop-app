@@ -1,11 +1,36 @@
 import React from "react";
 import { createOrder } from "@/app/actions/orders";
 
-export default function CheckoutPage() {
+export default function CheckoutPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string>;
+}) {
+  let serverErrors: string[] = [];
+  if (searchParams?.errors) {
+    try {
+      const parsed = JSON.parse(decodeURIComponent(searchParams.errors));
+      if (parsed && parsed._type === "validation" && parsed.fields) {
+        serverErrors = Object.values(parsed.fields as Record<string, string>);
+      } else if (parsed && parsed._type === "business" && parsed.message) {
+        serverErrors = [parsed.message];
+      }
+    } catch {}
+  }
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
       <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full my-10">
         <h1 className="text-2xl font-bold text-blue-600 mb-6">Checkout</h1>
+        {serverErrors.length > 0 && (
+          <div className="bg-red-50 border border-red-200 text-red-800 p-3 rounded">
+            <ul className="list-disc list-inside text-sm">
+              {serverErrors.map((e, i) => (
+                <li key={i}>{e}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <form action={createOrder} method="post" className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-800">

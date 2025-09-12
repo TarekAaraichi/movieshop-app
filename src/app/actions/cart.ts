@@ -126,3 +126,73 @@ export async function migrateCartToUser(
   // Optionally clear cookie by instructing consuming code to remove it; server actions don't directly control client cookies here
   revalidatePath("/cart");
 }
+
+// Hook to call when a user links/signs-in: migrate cookie cart into DB and clear cookie
+export async function linkAccountAndMigrate(userId: string) {
+  const maybeCookies = cookies();
+  const cookieStore =
+    typeof (maybeCookies as unknown as Promise<unknown>).then === "function"
+      ? await maybeCookies
+      : maybeCookies;
+  const cs = cookieStore as unknown as {
+    get?: (name: string) => { value?: string } | undefined;
+    set?:
+      | ((opts: {
+          name: string;
+          value: string;
+          path?: string;
+          maxAge?: number;
+        }) => void)
+      | ((
+          name: string,
+          value: string,
+          opts?: { path?: string; maxAge?: number }
+        ) => void);
+    delete?: (name: string) => void;
+  };
+  const cartCookie =
+    typeof cs.get === "function" ? cs.get("cart")?.value || "[]" : "[]";
+  let cartItems: { movieId: string; quantity: number }[] = [];
+  try {
+    cartItems = JSON.parse(cartCookie || "[]");
+  } catch {
+    cartItems = [];
+  }
+
+  if (cartItems.length > 0) {
+    await migrateCartToUser(userId, cartItems);
+    // clear cookie
+    try {
+      if (typeof cs.delete === "function") {
+        cs.delete("cart");
+      } else if (typeof cs.set === "function") {
+        // try cookie set to expire using both possible overloads
+        type CookieSetObj = (opts: {
+          name: string;
+          value: string;
+          path?: string;
+          maxAge?: number;
+        }) => void;
+        type CookieSetArgs = (
+          name: string,
+          value: string,
+          opts?: { path?: string; maxAge?: number }
+        ) => void;
+        const setFn = cs.set as unknown as CookieSetObj | CookieSetArgs;
+        try {
+          (setFn as CookieSetObj)({
+            name: "cart",
+            value: "",
+            path: "/",
+            maxAge: 0,
+          });
+        } catch {
+          try {
+            (setFn as CookieSetArgs)("cart", "", { path: "/", maxAge: 0 });
+          } catch {}
+        }
+      }
+    } catch {}
+    revalidatePath("/cart");
+  }
+}

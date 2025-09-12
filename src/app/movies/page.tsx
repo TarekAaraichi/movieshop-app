@@ -1,6 +1,7 @@
 // src/app/movies/page.tsx
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import Image from "next/image";
 
 interface MoviesPageProps {
   searchParams: {
@@ -58,6 +59,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
           <div>
             <select
               name="genre"
+              aria-label="Filter by genre"
               className="p-2 rounded-lg border border-gray-500 bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
               defaultValue=""
             >
@@ -85,11 +87,15 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                 className="block bg-gray-800 rounded-md shadow hover:bg-gray-700 transition"
               >
                 <div>
-                  <img
-                    src={movie.imageUrl ?? "/file.svg"}
-                    alt={movie.title}
-                    className="w-full h-48 object-cover rounded-t-md"
-                  />
+                  <div className="w-full h-48 relative rounded-t-md overflow-hidden">
+                    <Image
+                      src={movie.imageUrl ?? "/file.svg"}
+                      alt={movie.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 25vw"
+                      className="object-cover"
+                    />
+                  </div>
                   <div className="p-4">
                     <h2 className="text-lg font-semibold text-teal-400">
                       {movie.title}
