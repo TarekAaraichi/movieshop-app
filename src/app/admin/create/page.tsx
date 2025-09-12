@@ -4,35 +4,38 @@ import { PersonRole } from "@prisma/client";
 import AddButton from "./AddButton";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+const movieCreateSchema = z.object({
+  title: z.string().min(1),
+  releaseDate: z.string().refine((s) => !Number.isNaN(Date.parse(s)), { message: "Invalid date" }),
+  description: z.string().min(1),
+  director: z.string().min(1),
+  actors: z.string().optional().nullable(),
+  imageUrl: z.string().url().optional(),
+  runtime: z.preprocess((v) => (typeof v === 'string' ? parseInt(v, 10) : v), z.number().int().positive()),
+  price: z.preprocess((v) => (typeof v === 'string' ? parseFloat(v) : v), z.number().nonnegative()),
+  stock: z.preprocess((v) => (typeof v === 'string' ? parseInt(v, 10) : v), z.number().int().nonnegative()),
+  genres: z.string().optional().nullable(),
+});
 
 async function createMovie(formData: FormData) {
   "use server";
 
-  // Extract common fields
-  const title = formData.get("title") as string;
-  const releaseDate = formData.get("releaseDate") as string;
-  const description = formData.get("description") as string;
-  const directorName = formData.get("director") as string;
-  const actorsInput = formData.get("actors") as string;
+  // Convert FormData to plain object to validate with Zod
+  const raw = Object.fromEntries(formData.entries());
+  const parsed = movieCreateSchema.parse(raw);
 
-  const imageUrl = formData.get("imageUrl") as string;
-  const runtime = parseInt(formData.get("runtime") as string, 10);
-  const price = parseFloat(formData.get("price") as string);
-  const stock = parseInt(formData.get("stock") as string, 10);
-  const genresInput = formData.get("genres") as string | null;
-
-  if (
-    !title ||
-    !releaseDate ||
-    !description ||
-    !directorName ||
-    !imageUrl ||
-    !runtime ||
-    isNaN(price) ||
-    isNaN(stock)
-  ) {
-    throw new Error("Missing required fields");
-  }
+  const title = parsed.title;
+  const releaseDate = parsed.releaseDate;
+  const description = parsed.description;
+  const directorName = parsed.director;
+  const actorsInput = parsed.actors ?? "";
+  const imageUrl = parsed.imageUrl ?? "";
+  const runtime = Number(parsed.runtime);
+  const price = Number(parsed.price);
+  const stock = Number(parsed.stock);
+  const genresInput = parsed.genres ?? null;
 
   // Upsert director
   const director = await prisma.person.upsert({
@@ -43,7 +46,7 @@ async function createMovie(formData: FormData) {
 
   // Upsert actors
   const actorNames = actorsInput
-    ? actorsInput
+    ? (actorsInput as string)
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean)
@@ -60,7 +63,7 @@ async function createMovie(formData: FormData) {
 
   // Upsert genres
   const genreNames =
-    genresInput
+    (genresInput as string | null)
       ?.split(",")
       .map((name) => name.trim())
       .filter(Boolean) ?? [];

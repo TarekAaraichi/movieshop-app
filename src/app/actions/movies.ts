@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { PersonRole } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
 type CartItem = { movieId: string; quantity: number };
 
@@ -12,9 +13,14 @@ interface CookieStore {
   set?: (name: string, value: string, opts?: { path?: string }) => void;
 }
 
+const addToCartSchema = z.object({ movieId: z.string().min(1) });
+
 export async function addToCart(formData: FormData) {
-  const movieId = formData.get("movieId") as string | null;
-  if (!movieId) return;
+  // validate input
+  const raw = Object.fromEntries(formData.entries());
+  const parsed = addToCartSchema.safeParse(raw);
+  if (!parsed.success) return; // invalid input -> no-op
+  const { movieId } = parsed.data;
 
   const maybeCookies = cookies();
   const cookieStore =
@@ -67,18 +73,34 @@ export async function addToCart(formData: FormData) {
 export async function updateMovie(formData: FormData) {
   // We import prisma lazily here to avoid circular deps in some toolchains
   const prisma = (await import("@/lib/prisma")).default;
+  const updateMovieSchema = z.object({
+    movieId: z.string().min(1),
+    title: z.string().min(1),
+    releaseDate: z.string().refine((s) => !Number.isNaN(Date.parse(s)), { message: "Invalid date" }),
+    description: z.string().min(1),
+    director: z.string().min(1),
+    actors: z.string().optional().nullable(),
+    imageUrl: z.string().optional().nullable(),
+    runtime: z.preprocess((v) => (typeof v === 'string' ? parseInt(v, 10) : v), z.number().int().nonnegative()),
+    price: z.preprocess((v) => (typeof v === 'string' ? parseFloat(v) : v), z.number().nonnegative()),
+    stock: z.preprocess((v) => (typeof v === 'string' ? parseInt(v, 10) : v), z.number().int().nonnegative()),
+    genres: z.string().optional().nullable(),
+  });
 
-  const movieId = formData.get("movieId") as string; // hidden field
-  const title = (formData.get("title") as string) || "";
-  const releaseDate = formData.get("releaseDate") as string;
-  const description = (formData.get("description") as string) || "";
-  const directorName = (formData.get("director") as string) || "";
-  const actorsInput = (formData.get("actors") as string) || "";
-  const imageUrl = (formData.get("imageUrl") as string) || "";
-  const runtime = parseInt((formData.get("runtime") as string) || "0", 10);
-  const price = parseFloat((formData.get("price") as string) || "0");
-  const stock = parseInt((formData.get("stock") as string) || "0", 10);
-  const genresInput = (formData.get("genres") as string) || null;
+  const raw = Object.fromEntries(formData.entries());
+  const parsed = updateMovieSchema.parse(raw);
+
+  const movieId = parsed.movieId;
+  const title = parsed.title;
+  const releaseDate = parsed.releaseDate;
+  const description = parsed.description;
+  const directorName = parsed.director;
+  const actorsInput = parsed.actors ?? "";
+  const imageUrl = parsed.imageUrl ?? "";
+  const runtime = Number(parsed.runtime);
+  const price = Number(parsed.price);
+  const stock = Number(parsed.stock);
+  const genresInput = parsed.genres ?? null;
 
   // Upsert director
   const director = await prisma.person.upsert({
