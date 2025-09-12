@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
 import type { Prisma } from "@prisma/client";
+import GenreSelect from "@/components/GenreSelect";
 
 interface MoviesPageProps {
   searchParams: {
@@ -77,22 +78,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
             </button>
           </div>
           <div>
-            <select
-              name="genre"
-              aria-label="Filter by genre"
-              className="p-2 rounded-lg border border-gray-500 bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
-              defaultValue={selectedGenre}
-            >
-              <option value="" disabled>
-                Filter by genre
-              </option>
-              <option value="Action">Action</option>
-              <option value="Comedy">Comedy</option>
-              <option value="Drama">Drama</option>
-              <option value="Horror">Horror</option>
-              <option value="Romance">Romance</option>
-              <option value="Sci-Fi">Sci-Fi</option>
-            </select>
+            <GenreSelect selectedGenre={selectedGenre} query={query} />
           </div>
         </form>
 
