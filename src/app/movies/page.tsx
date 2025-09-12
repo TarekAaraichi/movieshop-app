@@ -14,8 +14,10 @@ interface MoviesPageProps {
 }
 
 export default async function MoviesPage({ searchParams }: MoviesPageProps) {
-  const query = searchParams.q ?? "";
-  const selectedGenre = searchParams.genre ?? "";
+  // `searchParams` is a potentially async wrapper in Next.js — await it before use
+  const sp = (await searchParams) as { q?: string; genre?: string };
+  const query = sp.q ?? "";
+  const selectedGenre = sp.genre ?? "";
 
   // Fetch movies, optionally filtering by title
   // Build `where` dynamically so we only include filters when present
@@ -122,19 +124,25 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                         .filter((p) => p.role === "ACTOR")
                         .map((p, i, arr) => (
                           <span key={p.person.id}>
-                            <a
+                            <Link
                               href={`/persons/${p.person.id}`}
                               className="text-teal-300 hover:underline"
                             >
                               {p.person.fullName}
-                            </a>
+                            </Link>
                             {i < arr.length - 1 ? ", " : ""}
                           </span>
                         ))}
                     </p>
                     {director && (
                       <p className="text-sm text-gray-400">
-                        Director: {director.person.fullName}
+                        Director:{" "}
+                        <Link
+                          href={`/persons/${director.person.id}`}
+                          className="text-teal-500 hover:underline"
+                        >
+                          {director.person.fullName}
+                        </Link>
                       </p>
                     )}
                   </div>

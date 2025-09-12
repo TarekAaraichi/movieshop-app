@@ -2,6 +2,7 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import AddToCartClientButton from "./AddToCartClientButton";
 
 export default async function MovieDetailPage({
@@ -59,13 +60,28 @@ export default async function MovieDetailPage({
                     <span className="font-semibold text-gray-100">
                       Director:
                     </span>{" "}
-                    {director.person.fullName}
+                    <Link
+                      href={`/persons/${director.person.id}`}
+                      className="text-teal-500 hover:underline"
+                    >
+                      {director.person.fullName}
+                    </Link>
                   </p>
                 )}
                 {actors.length > 0 && (
                   <p className="text-gray-300 mb-2">
                     <span className="font-semibold text-gray-100">Actors:</span>{" "}
-                    {actors.map((a) => a.person.fullName).join(", ")}
+                    {actors.map((a, i, arr) => (
+                      <span key={a.person.id}>
+                        <Link
+                          href={`/persons/${a.person.id}`}
+                          className="text-teal-300 hover:underline"
+                        >
+                          {a.person.fullName}
+                        </Link>
+                        {i < arr.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
                   </p>
                 )}
                 {movie.genres.length > 0 && (
