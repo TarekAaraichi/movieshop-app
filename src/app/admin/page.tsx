@@ -198,7 +198,7 @@ export default async function AdminPage({
                     </td>
                     <td className="px-4 py-2 text-gray-600">{actorNames}</td>
                     <td className="px-4 py-2 text-gray-600">
-                      {movie.releaseDate?.toISOString().split("T")[0]}
+                      {movie.releaseDate?.getFullYear()}
                     </td>
                     <td className="px-4 py-2 text-gray-600">
                       {movie.createdAt?.toISOString().split("T")[0]}
