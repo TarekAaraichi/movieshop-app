@@ -18,9 +18,18 @@ export default async function EditPersonPage({
   const personId = p.personId;
   const person = await prisma.person.findUnique({
     where: { id: personId },
-    select: { id: true, fullName: true, bio: true },
+    include: { movies: { select: { role: true } } },
   });
   if (!person) return <div className="p-6">Person not found</div>;
+
+  // compute unique roles for display (e.g. Director, Actor)
+  const roles = Array.from(new Set((person.movies ?? []).map((m) => m.role)));
+  const pretty = (r: string) => {
+    if (r === "DIRECTOR") return "Director";
+    if (r === "ACTOR") return "Actor";
+    return r;
+  };
+  const rolesDisplay = roles.length ? roles.map(pretty).join(", ") : "—";
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">
@@ -57,6 +66,16 @@ export default async function EditPersonPage({
             </label>
           </div>
           {/* Role is stored on MoviePerson relation; not on Person model */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Role
+              <input
+                readOnly
+                value={rolesDisplay}
+                className="mt-1 block w-full p-2 border rounded bg-gray-100"
+              />
+            </label>
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Bio
