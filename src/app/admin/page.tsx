@@ -151,10 +151,16 @@ export default async function AdminPage({
                   Title
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Price
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Stock
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Genre
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Director
+                  Actors
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Release Date
@@ -172,18 +178,25 @@ export default async function AdminPage({
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {movies.map((movie) => {
-                const directorLink = movie.people.find(
-                  (p) => p.role === "DIRECTOR"
-                );
+                const actorNames =
+                  (movie.people || [])
+                    .filter((p) => p.role === "ACTOR")
+                    .map((p) => p.person.fullName)
+                    .slice(0, 3)
+                    .join(", ") || "—";
                 return (
                   <tr key={movie.id} className="hover:bg-gray-50">
                     <td className="px-4 py-2 text-gray-800">{movie.title}</td>
+                    <td className="px-4 py-2 text-gray-800">
+                      {movie.price != null ? `$${String(movie.price)}` : "—"}
+                    </td>
+                    <td className="px-4 py-2 text-gray-800">
+                      {movie.stock ?? "—"}
+                    </td>
                     <td className="px-4 py-2 text-gray-600">
                       {movie.genres.map((g) => g.genre.name).join(", ") || "—"}
                     </td>
-                    <td className="px-4 py-2 text-gray-600">
-                      {directorLink?.person.fullName ?? "—"}
-                    </td>
+                    <td className="px-4 py-2 text-gray-600">{actorNames}</td>
                     <td className="px-4 py-2 text-gray-600">
                       {movie.releaseDate?.toISOString().split("T")[0]}
                     </td>
@@ -301,7 +314,6 @@ export default async function AdminPage({
 
       {tab === "users" && (
         <div className="overflow-x-auto">
-          
           <table className="min-w-full divide-y divide-gray-300 shadow">
             <thead className="bg-gray-100">
               <tr>

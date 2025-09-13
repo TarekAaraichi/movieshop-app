@@ -6,7 +6,15 @@ import { z } from "zod";
 const personSchema = z.object({
   fullName: z.string().min(1),
   bio: z.string().optional().nullable(),
-  imageUrl: z.string().url().optional().nullable(),
+  // allow empty string or whitespace from form -> treat as null; if non-empty enforce URL format
+  imageUrl: z.preprocess((v) => {
+    if (typeof v === "string") {
+      const t = v.trim();
+      if (t === "") return null;
+      return t;
+    }
+    return v;
+  }, z.string().url().nullable()),
 });
 
 export default async function EditPersonPage({
@@ -18,7 +26,13 @@ export default async function EditPersonPage({
   const personId = p.personId;
   const person = await prisma.person.findUnique({
     where: { id: personId },
-    include: { movies: { select: { role: true } } },
+    select: {
+      id: true,
+      fullName: true,
+      bio: true,
+      imageUrl: true,
+      movies: { select: { role: true } },
+    },
   });
   if (!person) return <div className="p-6">Person not found</div>;
 
@@ -47,10 +61,15 @@ export default async function EditPersonPage({
               data: {
                 fullName: parsed.fullName.trim(),
                 bio: parsed.bio ?? null,
+                imageUrl: parsed.imageUrl ?? null,
               },
             });
+            // revalidate admin list, admin edit page, and public person page so updated image is visible everywhere
             revalidatePath("/admin");
-            redirect("/admin?tab=persons");
+            revalidatePath(`/admin/persons/${personId}/edit`);
+            revalidatePath(`/persons/${personId}`);
+            // redirect back to the edit page so the admin sees the updated image immediately
+            redirect(`/admin/persons/${personId}/edit`);
           }}
           className="space-y-4"
         >
@@ -90,16 +109,18 @@ export default async function EditPersonPage({
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Image URL
-              <input
-                defaultValue={
-                  (person as unknown as { imageUrl?: string }).imageUrl ?? ""
-                }
-                name="imageUrl"
-                type="url"
-                placeholder="https://..."
-                className="mt-1 block w-full p-2 border rounded"
-              />
             </label>
+            <div className="mt-2 mb-2 flex text-gray-700 items-center gap-4">
+              <div className="flex-1">
+                <input
+                  defaultValue={person.imageUrl ?? ""}
+                  name="imageUrl"
+                  type="url"
+                  placeholder="https://..."
+                  className="mt-1 block w-full p-2 border rounded"
+                />
+              </div>
+            </div>
           </div>
           <button
             type="submit"

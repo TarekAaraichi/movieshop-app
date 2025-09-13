@@ -63,12 +63,11 @@ async function createPerson(formData: FormData) {
   const raw = Object.fromEntries(formData.entries());
   const parsed = personSchema.parse(raw);
 
-  // NOTE: `imageUrl` field will be persisted after Prisma client is regenerated
-  // (run `npx prisma generate`) to include the new field. For now, create without it.
   await prisma.person.create({
     data: {
       fullName: parsed.fullName.trim(),
       bio: parsed.bio ?? null,
+      imageUrl: parsed.imageUrl ?? null,
     },
   });
 

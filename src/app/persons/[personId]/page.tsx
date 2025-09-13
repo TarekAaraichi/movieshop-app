@@ -23,6 +23,14 @@ export default async function PersonPage({
   if (!person) return notFound();
 
   const movies = person.movies ?? [];
+  // compute unique roles (e.g. DIRECTOR, ACTOR) from MoviePerson entries
+  const roles = Array.from(new Set(movies.map((m) => m.role))).filter(Boolean);
+  const prettyRole = (r: string) => {
+    if (r === "DIRECTOR") return "Director";
+    if (r === "ACTOR") return "Actor";
+    return r;
+  };
+  const rolesDisplay = roles.length ? roles.map(prettyRole).join(", ") : null;
 
   return (
     <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-200">
@@ -32,7 +40,7 @@ export default async function PersonPage({
             <div className="md:w-1/3 min-w-0 flex items-start">
               <div className="w-48 h-48 relative rounded-full overflow-hidden shadow-md">
                 <Image
-                  src="/file.svg"
+                  src={person.imageUrl ?? "/file.svg"}
                   alt={person.fullName}
                   fill
                   sizes="(max-width: 768px) 100vw, 200px"
@@ -43,6 +51,9 @@ export default async function PersonPage({
             <div className="md:w-2/3 min-w-0">
               <h1 className="text-3xl font-extrabold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
                 {person.fullName}
+                {rolesDisplay ? (
+                  <span className="text-lg font-medium text-gray-300 ml-3">{`(${rolesDisplay})`}</span>
+                ) : null}
               </h1>
               {person.bio ? (
                 <p className="text-gray-300 mb-4">{person.bio}</p>
