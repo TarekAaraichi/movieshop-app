@@ -4,7 +4,7 @@
 // Example (pseudo):
 // import { betterAuth, getSession } from '@better-auth/sdk/server'
 // import { username } from '@better-auth/sdk/plugins/username'
-import prisma from './prisma';
+import prisma from "./prisma";
 
 export async function getCurrentUser() {
   // TODO: replace with actual Better Auth session retrieval
@@ -17,7 +17,9 @@ export async function getCurrentUser() {
 
   let user = await prisma.user.findUnique({ where: { email } });
   if (!user) {
-    user = await prisma.user.create({ data: { email, name: session.user?.name ?? '', isAnonymous: false } });
+    user = await prisma.user.create({
+      data: { email, name: session.user?.name ?? "", isAnonymous: false },
+    });
   }
   return user;
 }
