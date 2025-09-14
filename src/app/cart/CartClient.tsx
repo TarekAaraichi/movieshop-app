@@ -28,9 +28,13 @@ export default function CartClient({
   // After a server action form submission, trigger a router refresh to re-fetch server-rendered data.
   function onAction() {
     startTransition(() => {
+      // Refresh the current route so server components re-fetch data
+      // and reflect the cookie change made by the server action.
+      // A tiny timeout can help ensure the response has been processed,
+      // but router.refresh() is the important change here.
       setTimeout(() => {
-        router.replace(window.location.pathname);
-      }, 120);
+        router.refresh();
+      }, 80);
     });
   }
 
@@ -115,39 +119,60 @@ export default function CartClient({
               <p className="text-lg font-medium text-gray-800">
                 ${Number(movie.price).toFixed(2)}
               </p>
-              <form action={updateCart} method="post" onSubmit={onAction}>
+              <form
+                action={updateCart}
+                method="post"
+                onSubmit={() => {
+                  // Perform optimistic update before the form submits so the
+                  // DOM isn't unmounted (which can cancel the submit) —
+                  // this ensures the server action still runs.
+                  optimisticUpdate(movie.id, "dec");
+                  onAction();
+                }}
+              >
                 <input type="hidden" name="movieId" value={movie.id} />
                 <button
                   name="action"
                   value="dec"
                   className="px-2 py-1 bg-gray-200 rounded"
                   disabled={isPending}
-                  onClick={() => optimisticUpdate(movie.id, "dec")}
                 >
                   −
                 </button>
               </form>
               <span className="px-3">{quantity}</span>
-              <form action={updateCart} method="post" onSubmit={onAction}>
+              <form
+                action={updateCart}
+                method="post"
+                onSubmit={() => {
+                  optimisticUpdate(movie.id, "inc");
+                  onAction();
+                }}
+              >
                 <input type="hidden" name="movieId" value={movie.id} />
                 <button
                   name="action"
                   value="inc"
                   className="px-2 py-1 bg-gray-200 rounded"
                   disabled={isPending}
-                  onClick={() => optimisticUpdate(movie.id, "inc")}
                 >
                   +
                 </button>
               </form>
-              <form action={updateCart} method="post" onSubmit={onAction}>
+              <form
+                action={updateCart}
+                method="post"
+                onSubmit={() => {
+                  optimisticUpdate(movie.id, "remove");
+                  onAction();
+                }}
+              >
                 <input type="hidden" name="movieId" value={movie.id} />
                 <button
                   name="action"
                   value="remove"
                   className="text-red-500 hover:text-red-700 font-medium"
                   disabled={isPending}
-                  onClick={() => optimisticUpdate(movie.id, "remove")}
                 >
                   Remove
                 </button>
