@@ -13,7 +13,8 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
         // You can customize the fields used for email and password
-        // emailField: "email",
+        emailField: "email",
+        minPasswordLength: 8,
         // passwordField: "passwordHash", // This should match your Prisma schema field for storing hashed passwords
     },
 });

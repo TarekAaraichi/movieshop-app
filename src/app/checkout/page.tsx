@@ -1,5 +1,6 @@
 import React from "react";
 import { createOrder } from "@/app/actions/orders";
+import CheckoutFormController from "./CheckoutFormController";
 
 export default async function CheckoutPage({
   searchParams,
@@ -43,93 +44,126 @@ export default async function CheckoutPage({
           </div>
         )}
 
-        <form action={createOrder} method="post" className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-800">
+        <form
+          id="checkout-form"
+          action={createOrder}
+          method="post"
+          className="space-y-4"
+        >
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Full Name
-            </label>
+            </span>
             <input
+              id="fullName"
               name="fullName"
               type="text"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
               placeholder="John Doe"
+              required
+              className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Email Address
-            </label>
+            </span>
             <input
+              id="email"
               name="email"
               type="email"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
               placeholder="john.doe@example.com"
+              required
+              className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Address Line 1
-            </label>
+            </span>
             <input
+              id="line1"
               name="line1"
               type="text"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
               placeholder="Street address"
+              required
+              className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
+          </label>
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               City
-            </label>
+            </span>
             <input
+              id="city"
               name="city"
               type="text"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
               placeholder="City"
+              required
+              className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
-          </div>
+          </label>
+
           <div className="grid grid-cols-2 gap-2">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Postal Code
-              </label>
+              </span>
               <input
+                id="postalCode"
                 name="postalCode"
                 type="text"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
                 placeholder="ZIP"
+                required
+                className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
+            </label>
+
+            <label className="block">
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                 Country
-              </label>
+              </span>
               <input
+                id="country"
                 name="country"
                 type="text"
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
                 placeholder="Country"
+                required
+                className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
               />
-            </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Card Details
             </label>
+          </div>
+
+          <label className="block">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Card Details
+            </span>
             <input
+              id="paymentToken"
               name="paymentToken"
               type="text"
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-500"
               placeholder="simulated-card-token"
+              required
+              className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
-          </div>
+          </label>
+
           <button
+            id="checkout-submit"
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            disabled
+            className="w-full flex justify-center items-center gap-2 rounded-lg px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             Complete Purchase
           </button>
         </form>
+        {/* Client controller enables submit when form is valid */}
+        <CheckoutFormController
+          formId="checkout-form"
+          submitId="checkout-submit"
+        />
       </div>
     </div>
   );
