@@ -1,14 +1,10 @@
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
+import type { ServerMovie } from "@/types";
 
 export default async function HomePage() {
-  type MovieSummary = {
-    id: string;
-    title: string;
-    imageUrl?: string | null;
-    price: string;
-    releaseDate?: string | null;
+  type MovieSummary = ServerMovie & {
     // optional expanded relations
     people?: { person: { id: string; fullName: string }; role: string }[];
     genres?: { genre: { id: string; name: string } }[];
@@ -50,20 +46,26 @@ export default async function HomePage() {
 
   function serialize(m: unknown): MovieSummary {
     const obj = m as Record<string, unknown>;
+    const priceVal = obj.price;
+    const price =
+      typeof priceVal === "number"
+        ? priceVal
+        : typeof priceVal === "string"
+        ? priceVal
+        : priceVal &&
+          typeof (priceVal as { toString?: unknown }).toString === "function"
+        ? (priceVal as { toString: () => string }).toString()
+        : "0";
+
     return {
       id: String(obj.id),
       title: String(obj.title ?? ""),
       imageUrl: (obj.imageUrl as string) ?? null,
-      price:
-        typeof obj.price === "object" &&
-        obj.price !== null &&
-        typeof (obj.price as { toString?: unknown }).toString === "function"
-          ? (obj.price as { toString: () => string }).toString()
-          : String(obj.price ?? "0"),
+      price,
       releaseDate: obj.releaseDate
         ? new Date(String(obj.releaseDate)).toISOString()
         : null,
-    };
+    } as MovieSummary;
   }
 
   // For recent/oldest/cheap we already included related data; convert to serialized summaries
@@ -114,92 +116,91 @@ export default async function HomePage() {
   );
 
   function MovieCard({ movie }: { movie: MovieSummary }) {
+    const imgSrc =
+      movie.imageUrl && movie.imageUrl.trim() !== ""
+        ? movie.imageUrl
+        : "/file.svg";
+
+    const actors = movie.people?.filter((p) => p.role === "ACTOR") ?? [];
+
     return (
-      <Link
-        href={`/movies/${movie.id}`}
-        className="block bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 p-3"
-      >
-        <div className="flex items-center gap-4">
-          <div className="w-24 h-32 relative rounded-lg overflow-hidden shadow-md">
+      <div className="group bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 p-3 flex flex-col h-full min-h-[160px] w-full overflow-hidden">
+        {/* stacked layout: image on top, details below (always stacked) */}
+        <div className="flex flex-col items-start gap-4">
+          <Link
+            href={`/movies/${movie.id}`}
+            className="relative shadow-md w-full h-48 rounded-[10px] overflow-hidden"
+            aria-label={`Open ${movie.title}`}
+          >
+            {/* responsive Image: parent controls size, use fill for full coverage */}
             <Image
-              src={movie.imageUrl ?? "/file.svg"}
+              src={imgSrc}
               alt={movie.title}
               fill
               className="object-cover"
             />
-          </div>
-          <div>
-            <h3 className="text-xl font-bold text-gray-100">{movie.title}</h3>
-            <p className="text-sm text-gray-300">
-              {movie.releaseDate
-                ? new Date(movie.releaseDate).getFullYear()
-                : ""}
-            </p>
-            <p className="text-sm text-green-400 font-semibold">
-              ${Number(movie.price).toFixed(2)}
-            </p>
+          </Link>
+
+          <div className="min-w-0 flex-1 flex flex-col">
+            <Link
+              href={`/movies/${movie.id}`}
+              className="text-lg sm:text-xl font-bold text-gray-100 hover:underline line-clamp-1 truncate"
+            >
+              {movie.title}
+            </Link>
+
+            {/* release year and price: stacked on small, row on lg */}
+            <div className="mt-1 text-sm text-gray-300 flex flex-col items-start gap-2 w-full">
+              <span className="min-w-0">
+                {movie.releaseDate
+                  ? new Date(movie.releaseDate).getFullYear()
+                  : ""}
+              </span>
+              <span className="text-green-400 font-semibold flex-shrink-0">
+                ${Number(movie.price ?? 0).toFixed(2)}
+              </span>
+            </div>
+
             {/* Render genres if present */}
             {movie.genres && movie.genres.length > 0 && (
-              <p className="text-sm text-gray-300">
+              <p className="text-sm text-gray-300 mt-2 line-clamp-2">
                 {movie.genres.map((g) => g.genre.name).join(", ")}
               </p>
             )}
-            {/* Render actors if present */}
-            {movie.people && movie.people.length > 0 && (
-              <p className="text-sm text-gray-300">
-                {" "}
-                {movie.people
-                  .filter((p) => p.role === "ACTOR")
-                  .map((p, i, arr) => (
-                    <span
-                      key={p.person.id}
-                      className="text-teal-300 hover:underline cursor-pointer"
-                      onClick={() =>
-                        (window.location.href = `/persons/${p.person.id}`)
-                      }
-                    >
-                      {p.person.fullName}
-                      {i < arr.length - 1 ? ", " : ""}
-                    </span>
-                  ))}
+
+            {/* Render actors as links (no event handlers, no nested anchors) */}
+            {actors.length > 0 && (
+              <p className="text-sm text-gray-300 mt-auto">
+                {actors.map((p, i) => (
+                  <Link
+                    key={p.person.id}
+                    href={`/persons/${p.person.id}`}
+                    className="text-teal-300 hover:underline"
+                  >
+                    {p.person.fullName}
+                    {i < actors.length - 1 ? ", " : ""}
+                  </Link>
+                ))}
               </p>
             )}
-            {/* Director if present */}
-            {/* {movie.people &&
-              movie.people.find((p) => p.role === "DIRECTOR") && (
-                <p className="text-sm text-gray-400">
-                  {" "}
-                  <Link
-                    href={`/persons/${
-                      movie.people.find((p) => p.role === "DIRECTOR")?.person.id
-                    }`}
-                    className="text-teal-500 hover:underline"
-                  >
-                    {
-                      movie.people.find((p) => p.role === "DIRECTOR")?.person
-                        .fullName
-                    }
-                  </Link>
-                </p>
-              )} */}
           </div>
         </div>
-      </Link>
+      </div>
     );
   }
 
   return (
-    <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-200">
-      <main className="flex-grow p-8 max-w-7xl mx-auto">
-        <h1 className="text-5xl font-extrabold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
+    <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-200 antialiased">
+      <main className="flex-grow px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-12 box-border">
+        <h1 className="text-4xl sm:text-5xl font-extrabold mb-8 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
           Explore Our Movies
         </h1>
 
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 text-green-400">
+        <section className="mb-10">
+          <h2 className="text-3xl font-bold mb-6 text-yellow-400">
             Top 5 Most Purchased
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
             {topPurchasedSummaries.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}
@@ -210,7 +211,7 @@ export default async function HomePage() {
           <h2 className="text-3xl font-bold mb-6 text-blue-400">
             Top 5 Most Recent
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
             {topRecent.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}
@@ -221,7 +222,7 @@ export default async function HomePage() {
           <h2 className="text-3xl font-bold mb-6 text-purple-400">
             Top 5 Oldest
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
             {topOldest.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}
@@ -232,7 +233,7 @@ export default async function HomePage() {
           <h2 className="text-3xl font-bold mb-6 text-teal-400">
             Top 5 Cheapest
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
             {topCheap.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}

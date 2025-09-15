@@ -56,8 +56,8 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
   });
 
   return (
-    <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-200">
-      <main className="flex-grow p-8 max-w-7xl mx-auto">
+    <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-200 antialiased">
+      <main className="flex-grow px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-12 box-border">
         <h1 className="text-5xl font-extrabold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
           Movies
         </h1>
@@ -79,7 +79,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
         </section>
 
         {/* Movies grid */}
-        <div className="min-h-[240px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="min-h-[240px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
           {movies.map((movie) => {
             const director = movie.people.find((p) => p.role === "DIRECTOR");
             return (
@@ -88,38 +88,43 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                 href={`/movies/${movie.id}`}
                 className="block bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 p-3"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-24 h-32 relative rounded-lg overflow-hidden shadow-md">
+                <div className="flex flex-col w-full">
+                  <div className="relative w-full h-48 rounded-lg overflow-hidden shadow-md">
                     <Image
                       src={movie.imageUrl ?? "/file.svg"}
                       alt={movie.title}
                       fill
-                      sizes="(max-width: 640px) 100vw, 25vw"
+                      sizes="(max-width: 640px) 100vw, 20vw"
                       className="object-cover"
                     />
                   </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-100">
+
+                  <div className="mt-3 flex-1 min-w-0">
+                    <h2 className="text-lg font-semibold text-gray-100 line-clamp-1 truncate">
                       {movie.title}
                     </h2>
-                    <p className="text-sm text-gray-300">
-                      {movie.releaseDate
-                        ? new Date(
-                            movie.releaseDate as unknown as string
-                          ).getFullYear()
-                        : ""}
-                    </p>
-                    <p className="text-sm text-green-400 font-semibold">
-                      ${Number(movie.price).toFixed(2)}
-                    </p>
-                    <p className="text-sm text-gray-300">
-                      Genre: {movie.genres.map((g) => g.genre.name).join(", ")}
-                    </p>
-                    <p className="text-sm text-gray-300">
-                      Runtime: {movie.runtime} min
-                    </p>
-                    <p className="text-sm text-gray-300">
-                      Actors:{" "}
+
+                    <div className="mt-1 text-sm text-gray-300 flex flex-col items-start gap-2 w-full">
+                      <span className="min-w-0">
+                        {movie.releaseDate
+                          ? new Date(
+                              movie.releaseDate as unknown as string
+                            ).getFullYear()
+                          : ""}
+                      </span>
+                      <span className="text-green-400 font-semibold flex-shrink-0">
+                        ${Number(movie.price).toFixed(2)}
+                      </span>
+                    </div>
+
+                    {movie.genres && movie.genres.length > 0 && (
+                      <p className="text-sm text-gray-300 mt-2 line-clamp-2">
+                        {movie.genres.map((g) => g.genre.name).join(", ")}
+                      </p>
+                    )}
+
+                    <p className="text-sm text-gray-300 mt-2">
+                      {" "}
                       {movie.people
                         .filter((p) => p.role === "ACTOR")
                         .map((p, i, arr) => (
@@ -134,8 +139,9 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                           </span>
                         ))}
                     </p>
+
                     {director && (
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-gray-400 mt-2">
                         Director:{" "}
                         <Link
                           href={`/persons/${director.person.id}`}

@@ -37,9 +37,9 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <footer className="p-4 border-t border-gray-700 bg-gray-800 text-center text-gray-400">
             <span className="text-sm tracking-wide">
-              © 2025{" "}
+              © 2025 Fullstack -{" "}
               <span className="font-semibold text-teal-400">
-                React Fullstack - G13
+                Js React G13
               </span>{" "}
               | <span className="font-semibold text-teal-400">Delta Team</span>{" "}
               - Lexicon AB

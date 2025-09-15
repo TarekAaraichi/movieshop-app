@@ -92,7 +92,11 @@ export default async function MovieDetailPage({
                     {movie.genres.map((g) => g.genre.name).join(", ")}
                   </p>
                 )}
-                <p className="text-gray-300 mt-4">{movie.description}</p>
+                <p className="text-gray-300 mt-4">
+                  <span className="font-semibold text-gray-100">Description:</span>
+                  <br />
+                  {movie.description}
+                </p>
               </div>
               <div className="mt-6">
                 <p className="text-gray-100 font-medium mb-2">
