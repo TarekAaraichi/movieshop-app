@@ -21,7 +21,7 @@ Steps
 Run (if you haven't already):
 
 ```powershell
-npm install @better-auth/sdk
+
 ```
 
 (Replace package name with the actual Better Auth package if different; check Better Auth docs.)
@@ -49,7 +49,7 @@ Example (pseudo):
 
 ```ts
 // src/lib/auth.ts
-import { getSession } from "@better-auth/sdk/server";
+
 import prisma from "@/lib/prisma";
 
 export async function getCurrentUser() {
