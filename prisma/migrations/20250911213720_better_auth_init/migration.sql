@@ -10,9 +10,6 @@ CREATE TABLE "public"."User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "username" TEXT,
-    "displayUsername" TEXT,
-    "isAnonymous" BOOLEAN NOT NULL DEFAULT false,
     "role" TEXT NOT NULL DEFAULT 'user',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -20,9 +17,6 @@ CREATE TABLE "public"."User" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "public"."User"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_username_key" ON "public"."User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Person_fullName_key" ON "public"."Person"("fullName");

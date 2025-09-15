@@ -151,13 +151,14 @@ export default async function HomePage() {
                 {movie.people
                   .filter((p) => p.role === "ACTOR")
                   .map((p, i, arr) => (
-                    <span key={p.person.id}>
-                      <Link
-                        href={`/persons/${p.person.id}`}
-                        className="text-teal-300 hover:underline"
-                      >
-                        {p.person.fullName}
-                      </Link>
+                    <span
+                      key={p.person.id}
+                      className="text-teal-300 hover:underline cursor-pointer"
+                      onClick={() =>
+                        (window.location.href = `/persons/${p.person.id}`)
+                      }
+                    >
+                      {p.person.fullName}
                       {i < arr.length - 1 ? ", " : ""}
                     </span>
                   ))}
