@@ -22,6 +22,14 @@ export default async function PersonPage({
 
   if (!person) return notFound();
 
+  /*
+    Optional auth scaffold (commented out):
+    If person pages should be private, uncomment and adapt this check.
+    Example:
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) redirect(`/sign-in?callbackUrl=${encodeURIComponent(`/persons/${personId}`)}`);
+  */
+
   const movies = person.movies ?? [];
   // compute unique roles (e.g. DIRECTOR, ACTOR) from MoviePerson entries
   const roles = Array.from(new Set(movies.map((m) => m.role))).filter(Boolean);

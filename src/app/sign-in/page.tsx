@@ -1,92 +1,30 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import SignInForm from "./form";
-import { authClient } from "@/lib/auth-client";
 
 export default function SignInPage() {
-    const router = useRouter();
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
+      <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full my-10">
+        <h1 className="text-2xl font-bold text-blue-600 mb-6">Sign in</h1>
 
-    // Redirect if there's an active session/user (only use what's provided by authClient)
-    useEffect(() => {
-        let mounted = true;
-        (async () => {
-            try {
-                let sessionOrUser: any = null;
-                if (typeof authClient?.getSession === "function") {
-                    sessionOrUser = await authClient.getSession();
-                } else if (typeof authClient?.getUser === "function") {
-                    sessionOrUser = await authClient.getUser();
-                }
-                if (mounted && sessionOrUser) {
-                    router.replace("/");
-                }
-            } catch {
-                // ignore and stay on sign-in page
-            }
-        })();
-        return () => {
-            mounted = false;
-        };
-    }, [router]);
+        <p className="mb-6 text-sm leading-6 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm bg-gradient-to-r from-white to-indigo-50 dark:from-transparent dark:via-gray-900 dark:to-gray-800">
+          <span className="text-gray-700 dark:text-gray-300">Welcome to</span>
+          <span className="mx-2 inline-block align-middle bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-pink-500 font-semibold">
+            MovieShop
+          </span>
+          <span className="text-gray-700 dark:text-gray-300">
+            — sign in to access your favorites, orders, and recommendations.
+          </span>
+        </p>
 
-    const handleOAuth = async (provider: "google" | "github") => {
-        try {
-            const url =
-                typeof authClient?.getOAuthUrl === "function"
-                    ? await authClient.getOAuthUrl(provider)
-                    : `/api/auth/${provider}`;
-            window.location.href = url;
-        } catch {
-            window.location.href = `/api/auth/${provider}`;
-        }
-    };
+        <SignInForm />
 
-    return (
-        <main style={{ maxWidth: 420, margin: "48px auto", padding: 20 }}>
-            <h1 style={{ marginBottom: 8 }}>Sign in</h1>
-            <p style={{ marginTop: 0, color: "#666", marginBottom: 20 }}>
-                Sign in to continue to MovieShop
-            </p>
-
-            <SignInForm onSuccess={(redirectTo?: string) => router.push(redirectTo ?? "/")} />
-
-            <div style={{ textAlign: "center", margin: "14px 0", color: "#666" }}>or sign in with</div>
-
-            <div style={{ display: "flex", gap: 8 }}>
-                <button
-                    onClick={() => handleOAuth("google")}
-                    style={{
-                        flex: 1,
-                        padding: "10px 12px",
-                        borderRadius: 6,
-                        border: "1px solid #ccc",
-                        background: "white",
-                        cursor: "pointer",
-                    }}
-                >
-                    Continue with Google
-                </button>
-
-                <button
-                    onClick={() => handleOAuth("github")}
-                    style={{
-                        flex: 1,
-                        padding: "10px 12px",
-                        borderRadius: 6,
-                        border: "1px solid #ccc",
-                        background: "white",
-                        cursor: "pointer",
-                    }}
-                >
-                    Continue with GitHub
-                </button>
-            </div>
-
-            <p style={{ marginTop: 18, color: "#666", fontSize: 13 }}>
-                Don't have an account? <a href="/sign-up">Create one</a>
-            </p>
-        </main>
-    );
+        <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
+          Don&apos;t have an account?{" "}
+          <a href="/sign-up" className="text-indigo-600 dark:text-indigo-400">
+            Create one
+          </a>
+        </div>
+      </div>
+    </div>
+  );
 }

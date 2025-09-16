@@ -27,6 +27,15 @@ async function readCart(): Promise<CartItem[]> {
 
 export default async function CartPage() {
   const cart = await readCart();
+  /*
+    Auth check scaffold (commented out):
+    Uncomment and adapt to require sign-in for viewing/storing cart server-side.
+    Example:
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      redirect(`/sign-in?callbackUrl=${encodeURIComponent('/cart')}`);
+    }
+  */
   const ids = cart.map((c) => c.movieId);
   const movies = ids.length
     ? await prisma.movie.findMany({

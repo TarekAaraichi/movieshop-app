@@ -42,6 +42,18 @@ export default async function AdminPage({
     usersPromise,
   ]);
 
+  /*
+    Admin auth scaffold (commented out):
+    Uncomment and adapt to require sign-in and admin role before rendering admin UI.
+    Example:
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) redirect(`/sign-in?callbackUrl=${encodeURIComponent('/admin')}`);
+    if (session.user.role !== 'admin') {
+      // Optionally show a 403 or redirect
+      redirect('/');
+    }
+  */
+
   // server action for deleting a movie
   async function deleteMovie(formData: FormData) {
     "use server";

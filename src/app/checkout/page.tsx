@@ -10,6 +10,10 @@ export default async function CheckoutPage({
     | Promise<Record<string, string> | undefined>;
 }) {
   const sp = await (searchParams ?? {});
+
+  // Guests are allowed to view the checkout form. Authentication is enforced
+  // at the server-action level (createOrder) which will create or reuse a
+  // guest user when no session exists.
   let serverErrors: string[] = [];
   if (sp?.errors) {
     try {
@@ -44,12 +48,7 @@ export default async function CheckoutPage({
           </div>
         )}
 
-        <form
-          id="checkout-form"
-          action={createOrder}
-          method="post"
-          className="space-y-4"
-        >
+        <form id="checkout-form" action={createOrder} className="space-y-4">
           <label className="block">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
               Full Name

@@ -4,6 +4,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { getServerSession } from "@/lib/getServerSession";
+import { findOrCreateUser } from "@/app/actions/orderHelpers";
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2),
@@ -42,6 +44,16 @@ function parseCartCookie(cookieStore: unknown) {
 }
 
 export async function createOrder(formData: FormData): Promise<void> {
+  /*
+    Server action auth scaffold (commented out):
+    Server actions must validate the session as they can be invoked directly.
+    Example:
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) {
+      // redirect or throw to surface authentication requirement
+      redirect(`/sign-in?callbackUrl=${encodeURIComponent('/checkout')}`);
+    }
+  */
   const raw = Object.fromEntries(formData.entries());
   const parsed = checkoutSchema.safeParse(raw);
   if (!parsed.success) {
@@ -69,6 +81,21 @@ export async function createOrder(formData: FormData): Promise<void> {
     );
     redirect(`/checkout?errors=${qs}`);
     return;
+  }
+
+  // Determine user to attach to order: prefer authenticated session, otherwise create/ reuse guest user.
+  const session = await getServerSession();
+  let userId: string;
+  if (session?.user?.id) {
+    userId = session.user.id;
+  } else {
+    // Guest checkout: create or reuse a user by email
+    const guest = await findOrCreateUser(
+      prisma,
+      parsed.data.email,
+      parsed.data.fullName
+    );
+    userId = guest.id;
   }
 
   // Validate stock and compute total
@@ -118,23 +145,10 @@ export async function createOrder(formData: FormData): Promise<void> {
 
   // Persist order in transaction and clear cookie
   const result = await prisma.$transaction(async (tx) => {
-    // Create or reuse a user to attach order (project does not have auth now)
-    let anon = await tx.user.findUnique({
-      where: { email: parsed.data.email },
-    });
-    if (!anon) {
-      anon = await tx.user.create({
-        data: {
-          email: parsed.data.email,
-          password: "",
-          name: parsed.data.fullName,
-          isAnonymous: true,
-        },
-      });
-    }
+    // Create address attached to the authenticated user
     const address = await tx.address.create({
       data: {
-        userId: anon.id,
+        userId,
         line1: parsed.data.line1,
         line2: parsed.data.line2 ?? null,
         city: parsed.data.city,
@@ -144,7 +158,7 @@ export async function createOrder(formData: FormData): Promise<void> {
     });
     const order = await tx.order.create({
       data: {
-        userId: anon.id,
+        userId,
         totalAmount: `${(totalCents / 100).toFixed(2)}`,
         addressId: address.id,
         items: {

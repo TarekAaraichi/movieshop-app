@@ -51,7 +51,7 @@ export default function NavBarClient() {
           Register
         </Link>
         <Link
-          href="/sing-in"
+          href="/sign-in"
           className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
         >
           Login

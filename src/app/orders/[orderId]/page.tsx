@@ -33,6 +33,18 @@ export default async function OrderPage({ params }: Props) {
 
   if (!order) return notFound();
 
+  /*
+    Auth + ownership scaffold (commented out):
+    Uncomment and adapt to require the signed-in user to own the order or be an admin.
+    Example:
+    const session = await auth.api.getSession({ headers: await headers() });
+    if (!session) redirect(`/sign-in?callbackUrl=${encodeURIComponent(`/orders/${orderId}`)}`);
+    if (order.userId && session.user.id !== order.userId && session.user.role !== 'admin') {
+      // not the owner nor admin
+      redirect('/'); // or throw a 403
+    }
+  */
+
   const total = formatPrice(order.totalAmount);
 
   return (
@@ -58,7 +70,7 @@ export default async function OrderPage({ params }: Props) {
             </div>
           )}
         </div>
-        
+
         <div className="border rounded p-4 mb-4">
           <h2 className="font-semibold mb-2 text-gray-800">Shipping Address</h2>
           {order.address ? (
