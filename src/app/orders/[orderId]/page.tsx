@@ -1,4 +1,5 @@
 import React from "react";
+import ClearCartOnConfirmation from "../clearCartOnConfirmation";
 import prisma from "@/lib/prisma";
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -49,6 +50,7 @@ export default async function OrderPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-6">
+      <ClearCartOnConfirmation />
       <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
         <h1 className="text-2xl font-bold text-blue-600 mb-4">
           Order Confirmed
