@@ -23,6 +23,7 @@ export default function CartClient({
     if (initialItems) setItems(initialItems);
   }, [initialItems]);
   const [isPending, startTransition] = useTransition();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
   const router = useRouter();
 
   // After a server action form submission, trigger a router refresh to re-fetch server-rendered data.
@@ -37,6 +38,11 @@ export default function CartClient({
       }, 80);
     });
   }
+
+  // Reset the explicit checkout flag when transitions finish.
+  useEffect(() => {
+    if (!isPending && isCheckingOut) setIsCheckingOut(false);
+  }, [isPending, isCheckingOut]);
 
   // Optimistically update local items before the server action completes.
   function optimisticUpdate(movieId: string, action: "inc" | "dec" | "remove") {
@@ -188,15 +194,27 @@ export default function CartClient({
         </p>
         <button
           type="button"
-          onClick={() =>
+          onClick={() => {
+            // Mark that this transition is a checkout so we can show the
+            // appropriate label. Other transitions (cart updates) will not
+            // set this flag and will instead display "Updating...".
+            setIsCheckingOut(true);
             startTransition(() => {
               router.push("/checkout");
-            })
-          }
+            });
+          }}
           disabled={isPending}
-          className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+          className={`px-6 py-2 text-white rounded-md disabled:opacity-50 ${
+            isPending
+              ? "bg-blue-400 hover:bg-blue-400 cursor-wait"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
         >
-          Checkout
+          {isPending
+            ? isCheckingOut
+              ? "Checking out..."
+              : "Updating..."
+            : "Checkout"}
         </button>
       </div>
     </div>

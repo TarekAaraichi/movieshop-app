@@ -106,7 +106,7 @@ export default async function MovieDetailPage({
                   ${Number(movie.price).toFixed(2)}
                 </p>
                 <p className="text-gray-100 font-medium mb-4">
-                  Stock: {movie.stock}
+                  Left in Stock: {movie.stock}
                 </p>
                 <AddToCartClientButton movieId={movie.id} />
               </div>

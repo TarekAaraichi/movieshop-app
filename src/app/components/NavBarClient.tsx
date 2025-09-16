@@ -26,12 +26,12 @@ export default function NavBarClient() {
         >
           Cart <CartCountBadge />
         </Link>
-        <Link
+        {/* <Link
           href="/checkout"
           className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
         >
           Checkout
-        </Link>
+        </Link> */}
         <Link
           href="/dashboard"
           className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
