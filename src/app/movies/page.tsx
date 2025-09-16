@@ -42,6 +42,9 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
     });
   }
 
+  // exclude archived movies from public listing
+  Object.assign(where, { isArchived: false });
+
   const movies = await prisma.movie.findMany({
     where,
     orderBy: { releaseDate: "desc" },
@@ -54,6 +57,22 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
       },
     },
   });
+
+  // Load distinct genres that are actually used by non-archived movies
+  const usedGenres = await prisma.genre.findMany({
+    where: {
+      movies: {
+        some: {
+          movie: {
+            isArchived: false,
+          },
+        },
+      },
+    },
+    orderBy: { name: "asc" },
+    select: { name: true },
+  });
+  const genreOptions = usedGenres.map((g) => g.name);
 
   return (
     <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-200 antialiased">
@@ -73,7 +92,11 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
               <MovieSearch initialQuery={query} selectedGenre={selectedGenre} />
             </div>
             <div className="flex-grow sm:flex-grow-0">
-              <GenreSelect selectedGenre={selectedGenre} query={query} />
+              <GenreSelect
+                selectedGenre={selectedGenre}
+                query={query}
+                options={genreOptions}
+              />
             </div>
           </form>
         </section>
@@ -100,7 +123,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                   </div>
 
                   <div className="mt-3 flex-1 min-w-0">
-                    <h2 className="text-lg font-semibold text-gray-100 line-clamp-1 truncate">
+                    <h2 className="text-lg font-semibold text-gray-100 line-clamp-2 break-words">
                       {movie.title}
                     </h2>
 

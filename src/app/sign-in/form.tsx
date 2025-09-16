@@ -46,7 +46,7 @@ export default function SignInForm() {
   }
 
   return (
-    <Card className="max-w-md mx-auto bg bg-gradient-to-r from-white to-indigo-50">
+    <Card className="max-w-md mx-auto bg-gradient-to-r from-white to-indigo-50">
       <div className="py-3 px-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} noValidate>

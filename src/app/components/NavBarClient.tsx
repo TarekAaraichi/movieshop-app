@@ -44,12 +44,12 @@ export default function NavBarClient() {
         >
           Admin
         </Link>
-        <Link
+        {/* <Link
           href="/sign-up"
           className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
         >
           Register
-        </Link>
+        </Link> */}
         <Link
           href="/sign-in"
           className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
@@ -60,7 +60,7 @@ export default function NavBarClient() {
           href="/about"
           className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
         >
-          About
+          About Us
         </Link>
         <Link
           href="/contact"

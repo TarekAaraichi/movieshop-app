@@ -24,7 +24,7 @@ export default async function MovieDetailPage({
     },
   });
 
-  if (!movie) {
+  if (!movie || movie.isArchived) {
     return notFound();
   }
 
@@ -93,7 +93,9 @@ export default async function MovieDetailPage({
                   </p>
                 )}
                 <p className="text-gray-300 mt-4">
-                  <span className="font-semibold text-gray-100">Description:</span>
+                  <span className="font-semibold text-gray-100">
+                    Description:
+                  </span>
                   <br />
                   {movie.description}
                 </p>
@@ -108,7 +110,10 @@ export default async function MovieDetailPage({
                 <p className="text-gray-100 font-medium mb-4">
                   Left in Stock: {movie.stock}
                 </p>
-                <AddToCartClientButton movieId={movie.id} />
+                <AddToCartClientButton
+                  movieId={movie.id}
+                  disabled={movie.isArchived}
+                />
               </div>
             </div>
           </div>

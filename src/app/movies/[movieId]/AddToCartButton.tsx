@@ -2,13 +2,17 @@
 "use client";
 import { useFormStatus } from "react-dom";
 
-export default function AddToCartButton() {
+export default function AddToCartButton({ disabled }: { disabled?: boolean }) {
   const { pending } = useFormStatus();
   return (
     <button
       type="submit"
-      disabled={pending}
-      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 flex items-center justify-center gap-2"
+      disabled={pending || disabled}
+      className={`w-full py-2 px-4 rounded-md shadow flex items-center justify-center gap-2 ${
+        disabled
+          ? "bg-gray-600 text-white cursor-not-allowed opacity-60"
+          : "bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      }`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -28,7 +32,7 @@ export default function AddToCartButton() {
         <circle cx="18" cy="20" r="1" />
       </svg>
 
-      {pending ? "Adding…" : "Add to Cart"}
+      {disabled ? "Archived" : pending ? "Adding…" : "Add to Cart"}
     </button>
   );
 }

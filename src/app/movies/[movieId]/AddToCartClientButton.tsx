@@ -6,8 +6,10 @@ import { toast } from "sonner";
 
 export default function AddToCartClientButton({
   movieId,
+  disabled,
 }: {
   movieId: string;
+  disabled?: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   const { increment } = useCartCount();
@@ -40,6 +42,20 @@ export default function AddToCartClientButton({
         });
       }
     });
+  }
+
+  if (disabled) {
+    return (
+      <div className="flex flex-col items-start">
+        <button
+          type="button"
+          disabled
+          className="w-full bg-gray-600 text-white py-2 px-4 rounded-md shadow disabled:opacity-60 flex items-center justify-center gap-2 cursor-not-allowed"
+        >
+          Archived
+        </button>
+      </div>
+    );
   }
 
   return (

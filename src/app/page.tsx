@@ -20,6 +20,7 @@ export default async function HomePage() {
 
   // Fetch lists including people and genres so we can show director/actors/genre on the landing page
   const recentRaw = await prisma.movie.findMany({
+    where: { isArchived: false },
     orderBy: { releaseDate: "desc" },
     take: 5,
     include: {
@@ -28,6 +29,7 @@ export default async function HomePage() {
     },
   });
   const oldestRaw = await prisma.movie.findMany({
+    where: { isArchived: false },
     orderBy: { releaseDate: "asc" },
     take: 5,
     include: {
@@ -36,6 +38,7 @@ export default async function HomePage() {
     },
   });
   const cheapRaw = await prisma.movie.findMany({
+    where: { isArchived: false },
     orderBy: { price: "asc" },
     take: 5,
     include: {
@@ -144,7 +147,7 @@ export default async function HomePage() {
           <div className="min-w-0 flex-1 flex flex-col">
             <Link
               href={`/movies/${movie.id}`}
-              className="text-lg sm:text-xl font-bold text-gray-100 hover:underline line-clamp-1 truncate"
+              className="text-lg sm:text-xl font-bold text-gray-100 hover:underline line-clamp-2 break-words"
             >
               {movie.title}
             </Link>
@@ -169,7 +172,7 @@ export default async function HomePage() {
             )}
 
             {/* Render actors as links (no event handlers, no nested anchors) */}
-            {actors.length > 0 && (
+            {/* {actors.length > 0 && (
               <p className="text-sm text-gray-300 mt-auto">
                 {actors.map((p, i) => (
                   <Link
@@ -181,8 +184,8 @@ export default async function HomePage() {
                     {i < actors.length - 1 ? ", " : ""}
                   </Link>
                 ))}
-              </p>
-            )}
+              </p> */}
+            {/* )} */}
           </div>
         </div>
       </div>
@@ -196,16 +199,18 @@ export default async function HomePage() {
           Explore Our Movies
         </h1>
 
-        <section className="mb-10">
-          <h2 className="text-3xl font-bold mb-6 text-yellow-400">
-            Top 5 Most Purchased
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
-            {topPurchasedSummaries.map((m) => (
-              <MovieCard key={m.id} movie={m} />
-            ))}
-          </div>
-        </section>
+        {topPurchasedSummaries.length > 0 && (
+          <section className="mb-10">
+            <h2 className="text-3xl font-bold mb-6 text-yellow-400">
+              Top 5 Most Purchased
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
+              {topPurchasedSummaries.map((m) => (
+                <MovieCard key={m.id} movie={m} />
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="mb-12">
           <h2 className="text-3xl font-bold mb-6 text-blue-400">

@@ -42,6 +42,12 @@ export default async function AdminPage({
     usersPromise,
   ]);
 
+  // compute order reference counts per movie so we can control permanent delete UI
+  const orderCountsArr = await Promise.all(
+    movies.map((m) => prisma.orderItem.count({ where: { movieId: m.id } }))
+  );
+  const orderCounts = new Map(movies.map((m, i) => [m.id, orderCountsArr[i]]));
+
   /*
     Admin auth scaffold (commented out):
     Uncomment and adapt to require sign-in and admin role before rendering admin UI.
@@ -61,8 +67,38 @@ export default async function AdminPage({
     if (!id) {
       throw new Error("Missing movie ID");
     }
+    // Prevent deletion if the movie has been ordered (OrderItem references)
+    const orderRefs = await prisma.orderItem.count({ where: { movieId: id } });
+    if (orderRefs > 0) {
+      // Provide a clearer error message instead of a Prisma FK crash
+      throw new Error(
+        "Cannot delete movie: it has associated orders. Remove related orders or keep the movie for order history."
+      );
+    }
+
+    // Remove any cart items that reference this movie first (cart items can be deleted)
+    await prisma.cartItem.deleteMany({ where: { movieId: id } });
+
     await prisma.movie.delete({ where: { id } });
     // refresh admin page to reflect deletion
+    revalidatePath("/admin");
+  }
+
+  // server action to archive a movie (soft-delete)
+  async function archiveMovie(formData: FormData) {
+    "use server";
+    const id = formData.get("movieId") as string;
+    if (!id) throw new Error("Missing movie ID");
+    await prisma.movie.update({ where: { id }, data: { isArchived: true } });
+    revalidatePath("/admin");
+  }
+
+  // server action to unarchive a movie
+  async function unarchiveMovie(formData: FormData) {
+    "use server";
+    const id = formData.get("movieId") as string;
+    if (!id) throw new Error("Missing movie ID");
+    await prisma.movie.update({ where: { id }, data: { isArchived: false } });
     revalidatePath("/admin");
   }
 
@@ -225,11 +261,57 @@ export default async function AdminPage({
                       >
                         Edit
                       </Link>
+                      {movie.isArchived && (
+                        <span className="text-sm text-gray-500">Archived</span>
+                      )}
+
+                      {/* Archive / Unarchive actions */}
+                      {!movie.isArchived ? (
+                        <form action={archiveMovie} className="inline-block">
+                          <input
+                            type="hidden"
+                            name="movieId"
+                            value={movie.id}
+                          />
+                          <button
+                            type="submit"
+                            className="text-yellow-600 hover:underline"
+                          >
+                            Archive
+                          </button>
+                        </form>
+                      ) : (
+                        <form action={unarchiveMovie} className="inline-block">
+                          <input
+                            type="hidden"
+                            name="movieId"
+                            value={movie.id}
+                          />
+                          <button
+                            type="submit"
+                            className="text-green-600 hover:underline"
+                          >
+                            Unarchive
+                          </button>
+                        </form>
+                      )}
+
+                      {/* Permanent delete, only allowed when no order refs */}
                       <form action={deleteMovie} className="inline-block">
                         <input type="hidden" name="movieId" value={movie.id} />
                         <button
                           type="submit"
-                          className="text-red-600 hover:underline"
+                          disabled={(orderCounts.get(movie.id) ?? 0) > 0}
+                          className={`${
+                            (orderCounts.get(movie.id) ?? 0) > 0
+                              ? "text-gray-400 cursor-not-allowed"
+                              : "text-red-600 hover:underline"
+                          }`}
+                          title={
+                            (orderCounts.get(movie.id) ?? 0) > 0
+                              ? "Cannot permanently delete: movie has associated orders"
+                              : "Permanently delete movie"
+                          }
                         >
                           Delete
                         </button>
