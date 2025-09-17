@@ -3,7 +3,8 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import AddToCartClientButton from "./AddToCartClientButton";
+import AddToCartClientButton from "@/components/AddToCartClientButton";
+import AddToCartButton from "@/components/AddToCartButton";
 
 export default async function MovieDetailPage({
   params,

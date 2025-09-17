@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import SaveButton from "./SaveButton";
+import SaveButton from "@/components/SaveButton";
 import { updateMovie } from "@/app/actions/movies";
 
 // Component that renders the form

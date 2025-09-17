@@ -25,20 +25,12 @@ export default function AddToCartClientButton({
           position: "bottom-right",
           dismissible: true,
           duration: 2000,
-          action: {
-            label: "X",
-            onClick: () => toast.dismiss(),
-          },
         });
       } catch {
         toast.error("Failed to add to cart.", {
           position: "bottom-right",
           dismissible: true,
           duration: 2000,
-          action: {
-            label: "X",
-            onClick: () => toast.dismiss(),
-          },
         });
       }
     });

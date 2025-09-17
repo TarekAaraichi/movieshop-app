@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { CartCountProvider } from "@/app/cart/CartCountContext";
+import { CartCountProvider } from "@/components/CartCountContext";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import NavBarClient from "@/app/components/NavBarClient";
+import NavBarClient from "@/components/NavBarClient";
 // ...existing code...
 import SonnerProvider from "@/app/SonnerProvider";
 
@@ -38,9 +38,7 @@ export default function RootLayout({
           <footer className="p-4 border-t border-gray-700 bg-gray-800 text-center text-gray-400">
             <span className="text-sm tracking-wide">
               © 2025 Fullstack -{" "}
-              <span className="font-semibold text-teal-400">
-                Js React G13
-              </span>{" "}
+              <span className="font-semibold text-teal-400">Js React G13</span>{" "}
               | <span className="font-semibold text-teal-400">Delta Team</span>{" "}
               - Lexicon AB
             </span>

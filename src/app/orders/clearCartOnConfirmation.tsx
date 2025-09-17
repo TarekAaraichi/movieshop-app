@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useCartCount } from "@/app/cart/CartCountContext";
+import { useCartCount } from "@/components/CartCountContext";
 
 export default function ClearCartOnConfirmation() {
   const { setCount } = useCartCount();

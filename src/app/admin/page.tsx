@@ -1,6 +1,13 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { revalidatePath } from "next/cache";
+import AutoSubmitSelect from "@/components/AutoSubmitSelect";
+import {
+  archiveMovie,
+  unarchiveMovie,
+  deleteMovie,
+} from "@/app/actions/movies";
+import { deletePerson } from "@/app/actions/persons";
+import { deleteUser, setUserRole } from "@/app/actions/users";
 
 // AdminPage server component
 export default async function AdminPage({
@@ -12,11 +19,23 @@ export default async function AdminPage({
   const tab = (searchParams.tab ?? "movies") as string;
 
   const moviesPromise = prisma.movie.findMany({
-    where: q
-      ? {
-          title: { contains: q, mode: "insensitive" },
-        }
-      : undefined,
+    where: {
+      AND: [
+        q
+          ? {
+              title: { contains: q, mode: "insensitive" },
+            }
+          : {},
+        // genre filter: if searchParams.genre present, require a genre with that id
+        searchParams.genre
+          ? {
+              genres: {
+                some: { genreId: { equals: searchParams.genre as string } },
+              },
+            }
+          : {},
+      ],
+    },
     orderBy: { createdAt: "desc" },
     include: {
       genres: { include: { genre: true } },
@@ -25,22 +44,63 @@ export default async function AdminPage({
   });
 
   const personsPromise = prisma.person.findMany({
-    where: q
-      ? {
-          fullName: { contains: q, mode: "insensitive" },
-        }
-      : undefined,
+    where: {
+      AND: [
+        q
+          ? {
+              fullName: { contains: q, mode: "insensitive" },
+            }
+          : {},
+        tab === "persons" && searchParams.role
+          ? {
+              movies: {
+                some: { role: { equals: searchParams.role as string } },
+              },
+            }
+          : {},
+      ],
+    },
     orderBy: { fullName: "asc" },
     include: { movies: { include: { movie: true } } },
   });
 
-  const usersPromise = prisma.user.findMany({ orderBy: { email: "asc" } });
+  const usersPromise = prisma.user.findMany({
+    where:
+      tab === "users" && searchParams.role
+        ? { role: { equals: searchParams.role as string } }
+        : undefined,
+    orderBy: { email: "asc" },
+  });
 
-  const [movies, persons, users] = await Promise.all([
-    moviesPromise,
-    personsPromise,
-    usersPromise,
-  ]);
+  // fetch actual filter options from DB
+  const genresPromise = prisma.genre.findMany({ orderBy: { name: "asc" } });
+  // person roles are enum values referenced on MoviePerson.role; gather distinct ones
+  const personRolesPromise = prisma.moviePerson.findMany({
+    select: { role: true },
+    distinct: ["role"],
+  });
+  // user roles are stored on User.role — gather distinct values
+  const userRolesPromise = prisma.user.findMany({
+    select: { role: true },
+    distinct: ["role"],
+  });
+
+  const [movies, persons, users, genres, personRolesRaw, userRolesRaw] =
+    await Promise.all([
+      moviesPromise,
+      personsPromise,
+      usersPromise,
+      genresPromise,
+      personRolesPromise,
+      userRolesPromise,
+    ]);
+
+  const personRoles = Array.from(
+    new Set(personRolesRaw.map((r) => r.role))
+  ).filter(Boolean);
+  const userRoles = Array.from(new Set(userRolesRaw.map((r) => r.role))).filter(
+    Boolean
+  );
 
   // compute order reference counts per movie so we can control permanent delete UI
   const orderCountsArr = await Promise.all(
@@ -60,56 +120,7 @@ export default async function AdminPage({
     }
   */
 
-  // server action for deleting a movie
-  async function deleteMovie(formData: FormData) {
-    "use server";
-    const id = formData.get("movieId") as string;
-    if (!id) {
-      throw new Error("Missing movie ID");
-    }
-    // Prevent deletion if the movie has been ordered (OrderItem references)
-    const orderRefs = await prisma.orderItem.count({ where: { movieId: id } });
-    if (orderRefs > 0) {
-      // Provide a clearer error message instead of a Prisma FK crash
-      throw new Error(
-        "Cannot delete movie: it has associated orders. Remove related orders or keep the movie for order history."
-      );
-    }
-
-    // Remove any cart items that reference this movie first (cart items can be deleted)
-    await prisma.cartItem.deleteMany({ where: { movieId: id } });
-
-    await prisma.movie.delete({ where: { id } });
-    // refresh admin page to reflect deletion
-    revalidatePath("/admin");
-  }
-
-  // server action to archive a movie (soft-delete)
-  async function archiveMovie(formData: FormData) {
-    "use server";
-    const id = formData.get("movieId") as string;
-    if (!id) throw new Error("Missing movie ID");
-    await prisma.movie.update({ where: { id }, data: { isArchived: true } });
-    revalidatePath("/admin");
-  }
-
-  // server action to unarchive a movie
-  async function unarchiveMovie(formData: FormData) {
-    "use server";
-    const id = formData.get("movieId") as string;
-    if (!id) throw new Error("Missing movie ID");
-    await prisma.movie.update({ where: { id }, data: { isArchived: false } });
-    revalidatePath("/admin");
-  }
-
-  // server action for deleting a user
-  async function deleteUser(formData: FormData) {
-    "use server";
-    const id = formData.get("userId") as string;
-    if (!id) throw new Error("Missing user ID");
-    await prisma.user.delete({ where: { id } });
-    revalidatePath("/admin");
-  }
+  // server actions are centralized under src/app/actions/*
 
   return (
     <div className="min-h-screen p-6 bg-gray-50">
@@ -158,7 +169,7 @@ export default async function AdminPage({
               : "bg-white text-gray-700 border"
           }`}
         >
-          Movies Persons
+          Persons
         </Link>
         <Link
           href="/admin?tab=users"
@@ -173,7 +184,7 @@ export default async function AdminPage({
       </div>
 
       {/* search form */}
-      <form method="GET" className="mb-4">
+      <form method="GET" className="mb-4 flex items-center space-x-3">
         <input
           name="q"
           type="search"
@@ -187,6 +198,47 @@ export default async function AdminPage({
           defaultValue={q}
           className="p-2 border border-gray-300 rounded bg-gray-100 text-gray-800 focus:ring focus:ring-indigo-300"
         />
+        {/* keep the active tab so filters stay on the current tab */}
+        <input type="hidden" name="tab" value={tab} />
+
+        {tab === "movies" && (
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-600">Genre</span>
+            <AutoSubmitSelect
+              name="genre"
+              value={searchParams.genre as string}
+              ariaLabel="Filter by genre"
+              options={genres.map((g) => ({ value: g.id, label: g.name }))}
+              className="min-w-[160px]"
+            />
+          </div>
+        )}
+
+        {tab === "persons" && (
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-600">Role</span>
+            <AutoSubmitSelect
+              name="role"
+              value={searchParams.role as string}
+              ariaLabel="Filter by person role"
+              options={personRoles.map((r) => ({ value: r, label: r }))}
+              className="min-w-[160px]"
+            />
+          </div>
+        )}
+
+        {tab === "users" && (
+          <div className="flex items-center space-x-2">
+            <span className="text-sm text-gray-600">Role</span>
+            <AutoSubmitSelect
+              name="role"
+              value={searchParams.role as string}
+              ariaLabel="Filter by user role"
+              options={userRoles.map((r) => ({ value: r, label: r }))}
+              className="min-w-[160px]"
+            />
+          </div>
+        )}
       </form>
 
       {/* content by tab */}
@@ -375,16 +427,7 @@ export default async function AdminPage({
                       >
                         Edit
                       </Link>
-                      <form
-                        action={async (formData: FormData) => {
-                          "use server";
-                          const id = formData.get("personId") as string;
-                          if (!id) throw new Error("Missing id");
-                          await prisma.person.delete({ where: { id } });
-                          revalidatePath("/admin");
-                        }}
-                        className="inline-block"
-                      >
+                      <form action={deletePerson} className="inline-block">
                         <input
                           type="hidden"
                           name="personId"
@@ -440,6 +483,30 @@ export default async function AdminPage({
                     >
                       Edit
                     </Link>
+
+                    {/* Grant / Revoke admin role form - placed next to Edit/Delete */}
+                    <form action={setUserRole} className="inline-block">
+                      <input type="hidden" name="userId" value={u.id} />
+                      <input
+                        type="hidden"
+                        name="role"
+                        value={u.role === "admin" ? "user" : "admin"}
+                      />
+                      <button
+                        type="submit"
+                        className={`hover:underline ${
+                          u.role === "admin"
+                            ? "text-red-600 hover:text-red-700"
+                            : "text-green-600 hover:text-green-700"
+                        }`}
+                        title={
+                          u.role === "admin" ? "Revoke admin" : "Grant admin"
+                        }
+                      >
+                        {u.role === "admin" ? "Revoke" : "Grant"}
+                      </button>
+                    </form>
+
                     <form action={deleteUser} className="inline-block">
                       <input type="hidden" name="userId" value={u.id} />
                       <button

@@ -1,4 +1,4 @@
-import CartClient from "./CartClient";
+import CartClient from "@/components/CartClient";
 import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
 import type { CartClientItem } from "@/types";

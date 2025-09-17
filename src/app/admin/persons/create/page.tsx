@@ -1,13 +1,4 @@
-import prisma from "@/lib/prisma";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
-
-const personSchema = z.object({
-  fullName: z.string().min(1),
-  bio: z.string().optional().nullable(),
-  imageUrl: z.string().url().optional().nullable(),
-});
+import { createPerson } from "@/app/actions/persons";
 
 export default function CreatePersonPage() {
   return (
@@ -58,19 +49,4 @@ export default function CreatePersonPage() {
   );
 }
 
-async function createPerson(formData: FormData) {
-  "use server";
-  const raw = Object.fromEntries(formData.entries());
-  const parsed = personSchema.parse(raw);
-
-  await prisma.person.create({
-    data: {
-      fullName: parsed.fullName.trim(),
-      bio: parsed.bio ?? null,
-      imageUrl: parsed.imageUrl ?? null,
-    },
-  });
-
-  revalidatePath("/admin");
-  redirect("/admin?tab=persons");
-}
+// Server action handled by src/app/actions/persons.ts

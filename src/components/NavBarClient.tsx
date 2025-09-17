@@ -26,12 +26,6 @@ export default function NavBarClient() {
         >
           Cart <CartCountBadge />
         </Link>
-        {/* <Link
-          href="/checkout"
-          className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
-        >
-          Checkout
-        </Link> */}
         <Link
           href="/dashboard"
           className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
@@ -44,12 +38,6 @@ export default function NavBarClient() {
         >
           Admin
         </Link>
-        {/* <Link
-          href="/sign-up"
-          className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
-        >
-          Register
-        </Link> */}
         <Link
           href="/sign-in"
           className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"

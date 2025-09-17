@@ -77,12 +77,12 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
   return (
     <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-200 antialiased">
       <main className="flex-grow px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-12 box-border">
-        <h1 className="text-5xl font-extrabold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
+        <h1 className="text-5xl font-extrabold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
           Movies
         </h1>
 
         {/* Search and filter controls - enhanced inline display */}
-        <section className="flex flex-wrap items-center mb-8 p-4 bg-gradient-to-r from-gray-800/30 via-gray-700/20 to-gray-800/30 rounded-lg gap-4">
+        <section className="flex flex-wrap items-center mb-4 p-4 bg-gradient-to-r from-gray-800/30 via-gray-700/20 to-gray-800/30 rounded-lg gap-4">
           <form
             method="GET"
             className="flex flex-wrap items-center gap-4 w-full"

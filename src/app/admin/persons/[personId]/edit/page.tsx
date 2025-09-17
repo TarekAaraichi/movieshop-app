@@ -1,21 +1,6 @@
 import prisma from "@/lib/prisma";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
-
-const personSchema = z.object({
-  fullName: z.string().min(1),
-  bio: z.string().optional().nullable(),
-  // allow empty string or whitespace from form -> treat as null; if non-empty enforce URL format
-  imageUrl: z.preprocess((v) => {
-    if (typeof v === "string") {
-      const t = v.trim();
-      if (t === "") return null;
-      return t;
-    }
-    return v;
-  }, z.string().url().nullable()),
-});
+import { updatePerson } from "@/app/actions/persons";
+import SaveButton from "@/components/SaveButton";
 
 export default async function EditPersonPage({
   params,
@@ -47,32 +32,12 @@ export default async function EditPersonPage({
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">
-      <div className="bg-white p-6 rounded shadow">
-        <h2 className="text-3xl font-extrabold mb-6 text-gray-900">
+      <div className="bg-white p-8 rounded-xl shadow-xl">
+        <h1 className="text-3xl font-extrabold mb-6 text-gray-900">
           Edit Person
-        </h2>
-        <form
-          action={async (formData: FormData) => {
-            "use server";
-            const raw = Object.fromEntries(formData.entries());
-            const parsed = personSchema.parse(raw);
-            await prisma.person.update({
-              where: { id: personId },
-              data: {
-                fullName: parsed.fullName.trim(),
-                bio: parsed.bio ?? null,
-                imageUrl: parsed.imageUrl ?? null,
-              },
-            });
-            // revalidate admin list, admin edit page, and public person page so updated image is visible everywhere
-            revalidatePath("/admin");
-            revalidatePath(`/admin/persons/${personId}/edit`);
-            revalidatePath(`/persons/${personId}`);
-            // redirect back to the edit page so the admin sees the updated image immediately
-            redirect(`/admin/persons/${personId}/edit`);
-          }}
-          className="space-y-4"
-        >
+        </h1>
+        <form action={updatePerson} className="space-y-6">
+          <input type="hidden" name="personId" value={personId} />
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Full Name
@@ -122,12 +87,7 @@ export default async function EditPersonPage({
               </div>
             </div>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded"
-          >
-            Save
-          </button>
+          <SaveButton label="Save" />
         </form>
       </div>
     </div>
