@@ -133,7 +133,7 @@ export default async function AdminPage({
           {tab === "movies" && (
             <Link
               href="/admin/create"
-              className="bg-indigo-600 text-white py-2 px-4 rounded-md shadow hover:bg-indigo-700"
+              className="bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700"
             >
               Create New Movie
             </Link>
@@ -141,7 +141,7 @@ export default async function AdminPage({
           {tab === "users" && (
             <Link
               href="/admin/users/create"
-              className="bg-indigo-600 text-white py-2 px-4 rounded-md shadow hover:bg-indigo-700"
+              className="bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700"
             >
               Create New User
             </Link>
@@ -153,9 +153,9 @@ export default async function AdminPage({
       <div className="mb-4 flex space-x-2">
         <Link
           href="/admin?tab=movies"
-          className={`px-4 py-2 rounded ${
+          className={`px-4 py-2 font-bold rounded ${
             tab === "movies"
-              ? "bg-indigo-600 text-white"
+              ? "bg-blue-600 text-white"
               : "bg-white text-gray-700 border"
           }`}
         >
@@ -163,9 +163,9 @@ export default async function AdminPage({
         </Link>
         <Link
           href="/admin?tab=persons"
-          className={`px-4 py-2 rounded ${
+          className={`px-4 py-2 font-bold rounded ${
             tab === "persons"
-              ? "bg-indigo-600 text-white"
+              ? "bg-blue-600 text-white"
               : "bg-white text-gray-700 border"
           }`}
         >
@@ -173,9 +173,9 @@ export default async function AdminPage({
         </Link>
         <Link
           href="/admin?tab=users"
-          className={`px-4 py-2 rounded ${
+          className={`px-4 py-2 font-bold rounded ${
             tab === "users"
-              ? "bg-indigo-600 text-white"
+              ? "bg-blue-600 text-white"
               : "bg-white text-gray-700 border"
           }`}
         >
@@ -203,7 +203,7 @@ export default async function AdminPage({
 
         {tab === "movies" && (
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">Genre</span>
+            <span className="text-sm font-bold text-gray-600">Genre</span>
             <AutoSubmitSelect
               name="genre"
               value={searchParams.genre as string}
@@ -216,7 +216,7 @@ export default async function AdminPage({
 
         {tab === "persons" && (
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">Role</span>
+            <span className="text-sm font-bold text-gray-600">Role</span>
             <AutoSubmitSelect
               name="role"
               value={searchParams.role as string}
@@ -229,7 +229,7 @@ export default async function AdminPage({
 
         {tab === "users" && (
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-600">Role</span>
+            <span className="text-sm font-bold text-gray-600">Role</span>
             <AutoSubmitSelect
               name="role"
               value={searchParams.role as string}
@@ -244,157 +244,140 @@ export default async function AdminPage({
       {/* content by tab */}
       {tab === "movies" && (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-300 shadow">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Title
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Price
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Stock
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Genre
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Actors
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Release Date
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Created At
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Updated At
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {movies.map((movie) => {
-                const actorNames =
-                  (movie.people || [])
-                    .filter((p) => p.role === "ACTOR")
-                    .map((p) => p.person.fullName)
-                    .slice(0, 3)
-                    .join(", ") || "—";
-                return (
-                  <tr key={movie.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 text-gray-800">{movie.title}</td>
-                    <td className="px-4 py-2 text-gray-800">
-                      {movie.price != null ? `$${String(movie.price)}` : "—"}
-                    </td>
-                    <td className="px-4 py-2 text-gray-800">
-                      {movie.stock ?? "—"}
-                    </td>
-                    <td className="px-4 py-2 text-gray-600">
-                      {movie.genres.map((g) => g.genre.name).join(", ") || "—"}
-                    </td>
-                    <td className="px-4 py-2 text-gray-600">{actorNames}</td>
-                    <td className="px-4 py-2 text-gray-600">
-                      {movie.releaseDate?.getFullYear()}
-                    </td>
-                    <td className="px-4 py-2 text-gray-600">
-                      {movie.createdAt?.toISOString().split("T")[0]}
-                    </td>
-                    <td className="px-4 py-2 text-gray-600">
-                      {movie.updatedAt?.toISOString().split("T")[0]}
-                    </td>
-                    <td className="px-4 py-2 space-x-4">
-                      <Link
-                        href={`/movies/${movie.id}/edit`}
-                        className="text-indigo-600 hover:underline"
-                      >
-                        Edit
-                      </Link>
-                      {movie.isArchived && (
-                        <span className="text-sm text-gray-500">Archived</span>
-                      )}
-
-                      {/* Archive / Unarchive actions */}
-                      {!movie.isArchived ? (
-                        <form action={archiveMovie} className="inline-block">
-                          <input
-                            type="hidden"
-                            name="movieId"
-                            value={movie.id}
-                          />
-                          <button
-                            type="submit"
-                            className="text-yellow-600 hover:underline"
-                          >
-                            Archive
-                          </button>
-                        </form>
-                      ) : (
-                        <form action={unarchiveMovie} className="inline-block">
-                          <input
-                            type="hidden"
-                            name="movieId"
-                            value={movie.id}
-                          />
-                          <button
-                            type="submit"
-                            className="text-green-600 hover:underline"
-                          >
-                            Unarchive
-                          </button>
-                        </form>
-                      )}
-
-                      {/* Permanent delete, only allowed when no order refs */}
-                      <form action={deleteMovie} className="inline-block">
-                        <input type="hidden" name="movieId" value={movie.id} />
-                        <button
-                          type="submit"
-                          disabled={(orderCounts.get(movie.id) ?? 0) > 0}
-                          className={`${
-                            (orderCounts.get(movie.id) ?? 0) > 0
-                              ? "text-gray-400 cursor-not-allowed"
-                              : "text-red-600 hover:underline"
-                          }`}
-                          title={
-                            (orderCounts.get(movie.id) ?? 0) > 0
-                              ? "Cannot permanently delete: movie has associated orders"
-                              : "Permanently delete movie"
-                          }
+            {/* Movies table (replaces $SELECTION_PLACEHOLDER$) */}
+            <table className="table-auto w-auto divide-y divide-gray-300 shadow">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    Title
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    Stock
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    Price
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    Released
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    Genre
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    Created
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    Updated
+                  </th>
+                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {movies.map((movie) => {
+                  const actorNames =
+                    (movie.people || [])
+                      .filter((p) => p.role === "ACTOR")
+                      .map((p) => p.person.fullName)
+                      .slice(0, 3)
+                      .join(", ") || "—";
+                  return (
+                    <tr key={movie.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
+                        {movie.title}
+                      </td>
+                      <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
+                        {movie.stock ?? "—"}
+                      </td>
+                      <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
+                        {movie.price != null ? `$${String(movie.price)}` : "—"}
+                      </td>
+                      <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                        {movie.releaseDate?.getFullYear() ?? "—"}
+                      </td>
+                      <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                        {movie.genres.map((g) => g.genre.name).join(", ") || "—"}
+                      </td>
+                      <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                        {movie.createdAt?.toISOString().split("T")[0]}
+                      </td>
+                      <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                        {movie.updatedAt?.toISOString().split("T")[0]}
+                      </td>
+                      <td className="px-4 py-2 space-x-4 whitespace-nowrap">
+                        <Link
+                          href={`/movies/${movie.id}/edit`}
+                          className="text-indigo-600 hover:underline"
                         >
-                          Delete
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                          Edit
+                        </Link>
+                        {movie.isArchived && (
+                          <span className="text-sm text-gray-500">Archived</span>
+                        )}
+
+                        {!movie.isArchived ? (
+                          <form action={archiveMovie} className="inline-block">
+                            <input type="hidden" name="movieId" value={movie.id} />
+                            <button type="submit" className="text-yellow-600 hover:underline">
+                              Archive
+                            </button>
+                          </form>
+                        ) : (
+                          <form action={unarchiveMovie} className="inline-block">
+                            <input type="hidden" name="movieId" value={movie.id} />
+                            <button type="submit" className="text-green-600 hover:underline">
+                              Unarchive
+                            </button>
+                          </form>
+                        )}
+
+                        <form action={deleteMovie} className="inline-block">
+                          <input type="hidden" name="movieId" value={movie.id} />
+                          <button
+                            type="submit"
+                            disabled={(orderCounts.get(movie.id) ?? 0) > 0}
+                            className={`${
+                              (orderCounts.get(movie.id) ?? 0) > 0
+                                ? "text-gray-400 cursor-not-allowed"
+                                : "text-red-600 hover:underline"
+                            }`}
+                            title={
+                              (orderCounts.get(movie.id) ?? 0) > 0
+                                ? "Cannot permanently delete: movie has associated orders"
+                                : "Permanently delete movie"
+                            }
+                          >
+                            Delete
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
         </div>
       )}
 
       {tab === "persons" && (
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-300 shadow">
+          <table className="table-auto w-auto divide-y divide-gray-300 shadow">
             <thead className="bg-gray-100">
               <tr>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
                   Name
                 </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Bio
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Has Bio?
                 </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                   Movies
                 </th>
                 <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Roles
+                  Role
                 </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
                   Actions
                 </th>
               </tr>
@@ -407,20 +390,23 @@ export default async function AdminPage({
                   ).join(", ") || "—";
                 return (
                   <tr key={person.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 text-gray-800">
+                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
                       {person.fullName}
                     </td>
-                    <td className="px-4 py-2 text-gray-600">
-                      {person.bio ? person.bio.slice(0, 80) : "—"}
+                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
+                      {person.bio ? (
+                        <span className="text-gray-800 font-medium">Yes</span>
+                      ) : (
+                        <span className="text-gray-500">No</span>
+                      )}
                     </td>
-                    <td className="px-4 py-2 text-gray-600">
+                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
                       {(person.movies || [])
-                        .map((m) => m.movie.title)
-                        .slice(0, 3)
+                        .map((pm) => pm.movie.title)
                         .join(", ") || "—"}
                     </td>
-                    <td className="px-4 py-2 text-gray-600">{roles}</td>
-                    <td className="px-4 py-2 space-x-4">
+                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">{roles}</td>
+                    <td className="px-4 py-2 space-x-4 whitespace-nowrap">
                       <Link
                         href={`/admin/persons/${person.id}/edit`}
                         className="text-indigo-600 hover:underline"

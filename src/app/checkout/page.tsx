@@ -153,7 +153,7 @@ export default async function CheckoutPage({
             id="checkout-submit"
             type="submit"
             disabled
-            className="w-full flex justify-center items-center gap-2 rounded-lg px-4 py-2 text-white font-medium bg-indigo-600 hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full flex justify-center items-center gap-2 rounded-lg px-4 py-2 text-white font-medium bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
           >
             Complete Purchase
           </button>
