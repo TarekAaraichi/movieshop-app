@@ -1,5 +1,3 @@
-
-
 // src/lib/auth.ts
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
@@ -14,5 +12,12 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
+    minPasswordLength: 8,
+    // Ensure the adapter knows which fields in your Prisma `User` model
+    // should be used for email and password. The default generated schema
+    // may name the password field `password` or `passwordHash` — make sure
+    // this matches the field in `prisma/schema.prisma` below.
+    emailField: "email",
+    passwordField: "password",
   },
 });

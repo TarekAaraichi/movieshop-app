@@ -63,8 +63,6 @@ export default function SignUpForm() {
       name: values.name,
       email: values.email,
       password: values.password,
-      image: values.image,
-      callbackURL: values.callbackURL,
     });
 
     if (error) {
@@ -84,7 +82,7 @@ export default function SignUpForm() {
     <Card className="max-w-md mx-auto bg-gradient-to-r from-white to-indigo-50">
       <div className="py-3 px-6">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="name"
