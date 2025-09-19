@@ -1,6 +1,8 @@
 import { createPerson } from "@/app/actions/persons";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 export default function CreatePersonPage() {
+  void requireAdmin("/admin/persons/create");
   return (
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="bg-white p-6 rounded shadow">

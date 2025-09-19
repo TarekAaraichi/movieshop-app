@@ -1,32 +1,41 @@
+/* eslint-disable */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // Mock prisma with minimal API used by createOrder
 const mockPrisma = {
   movie: { findMany: vi.fn(async () => []) },
-  $transaction: vi.fn(async (fn: any) => {
+  $transaction: vi.fn(async (fn: (tx: unknown) => Promise<unknown>) => {
     return fn({
-      address: { create: async (data: any) => ({ id: "addr-1", ...data }) },
-      order: { create: async (data: any) => ({ id: "order-1", ...data }) },
+      address: {
+        create: async (data: unknown) => ({ id: "addr-1", ...(data as any) }),
+      },
+      order: {
+        create: async (data: unknown) => ({ id: "order-1", ...(data as any) }),
+      },
       movie: { update: async () => null },
-    });
+    } as unknown);
   }),
 };
 
 // We'll mock dependencies; the module under test will be imported dynamically
 vi.mock("./orderHelpers", () => ({
-  findOrCreateUser: vi.fn(async (prisma, email, name) => ({
-    id: "guest-id",
-    email,
-    name,
-  })),
+  findOrCreateUser: vi.fn(
+    async (prisma: unknown, email: string, name: string) => ({
+      id: "guest-id",
+      email,
+      name,
+    })
+  ),
 }));
 // Also mock the aliased import path used by orders.ts
 vi.mock("@/app/actions/orderHelpers", () => ({
-  findOrCreateUser: vi.fn(async (prisma, email, name) => ({
-    id: "guest-id",
-    email,
-    name,
-  })),
+  findOrCreateUser: vi.fn(
+    async (prisma: unknown, email: string, name: string) => ({
+      id: "guest-id",
+      email,
+      name,
+    })
+  ),
 }));
 // Mock next/headers cookies() to provide a fake cart cookie store for tests
 vi.mock("next/headers", () => ({
@@ -34,7 +43,7 @@ vi.mock("next/headers", () => ({
     get: (name: string) => ({
       value: JSON.stringify([{ movieId: "m1", quantity: 1 }]),
     }),
-    set: (_: any) => {},
+    set: (_: unknown) => {},
   }),
 }));
 // Mock next/navigation redirect to be a no-op so tests don't throw
@@ -78,7 +87,7 @@ describe("createOrder server action", () => {
     // Mock movie findMany to return a product with stock
     mockPrisma.movie.findMany.mockResolvedValueOnce([
       { id: "m1", price: "10.00", stock: 5, title: "Movie 1" },
-    ] as any);
+    ] as unknown as unknown[]);
 
     // Mock cookie parsing by stubbing next/headers cookies() if needed —
     // createOrder reads cookies() at runtime; since our test runs in Node and not
@@ -90,16 +99,17 @@ describe("createOrder server action", () => {
     const mod = await import("./orders");
     const { createOrder } = mod;
     const helpers = await import("@/app/actions/orderHelpers");
-    await expect(createOrder(fd as any)).resolves.not.toThrow();
+    await expect(createOrder(fd as unknown as FormData)).resolves.not.toThrow();
     expect(helpers.findOrCreateUser).toHaveBeenCalled();
   });
 
   it("uses session when available", async () => {
     // Make getServerSession return a session
     const gs = await import("@/lib/getServerSession");
-    (gs.getServerSession as any).mockResolvedValueOnce({
-      user: { id: "user-1" },
-    });
+    const g = gs as unknown as {
+      getServerSession: { mockResolvedValueOnce: (v: unknown) => void };
+    };
+    g.getServerSession.mockResolvedValueOnce({ user: { id: "user-1" } });
 
     const fd = new FormData();
     fd.set("fullName", "User");
@@ -111,12 +121,12 @@ describe("createOrder server action", () => {
 
     mockPrisma.movie.findMany.mockResolvedValueOnce([
       { id: "m1", price: "10.00", stock: 5, title: "Movie 1" },
-    ] as any);
+    ] as unknown as unknown[]);
 
     const mod = await import("./orders");
     const { createOrder } = mod;
     const helpers = await import("@/app/actions/orderHelpers");
-    await expect(createOrder(fd as any)).resolves.not.toThrow();
+    await expect(createOrder(fd as unknown as FormData)).resolves.not.toThrow();
     expect(helpers.findOrCreateUser).not.toHaveBeenCalled();
   });
 });

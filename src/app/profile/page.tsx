@@ -139,7 +139,7 @@ export default async function ProfilePage() {
                       {o.items && o.items.length ? (
                         o.items.map((it, idx) => (
                           <div
-                            key={it.movieId ?? it.id ?? idx}
+                            key={it.movieId ?? idx}
                             className="flex justify-between py-1"
                           >
                             <div className="text-slate-800">
@@ -171,7 +171,9 @@ export default async function ProfilePage() {
               ))}
             </div>
           ) : (
-            <div className="text-sm text-slate-600">You have no orders yet.</div>
+            <div className="text-sm text-slate-600">
+              You have no orders yet.
+            </div>
           )}
         </section>
       </div>

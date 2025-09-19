@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/requireAdmin";
 import SaveButton from "@/components/SaveButton";
 import { updateUser } from "@/app/actions/users";
 
@@ -8,6 +9,7 @@ export default async function EditUserPage({
   params: { userId: string };
 }) {
   const { userId } = params;
+  await requireAdmin(`/admin/users/${userId}/edit`);
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
   if (!user) {
@@ -30,26 +32,24 @@ export default async function EditUserPage({
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Full Name
-            
-            <input
-              aria-label="Name"
-              name="name"
-              defaultValue={user.name ?? ""}
-              className="mt-1 block w-full p-2 border rounded"
-            />
+              <input
+                aria-label="Name"
+                name="name"
+                defaultValue={user.name ?? ""}
+                className="mt-1 block w-full p-2 border rounded"
+              />
             </label>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Email
-            
-            <input
-              aria-label="Email"
-              name="email"
-              defaultValue={user.email ?? ""}
-               className="mt-1 block w-full p-2 border rounded"
-            />
+              <input
+                aria-label="Email"
+                name="email"
+                defaultValue={user.email ?? ""}
+                className="mt-1 block w-full p-2 border rounded"
+              />
             </label>
           </div>
 

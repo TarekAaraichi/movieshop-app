@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 const personSchema = z.object({
   fullName: z.string().min(1),
@@ -12,6 +13,7 @@ const personSchema = z.object({
 });
 
 export async function createPerson(formData: FormData) {
+  await requireAdmin("/admin?tab=persons");
   const raw = Object.fromEntries(formData.entries());
   const parsed = personSchema.parse(raw);
 
@@ -28,6 +30,7 @@ export async function createPerson(formData: FormData) {
 }
 
 export async function updatePerson(formData: FormData) {
+  await requireAdmin();
   const raw = Object.fromEntries(formData.entries());
   const parsed = personSchema.parse(raw);
   const personId = (raw as Record<string, unknown>).personId as
@@ -52,6 +55,7 @@ export async function updatePerson(formData: FormData) {
 }
 
 export async function deletePerson(formData: FormData) {
+  await requireAdmin();
   const id = formData.get("personId") as string | null;
   if (!id) throw new Error("Missing id");
   await prisma.person.delete({ where: { id } });

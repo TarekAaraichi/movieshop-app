@@ -86,8 +86,9 @@ export async function createOrder(formData: FormData): Promise<void> {
   // Determine user to attach to order: prefer authenticated session, otherwise create/ reuse guest user.
   const session = await getServerSession();
   let userId: string;
-  if (session?.user?.id) {
-    userId = session.user.id;
+  const s = session as unknown as { user?: { id?: string } } | null;
+  if (s?.user?.id) {
+    userId = s.user.id as string;
   } else {
     // Guest checkout: create or reuse a user by email
     const guest = await findOrCreateUser(
@@ -95,7 +96,8 @@ export async function createOrder(formData: FormData): Promise<void> {
       parsed.data.email,
       parsed.data.fullName
     );
-    userId = guest.id;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    userId = (guest as any).id as string;
   }
 
   // Validate stock and compute total

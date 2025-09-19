@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 export async function deleteUser(formData: FormData) {
+  await requireAdmin("/admin?tab=users");
   const id = formData.get("userId") as string;
   if (!id) throw new Error("Missing user ID");
   await prisma.user.delete({ where: { id } });
@@ -12,6 +14,7 @@ export async function deleteUser(formData: FormData) {
 }
 
 export async function updateUser(formData: FormData) {
+  await requireAdmin("/admin?tab=users");
   const id = formData.get("userId") as string;
   const name = (formData.get("name") as string) ?? undefined;
   const email = (formData.get("email") as string) ?? undefined;
@@ -28,6 +31,7 @@ export async function updateUser(formData: FormData) {
 }
 
 export async function setUserRole(formData: FormData) {
+  await requireAdmin("/admin?tab=users");
   const id = formData.get("userId") as string;
   const role = (formData.get("role") as string) ?? "user";
   if (!id) throw new Error("Missing user ID");

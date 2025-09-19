@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/requireAdmin";
 import { updatePerson } from "@/app/actions/persons";
 import SaveButton from "@/components/SaveButton";
 
@@ -8,6 +9,7 @@ export default async function EditPersonPage({
   params: { personId: string } | Promise<{ personId: string }>;
 }) {
   const p = await params;
+  await requireAdmin(`/admin/persons/${p.personId}/edit`);
   const personId = p.personId;
   const person = await prisma.person.findUnique({
     where: { id: personId },

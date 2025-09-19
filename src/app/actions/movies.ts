@@ -6,6 +6,7 @@ import { PersonRole } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 type CartItem = { movieId: string; quantity: number };
 
@@ -70,8 +71,13 @@ export async function addToCart(formData: FormData) {
   revalidatePath("/cart");
 }
 
+// use shared requireAdmin from lib
+
 // Server action to update an existing movie (moved from edit page)
 export async function updateMovie(formData: FormData) {
+  // Require admin session for movie updates
+  await requireAdmin();
+
   // We import prisma lazily here to avoid circular deps in some toolchains
   const prisma = (await import("@/lib/prisma")).default;
   const updateMovieSchema = z.object({
@@ -208,6 +214,7 @@ const movieCreateSchema = z.object({
 });
 
 export async function createMovie(formData: FormData) {
+  await requireAdmin();
   const raw = Object.fromEntries(formData.entries());
   const parsed = movieCreateSchema.parse(raw);
 
@@ -288,6 +295,7 @@ export async function createMovie(formData: FormData) {
 }
 
 export async function archiveMovie(formData: FormData) {
+  await requireAdmin();
   const id = formData.get("movieId") as string;
   if (!id) throw new Error("Missing movie ID");
   await prisma.movie.update({ where: { id }, data: { isArchived: true } });
@@ -295,6 +303,7 @@ export async function archiveMovie(formData: FormData) {
 }
 
 export async function unarchiveMovie(formData: FormData) {
+  await requireAdmin();
   const id = formData.get("movieId") as string;
   if (!id) throw new Error("Missing movie ID");
   await prisma.movie.update({ where: { id }, data: { isArchived: false } });
@@ -302,6 +311,7 @@ export async function unarchiveMovie(formData: FormData) {
 }
 
 export async function deleteMovie(formData: FormData) {
+  await requireAdmin();
   const id = formData.get("movieId") as string;
   if (!id) throw new Error("Missing movie ID");
   const orderRefs = await prisma.orderItem.count({ where: { movieId: id } });

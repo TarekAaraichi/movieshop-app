@@ -8,9 +8,7 @@ import {
 } from "@/app/actions/movies";
 import { deletePerson } from "@/app/actions/persons";
 import { deleteUser, setUserRole } from "@/app/actions/users";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 // AdminPage server component
 export default async function AdminPage({
@@ -31,6 +29,8 @@ export default async function AdminPage({
   };
   const q = searchParams.q ?? "";
   const tab = (searchParams.tab ?? "movies") as string;
+
+  await requireAdmin("/admin");
 
   const moviesPromise = prisma.movie.findMany({
     where: {

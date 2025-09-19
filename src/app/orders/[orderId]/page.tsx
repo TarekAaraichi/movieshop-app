@@ -3,8 +3,7 @@ import ClearCartOnConfirmation from "../clearCartOnConfirmation";
 import prisma from "@/lib/prisma";
 import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getServerSession } from "@/lib/getServerSession";
 
 type Props = {
   params: { orderId: string };
@@ -35,15 +34,16 @@ export default async function OrderPage({ params }: Props) {
 
   if (!order) return notFound();
 
-  // Auth + ownership: use the project's auth wrapper and next/headers
-  const session = await auth.api.getSession({ headers: headers() });
-  if (!session)
-    redirect(`/sign-in?callbackUrl=${encodeURIComponent(`/orders/${orderId}`)}`);
-  if (
-    order.userId &&
-    session.user.id !== order.userId &&
-    session.user.role !== "admin"
-  ) {
+  // Auth + ownership: use the project's getServerSession helper which normalizes headers
+  const session = await getServerSession();
+  const s = session as unknown as {
+    user?: { id?: string; role?: string };
+  } | null;
+  if (!s || !s.user)
+    redirect(
+      `/sign-in?callbackUrl=${encodeURIComponent(`/orders/${orderId}`)}`
+    );
+  if (order.userId && s.user.id !== order.userId && s.user.role !== "admin") {
     // not the owner nor admin
     redirect("/"); // or throw a 403
   }
@@ -59,6 +59,13 @@ export default async function OrderPage({ params }: Props) {
       : null;
 
   const total = formatPrice(order.totalAmount);
+
+  type OrderItemLike = {
+    movieId: string;
+    quantity: number;
+    priceAtPurchase: unknown;
+    movie?: { imageUrl?: string | null; title?: string | null } | null;
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-6">
@@ -102,7 +109,7 @@ export default async function OrderPage({ params }: Props) {
         </div>
 
         <div className="space-y-4">
-          {order.items.map((it: any) => (
+          {order.items.map((it: OrderItemLike) => (
             <div key={it.movieId} className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div className="w-16 h-16 relative">
