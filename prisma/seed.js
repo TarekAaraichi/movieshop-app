@@ -284,7 +284,7 @@ async function main() {
     },
     "Anne Hathaway": {
       bio: "American actress known for stage-trained versatility in musicals and drama.",
-      imageUrl: "",
+      imageUrl: "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/s6tflSD20MGz04ZR2R1lZvhmC4Y.jpg",
     },
     "Jessica Chastain": {
       bio: "American actress and producer noted for fierce, layered performances.",
@@ -372,7 +372,7 @@ async function main() {
     },
     "Roman Griffin Davis": {
       bio: "Young English actor who broke out with a standout lead performance.",
-      imageUrl: "",
+      imageUrl: "https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1zQLes0vhspVA6WqYEFQEvRr4xH.jpg",
     },
     "Thomasin McKenzie": {
       bio: "New Zealand actress emerging as a distinctive young talent.",

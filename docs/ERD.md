@@ -2,22 +2,17 @@
 
 ```mermaid
 erDiagram
-  User ||--o{ Order : "places"
-  Order ||--|{ OrderItem : "contains"
-  Movie ||--|{ OrderItem : "purchased"
-
   Movie ||--o{ MovieGenre : "has"
   Genre ||--o{ MovieGenre : "categorizes"
   Movie ||--o{ MoviePerson : "has"
   Person ||--o{ MoviePerson : "appears_in"
 
-  User ||--o{ Address : "owns"
-  User ||--o{ Cart : "has"
+  Order ||--|{ OrderItem : "contains"
+  Movie ||--|{ OrderItem : "purchased"
+
+  Address ||--o{ Order : "used_by"
   Cart ||--o{ CartItem : "contains"
   Movie ||--o{ CartItem : "in"
-
-  User ||--o{ Session : "sessions"
-  User ||--o{ Account : "accounts"
 
   Movie {
     string id PK
@@ -28,6 +23,7 @@ erDiagram
     string imageUrl
     int stock
     int runtime
+    bool isArchived
     datetime createdAt
     datetime updatedAt
   }
@@ -35,7 +31,6 @@ erDiagram
   Genre {
     string id PK
     string name
-    string description
   }
 
   MovieGenre {
@@ -61,8 +56,8 @@ erDiagram
     decimal totalAmount
     string status
     datetime orderDate
-    string userId FK
-    string addressId FK
+    string userId        // external auth user id (no relation)
+    string addressId FK?
   }
 
   OrderItem {
@@ -74,7 +69,7 @@ erDiagram
 
   Address {
     string id PK
-    string userId FK
+    string userId        // external auth user id (no relation)
     string line1
     string line2
     string city
@@ -82,58 +77,40 @@ erDiagram
     string country
   }
 
-  User {
-    string id PK
-    string email
-    string password
-    string name
-    string role
-    bool emailVerified
-    string image
-    datetime createdAt
-    datetime updatedAt
-  }
-
   Cart {
     string id PK
-    string userId FK
+    string userId?       // optional unique external auth user id
   }
 
   CartItem {
-    string id PK
     string cartId FK
     string movieId FK
     int quantity
-  }
-
-  Session {
-    string id PK
-    datetime expiresAt
-    string token
-    string userId FK
-  }
-
-  Account {
-    string id PK
-    string accountId
-    string providerId
-    string userId FK
-  }
-
-  Verification {
-    string id PK
-    string identifier
-    string value
-    datetime expiresAt
   }
 ```
 
 ## Notes
 
-- Enums (from Prisma): `PersonRole` (DIRECTOR | ACTOR), `OrderStatus` (PENDING | PAID | CANCELLED)
-- Composite keys: `MovieGenre` (movieId, genreId), `MoviePerson` (movieId, personId, role), `OrderItem` (orderId, movieId)
-- Important relations: `MovieGenre`/`MoviePerson` cascade on delete; `OrderItem.movie` uses `onDelete: Restrict`
-- Table mappings: `User` model mapped to DB table `user` (via `@@map`), Session/Account/Verification similarly mapped
-- Money fields use `Decimal(10,2)` precision in DB
+- Auth is handled externally (better-auth). User-related models are intentionally omitted — we store user IDs as plain strings on Order, Address, and Cart.
+- Enums (from Prisma): PersonRole (DIRECTOR | ACTOR), OrderStatus (PENDING | PAID | CANCELLED).
+- Composite/compound primary keys:
+  - MovieGenre: (movieId, genreId)
+  - MoviePerson: (movieId, personId, role)
+  - OrderItem: (orderId, movieId)
+  - CartItem: (cartId, movieId)
+- Important referential behaviors:
+  - MovieGenre and MoviePerson: onDelete: Cascade (deleting a Movie or Person/Genre removes link rows).
+  - OrderItem.order: onDelete: Cascade (deleting an Order removes its items).
+  - OrderItem.movie and CartItem.movie: onDelete: Restrict (prevent deleting a Movie that's referenced in orders/carts).
+  - Order.address: onDelete: SetNull (address can be removed without deleting the order).
+- Field details:
+  - Money fields use Decimal(10,2) precision in DB (price, totalAmount, priceAtPurchase).
+  - Movie.createdAt defaults to now(); Movie.updatedAt is updatedAt.
+  - Movie.imageUrl, Movie.runtime, Person.bio/imageUrl, Cart.userId, Address.line2, Order.addressId are optional per schema.
+  - Cart.userId is unique (one cart per user when present).
+- Recommended actions after schema change:
+  - npx prisma migrate dev
+  - npx prisma generate
+  - npm run seed (if needed)
+  - Optionally export this Mermaid diagram to PNG/SVG for docs.
 
-Recommended: run `npx prisma migrate dev` after schema changes and optionally export this Mermaid diagram to PNG/SVG for docs.

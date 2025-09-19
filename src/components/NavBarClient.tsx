@@ -197,7 +197,7 @@ export default function NavBarClient() {
         </Link>
         <button
           type="button"
-          className="ml-auto bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded transition"
+          className="ml-auto bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition"
           onClick={() => {
             router.push("/sign-in");
             router.refresh();
