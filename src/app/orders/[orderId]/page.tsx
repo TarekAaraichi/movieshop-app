@@ -2,7 +2,9 @@ import React from "react";
 import ClearCartOnConfirmation from "../clearCartOnConfirmation";
 import prisma from "@/lib/prisma";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 type Props = {
   params: { orderId: string };
@@ -23,28 +25,38 @@ function formatPrice(p: unknown) {
 
 export default async function OrderPage({ params }: Props) {
   const { orderId } = params;
+  // Only include the related items and their movies (these fields exist on Order)
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: {
       items: { include: { movie: true } },
-      address: true,
-      user: true,
     },
   });
 
   if (!order) return notFound();
 
-  /*
-    Auth + ownership scaffold (commented out):
-    Uncomment and adapt to require the signed-in user to own the order or be an admin.
-    Example:
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) redirect(`/sign-in?callbackUrl=${encodeURIComponent(`/orders/${orderId}`)}`);
-    if (order.userId && session.user.id !== order.userId && session.user.role !== 'admin') {
-      // not the owner nor admin
-      redirect('/'); // or throw a 403
-    }
-  */
+  // Auth + ownership: use the project's auth wrapper and next/headers
+  const session = await auth.api.getSession({ headers: headers() });
+  if (!session)
+    redirect(`/sign-in?callbackUrl=${encodeURIComponent(`/orders/${orderId}`)}`);
+  if (
+    order.userId &&
+    session.user.id !== order.userId &&
+    session.user.role !== "admin"
+  ) {
+    // not the owner nor admin
+    redirect("/"); // or throw a 403
+  }
+
+  // Load buyer and address explicitly because the Order model exposes userId/addressId
+  const buyer =
+    order.userId != null
+      ? await prisma.user.findUnique({ where: { id: order.userId } })
+      : null;
+  const address =
+    order.addressId != null
+      ? await prisma.address.findUnique({ where: { id: order.addressId } })
+      : null;
 
   const total = formatPrice(order.totalAmount);
 
@@ -61,10 +73,10 @@ export default async function OrderPage({ params }: Props) {
           <h2 className="font-semibold mb-2 text-gray-800">
             Buyer Information
           </h2>
-          {order.user ? (
+          {buyer ? (
             <div className="text-sm text-gray-700">
-              <div>Name: {order.user.name}</div>
-              <div>Email: {order.user.email}</div>
+              <div>Name: {buyer.name}</div>
+              <div>Email: {buyer.email}</div>
             </div>
           ) : (
             <div className="text-sm text-gray-700">
@@ -75,14 +87,14 @@ export default async function OrderPage({ params }: Props) {
 
         <div className="border rounded p-4 mb-4">
           <h2 className="font-semibold mb-2 text-gray-800">Shipping Address</h2>
-          {order.address ? (
+          {address ? (
             <div className="text-sm text-gray-700">
-              <div>{order.address.line1}</div>
-              {order.address.line2 && <div>{order.address.line2}</div>}
+              <div>{address.line1}</div>
+              {address.line2 && <div>{address.line2}</div>}
               <div>
-                {order.address.city} {order.address.postalCode}
+                {address.city} {address.postalCode}
               </div>
-              <div>{order.address.country}</div>
+              <div>{address.country}</div>
             </div>
           ) : (
             <div className="text-sm text-gray-700">No address on file</div>
@@ -90,7 +102,7 @@ export default async function OrderPage({ params }: Props) {
         </div>
 
         <div className="space-y-4">
-          {order.items.map((it) => (
+          {order.items.map((it: any) => (
             <div key={it.movieId} className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
                 <div className="w-16 h-16 relative">

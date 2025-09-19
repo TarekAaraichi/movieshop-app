@@ -6,73 +6,50 @@ import Link from "next/link";
 
 export default async function ProfilePage() {
   // require sign-in
-  // const session = await auth.api.getSession({ headers: await headers() });
-  // if (!session) {
-  //   redirect(`/sign-in?callbackUrl=${encodeURIComponent("/profile")}`);
-  // }
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    redirect(`/sign-in?callbackUrl=${encodeURIComponent("/profile")}`);
+  }
 
   // prefer id when available; fall back to email
-  // const userId = session?.user?.id as string | undefined;
-  // const userEmail = session?.user?.email as string | undefined;
+  const userId = session?.user?.id as string | undefined;
+  const userEmail = session?.user?.email as string | undefined;
 
-  // const user = await prisma.user.findFirst({
-  //   where: userId ? { id: userId } : { email: userEmail ?? undefined },
-  //   include: {
-  //     addresses: true,
-  //     orders: {
-  //       include: {
-  //         items: {
-  //           include: {
-  //             movie: true,
-  //           },
-  //         },
-  //       },
-  //       orderBy: { orderDate: "desc" },
-  //     },
-  //   },
-  // });
+  const baseUser = await prisma.user.findFirst({
+    where: userId ? { id: userId } : { email: userEmail ?? undefined },
+  });
 
-  // if (!user) {
-  //   // If session exists but user record is missing, sign them out then redirect to sign-in
-  //   try {
-  //     await auth.api.signOut({ headers: await headers() });
-  //   } catch {
-  //     // swallow any signOut errors and continue to redirect
-  //   }
-  //   redirect(`/sign-in?callbackUrl=${encodeURIComponent("/profile")}`);
-  // }
+  // fetch related data separately to match Prisma client types
+  const addresses = await prisma.address.findMany({
+    where: { userId: baseUser?.id ?? undefined },
+  });
 
-  // Temporarily render profile page without requiring auth
-  // This lets you view the UI as a guest. Replace with real `user` when auth is enabled.
-  const user = undefined as
-    | {
-        id?: string;
-        name?: string | null;
-        email?: string | null;
-        role?: string | null;
-        addresses?: {
-          id?: string;
-          line1?: string;
-          line2?: string | null;
-          city?: string;
-          postalCode?: string;
-          country?: string;
-        }[];
-        orders?: {
-          id?: string;
-          orderDate?: string | Date;
-          status?: string;
-          items?: {
-            id?: string;
-            movieId?: string;
-            quantity?: number;
-            priceAtPurchase?: number | string;
-            movie?: { title?: string } | null;
-          }[];
-          totalAmount?: number | string;
-        }[];
-      }
-    | undefined;
+  const orders = await prisma.order.findMany({
+    where: { userId: baseUser?.id ?? undefined },
+    include: {
+      items: {
+        include: {
+          movie: true,
+        },
+      },
+    },
+    orderBy: { orderDate: "desc" },
+  });
+
+  // compose a single `user` object used by the UI below
+  const user = baseUser ? { ...baseUser, addresses, orders } : null;
+
+  if (!user) {
+    // If session exists but user record is missing, sign them out then redirect to sign-in
+    try {
+      await auth.api.signOut({ headers: await headers() });
+    } catch {
+      // swallow any signOut errors and continue to redirect
+    }
+    redirect(`/sign-in?callbackUrl=${encodeURIComponent("/profile")}`);
+  }
+
+  // Using the `user` fetched from the database above for rendering.
 
   return (
     <div className="min-h-screen p-6 bg-gradient-to-b from-slate-50 to-slate-100">

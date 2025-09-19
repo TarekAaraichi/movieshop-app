@@ -55,7 +55,12 @@ erDiagram
     decimal totalAmount
     string status
     datetime orderDate
+<<<<<<< HEAD
     string addressId
+=======
+    string userId
+    string addressId FK?
+>>>>>>> 2cf768d7ae44327009b1cffbc9067b94b317d18c
   }
 
   OrderItem {
@@ -77,7 +82,11 @@ erDiagram
 
   Cart {
     string id PK
+<<<<<<< HEAD
     string userId
+=======
+    string userId?
+>>>>>>> 2cf768d7ae44327009b1cffbc9067b94b317d18c
   }
 
   CartItem {
@@ -89,6 +98,7 @@ erDiagram
 
 Notes:
 
+<<<<<<< HEAD
 - Primary keys and composite keys (documented here because Mermaid's ER syntax doesn't support composite-key declarations):
 
   - MovieGenre composite PK = (movieId, genreId)
@@ -114,3 +124,27 @@ Rendering notes:
 - If you want a rendered PNG/SVG included in the repo, I can generate one and add it under `docs/`.
 
 If you'd like any further adjustments (simplified ERD, only public-facing tables, or a PNG output), tell me which models to include and I will produce it.
+=======
+- Auth is handled externally (better-auth). User-related models are intentionally omitted — we store user IDs as plain strings on Order, Address, and Cart.
+- Enums (from Prisma): PersonRole (DIRECTOR | ACTOR), OrderStatus (PENDING | PAID | CANCELLED).
+- Composite/compound primary keys:
+  - MovieGenre: (movieId, genreId)
+  - MoviePerson: (movieId, personId, role)
+  - OrderItem: (orderId, movieId)
+  - CartItem: (cartId, movieId)
+- Important referential behaviors:
+  - MovieGenre and MoviePerson: onDelete: Cascade (deleting a Movie or Person/Genre removes link rows).
+  - OrderItem.order: onDelete: Cascade (deleting an Order removes its items).
+  - OrderItem.movie and CartItem.movie: onDelete: Restrict (prevent deleting a Movie that's referenced in orders/carts).
+  - Order.address: onDelete: SetNull (address can be removed without deleting the order).
+- Field details:
+  - Money fields use Decimal(10,2) precision in DB (price, totalAmount, priceAtPurchase).
+  - Movie.createdAt defaults to now(); Movie.updatedAt is updatedAt.
+  - Movie.imageUrl, Movie.runtime, Person.bio/imageUrl, Cart.userId, Address.line2, Order.addressId are optional per schema.
+  - Cart.userId is unique (one cart per user when present).
+- Recommended actions after schema change:
+  - npx prisma migrate dev
+  - npx prisma generate
+  - npm run seed (if needed)
+  - Optionally export this Mermaid diagram to PNG/SVG for docs.
+>>>>>>> 2cf768d7ae44327009b1cffbc9067b94b317d18c
