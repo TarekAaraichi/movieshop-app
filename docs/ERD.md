@@ -56,7 +56,7 @@ erDiagram
     decimal totalAmount
     string status
     datetime orderDate
-    string userId        // external auth user id (no relation)
+    string userId
     string addressId FK?
   }
 
@@ -69,7 +69,7 @@ erDiagram
 
   Address {
     string id PK
-    string userId        // external auth user id (no relation)
+    string userId
     string line1
     string line2
     string city
@@ -79,7 +79,7 @@ erDiagram
 
   Cart {
     string id PK
-    string userId?       // optional unique external auth user id
+    string userId?
   }
 
   CartItem {
