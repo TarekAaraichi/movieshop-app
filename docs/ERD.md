@@ -113,4 +113,3 @@ erDiagram
   - npx prisma generate
   - npm run seed (if needed)
   - Optionally export this Mermaid diagram to PNG/SVG for docs.
-
