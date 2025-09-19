@@ -83,11 +83,16 @@ model Order {
   totalAmount Decimal     @db.Decimal(10, 2)
   status      OrderStatus @default(PENDING)
   orderDate   DateTime    @default(now())
-  userId      String
-  user        User        @relation("UserOrders", fields: [userId], references: [id])
-  items       OrderItem[]
-  address     Address?    @relation(fields: [addressId], references: [id])
-  addressId   String?
+
+  userId   String
+  user     User        @relation("UserOrders", fields: [userId], references: [id], onDelete: Cascade)
+
+  items     OrderItem[]
+
+  address   Address?    @relation(fields: [addressId], references: [id], onDelete: SetNull)
+  addressId String?
+
+  @@index([userId])
 }
 
 model OrderItem {
@@ -102,9 +107,9 @@ model OrderItem {
 }
 
 model Address {
-  id         String  @id @default(cuid())
+  id         String   @id @default(cuid())
   userId     String
-  user       User?   @relation(fields: [userId], references: [id])
+  user       User     @relation("UserAddresses", fields: [userId], references: [id], onDelete: Cascade)
   line1      String
   line2      String?
   city       String
@@ -113,6 +118,7 @@ model Address {
   orders     Order[]
 
   @@index([userId])
+  User User[]
 }
 
 model User {
@@ -132,13 +138,14 @@ model User {
   accounts      Account[]
 
   @@map("user")
+  Address Address[] @relation("UserAddresses")
 }
 
 // Cart stored per authenticated user (migrated from cookie on link)
 
 model Cart {
   id        String     @id @default(cuid())
-  user      User?      @relation(fields: [userId], references: [id])
+  user      User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String?    @unique
   items     CartItem[]
   createdAt DateTime   @default(now())

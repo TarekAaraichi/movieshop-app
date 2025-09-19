@@ -7,10 +7,12 @@
     "build": "next build --turbopack",
     "start": "next start",
     "seed": "node prisma/seed.js",
+    "seed:auth": "node ./scripts/seed-via-better-auth.js",
     "lint": "eslint",
     "test": "vitest"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.15.0",
     "@radix-ui/react-label": "^2.1.7",

@@ -8,13 +8,27 @@ import {
 } from "@/app/actions/movies";
 import { deletePerson } from "@/app/actions/persons";
 import { deleteUser, setUserRole } from "@/app/actions/users";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 
 // AdminPage server component
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: { q?: string; tab?: string };
+  // searchParams may contain optional q, tab, genre and role from URL query
+  searchParams: { q?: string; tab?: string; genre?: string; role?: string };
 }) {
+  type PersonWithMovies = {
+    id: string;
+    imageUrl: string | null;
+    fullName: string;
+    bio: string | null;
+    movies: Array<{
+      role: import("@prisma/client").PersonRole;
+      movie: { title: string };
+    }>;
+  };
   const q = searchParams.q ?? "";
   const tab = (searchParams.tab ?? "movies") as string;
 
@@ -54,7 +68,12 @@ export default async function AdminPage({
         tab === "persons" && searchParams.role
           ? {
               movies: {
-                some: { role: { equals: searchParams.role as string } },
+                some: {
+                  role: {
+                    equals:
+                      searchParams.role as unknown as import("@prisma/client").PersonRole,
+                  },
+                },
               },
             }
           : {},
@@ -63,6 +82,9 @@ export default async function AdminPage({
     orderBy: { fullName: "asc" },
     include: { movies: { include: { movie: true } } },
   });
+  const personsPromiseTyped = personsPromise as Promise<
+    Array<PersonWithMovies>
+  >;
 
   const usersPromise = prisma.user.findMany({
     where:
@@ -85,15 +107,17 @@ export default async function AdminPage({
     distinct: ["role"],
   });
 
-  const [movies, persons, users, genres, personRolesRaw, userRolesRaw] =
+  const [movies, personsRaw, users, genres, personRolesRaw, userRolesRaw] =
     await Promise.all([
       moviesPromise,
-      personsPromise,
+      personsPromiseTyped,
       usersPromise,
       genresPromise,
       personRolesPromise,
       userRolesPromise,
     ]);
+
+  const persons = personsRaw as Array<PersonWithMovies>;
 
   const personRoles = Array.from(
     new Set(personRolesRaw.map((r) => r.role))
@@ -108,17 +132,15 @@ export default async function AdminPage({
   );
   const orderCounts = new Map(movies.map((m, i) => [m.id, orderCountsArr[i]]));
 
-  /*
-    Admin auth scaffold (commented out):
-    Uncomment and adapt to require sign-in and admin role before rendering admin UI.
-    Example:
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) redirect(`/sign-in?callbackUrl=${encodeURIComponent('/admin')}`);
-    if (session.user.role !== 'admin') {
-      // Optionally show a 403 or redirect
-      redirect('/');
-    }
-  */
+  // Admin auth scaffold (commented out):
+  // Uncomment and adapt to require sign-in and admin role before rendering admin UI.
+  // Example:
+  // const session = await auth.api.getSession({ headers: await headers() });
+  // if (!session) redirect(`/sign-in?callbackUrl=${encodeURIComponent('/admin')}`);
+  // if (session.user.role !== 'admin') {
+  //   // Optionally show a 403 or redirect
+  //   redirect('/');
+  // }
 
   // server actions are centralized under src/app/actions/*
 
@@ -244,119 +266,128 @@ export default async function AdminPage({
       {/* content by tab */}
       {tab === "movies" && (
         <div className="overflow-x-auto">
-            {/* Movies table (replaces $SELECTION_PLACEHOLDER$) */}
-            <table className="table-auto w-auto divide-y divide-gray-300 shadow">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Title
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Stock
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Price
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Released
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Genre
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Created
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Updated
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {movies.map((movie) => {
-                  const actorNames =
-                    (movie.people || [])
-                      .filter((p) => p.role === "ACTOR")
-                      .map((p) => p.person.fullName)
-                      .slice(0, 3)
-                      .join(", ") || "—";
-                  return (
-                    <tr key={movie.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                        {movie.title}
-                      </td>
-                      <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                        {movie.stock ?? "—"}
-                      </td>
-                      <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                        {movie.price != null ? `$${String(movie.price)}` : "—"}
-                      </td>
-                      <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
-                        {movie.releaseDate?.getFullYear() ?? "—"}
-                      </td>
-                      <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
-                        {movie.genres.map((g) => g.genre.name).join(", ") || "—"}
-                      </td>
-                      <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
-                        {movie.createdAt?.toISOString().split("T")[0]}
-                      </td>
-                      <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
-                        {movie.updatedAt?.toISOString().split("T")[0]}
-                      </td>
-                      <td className="px-4 py-2 space-x-4 whitespace-nowrap">
-                        <Link
-                          href={`/movies/${movie.id}/edit`}
-                          className="text-indigo-600 hover:underline"
-                        >
-                          Edit
-                        </Link>
-                        {movie.isArchived && (
-                          <span className="text-sm text-gray-500">Archived</span>
-                        )}
+          {/* Movies table (replaces $SELECTION_PLACEHOLDER$) */}
+          <table className="table-auto w-auto divide-y divide-gray-300 shadow">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Title
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Stock
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Price
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Released
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Genre
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Created
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Updated
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {movies.map((movie) => {
+                // actor list handled inline where needed
+                return (
+                  <tr key={movie.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
+                      {movie.title}
+                    </td>
+                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
+                      {movie.stock ?? "—"}
+                    </td>
+                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
+                      {movie.price != null ? `$${String(movie.price)}` : "—"}
+                    </td>
+                    <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                      {movie.releaseDate?.getFullYear() ?? "—"}
+                    </td>
+                    <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                      {movie.genres.map((g) => g.genre.name).join(", ") || "—"}
+                    </td>
+                    <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                      {movie.createdAt?.toISOString().split("T")[0]}
+                    </td>
+                    <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
+                      {movie.updatedAt?.toISOString().split("T")[0]}
+                    </td>
+                    <td className="px-4 py-2 space-x-4 whitespace-nowrap">
+                      <Link
+                        href={`/movies/${movie.id}/edit`}
+                        className="text-indigo-600 hover:underline"
+                      >
+                        Edit
+                      </Link>
+                      {movie.isArchived && (
+                        <span className="text-sm text-gray-500">Archived</span>
+                      )}
 
-                        {!movie.isArchived ? (
-                          <form action={archiveMovie} className="inline-block">
-                            <input type="hidden" name="movieId" value={movie.id} />
-                            <button type="submit" className="text-yellow-600 hover:underline">
-                              Archive
-                            </button>
-                          </form>
-                        ) : (
-                          <form action={unarchiveMovie} className="inline-block">
-                            <input type="hidden" name="movieId" value={movie.id} />
-                            <button type="submit" className="text-green-600 hover:underline">
-                              Unarchive
-                            </button>
-                          </form>
-                        )}
-
-                        <form action={deleteMovie} className="inline-block">
-                          <input type="hidden" name="movieId" value={movie.id} />
+                      {!movie.isArchived ? (
+                        <form action={archiveMovie} className="inline-block">
+                          <input
+                            type="hidden"
+                            name="movieId"
+                            value={movie.id}
+                          />
                           <button
                             type="submit"
-                            disabled={(orderCounts.get(movie.id) ?? 0) > 0}
-                            className={`${
-                              (orderCounts.get(movie.id) ?? 0) > 0
-                                ? "text-gray-400 cursor-not-allowed"
-                                : "text-red-600 hover:underline"
-                            }`}
-                            title={
-                              (orderCounts.get(movie.id) ?? 0) > 0
-                                ? "Cannot permanently delete: movie has associated orders"
-                                : "Permanently delete movie"
-                            }
+                            className="text-yellow-600 hover:underline"
                           >
-                            Delete
+                            Archive
                           </button>
                         </form>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      ) : (
+                        <form action={unarchiveMovie} className="inline-block">
+                          <input
+                            type="hidden"
+                            name="movieId"
+                            value={movie.id}
+                          />
+                          <button
+                            type="submit"
+                            className="text-green-600 hover:underline"
+                          >
+                            Unarchive
+                          </button>
+                        </form>
+                      )}
+
+                      <form action={deleteMovie} className="inline-block">
+                        <input type="hidden" name="movieId" value={movie.id} />
+                        <button
+                          type="submit"
+                          disabled={(orderCounts.get(movie.id) ?? 0) > 0}
+                          className={`${
+                            (orderCounts.get(movie.id) ?? 0) > 0
+                              ? "text-gray-400 cursor-not-allowed"
+                              : "text-red-600 hover:underline"
+                          }`}
+                          title={
+                            (orderCounts.get(movie.id) ?? 0) > 0
+                              ? "Cannot permanently delete: movie has associated orders"
+                              : "Permanently delete movie"
+                          }
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       )}
 
@@ -405,7 +436,9 @@ export default async function AdminPage({
                         .map((pm) => pm.movie.title)
                         .join(", ") || "—"}
                     </td>
-                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">{roles}</td>
+                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
+                      {roles}
+                    </td>
                     <td className="px-4 py-2 space-x-4 whitespace-nowrap">
                       <Link
                         href={`/admin/persons/${person.id}/edit`}

@@ -106,48 +106,50 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
           {movies.map((movie) => {
             const director = movie.people.find((p) => p.role === "DIRECTOR");
             return (
-              <Link
+              <div
                 key={movie.id}
-                href={`/movies/${movie.id}`}
                 className="block bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 p-3"
               >
                 <div className="flex flex-col w-full">
-                  <div className="relative w-full h-48 rounded-lg overflow-hidden shadow-md">
-                    <Image
-                      src={movie.imageUrl ?? "/file.svg"}
-                      alt={movie.title}
-                      fill
-                      sizes="(max-width: 640px) 100vw, 20vw"
-                      className="object-cover"
-                    />
-                  </div>
-
-                  <div className="mt-3 flex-1 min-w-0">
-                    <h2 className="text-lg font-semibold text-gray-100 line-clamp-2 break-words">
-                      {movie.title}
-                    </h2>
-
-                    <div className="mt-1 text-sm text-gray-300 flex flex-col items-start gap-2 w-full">
-                      <span className="min-w-0">
-                        {movie.releaseDate
-                          ? new Date(
-                              movie.releaseDate as unknown as string
-                            ).getFullYear()
-                          : ""}
-                      </span>
-                      <span className="text-green-400 font-semibold flex-shrink-0">
-                        ${Number(movie.price).toFixed(2)}
-                      </span>
+                  <Link href={`/movies/${movie.id}`} className="block">
+                    <div className="relative w-full h-48 rounded-lg overflow-hidden shadow-md">
+                      <Image
+                        src={movie.imageUrl ?? "/file.svg"}
+                        alt={movie.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 20vw"
+                        className="object-cover"
+                      />
                     </div>
 
-                    {movie.genres && movie.genres.length > 0 && (
-                      <p className="text-sm text-gray-300 mt-2 line-clamp-2">
-                        {movie.genres.map((g) => g.genre.name).join(", ")}
-                      </p>
-                    )}
+                    <div className="mt-3 flex-1 min-w-0">
+                      <h2 className="text-lg hover:underline font-semibold text-gray-100 line-clamp-2 break-words">
+                        {movie.title}
+                      </h2>
 
-                    <p className="text-sm text-gray-300 mt-2">
-                      {" "}
+                      <div className="mt-1 text-sm text-gray-300 flex flex-col items-start gap-2 w-full">
+                        <span className="min-w-0">
+                          {movie.releaseDate
+                            ? new Date(
+                                movie.releaseDate as unknown as string
+                              ).getFullYear()
+                            : ""}
+                        </span>
+                        <span className="text-green-400 font-semibold flex-shrink-0">
+                          ${Number(movie.price).toFixed(2)}
+                        </span>
+                      </div>
+
+                      {movie.genres && movie.genres.length > 0 && (
+                        <p className="text-sm text-gray-300 mt-2 line-clamp-2">
+                          {movie.genres.map((g) => g.genre.name).join(", ")}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-300">
                       {movie.people
                         .filter((p) => p.role === "ACTOR")
                         .map((p, i, arr) => (
@@ -176,7 +178,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                     )}
                   </div>
                 </div>
-              </Link>
+              </div>
             );
           })}
           {movies.length === 0 && (

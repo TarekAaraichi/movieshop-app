@@ -1,20 +1,18 @@
+
+
+// src/lib/auth.ts
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-// If your Prisma file is located elsewhere, you can change the path
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 
 export const auth = betterAuth({
-    database: prismaAdapter(prisma, {
-        provider: "postgresql", // or "mysql", "postgresql", ...etc
-    }),
+  // Tell better-auth to use the Prisma adapter so users/sessions/accounts are
+  // persisted in your Postgres DB via the existing Prisma models.
+  database: prismaAdapter(prisma, {
+    provider: "postgresql", // keep as postgresql for your setup
+  }),
 
-    emailAndPassword: {
-        enabled: true,
-        // You can customize the fields used for email and password
-        emailField: "email",
-        minPasswordLength: 8,
-        // passwordField: "passwordHash", // This should match your Prisma schema field for storing hashed passwords
-    },
+  emailAndPassword: {
+    enabled: true,
+  },
 });

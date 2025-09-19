@@ -14,6 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { auth } from "@/lib/auth";
 import { Card } from "@/components/ui/card";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -31,7 +33,7 @@ const formSchema = z
   .superRefine((data, ctx) => {
     if (data.password !== data.confirmPassword) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: "Passwords don't match",
         path: ["confirmPassword"],
       });
@@ -53,26 +55,29 @@ export default function SignUpForm() {
     },
   });
 
+  const router = useRouter();
+
   async function onSubmit(values: FormValues) {
     // Handle form submission
-    const result = await auth.api.signUpEmail({
-      body: {
-        name: values.name,
-        email: values.email,
-        password: values.password,
-        image: values.image || undefined,
-        callbackURL: values.callbackURL || undefined,
-      },
+    const { data , error }  = await authClient.signUp.email({
+      name: values.name,
+      email: values.email,
+      password: values.password,
+      image: values.image,
+      callbackURL: values.callbackURL,
     });
 
-    if (!result.token) {
+    if (error) {
       // sign-up didn't return a token — show a generic error
       alert("Sign up failed. Please check your input and try again.");
-      return;
+    } else {
+      // Signed up successfully — you can use result.user or result.token as needed
+      alert("Signed up successfully.");
+      // Navigate to profile and refresh
+      router.push("/profile");
+      router.refresh();
+      console.log(data);
     }
-
-    // Signed up successfully — you can use result.user or result.token as needed
-    alert("Signed up successfully.");
   }
 
   return (
@@ -80,68 +85,68 @@ export default function SignUpForm() {
       <div className="py-3 px-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-          <FormLabel>Name</FormLabel>
-          <FormControl>
-            <Input {...field} className="bg-white text-black"/>
-          </FormControl>
-          <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input {...field} className="bg-white text-black" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-          <FormLabel>Email</FormLabel>
-          <FormControl>
-            <Input type="email" {...field} />
-          </FormControl>
-          <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-          <FormLabel>Password</FormLabel>
-          <FormControl>
-            <Input type="password" {...field} />
-          </FormControl>
-          <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-          <FormLabel>Confirm Password</FormLabel>
-          <FormControl>
-            <Input type="password" {...field} />
-          </FormControl>
-          <FormMessage />
-            </FormItem>
-          )}
-        />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input type="password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
-        >
-          Sign up
-        </button>
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
+            >
+              Sign up
+            </button>
           </form>
         </Form>
       </div>

@@ -5,14 +5,14 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function SignUpPage() {
-  // const session = await auth.api.getSession({
-  //     headers: await headers(),
-  // });
+  const session = await auth.api.getSession({
+      headers: await headers(),
+  });
 
-  // if (session) {
-  //     // If the user is already signed in, redirect to the home page or dashboard
-  //     redirect("/");
-  // };
+  if (session) {
+      // If the user is already signed in, redirect to the home page or dashboard
+      redirect("/profile");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
