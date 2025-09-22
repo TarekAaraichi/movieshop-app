@@ -115,14 +115,40 @@ export async function migrateCartToUser(
   if (!cart) {
     cart = await prisma.cart.create({ data: { userId } });
   }
-  // replace items: delete existing and insert new
-  await prisma.cartItem.deleteMany({ where: { cartId: cart.id } });
-  const ops = items.map((i) =>
-    prisma.cartItem.create({
-      data: { cartId: cart!.id, movieId: i.movieId, quantity: i.quantity },
-    })
-  );
-  await Promise.all(ops);
+  // Merge semantics: for each incoming item, add quantities to existing items or create new ones.
+  const incomingByMovie = new Map(items.map((i) => [i.movieId, i.quantity]));
+
+  // Fetch existing items for this cart where movieId is in incoming set
+  const existing = await prisma.cartItem.findMany({
+    where: {
+      cartId: cart.id,
+      movieId: { in: Array.from(incomingByMovie.keys()) },
+    },
+  });
+
+  // Run updates and creates inside a transaction
+  await prisma.$transaction(async (tx) => {
+    // Update existing items by summing quantities
+    for (const ex of existing) {
+      const incQty = incomingByMovie.get(ex.movieId) ?? 0;
+      if (incQty > 0) {
+        await tx.cartItem.update({
+          where: { cartId_movieId: { cartId: ex.cartId, movieId: ex.movieId } },
+          data: { quantity: ex.quantity + incQty },
+        });
+        incomingByMovie.delete(ex.movieId);
+      }
+    }
+
+    // Create remaining incoming items that didn't exist before
+    for (const [movieId, qty] of incomingByMovie.entries()) {
+      if (qty > 0) {
+        await tx.cartItem.create({
+          data: { cartId: cart.id, movieId, quantity: qty },
+        });
+      }
+    }
+  });
   // Optionally clear cookie by instructing consuming code to remove it; server actions don't directly control client cookies here
   revalidatePath("/cart");
 }
@@ -196,3 +222,6 @@ export async function linkAccountAndMigrate(userId: string) {
     revalidatePath("/cart");
   }
 }
+
+// Compatibility alias: some modules import `migrateLegacyToUser` name.
+export const migrateLegacyToUser = migrateCartToUser;

@@ -3,9 +3,9 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import prisma from "@/lib/prisma";
+const prisma = (await import("@/lib/prisma")).default;
 import { getServerSession } from "@/lib/getServerSession";
-import { findOrCreateUser } from "@/app/actions/orderHelpers";
+import { findOrCreateUser } from "./orderHelpersActions";
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2),
@@ -44,16 +44,6 @@ function parseCartCookie(cookieStore: unknown) {
 }
 
 export async function createOrder(formData: FormData): Promise<void> {
-  /*
-    Server action auth scaffold (commented out):
-    Server actions must validate the session as they can be invoked directly.
-    Example:
-    const session = await auth.api.getSession({ headers: await headers() });
-    if (!session) {
-      // redirect or throw to surface authentication requirement
-      redirect(`/sign-in?callbackUrl=${encodeURIComponent('/checkout')}`);
-    }
-  */
   const raw = Object.fromEntries(formData.entries());
   const parsed = checkoutSchema.safeParse(raw);
   if (!parsed.success) {
@@ -74,7 +64,86 @@ export async function createOrder(formData: FormData): Promise<void> {
     maybeCookieStore instanceof Promise
       ? await maybeCookieStore
       : maybeCookieStore;
-  const items = parseCartCookie(cookieStore);
+  let items: CartItem[] = [];
+  let sourceCartId: string | undefined = undefined;
+  const serverSession = await getServerSession();
+  const s = serverSession as unknown as { user?: { id?: string } } | null;
+  if (s?.user?.id) {
+    type CartModel = { findUnique: (args: unknown) => Promise<unknown> };
+    const candidate = prisma as unknown as { cart?: CartModel };
+    const hasCartModel = typeof candidate?.cart?.findUnique === "function";
+    if (hasCartModel) {
+      const userCart = await candidate.cart!.findUnique({
+        where: { userId: s.user.id },
+        include: { items: true },
+      } as unknown);
+      if (
+        userCart &&
+        Array.isArray((userCart as unknown as { items?: unknown[] }).items)
+      ) {
+        items = (
+          userCart as unknown as {
+            items: { movieId: string; quantity: number }[];
+          }
+        ).items.map((it) => ({ movieId: it.movieId, quantity: it.quantity }));
+      }
+    }
+  }
+  if (items.length === 0) {
+    try {
+      const cookieObj = cookieStore as unknown as {
+        get?: (name: string) => { value?: string } | undefined;
+      };
+      const cookie = cookieObj.get?.("cart")?.value;
+      if (cookie) {
+        type CartModel = { findUnique: (args: unknown) => Promise<unknown> };
+        const candidate = prisma as unknown as { cart?: CartModel };
+        const hasCartModel = typeof candidate?.cart?.findUnique === "function";
+        if (hasCartModel) {
+          const cart = await candidate.cart!.findUnique({
+            where: { id: cookie },
+            include: { items: true },
+          } as unknown);
+          if (
+            cart &&
+            Array.isArray((cart as unknown as { items?: unknown[] }).items)
+          ) {
+            items = (
+              cart as unknown as {
+                items: { movieId: string; quantity: number }[];
+              }
+            ).items.map((it) => ({
+              movieId: it.movieId,
+              quantity: it.quantity,
+            }));
+            sourceCartId = cookie;
+          }
+        } else {
+          try {
+            const parsed = JSON.parse(cookie) as unknown;
+            if (Array.isArray(parsed)) {
+              items = parsed
+                .filter((p): p is { movieId: string; quantity: number } => {
+                  const r = p as unknown as Record<string, unknown>;
+                  return !!(r && typeof r["movieId"] === "string");
+                })
+                .map((p) => {
+                  const r = p as unknown as Record<string, unknown>;
+                  return {
+                    movieId: String(r["movieId"]),
+                    quantity: Number(r["quantity"]) || 0,
+                  };
+                });
+            }
+          } catch {
+            // ignore and leave items empty
+          }
+        }
+      }
+    } catch {
+      items = parseCartCookie(cookieStore);
+    }
+  }
   if (items.length === 0) {
     const qs = encodeURIComponent(
       JSON.stringify({ _type: "business", message: "Cart is empty" })
@@ -83,24 +152,22 @@ export async function createOrder(formData: FormData): Promise<void> {
     return;
   }
 
-  // Determine user to attach to order: prefer authenticated session, otherwise create/ reuse guest user.
-  const session = await getServerSession();
   let userId: string;
-  const s = session as unknown as { user?: { id?: string } } | null;
   if (s?.user?.id) {
     userId = s.user.id as string;
   } else {
-    // Guest checkout: create or reuse a user by email
+    console.debug(
+      "orders.createOrder: calling findOrCreateUser",
+      typeof findOrCreateUser
+    );
     const guest = await findOrCreateUser(
       prisma,
       parsed.data.email,
       parsed.data.fullName
     );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    userId = (guest as any).id as string;
+    userId = guest.id as string;
   }
 
-  // Validate stock and compute total
   const movieIds = items.map((i) => i.movieId);
   const movies = await prisma.movie.findMany({
     where: { id: { in: movieIds } },
@@ -145,9 +212,7 @@ export async function createOrder(formData: FormData): Promise<void> {
     });
   }
 
-  // Persist order in transaction and clear cookie
   const result = await prisma.$transaction(async (tx) => {
-    // Create address attached to the authenticated user
     const address = await tx.address.create({
       data: {
         userId,
@@ -184,7 +249,35 @@ export async function createOrder(formData: FormData): Promise<void> {
     return order;
   });
 
-  // Clear cookie cart
+  // If the order was created from a cookie-referenced DB cart, delete that cart
+  // and its items (but only if it is not the same as the user's cart).
+  try {
+    if (sourceCartId) {
+      const source = await prisma.cart.findUnique({
+        where: { id: sourceCartId },
+      });
+      if (source && source.userId !== userId) {
+        try {
+          await prisma.$transaction(async (tx) => {
+            await tx.cartItem.deleteMany({ where: { cartId: sourceCartId } });
+            await tx.cart.delete({ where: { id: sourceCartId } });
+          });
+          console.log(
+            "[orders.createOrder] removed source anonymous cart:",
+            sourceCartId
+          );
+        } catch (e) {
+          console.error(
+            "[orders.createOrder] failed to remove source cart:",
+            e
+          );
+        }
+      }
+    }
+  } catch (e) {
+    console.error("[orders.createOrder] error while cleaning source cart:", e);
+  }
+
   try {
     type CookieSetObj = (opts: {
       name: string;
@@ -214,7 +307,39 @@ export async function createOrder(formData: FormData): Promise<void> {
     }
   } catch {}
 
-  // Redirect to order confirmation page
+  // Defensive cleanup: ensure the user's cart has been cleared server-side.
+  try {
+    if (userId) {
+      // Remove items from all carts owned by this user (defensive cleanup).
+      try {
+        const userCarts = await prisma.cart.findMany({
+          where: { userId },
+          select: { id: true },
+        });
+        const cartIds = userCarts.map((c) => c.id);
+        if (cartIds.length > 0) {
+          const deleted = await prisma.cartItem.deleteMany({
+            where: { cartId: { in: cartIds } },
+          });
+          console.log(
+            "[orders.createOrder] cleaned remaining items from user carts:",
+            userId,
+            cartIds,
+            "deletedCount:",
+            deleted.count ?? deleted
+          );
+        }
+      } catch (e) {
+        console.error(
+          "[orders.createOrder] failed to clean remaining user cart items:",
+          e
+        );
+      }
+    }
+  } catch (e) {
+    console.error("[orders.createOrder] error during final cart cleanup:", e);
+  }
+
   redirect(`/orders/${result.id}`);
   return;
 }

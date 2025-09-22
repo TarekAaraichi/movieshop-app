@@ -1,5 +1,5 @@
 import React from "react";
-import ClearCartOnConfirmation from "../clearCartOnConfirmation";
+import ClearCartOnConfirmation from "../../../components/clearCartOnConfirmation";
 import prisma from "@/lib/prisma";
 import Image from "next/image";
 import { notFound, redirect } from "next/navigation";

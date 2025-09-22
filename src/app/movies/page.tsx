@@ -1,10 +1,9 @@
 // src/app/movies/page.tsx
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib";
 import Link from "next/link";
 import Image from "next/image";
 import type { Prisma } from "@prisma/client";
-import GenreSelect from "@/components/GenreSelect";
-import MovieSearch from "@/components/MovieSearch";
+import { GenreSelect, MovieSearch } from "@/components";
 
 interface MoviesPageProps {
   searchParams: {

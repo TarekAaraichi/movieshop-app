@@ -19,21 +19,57 @@ export function CartCountProvider({
   initialCount?: number;
 }) {
   const [count, setCount] = useState(initialCount);
-  const increment = () => setCount((c) => c + 1);
+  const increment = () => {
+    setCount((c) => {
+      const nc = c + 1;
+      if (typeof window !== "undefined" && window.dispatchEvent) {
+        window.dispatchEvent(
+          new CustomEvent("cart:updated", { detail: { count: nc } })
+        );
+      }
+      return nc;
+    });
+  };
 
   useEffect(() => {
-    try {
-      const cookie = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("cart="));
-      if (cookie) {
-        const cart = JSON.parse(decodeURIComponent(cookie.split("=")[1]));
-        const total = Array.isArray(cart)
-          ? cart.reduce((sum, item) => sum + (item.quantity || 0), 0)
+    // Register listener immediately so we don't miss optimistic updates
+    let mounted = true;
+    const onUpdate = (e: Event) => {
+      try {
+        const ce = e as CustomEvent<{ count: number }>;
+        if (typeof ce?.detail?.count === "number") {
+          // Defer state update to avoid React "setState during render" warnings
+          Promise.resolve().then(() => {
+            try {
+              setCount(ce.detail.count);
+            } catch {}
+          });
+        }
+      } catch {}
+    };
+    window.addEventListener("cart:updated", onUpdate as EventListener);
+
+    (async () => {
+      try {
+        const res = await fetch("/api/cart", { credentials: "include" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!mounted) return;
+        type FetchedItem = { quantity?: number };
+        const total = Array.isArray(data.items)
+          ? data.items.reduce(
+              (sum: number, it: FetchedItem) => sum + (it.quantity || 0),
+              0
+            )
           : 0;
         setCount(total);
-      }
-    } catch {}
+      } catch {}
+    })();
+
+    return () => {
+      mounted = false;
+      window.removeEventListener("cart:updated", onUpdate as EventListener);
+    };
   }, []);
 
   return (

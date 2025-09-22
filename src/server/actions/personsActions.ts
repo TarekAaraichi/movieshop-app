@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import prisma from "@/lib/prisma";
+const prisma = (await import("@/lib/prisma")).default;
 import { requireAdmin } from "@/lib/requireAdmin";
 
 const personSchema = z.object({

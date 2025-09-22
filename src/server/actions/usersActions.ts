@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
+const prisma = (await import("@/lib/prisma")).default;
 import { requireAdmin } from "@/lib/requireAdmin";
 
 export async function deleteUser(formData: FormData) {

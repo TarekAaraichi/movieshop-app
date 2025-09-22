@@ -1,17 +1,24 @@
 import { headers } from "next/headers";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { SignInForm } from "./form";
+import { SignInForm } from "../../components/signinForm";
 
-export default async function SignInPage() {
+export default async function SignInPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string>;
+}) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (session) {
-    // If the user is already signed in, redirect to the home page or dashboard
-    redirect("/profile");
+    // If the user is already signed in, redirect to the requested callback or profile
+    const callback = searchParams?.callbackUrl
+      ? String(searchParams.callbackUrl)
+      : "/profile";
+    redirect(callback);
   }
 
   return (
@@ -44,7 +51,13 @@ export default async function SignInPage() {
                 Don&apos;t have an account?{" "}
               </span>
               <a
-                href="/sign-up"
+                href={
+                  searchParams && searchParams.callbackUrl
+                    ? `/sign-up?callbackUrl=${encodeURIComponent(
+                        searchParams.callbackUrl
+                      )}`
+                    : "/sign-up"
+                }
                 className="text-indigo-600 dark:text-indigo-400"
               >
                 Sign up

@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 import { notFound } from "next/navigation";
-import SaveButton from "@/components/SaveButton";
-import { updateMovie } from "@/app/actions/movies";
+import { SaveButton } from "@/components";
+import { updateMovie } from "@/server/actions/moviesActions";
 
 // Component that renders the form
 export default async function EditMoviePage({
@@ -26,14 +26,19 @@ export default async function EditMoviePage({
 
   // Pre‑fill director and actor names
   const directorName =
-    movie.people.find((p) => p.role === "DIRECTOR")?.person.fullName ?? "";
+    movie.people.find(
+      (p: { role: string; person: { fullName: string } }) =>
+        p.role === "DIRECTOR"
+    )?.person.fullName ?? "";
   const actorNames = movie.people
-    .filter((p) => p.role === "ACTOR")
-    .map((p) => p.person.fullName)
+    .filter((p: { role: string }) => p.role === "ACTOR")
+    .map((p: { person: { fullName: string } }) => p.person.fullName)
     .join(", ");
 
   // Pre‑fill genres as a comma-separated string
-  const genreNamesDefault = movie.genres.map((mg) => mg.genre.name).join(", ");
+  const genreNamesDefault = movie.genres
+    .map((mg: { genre: { name: string } }) => mg.genre.name)
+    .join(", ");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">

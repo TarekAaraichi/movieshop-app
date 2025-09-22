@@ -2,18 +2,18 @@
 
 import React from "react";
 import Link from "next/link";
-import CartCountBadge from "@/components/CartCountBadge";
+import { CartCountBadge } from "@/components";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 
 type NavBarProps = {
-  isAuthenticated: boolean;
-  isAdmin: boolean;
+  isAuthenticated?: boolean;
+  isAdmin?: boolean;
 };
 
 export default function NavBarClient({
-  isAuthenticated,
-  isAdmin,
+  isAuthenticated = false,
+  isAdmin = false,
 }: NavBarProps) {
   const router = useRouter();
 
@@ -29,7 +29,6 @@ export default function NavBarClient({
         },
       });
     } catch {
-      // Fallback: navigate to home
       router.push("/");
       router.refresh();
     }
@@ -141,18 +140,6 @@ export default function NavBarClient({
           className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition flex items-center"
         >
           Cart <CartCountBadge />
-        </Link>
-        <Link
-          href="/about"
-          className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
-        >
-          About Us
-        </Link>
-        <Link
-          href="/contact"
-          className="hover:text-teal-400 focus:text-teal-300 active:text-teal-500 transition"
-        >
-          Contact
         </Link>
         <button
           type="button"

@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function ProfilePage() {
   // require sign-in
@@ -10,7 +11,6 @@ export default async function ProfilePage() {
   if (!session) {
     redirect("/sign-in");
   }
-  
 
   // prefer id when available; fall back to email
   const userId = session?.user?.id as string | undefined;
@@ -141,10 +141,19 @@ export default async function ProfilePage() {
                         o.items.map((it, idx) => (
                           <div
                             key={it.movieId ?? idx}
-                            className="flex justify-between py-1"
+                            className="flex items-center justify-between py-2"
                           >
-                            <div className="text-slate-800">
-                              {it.movie?.title ?? "—"}
+                            <div className="flex items-center gap-3">
+                              <Image
+                                src={it.movie?.imageUrl ?? "/file.svg"}
+                                alt={it.movie?.title ?? "Movie poster"}
+                                width={56}
+                                height={80}
+                                className="object-cover rounded-md border border-slate-200"
+                              />
+                              <div className="text-slate-800">
+                                {it.movie?.title ?? "—"}
+                              </div>
                             </div>
                             <div className="text-slate-800">
                               {it.quantity ?? 0} × $
@@ -162,7 +171,7 @@ export default async function ProfilePage() {
                       Total: ${String(o.totalAmount ?? "0.00")}
                     </div>
                     <Link
-                      href={`/profile/orders/${o.id ?? ""}`}
+                      href={`/orders/${o.id ?? ""}`}
                       className="text-sm text-indigo-600 hover:text-indigo-800"
                     >
                       View details

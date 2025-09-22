@@ -124,7 +124,7 @@ export default async function HomePage() {
         ? movie.imageUrl
         : "/file.svg";
 
-    const actors = movie.people?.filter((p) => p.role === "ACTOR") ?? [];
+    // actors are intentionally not rendered here (kept commented in markup)
 
     return (
       <div className="group bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 p-3 flex flex-col h-full min-h-[160px] w-full overflow-hidden">

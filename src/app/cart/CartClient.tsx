@@ -2,25 +2,32 @@
 import React, { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { updateCart } from "@/app/actions/cart";
+// ...existing code... (cart updates now use /api/cart endpoint)
 import type { CartClientItem } from "@/types";
-import { useCartCount } from "@/app/cart/CartCountContext";
+import { useCart } from "@/hooks";
+import { useCartCount } from "@/components";
 
 export default function CartClient({
   initialItems,
 }: {
   initialItems?: CartClientItem[];
 }) {
-  const [items, setItems] = useState<CartClientItem[]>(initialItems || []);
+  const { items, update, add, remove, revalidate } = useCart(
+    initialItems || []
+  );
   const { setCount } = useCartCount();
 
   // Sync count on mount and when items change
   useEffect(() => {
-    setCount(items.reduce((sum, it) => sum + it.quantity, 0));
+    setCount(
+      items.reduce((sum: number, it: CartClientItem) => sum + it.quantity, 0)
+    );
   }, [items, setCount]);
 
   useEffect(() => {
-    if (initialItems) setItems(initialItems);
+    // if server provided initialItems, ensure hook revalidates
+    revalidate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialItems]);
   const [isPending, startTransition] = useTransition();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
@@ -44,32 +51,11 @@ export default function CartClient({
     if (!isPending && isCheckingOut) setIsCheckingOut(false);
   }, [isPending, isCheckingOut]);
 
-  // Optimistically update local items before the server action completes.
-  function optimisticUpdate(movieId: string, action: "inc" | "dec" | "remove") {
-    setItems((prev) => {
-      const copy = prev.map((it) => ({ ...it }));
-      const idx = copy.findIndex((c) => c.movie.id === movieId);
-      if (action === "inc") {
-        if (idx >= 0) copy[idx].quantity += 1;
-      } else if (action === "dec") {
-        if (idx >= 0) {
-          copy[idx].quantity -= 1;
-          if (copy[idx].quantity <= 0) copy.splice(idx, 1);
-        }
-      } else if (action === "remove") {
-        if (idx >= 0) copy.splice(idx, 1);
-      }
-      // Update cart count after optimistic update
-      setCount(copy.reduce((sum, it) => sum + it.quantity, 0));
-      return copy;
-    });
-  }
-
-  // Client-side updater: send POST to /api/cart and refresh server-rendered state.
-  // handleUpdate removed; server actions only
+  // Client-side updates are handled by the shared `useCart` hook which
+  // performs optimistic updates and server persistence via /api/cart.
 
   const total = items.reduce(
-    (s, it) => s + Number(it.movie.price) * it.quantity,
+    (s: number, it: CartClientItem) => s + Number(it.movie.price) * it.quantity,
     0
   );
 
@@ -81,9 +67,14 @@ export default function CartClient({
 
   return (
     <div className="space-y-4 text-gray-900">
-      {items.map(({ movie, quantity }) => {
-        const genreNames = (movie.genres || [])
-          .map((g) => g?.genre?.name)
+      {items.map(({ movie, quantity }: CartClientItem) => {
+        const genreNames = (
+          movie.genres || ([] as unknown as { genre?: { name?: string } }[])
+        )
+          .map(
+            (g: { genre?: { name?: string } } | null | undefined) =>
+              g?.genre?.name
+          )
           .filter(Boolean)
           .slice(0, 3);
 
@@ -125,64 +116,38 @@ export default function CartClient({
               <p className="text-lg font-medium text-gray-800">
                 ${Number(movie.price).toFixed(2)}
               </p>
-              <form
-                action={updateCart}
-                method="post"
-                onSubmit={() => {
-                  // Perform optimistic update before the form submits so the
-                  // DOM isn't unmounted (which can cancel the submit) —
-                  // this ensures the server action still runs.
-                  optimisticUpdate(movie.id, "dec");
+              <button
+                onClick={async () => {
+                  // optimistic handled inside hook
+                  await update(movie.id, quantity - 1);
                   onAction();
                 }}
+                className="px-2 py-1 bg-gray-200 rounded"
+                disabled={isPending}
               >
-                <input type="hidden" name="movieId" value={movie.id} />
-                <button
-                  name="action"
-                  value="dec"
-                  className="px-2 py-1 bg-gray-200 rounded"
-                  disabled={isPending}
-                >
-                  −
-                </button>
-              </form>
+                −
+              </button>
               <span className="px-3">{quantity}</span>
-              <form
-                action={updateCart}
-                method="post"
-                onSubmit={() => {
-                  optimisticUpdate(movie.id, "inc");
+              <button
+                onClick={async () => {
+                  await add(movie.id, 1);
                   onAction();
                 }}
+                className="px-2 py-1 bg-gray-200 rounded"
+                disabled={isPending}
               >
-                <input type="hidden" name="movieId" value={movie.id} />
-                <button
-                  name="action"
-                  value="inc"
-                  className="px-2 py-1 bg-gray-200 rounded"
-                  disabled={isPending}
-                >
-                  +
-                </button>
-              </form>
-              <form
-                action={updateCart}
-                method="post"
-                onSubmit={() => {
-                  optimisticUpdate(movie.id, "remove");
+                +
+              </button>
+              <button
+                onClick={async () => {
+                  await remove(movie.id);
                   onAction();
                 }}
+                className="text-red-500 hover:text-red-700 font-medium"
+                disabled={isPending}
               >
-                <input type="hidden" name="movieId" value={movie.id} />
-                <button
-                  name="action"
-                  value="remove"
-                  className="text-red-500 hover:text-red-700 font-medium"
-                  disabled={isPending}
-                >
-                  Remove
-                </button>
-              </form>
+                Remove
+              </button>
             </div>
           </div>
         );

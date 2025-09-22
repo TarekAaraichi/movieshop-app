@@ -1,8 +1,7 @@
 "use client";
 import React from "react";
 import SonnerProvider from "@/app/SonnerProvider";
-import { CartCountProvider } from "@/components/CartCountContext";
-import NavBarClient from "@/components/NavBarClient";
+import { CartCountProvider, NavBarClient } from "@/components";
 import { authClient } from "@/lib/auth-client";
 
 type ServerSession = {

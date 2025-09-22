@@ -2,25 +2,20 @@
 import React, { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { updateCart } from "@/app/actions/cart";
 import type { CartClientItem } from "@/types";
-import { useCartCount } from "@/components/CartCountContext";
+import { useCartCount } from "@/components";
+import { useCart } from "@/hooks";
 
 export default function CartClient({
   initialItems,
 }: {
   initialItems?: CartClientItem[];
 }) {
-  const [items, setItems] = useState<CartClientItem[]>(initialItems || []);
+  // Use the client-side cart hook which posts to /api/cart
+  const { items, add, update, remove, revalidate } = useCart(
+    initialItems || []
+  );
   const { setCount } = useCartCount();
-
-  useEffect(() => {
-    setCount(items.reduce((sum, it) => sum + it.quantity, 0));
-  }, [items, setCount]);
-
-  useEffect(() => {
-    if (initialItems) setItems(initialItems);
-  }, [initialItems]);
   const [isPending, startTransition] = useTransition();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const router = useRouter();
@@ -37,23 +32,34 @@ export default function CartClient({
     if (!isPending && isCheckingOut) setIsCheckingOut(false);
   }, [isPending, isCheckingOut]);
 
-  function optimisticUpdate(movieId: string, action: "inc" | "dec" | "remove") {
-    setItems((prev) => {
-      const copy = prev.map((it) => ({ ...it }));
-      const idx = copy.findIndex((c) => c.movie.id === movieId);
-      if (action === "inc") {
-        if (idx >= 0) copy[idx].quantity += 1;
-      } else if (action === "dec") {
-        if (idx >= 0) {
-          copy[idx].quantity -= 1;
-          if (copy[idx].quantity <= 0) copy.splice(idx, 1);
-        }
-      } else if (action === "remove") {
-        if (idx >= 0) copy.splice(idx, 1);
-      }
-      setCount(copy.reduce((sum, it) => sum + it.quantity, 0));
-      return copy;
-    });
+  // Keep global count in sync and ensure we have authoritative state from server
+  useEffect(() => {
+    setCount(
+      items.reduce((sum: number, it: CartClientItem) => sum + it.quantity, 0)
+    );
+    // ensure authoritative server state on mount/update
+    void revalidate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items]);
+
+  // Items are updated by the `useCart` hook; keep a local revalidation helper
+  async function onInc(movieId: string) {
+    // optimistic update handled in hook
+    await add(movieId, 1);
+    onAction();
+  }
+
+  async function onDec(movieId: string) {
+    // optimistic update handled in hook
+    // find current quantity
+    const cur = items.find((i) => i.movie.id === movieId)?.quantity ?? 0;
+    await update(movieId, Math.max(0, cur - 1));
+    onAction();
+  }
+
+  async function onRemove(movieId: string) {
+    await remove(movieId);
+    onAction();
   }
 
   const total = items.reduce(
@@ -112,61 +118,31 @@ export default function CartClient({
               <p className="text-lg font-medium text-gray-800">
                 ${Number(movie.price).toFixed(2)}
               </p>
-              <form
-                action={updateCart}
-                method="post"
-                onSubmit={() => {
-                  optimisticUpdate(movie.id, "dec");
-                  onAction();
-                }}
+              <button
+                type="button"
+                onClick={() => onDec(movie.id)}
+                className="px-2 py-1 bg-gray-200 rounded"
+                disabled={isPending}
               >
-                <input type="hidden" name="movieId" value={movie.id} />
-                <button
-                  name="action"
-                  value="dec"
-                  className="px-2 py-1 bg-gray-200 rounded"
-                  disabled={isPending}
-                >
-                  −
-                </button>
-              </form>
+                −
+              </button>
               <span className="px-3">{quantity}</span>
-              <form
-                action={updateCart}
-                method="post"
-                onSubmit={() => {
-                  optimisticUpdate(movie.id, "inc");
-                  onAction();
-                }}
+              <button
+                type="button"
+                onClick={() => onInc(movie.id)}
+                className="px-2 py-1 bg-gray-200 rounded"
+                disabled={isPending}
               >
-                <input type="hidden" name="movieId" value={movie.id} />
-                <button
-                  name="action"
-                  value="inc"
-                  className="px-2 py-1 bg-gray-200 rounded"
-                  disabled={isPending}
-                >
-                  +
-                </button>
-              </form>
-              <form
-                action={updateCart}
-                method="post"
-                onSubmit={() => {
-                  optimisticUpdate(movie.id, "remove");
-                  onAction();
-                }}
+                +
+              </button>
+              <button
+                type="button"
+                onClick={() => onRemove(movie.id)}
+                className="text-red-500 hover:text-red-700 font-medium"
+                disabled={isPending}
               >
-                <input type="hidden" name="movieId" value={movie.id} />
-                <button
-                  name="action"
-                  value="remove"
-                  className="text-red-500 hover:text-red-700 font-medium"
-                  disabled={isPending}
-                >
-                  Remove
-                </button>
-              </form>
+                Remove
+              </button>
             </div>
           </div>
         );

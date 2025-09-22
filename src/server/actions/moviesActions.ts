@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { PersonRole } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import prisma from "@/lib/prisma";
+const prisma = (await import("@/lib/prisma")).default;
 import { requireAdmin } from "@/lib/requireAdmin";
 
 type CartItem = { movieId: string; quantity: number };
@@ -18,10 +18,9 @@ interface CookieStore {
 const addToCartSchema = z.object({ movieId: z.string().min(1) });
 
 export async function addToCart(formData: FormData) {
-  // validate input
   const raw = Object.fromEntries(formData.entries());
   const parsed = addToCartSchema.safeParse(raw);
-  if (!parsed.success) return; // invalid input -> no-op
+  if (!parsed.success) return;
   const { movieId } = parsed.data;
 
   const maybeCookies = cookies();
@@ -44,8 +43,6 @@ export async function addToCart(formData: FormData) {
   else cart.push({ movieId, quantity: 1 });
 
   if (typeof cs.set === "function") {
-    // `cookies().set` has multiple overloads across runtimes. Try the
-    // object form first, fallback to (name, value, opts).
     type CookieSetObj = (opts: {
       name: string;
       value: string;
@@ -67,19 +64,12 @@ export async function addToCart(formData: FormData) {
       (setFn as CookieSetArgs)("cart", JSON.stringify(cart), { path: "/" });
     }
   }
-  // ensure cart page revalidation
   revalidatePath("/cart");
 }
 
-// use shared requireAdmin from lib
-
-// Server action to update an existing movie (moved from edit page)
 export async function updateMovie(formData: FormData) {
-  // Require admin session for movie updates
   await requireAdmin();
 
-  // We import prisma lazily here to avoid circular deps in some toolchains
-  const prisma = (await import("@/lib/prisma")).default;
   const updateMovieSchema = z.object({
     movieId: z.string().min(1),
     title: z.string().min(1),
@@ -120,14 +110,12 @@ export async function updateMovie(formData: FormData) {
   const stock = Number(parsed.stock);
   const genresInput = parsed.genres ?? null;
 
-  // Upsert director
   const director = await prisma.person.upsert({
     where: { fullName: directorName.trim() },
     update: {},
     create: { fullName: directorName.trim() },
   });
 
-  // Upsert actors
   const actorNames = actorsInput
     ? actorsInput
         .split(",")
@@ -144,7 +132,6 @@ export async function updateMovie(formData: FormData) {
     )
   );
 
-  // Upsert genres
   const genreNames =
     genresInput
       ?.split(",")
@@ -156,7 +143,6 @@ export async function updateMovie(formData: FormData) {
     )
   );
 
-  // Update the movie and replace relations
   await prisma.movie.update({
     where: { id: movieId },
     data: {
@@ -188,7 +174,6 @@ export async function updateMovie(formData: FormData) {
   redirect("/admin");
 }
 
-// Movie admin actions: archive, unarchive, delete, create
 const movieCreateSchema = z.object({
   title: z.string().min(1),
   releaseDate: z
@@ -229,14 +214,12 @@ export async function createMovie(formData: FormData) {
   const stock = Number(parsed.stock);
   const genresInput = parsed.genres ?? null;
 
-  // Upsert director
   const director = await prisma.person.upsert({
     where: { fullName: directorName.trim() },
     update: {},
     create: { fullName: directorName.trim() },
   });
 
-  // Upsert actors
   const actorNames = actorsInput
     ? (actorsInput as string)
         .split(",")
@@ -253,7 +236,6 @@ export async function createMovie(formData: FormData) {
     )
   );
 
-  // Upsert genres
   const genreNames =
     (genresInput as string | null)
       ?.split(",")
@@ -265,7 +247,6 @@ export async function createMovie(formData: FormData) {
     )
   );
 
-  // Create movie with all fields and relationships
   await prisma.movie.create({
     data: {
       title,

@@ -1,7 +1,6 @@
 "use client";
 import { useTransition } from "react";
-import { useCartCount } from "@/components/CartCountContext";
-import { addToCart } from "@/app/actions/movies";
+import { useCart } from "@/hooks";
 import { toast } from "sonner";
 
 export default function AddToCartClientButton({
@@ -12,15 +11,13 @@ export default function AddToCartClientButton({
   disabled?: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
-  const { increment } = useCartCount();
+  const { add } = useCart();
 
   async function handleAdd() {
     startTransition(async () => {
-      const formData = new FormData();
-      formData.append("movieId", movieId);
       try {
-        await addToCart(formData);
-        increment();
+        const ok = await add(movieId, 1);
+        if (!ok) throw new Error("add_failed");
         toast.success("Added to cart!", {
           position: "bottom-right",
           dismissible: true,

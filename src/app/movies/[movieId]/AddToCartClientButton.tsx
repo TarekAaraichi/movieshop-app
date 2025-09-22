@@ -1,7 +1,7 @@
 "use client";
 import { useTransition } from "react";
-import { useCartCount } from "@/components/CartCountContext";
-import { addToCart } from "@/app/actions/movies";
+import { useCartCount } from "@/components";
+import { addToCart } from "@/server/actions/moviesActions";
 import { toast } from "sonner";
 
 export default function AddToCartClientButton({

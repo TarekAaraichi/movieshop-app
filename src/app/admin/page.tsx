@@ -1,13 +1,13 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import AutoSubmitSelect from "@/components/AutoSubmitSelect";
+import { AutoSubmitSelect } from "@/components";
 import {
   archiveMovie,
   unarchiveMovie,
   deleteMovie,
-} from "@/app/actions/movies";
-import { deletePerson } from "@/app/actions/persons";
-import { deleteUser, setUserRole } from "@/app/actions/users";
+} from "@/server/actions/moviesActions";
+import { deletePerson } from "@/server/actions/personsActions";
+import { deleteUser, setUserRole } from "@/server/actions/usersActions";
 import { requireAdmin } from "@/lib/requireAdmin";
 
 // AdminPage server component
@@ -321,7 +321,7 @@ export default async function AdminPage({
                     </td>
                     <td className="px-4 py-2 space-x-4 whitespace-nowrap">
                       <Link
-                        href={`/movies/${movie.id}/edit`}
+                        href={`/admin/movies/${movie.id}/edit`}
                         className="text-indigo-600 hover:underline"
                       >
                         Edit

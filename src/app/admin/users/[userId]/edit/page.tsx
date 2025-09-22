@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
-import SaveButton from "@/components/SaveButton";
-import { updateUser } from "@/app/actions/users";
+import { SaveButton } from "@/components";
+import { updateUser } from "@/server/actions/usersActions";
 
 export default async function EditUserPage({
   params,

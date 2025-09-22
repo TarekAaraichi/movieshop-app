@@ -1,18 +1,22 @@
 import { headers } from "next/headers";
-import SignUpForm from "./form";
-import { Card } from "@/components/ui/card";
+import SignUpForm from "../../components/signupForm";
+import { Card } from "@/components";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
-export default async function SignUpPage() {
-  const session = await auth.api.getSession({
-      headers: await headers(),
-  });
+export default async function SignUpPage({
+  searchParams,
+}: {
+  searchParams?: Record<string, string>;
+}) {
+  const session = await auth.api.getSession({ headers: await headers() });
 
   if (session) {
-      // If the user is already signed in, redirect to the home page or dashboard
-      redirect("/profile");
-  };
+    const callback = searchParams?.callbackUrl
+      ? String(searchParams.callbackUrl)
+      : "/profile";
+    redirect(callback);
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
@@ -38,7 +42,16 @@ export default async function SignUpPage() {
 
           <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
             Already have an account?{" "}
-            <a href="/sign-in" className="text-indigo-600 dark:text-indigo-400">
+            <a
+              href={
+                searchParams && searchParams.callbackUrl
+                  ? `/sign-in?callbackUrl=${encodeURIComponent(
+                      String(searchParams.callbackUrl)
+                    )}`
+                  : "/sign-in"
+              }
+              className="text-indigo-600 dark:text-indigo-400"
+            >
               Sign in
             </a>
           </div>

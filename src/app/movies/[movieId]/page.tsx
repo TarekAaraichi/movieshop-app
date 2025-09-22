@@ -1,10 +1,9 @@
 // src/app/movies/[movieId]/page.tsx
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import AddToCartClientButton from "@/components/AddToCartClientButton";
-import AddToCartButton from "@/components/AddToCartButton";
+import { AddToCartClientButton } from "@/components";
 
 export default async function MovieDetailPage({
   params,

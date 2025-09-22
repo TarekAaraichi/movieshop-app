@@ -1,5 +1,5 @@
 "use client";
-import { useCartCount } from "@/components/CartCountContext";
+import { useCartCount } from "@/components";
 
 export default function CartCountBadge() {
   const { count } = useCartCount();

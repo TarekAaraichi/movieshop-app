@@ -1,4 +1,4 @@
-import { createPerson } from "@/app/actions/persons";
+import { createPerson } from "@/server/actions/personsActions";
 import { requireAdmin } from "@/lib/requireAdmin";
 
 export default function CreatePersonPage() {

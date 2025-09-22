@@ -10,12 +10,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { auth } from "@/lib/auth";
-import { Card } from "@/components/ui/card";
+} from "@/components";
+import { Input } from "@/components";
+import { Card } from "@/components";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const formSchema = z
   .object({
@@ -56,10 +55,46 @@ export default function SignUpForm() {
   });
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = (searchParams?.get("callbackUrl") as string) || "";
 
   async function onSubmit(values: FormValues) {
     // Handle form submission
-    const { data , error }  = await authClient.signUp.email({
+    // Snapshot the anonymous cart so the server-side migration can merge it
+    try {
+      const pre = await fetch("/api/cart");
+      if (pre.ok) {
+        const pj = await pre.json();
+        if (Array.isArray(pj.items) && pj.items.length > 0) {
+          try {
+            const existing = (document.cookie || "")
+              .split("; ")
+              .find((c) => c.startsWith("cart="));
+            let shouldWrite = false;
+            if (!existing) {
+              shouldWrite = true;
+            } else {
+              const rawVal = existing.split("=")[1] || "";
+              try {
+                const decoded = decodeURIComponent(rawVal || "");
+                if (decoded.trim().startsWith("[")) {
+                  shouldWrite = true;
+                }
+              } catch {
+                // do not overwrite opaque cart id
+              }
+            }
+            if (shouldWrite) {
+              document.cookie = `cart=${encodeURIComponent(
+                JSON.stringify(pj.items)
+              )}; path=/; max-age=${60 * 60 * 24 * 30}`;
+            }
+          } catch {}
+        }
+      }
+    } catch {}
+
+    const { error } = await authClient.signUp.email({
       name: values.name,
       email: values.email,
       password: values.password,
@@ -71,10 +106,30 @@ export default function SignUpForm() {
     } else {
       // Signed up successfully — you can use result.user or result.token as needed
       alert("Signed up successfully.");
-      // Navigate to profile and refresh
-      router.push("/profile");
+      try {
+        const cb = callbackUrl || "/profile";
+        if (typeof window !== "undefined") {
+          window.location.assign(
+            `/api/cart/migrate-and-continue?callback=${encodeURIComponent(cb)}`
+          );
+        } else {
+          try {
+            router.replace(cb);
+          } catch {
+            router.push(cb);
+          }
+        }
+      } catch (e) {
+        console.error("migrate-cart call failed", e);
+      }
+      const target = callbackUrl || "/profile";
+      try {
+        router.replace(target);
+      } catch {
+        router.push(target);
+      }
       router.refresh();
-      console.log(data);
+      // signup succeeded
     }
   }
 

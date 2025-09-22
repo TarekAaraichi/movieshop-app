@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 // dynamic import removed; using ClientShell client wrapper instead
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ClientShell from "@/components/ClientShell";
+import { ClientShell } from "@/components";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 
@@ -43,13 +43,43 @@ export default async function RootLayout({
       <body className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100">
         <ClientShell serverSession={session}>
           <main className="flex-1">{children}</main>
-          <footer className="p-4 border-t border-gray-700 bg-gray-800 text-center text-gray-400">
-            <span className="text-sm tracking-wide">
-              © 2025 Fullstack -{" "}
-              <span className="font-semibold text-teal-400">Js React G13</span>{" "}
-              | <span className="font-semibold text-teal-400">Delta Team</span>{" "}
-              - Lexicon AB
-            </span>
+          <footer className="w-full border-t border-gray-700 bg-gray-800 text-gray-300">
+            <div className="max-w-7xl mx-auto px-4 py-6 flex items-center gap-4">
+              {/* Left: Copyright and organizations */}
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <span>© {new Date().getFullYear()} </span>
+                <span className="font-semibold text-teal-300">MovieShop</span>
+                <span className="hidden sm:inline">—</span>
+                <span className="ml-1">Lexicon AB</span>
+                <span className="mx-1">|</span>
+                <span className="font-semibold text-teal-400">Delta Team</span>
+              </div>
+
+              {/* Center: short development/tech blurb */}
+              <div className="mx-auto text-center text-sm text-gray-400 max-w-xl">
+                <p className="truncate">
+                  Developed with Next.js App Router, Prisma, Tailwind CSS and
+                  Better Auth — a small demo storefront showcasing server
+                  actions, a DB-backed cart, and secure admin flows.
+                </p>
+              </div>
+
+              {/* Right: Links to About and Contact */}
+              <nav className="ml-auto flex items-center gap-4">
+                <a
+                  href="/about"
+                  className="text-sm text-gray-200 hover:text-white hover:underline"
+                >
+                  About
+                </a>
+                <a
+                  href="/contact"
+                  className="text-sm text-gray-200 hover:text-white hover:underline"
+                >
+                  Contact
+                </a>
+              </nav>
+            </div>
           </footer>
         </ClientShell>
       </body>

@@ -1,6 +1,10 @@
 import React from "react";
-import { createOrder } from "@/app/actions/orders";
-import CheckoutFormController from "./CheckoutFormController";
+import { createOrder } from "@/server/actions/ordersActions";
+import CheckoutFormController from "../../components/CheckoutFormController";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import prisma from "@/lib/prisma";
 
 export default async function CheckoutPage({
   searchParams,
@@ -10,6 +14,28 @@ export default async function CheckoutPage({
     | Promise<Record<string, string> | undefined>;
 }) {
   const sp = await (searchParams ?? {});
+
+  // Require sign-in for checkout: redirect guests to sign-in and return here on success
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) {
+    redirect(`/sign-in?callbackUrl=${encodeURIComponent("/checkout")}`);
+  }
+
+  // Fetch the signed-in user's profile and default address where available
+  type SessionWithUser = { user?: { id?: string } } | null;
+  const userId = (session as SessionWithUser)?.user?.id;
+  let dbUser = null;
+  let dbAddress = null;
+  if (userId) {
+    dbUser = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { name: true, email: true },
+    });
+    dbAddress = await prisma.address.findFirst({
+      where: { userId },
+      orderBy: { id: "asc" },
+    });
+  }
 
   // Guests are allowed to view the checkout form. Authentication is enforced
   // at the server-action level (createOrder) which will create or reuse a
@@ -58,6 +84,7 @@ export default async function CheckoutPage({
               name="fullName"
               type="text"
               placeholder="John Doe"
+              defaultValue={dbUser?.name ?? undefined}
               required
               className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
@@ -72,6 +99,7 @@ export default async function CheckoutPage({
               name="email"
               type="email"
               placeholder="john.doe@example.com"
+              defaultValue={dbUser?.email ?? undefined}
               required
               className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
@@ -86,6 +114,7 @@ export default async function CheckoutPage({
               name="line1"
               type="text"
               placeholder="Street address"
+              defaultValue={dbAddress?.line1 ?? undefined}
               required
               className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
@@ -100,6 +129,7 @@ export default async function CheckoutPage({
               name="city"
               type="text"
               placeholder="City"
+              defaultValue={dbAddress?.city ?? undefined}
               required
               className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
             />
@@ -115,6 +145,7 @@ export default async function CheckoutPage({
                 name="postalCode"
                 type="text"
                 placeholder="ZIP"
+                defaultValue={dbAddress?.postalCode ?? undefined}
                 required
                 className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
               />
@@ -129,6 +160,7 @@ export default async function CheckoutPage({
                 name="country"
                 type="text"
                 placeholder="Country"
+                defaultValue={dbAddress?.country ?? undefined}
                 required
                 className="mt-1 block w-full rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
               />
