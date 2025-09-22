@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { requireAdmin } from "@/lib/requireAdmin";
 import { notFound } from "next/navigation";
 import SaveButton from "@/components/SaveButton";
 import { updateMovie } from "@/app/actions/movies";
@@ -9,6 +10,7 @@ export default async function EditMoviePage({
 }: {
   params: { movieId: string };
 }) {
+  await requireAdmin(`/admin/movies/${movieId}/edit`);
   // Fetch the movie including its related people and genres
   const movie = await prisma.movie.findUnique({
     where: { id: movieId },

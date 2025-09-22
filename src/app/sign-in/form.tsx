@@ -28,7 +28,8 @@ const formSchema = z
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function SignInForm() {
+export function SignInForm() {
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {

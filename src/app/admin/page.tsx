@@ -30,7 +30,7 @@ export default async function AdminPage({
   const q = searchParams.q ?? "";
   const tab = (searchParams.tab ?? "movies") as string;
 
-  await requireAdmin("/admin");
+  const { user: adminUser } = await requireAdmin("/admin");
 
   const moviesPromise = prisma.movie.findMany({
     where: {
@@ -132,25 +132,22 @@ export default async function AdminPage({
   );
   const orderCounts = new Map(movies.map((m, i) => [m.id, orderCountsArr[i]]));
 
-  // Admin auth scaffold (commented out):
-  // Uncomment and adapt to require sign-in and admin role before rendering admin UI.
-  // Example:
-  // const session = await auth.api.getSession({ headers: await headers() });
-  // if (!session) redirect(`/sign-in?callbackUrl=${encodeURIComponent('/admin')}`);
-  // if (session.user.role !== 'admin') {
-  //   // Optionally show a 403 or redirect
-  //   redirect('/');
-  // }
-
   // server actions are centralized under src/app/actions/*
 
   return (
     <div className="min-h-screen p-6 bg-gray-50">
       {/* page header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-extrabold text-gray-800">
-          Admin Management
-        </h1>
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-800">
+            Admin Management
+          </h1>
+          {adminUser?.name && (
+            <p className="text-sm text-gray-600">
+              Signed in as {adminUser.name}
+            </p>
+          )}
+        </div>
         <div className="space-x-2">
           {tab === "movies" && (
             <Link

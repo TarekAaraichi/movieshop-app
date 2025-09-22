@@ -8,8 +8,9 @@ export default async function ProfilePage() {
   // require sign-in
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) {
-    redirect(`/sign-in?callbackUrl=${encodeURIComponent("/profile")}`);
+    redirect("/sign-in");
   }
+  
 
   // prefer id when available; fall back to email
   const userId = session?.user?.id as string | undefined;

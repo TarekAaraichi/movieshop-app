@@ -7,9 +7,9 @@ import { requireAdmin } from "@/lib/requireAdmin";
  * The form includes fields for title, release date, description, director, actors, image URL, runtime, price, stock, and genres.
  * On submission, the form calls the createMovie server action to persist the new movie.
  */
-export default function CreateMoviePage() {
+export default async function CreateMoviePage() {
   // Note: this is a server component; call shared requireAdmin at render-time
-  void requireAdmin("/admin/create");
+  await requireAdmin("/admin/create");
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">
       <div className="bg-white p-8 rounded-xl shadow-xl">

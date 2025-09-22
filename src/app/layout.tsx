@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ClientShell from "@/components/ClientShell";
-// ...existing code...
-// auth and headers commented out for now; remove unused imports to avoid lint errors
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,14 +26,22 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const session = await auth.api.getSession({
-  //     headers: await headers(),
-  // });
+  const rawHeaders = await headers();
+  // Some TypeScript lib targets don't expose entries() on ReadonlyHeaders; declare a small interface
+  interface ReadonlyHeadersWithEntries {
+    entries?: () => IterableIterator<[string, string]>;
+    forEach?: (cb: (value: string, key: string) => void) => void;
+  }
+  const typedHeaders = rawHeaders as unknown as ReadonlyHeadersWithEntries;
+  const headerObj = Object.fromEntries(typedHeaders.entries?.() ?? []);
+  const session = await auth.api.getSession({
+    headers: headerObj as unknown as Headers,
+  });
 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100">
-        <ClientShell>
+        <ClientShell serverSession={session}>
           <main className="flex-1">{children}</main>
           <footer className="p-4 border-t border-gray-700 bg-gray-800 text-center text-gray-400">
             <span className="text-sm tracking-wide">
