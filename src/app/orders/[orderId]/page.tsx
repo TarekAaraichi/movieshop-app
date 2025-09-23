@@ -68,79 +68,112 @@ export default async function OrderPage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-6">
-      <ClearCartOnConfirmation />
-      <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-bold text-blue-600 mb-4">
-          Order Confirmed
-        </h1>
-        <p className="text-sm text-gray-600 mb-4">Order ID: {order.id}</p>
-
-        <div className="border rounded p-4 mb-4">
-          <h2 className="font-semibold mb-2 text-gray-800">
-            Buyer Information
-          </h2>
-          {buyer ? (
-            <div className="text-sm text-gray-700">
-              <div>Name: {buyer.name}</div>
-              <div>Email: {buyer.email}</div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-6 flex items-start justify-center">
+      <div className="w-full max-w-4xl">
+        <ClearCartOnConfirmation />
+        <div className="bg-white rounded-2xl shadow-lg ring-1 ring-gray-100 overflow-hidden">
+          <div className="p-6 md:p-8 flex items-start justify-between gap-4">
+            <div>
+              <h1 className="text-xl md:text-2xl font-semibold text-slate-800 flex items-center gap-3">
+                <span>Order Confirmed</span>
+                <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                  Paid
+                </span>
+              </h1>
+              <p className="text-sm text-slate-500 mt-1">
+                Order ID
+                <span className="ml-2 font-mono text-slate-700">{order.id}</span>
+              </p>
             </div>
-          ) : (
-            <div className="text-sm text-gray-700">
-              No buyer information on file
-            </div>
-          )}
-        </div>
 
-        <div className="border rounded p-4 mb-4">
-          <h2 className="font-semibold mb-2 text-gray-800">Shipping Address</h2>
-          {address ? (
-            <div className="text-sm text-gray-700">
-              <div>{address.line1}</div>
-              {address.line2 && <div>{address.line2}</div>}
+            <div className="text-right">
+              <div className="text-sm text-slate-500">Total</div>
+              <div className="text-2xl font-bold text-slate-900">
+                ${Number(total).toFixed(2)}
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-100 p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-1 space-y-4">
               <div>
-                {address.city} {address.postalCode}
+                <h2 className="text-sm font-medium text-slate-700">Buyer</h2>
+                {buyer ? (
+                  <div className="mt-2 text-sm text-slate-600 space-y-0.5">
+                    <div className="font-medium text-slate-800">{buyer.name}</div>
+                    <div className="truncate">{buyer.email}</div>
+                  </div>
+                ) : (
+                  <div className="mt-2 text-sm text-slate-600">No buyer information on file</div>
+                )}
               </div>
-              <div>{address.country}</div>
-            </div>
-          ) : (
-            <div className="text-sm text-gray-700">No address on file</div>
-          )}
-        </div>
 
-        <div className="space-y-4">
-          {order.items.map((it: OrderItemLike) => (
-            <div key={it.movieId} className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 relative">
-                  <Image
-                    src={it.movie?.imageUrl || "https://via.placeholder.com/80"}
-                    alt={it.movie?.title || "movie"}
-                    fill
-                    sizes="64px"
-                    className="object-cover rounded-md"
-                  />
-                </div>
-                <div>
-                  <div className="font-semibold text-gray-800">
-                    {it.movie?.title}
+              <div>
+                <h2 className="text-sm font-medium text-slate-700">Shipping</h2>
+                {address ? (
+                  <div className="mt-2 text-sm text-slate-600">
+                    <div>{address.line1}</div>
+                    {address.line2 && <div>{address.line2}</div>}
+                    <div className="mt-1">
+                      {address.city} {address.postalCode}
+                    </div>
+                    <div>{address.country}</div>
                   </div>
-                  <div className="text-sm text-gray-500">
-                    Quantity: {it.quantity}
-                  </div>
-                </div>
-              </div>
-              <div className="text-gray-800 font-medium">
-                ${Number(formatPrice(it.priceAtPurchase)).toFixed(2)}
+                ) : (
+                  <div className="mt-2 text-sm text-slate-600">No address on file</div>
+                )}
               </div>
             </div>
-          ))}
-        </div>
 
-        <div className="mt-6 flex justify-between items-center">
-          <div className="text-lg font-semibold text-gray-800">Total</div>
-          <div className="text-xl font-bold text-gray-900">
-            ${Number(total).toFixed(2)}
+            <div className="md:col-span-2">
+              <h3 className="text-sm font-medium text-slate-700 mb-3">Items</h3>
+              <div className="space-y-4">
+                {order.items.map((it: OrderItemLike) => (
+                  <div
+                    key={it.movieId}
+                    className="flex items-center justify-between gap-4 bg-gray-50 rounded-lg p-3"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 relative flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
+                        <Image
+                          src={it.movie?.imageUrl || "https://via.placeholder.com/80"}
+                          alt={it.movie?.title || "movie"}
+                          fill
+                          sizes="56px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-sm font-medium text-slate-800 truncate">
+                          {it.movie?.title}
+                        </div>
+                        <div className="text-xs text-slate-500 mt-1 flex items-center gap-2">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">
+                            Qty {it.quantity}
+                          </span>
+                          <span className="text-xs">Purchased at</span>
+                          <span className="font-mono text-slate-800">
+                            ${Number(formatPrice(it.priceAtPurchase)).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      <div className="text-sm text-slate-600">Line total</div>
+                      <div className="text-sm font-semibold text-slate-900">
+                        ${Number(formatPrice((it.quantity as number) * Number(formatPrice(it.priceAtPurchase)))).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex items-center justify-between border-t pt-4">
+                <div className="text-sm text-slate-600">Payment method</div>
+                <div className="text-sm font-medium text-slate-800">Card •••• ••••</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

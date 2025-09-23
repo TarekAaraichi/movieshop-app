@@ -40,48 +40,126 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100">
-        <ClientShell serverSession={session}>
-          <main className="flex-1">{children}</main>
-          <footer className="w-full border-t border-gray-700 bg-gray-800 text-gray-300">
-            <div className="max-w-7xl mx-auto px-4 py-6 flex items-center gap-4">
-              {/* Left: Copyright and organizations */}
-              <div className="flex items-center gap-2 text-sm text-gray-400">
-                <span>© {new Date().getFullYear()} </span>
-                <span className="font-semibold text-teal-300">MovieShop</span>
-                <span className="hidden sm:inline">—</span>
-                <span className="ml-1">Lexicon AB</span>
-                <span className="mx-1">|</span>
-                <span className="font-semibold text-teal-400">Delta Team</span>
-              </div>
+      <body className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-gray-100">
+      <ClientShell serverSession={session}>
+        {/* Top navigation - compact, inline, modern */}
+        <header className="sticky top-0 z-50 backdrop-blur-sm bg-black/40 border-b border-gray-800">
+        <div className="max-w-7xl mx-auto flex items-center gap-4 px-4 py-3">
+          <a href="/" className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center text-xs font-extrabold text-white shadow-sm">
+            MS
+          </div>
+          <span className="font-semibold text-white tracking-tight">MovieShop</span>
+          </a>
 
-              {/* Center: short development/tech blurb */}
-              <div className="mx-auto text-center text-sm text-gray-400 max-w-xl">
-                <p className="truncate">
-                  Developed with Next.js App Router, Prisma, Tailwind CSS and
-                  Better Auth — a small demo storefront showcasing server
-                  actions, a DB-backed cart, and secure admin flows.
-                </p>
-              </div>
+          <nav className="hidden sm:flex items-center gap-4 ml-6 text-sm">
+          <a href="/browse" className="px-3 py-1 rounded-md hover:bg-white/5">Browse</a>
+          <a href="/collections" className="px-3 py-1 rounded-md hover:bg-white/5">Collections</a>
+          <a href="/about" className="px-3 py-1 rounded-md hover:bg-white/5">About</a>
+          </nav>
 
-              {/* Right: Links to About and Contact */}
-              <nav className="ml-auto flex items-center gap-4">
-                <a
-                  href="/about"
-                  className="text-sm text-gray-200 hover:text-white hover:underline"
-                >
-                  About
-                </a>
-                <a
-                  href="/contact"
-                  className="text-sm text-gray-200 hover:text-white hover:underline"
-                >
-                  Contact
-                </a>
-              </nav>
+          {/* Inline search */}
+          <div className="flex-1 flex justify-center">
+          <div className="w-full max-w-xl">
+            <label className="relative block">
+            <span className="sr-only">Search movies</span>
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m0 0A7 7 0 1110.65 6.65a7 7 0 016.99 9.99z" />
+              </svg>
+            </span>
+            <input
+              className="w-full bg-white/5 placeholder:text-gray-400 text-sm rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white/6"
+              placeholder="Search movies, actors, genres..."
+              type="search"
+              aria-label="Search movies"
+            />
+            </label>
+          </div>
+          </div>
+
+          {/* Account / CTA */}
+          <div className="ml-auto flex items-center gap-3">
+          <a
+            href="/cart"
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 hover:bg-white/6 text-sm"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7h14l-2-7M10 21a1 1 0 11-2 0 1 1 0 012 0zm8 0a1 1 0 11-2 0 1 1 0 012 0z" />
+            </svg>
+            <span className="hidden sm:inline">Cart</span>
+          </a>
+
+          {session ? (
+            <a
+            href="/profile"
+            className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/6 hover:bg-white/8 text-sm"
+            aria-label="Open profile"
+            >
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-xs font-medium text-black">
+              {session.user?.image ? (
+              <img src={session.user.image} alt="avatar" className="w-8 h-8 rounded-full object-cover" />
+              ) : (
+              <span>{(session.user?.name || "U").charAt(0)}</span>
+              )}
             </div>
-          </footer>
-        </ClientShell>
+            <span className="hidden sm:inline truncate max-w-[8rem]">
+              {session.user?.name ?? "Account"}
+            </span>
+            </a>
+          ) : (
+            <a
+            href="/sign-in"
+            className="text-sm px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white"
+            >
+            Sign in
+            </a>
+          )}
+          </div>
+        </div>
+        </header>
+
+        {/* Main content centered with modern card-like container */}
+        <main className="flex-1">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="bg-gradient-to-br from-gray-900/60 to-gray-900/40 border border-gray-800 rounded-2xl shadow-lg p-6 min-h-[60vh]">
+          {children}
+          </div>
+        </div>
+        </main>
+
+        {/* Compact inline footer */}
+        <footer className="w-full border-t border-gray-800 bg-black/40">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center gap-4 text-sm text-gray-400">
+          <div className="flex items-center gap-2">
+          <span>© {new Date().getFullYear()}</span>
+          <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-400">MovieShop</span>
+          <span className="hidden sm:inline">— Lexicon AB</span>
+          </div>
+
+          <p className="mx-auto text-center truncate max-w-lg">
+          A demo storefront using Next.js App Router, Prisma, Tailwind and Better Auth.
+          </p>
+
+          <nav className="ml-auto flex items-center gap-3">
+          <a href="/privacy" className="hover:underline">Privacy</a>
+          <a href="/contact" className="hover:underline">Contact</a>
+          </nav>
+        </div>
+        </footer>
+
+        {/* Floating quick-action (accessible, unobtrusive) */}
+        <a
+        href="/cart"
+        aria-label="Open cart"
+        className="fixed right-4 bottom-6 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+        >
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7h14l-2-7" />
+        </svg>
+        <span className="hidden sm:inline">Cart</span>
+        </a>
+      </ClientShell>
       </body>
     </html>
   );

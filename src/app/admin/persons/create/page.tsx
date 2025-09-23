@@ -4,47 +4,74 @@ import { requireAdmin } from "@/lib/requireAdmin";
 export default function CreatePersonPage() {
   void requireAdmin("/admin/persons/create");
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="bg-white p-6 rounded shadow">
-        <h2 className="text-2xl font-bold mb-4">Create Person</h2>
-        <form action={createPerson} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
+    <div className="min-h-screen bg-gray-50 p-8 flex items-start justify-center">
+      <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-3xl">
+        <h2 className="text-2xl font-semibold mb-6">Create Person</h2>
+
+        <form action={createPerson} className="space-y-6">
+          {/* Full Name (inline label) */}
+          <div className="grid grid-cols-12 gap-4 items-center">
+            <label className="col-span-3 text-sm font-medium text-gray-700">
               Full Name
+            </label>
+            <div className="col-span-9">
               <input
                 name="fullName"
                 required
-                className="mt-1 block w-full p-2 border rounded"
+                placeholder="e.g. Christopher Nolan"
+                className="w-full rounded-lg border border-gray-200 px-4 py-2 shadow-sm
+                           focus:outline-none focus:ring-2 focus:ring-green-500 transition"
               />
-            </label>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Bio
-              <textarea
-                name="bio"
-                rows={4}
-                className="mt-1 block w-full p-2 border rounded"
-              />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
+
+          {/* Image URL (inline with a compact preview placeholder) */}
+          <div className="grid grid-cols-12 gap-4 items-center">
+            <label className="col-span-3 text-sm font-medium text-gray-700">
               Image URL
+            </label>
+            <div className="col-span-9 flex items-center gap-4">
               <input
                 name="imageUrl"
                 type="url"
                 placeholder="https://..."
-                className="mt-1 block w-full p-2 border rounded"
+                className="flex-1 rounded-lg border border-gray-200 px-4 py-2 shadow-sm
+                           focus:outline-none focus:ring-2 focus:ring-green-500 transition"
               />
-            </label>
+              <div
+                aria-hidden
+                className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center text-xs text-gray-400 border border-gray-200"
+              >
+                Avatar
+              </div>
+            </div>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded"
-          >
-            Create Person
-          </button>
+
+          {/* Bio (label inline, textarea spans) */}
+          <div className="grid grid-cols-12 gap-4 items-start">
+            <label className="col-span-3 text-sm font-medium text-gray-700">
+              Bio
+            </label>
+            <div className="col-span-9">
+              <textarea
+                name="bio"
+                rows={4}
+                placeholder="Short biography, career highlights..."
+                className="w-full min-h-[110px] rounded-lg border border-gray-200 px-4 py-2 shadow-sm
+                           focus:outline-none focus:ring-2 focus:ring-green-500 transition resize-vertical"
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              className="w-full inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700
+                         text-white py-3 rounded-lg font-medium transition-shadow shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            >
+              Create Person
+            </button>
+          </div>
         </form>
       </div>
     </div>

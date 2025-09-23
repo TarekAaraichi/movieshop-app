@@ -22,50 +22,79 @@ export default async function SignInPage({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center">
-      <Card className="max-w-md w-full my-10">
-        <div className="p-8">
-          <h1 className="text-2xl font-bold text-blue-600 mb-6">
-            Sign in to your account
-          </h1>
+    <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+      <div className="max-w-md w-full">
+        <div className="rounded-2xl bg-white/5 backdrop-blur-md border border-white/6 shadow-lg overflow-hidden">
+          <div className="p-6">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h1 className="text-xl font-semibold tracking-tight">
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-400">
+                    MovieShop
+                  </span>
+                  <span className="ml-2 text-sm text-gray-300 font-medium">Sign in</span>
+                </h1>
+                <p className="mt-1 text-xs text-gray-400">
+                  Access favorites, orders, and personalized recommendations.
+                </p>
+              </div>
+              <div className="hidden sm:flex items-center text-xs text-gray-400">
+                <span className="px-3 py-1 rounded-full bg-white/3">Secure</span>
+              </div>
+            </div>
 
-          <p className="mb-6 text-sm leading-6 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm bg-gradient-to-r from-white to-indigo-50 dark:from-transparent dark:via-gray-900 dark:to-gray-800">
-            <span className="text-gray-700 dark:text-gray-300">
-              Welcome back to{" "}
-            </span>
-            <span className="mx-2 inline-block align-middle bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-pink-500 font-semibold">
-              MovieShop
-            </span>
-            <span className="text-gray-700 dark:text-gray-300">
-              {" "}
-              club now to save favorites, check orders, and get personalized
-              recommendations.
-            </span>
-          </p>
+            <div className="mt-5">
+              <SignInForm />
+            </div>
 
-          <SignInForm />
+            <div className="mt-4 flex items-center justify-between text-xs text-gray-400">
+              <div className="flex items-center gap-2">
+                <span>New here?</span>
+                <a
+                  href={
+                    searchParams && searchParams.callbackUrl
+                      ? `/sign-up?callbackUrl=${encodeURIComponent(searchParams.callbackUrl)}`
+                      : "/sign-up"
+                  }
+                  className="text-indigo-400 hover:underline"
+                >
+                  Create an account
+                </a>
+              </div>
 
-          <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
-            <p className="mb-6 text-sm leading-6 px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm bg-gradient-to-r from-white to-indigo-50 dark:from-transparent dark:via-gray-900 dark:to-gray-800">
-              <span className="text-gray-700 dark:text-gray-300">
-                Don&apos;t have an account?{" "}
-              </span>
-              <a
-                href={
-                  searchParams && searchParams.callbackUrl
-                    ? `/sign-up?callbackUrl=${encodeURIComponent(
-                        searchParams.callbackUrl
-                      )}`
-                    : "/sign-up"
-                }
-                className="text-indigo-600 dark:text-indigo-400"
-              >
-                Sign up
+              <a href="/forgot-password" className="text-indigo-400 hover:underline">
+                Forgot password?
               </a>
-            </p>
+            </div>
+
+            <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-white/6" />
+                </div>
+                <div className="relative flex justify-center text-xs">
+                  <span className="bg-white/5 px-3 py-1 rounded-full text-gray-300">Or continue with</span>
+                </div>
+              </div>
+
+              <div className="mt-4 flex gap-3">
+                <a
+                  href="/api/auth/provider/google"
+                  className="flex-1 inline-flex justify-center items-center gap-2 py-2 rounded-md bg-white/6 hover:bg-white/8 text-sm text-gray-200"
+                >
+                  Google
+                </a>
+                <a
+                  href="/api/auth/provider/github"
+                  className="flex-1 inline-flex justify-center items-center gap-2 py-2 rounded-md bg-white/6 hover:bg-white/8 text-sm text-gray-200"
+                >
+                  GitHub
+                </a>
+              </div>
+            </div>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

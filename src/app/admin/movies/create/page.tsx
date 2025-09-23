@@ -9,129 +9,214 @@ import { requireAdmin } from "@/lib/requireAdmin";
  */
 export default async function CreateMoviePage() {
   // Note: this is a server component; call shared requireAdmin at render-time
-  await requireAdmin("/admin/create");
+  // redirect must match this page route
+  await requireAdmin("/admin/movies/create");
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">
-      <div className="bg-white p-8 rounded-xl shadow-xl">
-        <h1 className="text-3xl font-extrabold mb-6 text-gray-900">
-          Create Movie
-        </h1>
-        <form action={createMovie} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Movie Title:
-              <input
-                name="title"
-                type="text"
-                required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-              />
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-6">
+      <div className="mx-auto max-w-3xl bg-white/95 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-2xl">
+        <header className="mb-6">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+            Create Movie
+          </h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Add a new movie to the catalog. Use the inline fields for a quicker
+            workflow.
+          </p>
+        </header>
+
+        <form action={createMovie} className="space-y-6">
+          {/* Title */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <label
+              htmlFor="title"
+              className="w-full sm:w-36 text-sm font-medium text-gray-700"
+            >
+              Title
             </label>
+            <input
+              id="title"
+              name="title"
+              type="text"
+              required
+              placeholder="e.g., The Great Adventure"
+              className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Release Date:
+
+          {/* Release Date + Runtime (inline) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <label
+                htmlFor="releaseDate"
+                className="w-full sm:w-36 text-sm font-medium text-gray-700"
+              >
+                Release
+              </label>
               <input
+                id="releaseDate"
                 name="releaseDate"
                 type="date"
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Description:
-              <textarea
-                name="description"
-                rows={4}
-                required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-              ></textarea>
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Director:
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <label
+                htmlFor="runtime"
+                className="w-full sm:w-36 text-sm font-medium text-gray-700"
+              >
+                Runtime
+              </label>
               <input
-                name="director"
-                type="text"
-                required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-              />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Actors (comma‑separated):
-              <input
-                name="actors"
-                type="text"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-              />
-            </label>
-          </div>
-          {/* Inside your movie creation form */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Image URL:
-              <input
-                name="imageUrl"
-                type="url"
-                required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-              />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Runtime (minutes):
-              <input
+                id="runtime"
                 name="runtime"
                 type="number"
                 min={1}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                placeholder="minutes"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
-            </label>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Price:
+
+          {/* Director + Actors (inline) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <label
+                htmlFor="director"
+                className="w-full sm:w-36 text-sm font-medium text-gray-700"
+              >
+                Director
+              </label>
               <input
+                id="director"
+                name="director"
+                type="text"
+                required
+                placeholder="Director name"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <label
+                htmlFor="actors"
+                className="w-full sm:w-36 text-sm font-medium text-gray-700"
+              >
+                Actors
+              </label>
+              <input
+                id="actors"
+                name="actors"
+                type="text"
+                placeholder="Comma-separated"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          {/* Price + Stock (inline) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <label
+                htmlFor="price"
+                className="w-full sm:w-36 text-sm font-medium text-gray-700"
+              >
+                Price
+              </label>
+              <input
+                id="price"
                 name="price"
                 type="number"
                 step="0.01"
                 min={0}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                placeholder="0.00"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Stock:
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <label
+                htmlFor="stock"
+                className="w-full sm:w-36 text-sm font-medium text-gray-700"
+              >
+                Stock
+              </label>
               <input
+                id="stock"
                 name="stock"
                 type="number"
                 min={0}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
-            </label>
+            </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Genres (comma‑separated):
-              <input
-                name="genres"
-                type="text"
-                placeholder="Action, Drama, Sci‑Fi"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
-              />
+
+          {/* Image URL */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <label
+              htmlFor="imageUrl"
+              className="w-full sm:w-36 text-sm font-medium text-gray-700"
+            >
+              Poster
             </label>
+            <input
+              id="imageUrl"
+              name="imageUrl"
+              type="url"
+              required
+              placeholder="https://..."
+              className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
           </div>
-          <AddButton />
+
+          {/* Genres */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <label
+              htmlFor="genres"
+              className="w-full sm:w-36 text-sm font-medium text-gray-700"
+            >
+              Genres
+            </label>
+            <input
+              id="genres"
+              name="genres"
+              type="text"
+              placeholder="Action, Drama, Sci‑Fi"
+              className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          {/* Description */}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="description"
+                className="w-36 text-sm font-medium text-gray-700 hidden sm:block"
+              >
+                Description
+              </label>
+              <span className="text-sm font-medium text-gray-700 sm:hidden">
+                Description
+              </span>
+            </div>
+            <textarea
+              id="description"
+              name="description"
+              rows={5}
+              required
+              placeholder="A short synopsis..."
+              className="w-full p-4 border border-gray-200 rounded-lg bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center justify-end gap-3">
+            <AddButton />
+          </div>
         </form>
       </div>
     </div>

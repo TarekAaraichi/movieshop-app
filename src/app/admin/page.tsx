@@ -136,314 +136,310 @@ export default async function AdminPage({
 
   return (
     <div className="min-h-screen p-6 bg-gray-50">
-      {/* page header */}
-      <div className="flex justify-between items-center mb-6">
+      {/* header */}
+      <div className="max-w-7xl mx-auto flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-extrabold text-gray-800">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800">
             Admin Management
           </h1>
           {adminUser?.name && (
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600 mt-1">
               Signed in as {adminUser.name}
             </p>
           )}
         </div>
-        <div className="space-x-2">
+
+        <div className="flex items-center gap-2">
           {tab === "movies" && (
             <Link
-              href="/admin/create"
-              className="bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700"
+              href="/admin/movies/create"
+              className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm shadow-sm hover:bg-blue-700"
             >
-              Create New Movie
+              + Create Movie
+            </Link>
+          )}
+          {tab === "persons" && (
+            <Link
+              href="/admin/persons/create"
+              className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm shadow-sm hover:bg-blue-700"
+            >
+              + Create Person
             </Link>
           )}
           {tab === "users" && (
             <Link
               href="/admin/users/create"
-              className="bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700"
+              className="inline-flex items-center gap-2 bg-blue-600 text-white px-3 py-1.5 rounded-md text-sm shadow-sm hover:bg-blue-700"
             >
-              Create New User
+              + Create User
             </Link>
           )}
         </div>
       </div>
 
-      {/* tabs */}
-      <div className="mb-4 flex space-x-2">
-        <Link
-          href="/admin?tab=movies"
-          className={`px-4 py-2 font-bold rounded ${
-            tab === "movies"
-              ? "bg-blue-600 text-white"
-              : "bg-white text-gray-700 border"
-          }`}
-        >
-          Movies
-        </Link>
-        <Link
-          href="/admin?tab=persons"
-          className={`px-4 py-2 font-bold rounded ${
-            tab === "persons"
-              ? "bg-blue-600 text-white"
-              : "bg-white text-gray-700 border"
-          }`}
-        >
-          Persons
-        </Link>
-        <Link
-          href="/admin?tab=users"
-          className={`px-4 py-2 font-bold rounded ${
-            tab === "users"
-              ? "bg-blue-600 text-white"
-              : "bg-white text-gray-700 border"
-          }`}
-        >
-          Users
-        </Link>
+      {/* tabs + search row */}
+      <div className="max-w-7xl mx-auto mb-4">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div className="flex items-center space-x-2">
+            <Link
+              href="/admin?tab=movies"
+              className={`px-3 py-1.5 text-sm font-medium rounded-full transition ${
+                tab === "movies"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700 border"
+              }`}
+            >
+              Movies
+            </Link>
+            <Link
+              href="/admin?tab=persons"
+              className={`px-3 py-1.5 text-sm font-medium rounded-full transition ${
+                tab === "persons"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700 border"
+              }`}
+            >
+              Persons
+            </Link>
+            <Link
+              href="/admin?tab=users"
+              className={`px-3 py-1.5 text-sm font-medium rounded-full transition ${
+                tab === "users"
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700 border"
+              }`}
+            >
+              Users
+            </Link>
+          </div>
+
+          <form method="GET" className="flex items-center gap-3">
+            <input type="hidden" name="tab" value={tab} />
+            <div className="relative">
+              <input
+                name="q"
+                type="search"
+                defaultValue={q}
+                placeholder={
+                  tab === "movies"
+                    ? "Search movies..."
+                    : tab === "persons"
+                    ? "Search people..."
+                    : "Search users..."
+                }
+                className="pl-3 pr-10 py-1.5 text-sm border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-indigo-300"
+              />
+              <button
+                type="submit"
+                className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                aria-label="Search"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1116.65 16.65z"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {tab === "movies" && (
+              <AutoSubmitSelect
+                name="genre"
+                value={searchParams.genre as string}
+                ariaLabel="Filter by genre"
+                options={genres.map((g) => ({ value: g.id, label: g.name }))}
+                className="min-w-[160px]"
+              />
+            )}
+
+            {tab === "persons" && (
+              <AutoSubmitSelect
+                name="role"
+                value={searchParams.role as string}
+                ariaLabel="Filter by person role"
+                options={personRoles.map((r) => ({ value: r, label: r }))}
+                className="min-w-[160px]"
+              />
+            )}
+
+            {tab === "users" && (
+              <AutoSubmitSelect
+                name="role"
+                value={searchParams.role as string}
+                ariaLabel="Filter by user role"
+                options={userRoles.map((r) => ({ value: r, label: r }))}
+                className="min-w-[160px]"
+              />
+            )}
+          </form>
+        </div>
       </div>
 
-      {/* search form */}
-      <form method="GET" className="mb-4 flex items-center space-x-3">
-        <input
-          name="q"
-          type="search"
-          placeholder={
-            tab === "movies"
-              ? "Search by title..."
-              : tab === "persons"
-              ? "Search by person name..."
-              : "Search by name or email..."
-          }
-          defaultValue={q}
-          className="p-2 border border-gray-300 rounded bg-gray-100 text-gray-800 focus:ring focus:ring-indigo-300"
-        />
-        {/* keep the active tab so filters stay on the current tab */}
-        <input type="hidden" name="tab" value={tab} />
-
+      {/* content */}
+      <div className="max-w-7xl mx-auto">
         {tab === "movies" && (
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-bold text-gray-600">Genre</span>
-            <AutoSubmitSelect
-              name="genre"
-              value={searchParams.genre as string}
-              ariaLabel="Filter by genre"
-              options={genres.map((g) => ({ value: g.id, label: g.name }))}
-              className="min-w-[160px]"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {movies.map((movie) => (
+              <div
+                key={movie.id}
+                className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {movie.title}
+                    </h3>
+                    <div className="mt-1 text-sm text-gray-500">
+                      {movie.releaseDate?.getFullYear() ?? "—"} •{" "}
+                      {movie.genres.map((g) => g.genre.name).join(", ") || "—"}
+                    </div>
+                    <div className="mt-2 flex items-center gap-2 text-sm">
+                      <span className="text-gray-700 font-medium">
+                        {movie.price != null ? `$${String(movie.price)}` : "—"}
+                      </span>
+                      <span className="text-gray-500">•</span>
+                      <span className="text-gray-500">
+                        Stock: {movie.stock ?? "—"}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col items-end gap-2">
+                    {movie.isArchived ? (
+                      <span className="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded-full">
+                        Archived
+                      </span>
+                    ) : null}
+                    <div className="text-xs text-gray-400">
+                      <div>{movie.createdAt?.toISOString().split("T")[0]}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/admin/movies/${movie.id}/edit`}
+                      className="inline-flex items-center gap-2 text-indigo-600 text-sm hover:underline"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M15.232 5.232l3.536 3.536M9 11l6 6L21 11l-6-6-6 6z"
+                        />
+                      </svg>
+                      Edit
+                    </Link>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {!movie.isArchived ? (
+                      <form action={archiveMovie}>
+                        <input type="hidden" name="movieId" value={movie.id} />
+                        <button
+                          type="submit"
+                          className="inline-flex items-center gap-1 text-yellow-600 text-sm hover:underline"
+                        >
+                          Archive
+                        </button>
+                      </form>
+                    ) : (
+                      <form action={unarchiveMovie}>
+                        <input type="hidden" name="movieId" value={movie.id} />
+                        <button
+                          type="submit"
+                          className="inline-flex items-center gap-1 text-green-600 text-sm hover:underline"
+                        >
+                          Unarchive
+                        </button>
+                      </form>
+                    )}
+
+                    <form action={deleteMovie}>
+                      <input type="hidden" name="movieId" value={movie.id} />
+                      <button
+                        type="submit"
+                        disabled={(orderCounts.get(movie.id) ?? 0) > 0}
+                        className={`text-sm px-2 py-1 rounded-full transition ${
+                          (orderCounts.get(movie.id) ?? 0) > 0
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed border"
+                            : "bg-red-50 text-red-600 hover:bg-red-100"
+                        }`}
+                        title={
+                          (orderCounts.get(movie.id) ?? 0) > 0
+                            ? "Cannot permanently delete: movie has associated orders"
+                            : "Permanently delete movie"
+                        }
+                      >
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
 
         {tab === "persons" && (
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-bold text-gray-600">Role</span>
-            <AutoSubmitSelect
-              name="role"
-              value={searchParams.role as string}
-              ariaLabel="Filter by person role"
-              options={personRoles.map((r) => ({ value: r, label: r }))}
-              className="min-w-[160px]"
-            />
-          </div>
-        )}
-
-        {tab === "users" && (
-          <div className="flex items-center space-x-2">
-            <span className="text-sm font-bold text-gray-600">Role</span>
-            <AutoSubmitSelect
-              name="role"
-              value={searchParams.role as string}
-              ariaLabel="Filter by user role"
-              options={userRoles.map((r) => ({ value: r, label: r }))}
-              className="min-w-[160px]"
-            />
-          </div>
-        )}
-      </form>
-
-      {/* content by tab */}
-      {tab === "movies" && (
-        <div className="overflow-x-auto">
-          {/* Movies table (replaces $SELECTION_PLACEHOLDER$) */}
-          <table className="table-auto w-auto divide-y divide-gray-300 shadow">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Title
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Stock
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Price
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Released
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Genre
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Created
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Updated
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {movies.map((movie) => {
-                // actor list handled inline where needed
-                return (
-                  <tr key={movie.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                      {movie.title}
-                    </td>
-                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                      {movie.stock ?? "—"}
-                    </td>
-                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                      {movie.price != null ? `$${String(movie.price)}` : "—"}
-                    </td>
-                    <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
-                      {movie.releaseDate?.getFullYear() ?? "—"}
-                    </td>
-                    <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
-                      {movie.genres.map((g) => g.genre.name).join(", ") || "—"}
-                    </td>
-                    <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
-                      {movie.createdAt?.toISOString().split("T")[0]}
-                    </td>
-                    <td className="px-4 py-2 text-gray-600 whitespace-nowrap">
-                      {movie.updatedAt?.toISOString().split("T")[0]}
-                    </td>
-                    <td className="px-4 py-2 space-x-4 whitespace-nowrap">
-                      <Link
-                        href={`/admin/movies/${movie.id}/edit`}
-                        className="text-indigo-600 hover:underline"
-                      >
-                        Edit
-                      </Link>
-                      {movie.isArchived && (
-                        <span className="text-sm text-gray-500">Archived</span>
-                      )}
-
-                      {!movie.isArchived ? (
-                        <form action={archiveMovie} className="inline-block">
-                          <input
-                            type="hidden"
-                            name="movieId"
-                            value={movie.id}
-                          />
-                          <button
-                            type="submit"
-                            className="text-yellow-600 hover:underline"
-                          >
-                            Archive
-                          </button>
-                        </form>
-                      ) : (
-                        <form action={unarchiveMovie} className="inline-block">
-                          <input
-                            type="hidden"
-                            name="movieId"
-                            value={movie.id}
-                          />
-                          <button
-                            type="submit"
-                            className="text-green-600 hover:underline"
-                          >
-                            Unarchive
-                          </button>
-                        </form>
-                      )}
-
-                      <form action={deleteMovie} className="inline-block">
-                        <input type="hidden" name="movieId" value={movie.id} />
-                        <button
-                          type="submit"
-                          disabled={(orderCounts.get(movie.id) ?? 0) > 0}
-                          className={`${
-                            (orderCounts.get(movie.id) ?? 0) > 0
-                              ? "text-gray-400 cursor-not-allowed"
-                              : "text-red-600 hover:underline"
-                          }`}
-                          title={
-                            (orderCounts.get(movie.id) ?? 0) > 0
-                              ? "Cannot permanently delete: movie has associated orders"
-                              : "Permanently delete movie"
-                          }
-                        >
-                          Delete
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {tab === "persons" && (
-        <div className="overflow-x-auto">
-          <table className="table-auto w-auto divide-y divide-gray-300 shadow">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Name
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Has Bio?
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Movies
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Role
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700 whitespace-nowrap">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <ul className="divide-y divide-gray-100">
               {persons.map((person) => {
                 const roles =
                   Array.from(
                     new Set((person.movies || []).map((m) => m.role))
                   ).join(", ") || "—";
                 return (
-                  <tr key={person.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                      {person.fullName}
-                    </td>
-                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                      {person.bio ? (
-                        <span className="text-gray-800 font-medium">Yes</span>
-                      ) : (
-                        <span className="text-gray-500">No</span>
-                      )}
-                    </td>
-                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                      {(person.movies || [])
-                        .map((pm) => pm.movie.title)
-                        .join(", ") || "—"}
-                    </td>
-                    <td className="px-4 py-2 text-gray-800 whitespace-nowrap">
-                      {roles}
-                    </td>
-                    <td className="px-4 py-2 space-x-4 whitespace-nowrap">
+                  <li
+                    key={person.id}
+                    className="flex items-center justify-between px-4 py-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700 font-semibold">
+                        {person.fullName
+                          .split(" ")
+                          .map((s) => s[0])
+                          .slice(0, 2)
+                          .join("")}
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-800">
+                          {person.fullName}
+                        </div>
+                        <div className="text-sm text-gray-500">{roles}</div>
+                        <div className="text-xs text-gray-400 mt-1">
+                          {(person.movies || [])
+                            .map((m) => m.movie.title)
+                            .join(", ") || "—"}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
                       <Link
                         href={`/admin/persons/${person.id}/edit`}
-                        className="text-indigo-600 hover:underline"
+                        className="text-indigo-600 text-sm hover:underline"
                       >
                         Edit
                       </Link>
-                      <form action={deletePerson} className="inline-block">
+                      <form action={deletePerson}>
                         <input
                           type="hidden"
                           name="personId"
@@ -451,56 +447,50 @@ export default async function AdminPage({
                         />
                         <button
                           type="submit"
-                          className="text-red-600 hover:underline"
+                          className="text-red-600 text-sm hover:underline"
                         >
                           Delete
                         </button>
                       </form>
-                    </td>
-                  </tr>
+                    </div>
+                  </li>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </ul>
+          </div>
+        )}
 
-      {tab === "users" && (
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-300 shadow">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Name
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Email
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Role
-                </th>
-                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+        {tab === "users" && (
+          <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+            <ul className="divide-y divide-gray-100">
               {users.map((u) => (
-                <tr key={u.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2 text-gray-800">{u.name ?? "—"}</td>
-                  <td className="px-4 py-2 text-gray-800">{u.email}</td>
-                  <td className="px-4 py-2 text-gray-600">
-                    {u.role ?? "user"}
-                  </td>
-                  <td className="px-4 py-2 space-x-4">
-                    <Link
-                      href={`/admin/users/${u.id}/edit`}
-                      className="text-indigo-600 hover:underline"
-                    >
-                      Edit
-                    </Link>
+                <li
+                  key={u.id}
+                  className="flex items-center justify-between px-4 py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center text-green-700 font-semibold">
+                      {u.name
+                        ? u.name
+                            .split(" ")
+                            .map((s) => s[0])
+                            .slice(0, 2)
+                            .join("")
+                        : u.email[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="font-medium text-gray-800">
+                        {u.name ?? "—"}
+                      </div>
+                      <div className="text-sm text-gray-500">{u.email}</div>
+                    </div>
+                  </div>
 
-                    {/* Grant / Revoke admin role form - placed next to Edit/Delete */}
+                  <div className="flex items-center gap-3">
+                    <div className="text-sm text-gray-600">
+                      {u.role ?? "user"}
+                    </div>
+
                     <form action={setUserRole} className="inline-block">
                       <input type="hidden" name="userId" value={u.id} />
                       <input
@@ -510,10 +500,10 @@ export default async function AdminPage({
                       />
                       <button
                         type="submit"
-                        className={`hover:underline ${
+                        className={`text-sm px-2 py-1 rounded-full transition ${
                           u.role === "admin"
-                            ? "text-red-600 hover:text-red-700"
-                            : "text-green-600 hover:text-green-700"
+                            ? "bg-red-50 text-red-600 hover:bg-red-100"
+                            : "bg-green-50 text-green-600 hover:bg-green-100"
                         }`}
                         title={
                           u.role === "admin" ? "Revoke admin" : "Grant admin"
@@ -523,22 +513,22 @@ export default async function AdminPage({
                       </button>
                     </form>
 
-                    <form action={deleteUser} className="inline-block">
+                    <form action={deleteUser}>
                       <input type="hidden" name="userId" value={u.id} />
                       <button
                         type="submit"
-                        className="text-red-600 hover:underline"
+                        className="text-red-600 text-sm hover:underline"
                       >
                         Delete
                       </button>
                     </form>
-                  </td>
-                </tr>
+                  </div>
+                </li>
               ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -21,48 +21,65 @@ export default async function EditUserPage({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">
-      <div className="bg-white p-8 rounded-xl shadow-xl">
-        <h1 className="text-3xl font-extrabold mb-6 text-gray-900">
-          Edit User
-        </h1>
-        <form action={updateUser} className="space-y-6">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8 flex items-center justify-center">
+      <div className="w-full max-w-2xl bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-2xl">
+        <div className="flex items-center gap-4 mb-6">
+          <div className="h-14 w-14 rounded-full bg-gray-200 flex items-center justify-center text-xl font-semibold text-gray-700">
+            {user.name ? user.name.charAt(0).toUpperCase() : "U"}
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Edit user</h1>
+            <p className="text-sm text-gray-600">{user.email}</p>
+          </div>
+        </div>
+
+        <form action={updateUser} className="flex flex-col gap-4">
           <input type="hidden" name="userId" value={user.id} />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Full Name
+          <div className="flex gap-4">
+            <label className="flex-1">
+              <span className="sr-only">Full name</span>
               <input
-                aria-label="Name"
+                aria-label="Full name"
                 name="name"
                 defaultValue={user.name ?? ""}
-                className="mt-1 block w-full p-2 border rounded"
+                placeholder="Full name"
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </label>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
+            <label className="flex-1">
+              <span className="sr-only">Email</span>
               <input
                 aria-label="Email"
                 name="email"
+                type="email"
                 defaultValue={user.email ?? ""}
-                className="mt-1 block w-full p-2 border rounded"
+                placeholder="Email address"
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </label>
           </div>
 
-          <div>
-            <div>
+          <div className="flex items-center justify-between mt-2">
+            <p className="text-sm text-gray-500">
+              Changes are saved to the user record when you click Save.
+            </p>
+
+            <div className="flex items-center gap-3">
+              <a
+                href={`/admin/users/${user.id}`}
+                className="text-sm text-gray-600 hover:text-gray-800"
+              >
+                Cancel
+              </a>
+
               <div>
                 <SaveButton label="Save" />
               </div>
             </div>
           </div>
         </form>
-
-        {/* Navigation handled via redirect after save; no in-page back link */}
       </div>
     </div>
   );

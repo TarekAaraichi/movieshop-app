@@ -127,124 +127,150 @@ export default async function HomePage() {
     // actors are intentionally not rendered here (kept commented in markup)
 
     return (
-      <div className="group bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 p-3 flex flex-col h-full min-h-[160px] w-full overflow-hidden">
-        {/* stacked layout: image on top, details below (always stacked) */}
-        <div className="flex flex-col items-start gap-4">
-          <Link
-            href={`/movies/${movie.id}`}
-            className="relative shadow-md w-full h-48 rounded-[10px] overflow-hidden"
-            aria-label={`Open ${movie.title}`}
-          >
-            {/* responsive Image: parent controls size, use fill for full coverage */}
-            <Image
-              src={imgSrc}
-              alt={movie.title}
-              fill
-              className="object-cover"
-            />
-          </Link>
+      <div className="group p-3">
+      <div className="relative flex flex-col h-full min-h-[180px] w-full bg-gradient-to-r from-gray-800/60 to-gray-700/40 border border-gray-700/60 rounded-2xl shadow-lg hover:shadow-2xl transform transition-all duration-200 ease-out hover:-translate-y-1 overflow-hidden">
+      {/* Image area */}
+      <Link
+      href={`/movies/${movie.id}`}
+      className="relative w-full h-48 sm:h-56 md:h-52 lg:h-44 shrink-0 block"
+      aria-label={`Open ${movie.title}`}
+      >
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+      <Image
+      src={imgSrc}
+      alt={movie.title}
+      fill
+      className="object-cover w-full h-full rounded-t-2xl"
+      priority={false}
+      />
 
-          <div className="min-w-0 flex-1 flex flex-col">
-            <Link
-              href={`/movies/${movie.id}`}
-              className="text-lg sm:text-xl font-bold text-gray-100 hover:underline line-clamp-2 break-words"
-            >
-              {movie.title}
-            </Link>
+      {/* Price badge (top-left) */}
+      <div className="absolute left-3 top-3 bg-black/60 text-green-300 font-medium text-sm px-3 py-1 rounded-full backdrop-blur-sm border border-green-300/20">
+      ${Number(movie.price ?? 0).toFixed(2)}
+      </div>
 
-            {/* release year and price: stacked on small, row on lg */}
-            <div className="mt-1 text-sm text-gray-300 flex flex-col items-start gap-2 w-full">
-              <span className="min-w-0">
-                {movie.releaseDate
-                  ? new Date(movie.releaseDate).getFullYear()
-                  : ""}
-              </span>
-              <span className="text-green-400 font-semibold flex-shrink-0">
-                ${Number(movie.price ?? 0).toFixed(2)}
-              </span>
-            </div>
+      {/* Year badge (top-right) */}
+      {movie.releaseDate && (
+      <div className="absolute right-3 top-3 bg-white/6 text-gray-100 text-sm px-2 py-1 rounded-full backdrop-blur-sm border border-white/6">
+      {new Date(movie.releaseDate).getFullYear()}
+      </div>
+      )}
+      </Link>
 
-            {/* Render genres if present */}
-            {movie.genres && movie.genres.length > 0 && (
-              <p className="text-sm text-gray-300 mt-2 line-clamp-2">
-                {movie.genres.map((g) => g.genre.name).join(", ")}
-              </p>
-            )}
+      {/* Details */}
+      <div className="p-3 flex-1 flex flex-col gap-2">
+      <Link
+      href={`/movies/${movie.id}`}
+      className="text-base sm:text-lg font-semibold text-gray-100 hover:text-white hover:underline line-clamp-2"
+      >
+      {movie.title}
+      </Link>
 
-            {/* Render actors as links (no event handlers, no nested anchors) */}
-            {/* {actors.length > 0 && (
-              <p className="text-sm text-gray-300 mt-auto">
-                {actors.map((p, i) => (
-                  <Link
-                    key={p.person.id}
-                    href={`/persons/${p.person.id}`}
-                    className="text-teal-300 hover:underline"
-                  >
-                    {p.person.fullName}
-                    {i < actors.length - 1 ? ", " : ""}
-                  </Link>
-                ))}
-              </p> */}
-            {/* )} */}
-          </div>
-        </div>
+      {/* Genres as modern chips */}
+      {movie.genres && movie.genres.length > 0 && (
+      <div className="flex flex-wrap gap-2 mt-1">
+      {movie.genres.map((g) => (
+      <span
+        key={g.genre.id}
+        className="text-xs px-2 py-0.5 rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10"
+      >
+        {g.genre.name}
+      </span>
+      ))}
+      </div>
+      )}
+
+      {/* Show up to 2 actors under genres */}
+      {((movie.people ?? []).filter((p) => String(p.role ?? "").toLowerCase() === "actor").slice(0, 2))?.length > 0 && (
+      <div className="flex flex-wrap gap-2 mt-2">
+      {movie.people
+        ?.filter((p) => String(p.role ?? "").toLowerCase() === "actor")
+        .slice(0, 2)
+        .map((a) => (
+        <span
+        key={a.person.id}
+        className="text-xs text-gray-200 bg-white/2 px-2 py-0.5 rounded-md backdrop-blur-sm border border-white/6"
+        >
+        {a.person.fullName}
+        </span>
+        ))}
+      </div>
+      )}
+
+      <div className="mt-auto flex items-center justify-center gap-3">
+      <div className="flex items-center gap-3">
+      {/* <span className="text-sm text-gray-300">
+      {movie.releaseDate ? new Date(movie.releaseDate).toLocaleDateString() : "—"}
+      </span> */}
+      </div>
+
+      <Link
+        href={`/movies/${movie.id}`}
+        className="flex-1 min-w-0 inline-flex w-full justify-center items-center gap-2 rounded-md bg-gradient-to-r from-green-400 to-blue-500 text-black text-sm font-medium px-3 py-1.5 shadow-sm hover:scale-105 transition-transform"
+        aria-label={`View details for ${movie.title}`}
+      >
+        View
+      </Link>
+      </div>
+      </div>
+      </div>
       </div>
     );
-  }
+    }
 
-  return (
+    return (
     <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-200 antialiased">
       <main className="flex-grow px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-12 box-border">
-        <h1 className="text-4xl sm:text-5xl font-extrabold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
-          Explore Our Movies
-        </h1>
+      <h1 className="text-4xl sm:text-5xl font-extrabold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
+      Explore Our Movies
+      </h1>
 
-        {topPurchasedSummaries.length > 0 && (
-          <section className="mb-10">
-            <h2 className="text-3xl font-bold mb-6 text-yellow-400">
-              Top 5 Most Purchased
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
-              {topPurchasedSummaries.map((m) => (
-                <MovieCard key={m.id} movie={m} />
-              ))}
-            </div>
-          </section>
-        )}
+      {topPurchasedSummaries.length > 0 && (
+      <section className="mb-10">
+      <h2 className="text-3xl font-bold mb-6 text-yellow-400">
+      Top 5 Most Purchased
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      {topPurchasedSummaries.map((m) => (
+      <MovieCard key={m.id} movie={m} />
+      ))}
+      </div>
+      </section>
+      )}
 
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 text-blue-400">
-            Top 5 Most Recent
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
-            {topRecent.map((m) => (
-              <MovieCard key={m.id} movie={m} />
-            ))}
-          </div>
-        </section>
+      <section className="mb-12">
+      <h2 className="text-3xl font-bold mb-6 text-blue-400">
+      Top 5 Most Recent
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      {topRecent.map((m) => (
+      <MovieCard key={m.id} movie={m} />
+      ))}
+      </div>
+      </section>
 
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 text-purple-400">
-            Top 5 Oldest
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
-            {topOldest.map((m) => (
-              <MovieCard key={m.id} movie={m} />
-            ))}
-          </div>
-        </section>
+      <section className="mb-12">
+      <h2 className="text-3xl font-bold mb-6 text-purple-400">
+      Top 5 Oldest
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      {topOldest.map((m) => (
+      <MovieCard key={m.id} movie={m} />
+      ))}
+      </div>
+      </section>
 
-        <section className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 text-teal-400">
-            Top 5 Cheapest
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 lg:grid-cols-5 gap-6">
-            {topCheap.map((m) => (
-              <MovieCard key={m.id} movie={m} />
-            ))}
-          </div>
-        </section>
+      <section className="mb-12">
+      <h2 className="text-3xl font-bold mb-6 text-teal-400">
+      Top 5 Cheapest
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+      {topCheap.map((m) => (
+      <MovieCard key={m.id} movie={m} />
+      ))}
+      </div>
+      </section>
       </main>
     </div>
-  );
+    );
 }

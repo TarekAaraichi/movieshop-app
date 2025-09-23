@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 import { notFound } from "next/navigation";
-import { SaveButton } from "@/components";
+import { SaveButton, Button as BackButton } from "@/components";
 import { updateMovie } from "@/server/actions/moviesActions";
 
 // Component that renders the form
@@ -37,137 +37,178 @@ export default async function EditMoviePage({
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">
-      <div className="bg-white p-8 rounded-xl shadow-xl">
-        <h1 className="text-3xl font-extrabold mb-6 text-gray-900">
-          Edit Movie
-        </h1>
+      <div className="bg-white p-6 md:p-8 rounded-2xl shadow-2xl max-w-4xl mx-auto">
+        <header className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">
+              Edit Movie
+            </h1>
+            <p className="text-sm text-gray-500 mt-1">
+              Update movie details inline. Changes are applied after saving.
+            </p>
+          </div>
+        </header>
+
         <form action={updateMovie} className="space-y-4">
           {/* hidden field to identify which movie to update */}
           <input type="hidden" name="movieId" value={movie.id} />
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Movie Title:
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex items-center gap-4">
+              <label htmlFor="title" className="w-28 text-sm font-medium text-gray-700">
+                Title
+              </label>
               <input
+                id="title"
                 name="title"
                 type="text"
                 defaultValue={movie.title}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                placeholder="Movie title"
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Release Date:
+            </div>
+
+            <div className="flex items-center gap-4">
+              <label htmlFor="releaseDate" className="w-28 text-sm font-medium text-gray-700">
+                Release
+              </label>
               <input
+                id="releaseDate"
                 name="releaseDate"
                 type="date"
                 defaultValue={movie.releaseDate.toISOString().split("T")[0]}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Description:
+            </div>
+
+            <div className="flex items-start gap-4 md:col-span-2">
+              <label htmlFor="description" className="w-28 text-sm font-medium text-gray-700 pt-2">
+                Description
+              </label>
               <textarea
+                id="description"
                 name="description"
                 rows={4}
                 defaultValue={movie.description}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                placeholder="Short synopsis..."
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Director:
+            </div>
+
+            <div className="flex items-center gap-4">
+              <label htmlFor="director" className="w-28 text-sm font-medium text-gray-700">
+                Director
+              </label>
               <input
+                id="director"
                 name="director"
                 type="text"
                 defaultValue={directorName}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                placeholder="Full name"
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Actors (comma‑separated):
+            </div>
+
+            <div className="flex items-center gap-4">
+              <label htmlFor="actors" className="w-28 text-sm font-medium text-gray-700">
+                Actors
+              </label>
               <input
+                id="actors"
                 name="actors"
                 type="text"
                 defaultValue={actorNames}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                placeholder="Comma-separated list"
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Image URL:
+            </div>
+
+            <div className="flex items-center gap-4">
+              <label htmlFor="imageUrl" className="w-28 text-sm font-medium text-gray-700">
+                Image
+              </label>
               <input
+                id="imageUrl"
                 name="imageUrl"
                 type="url"
                 defaultValue={movie.imageUrl ?? ""}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                placeholder="https://..."
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Runtime (minutes):
+            </div>
+
+            <div className="flex items-center gap-4">
+              <label htmlFor="runtime" className="w-28 text-sm font-medium text-gray-700">
+                Runtime
+              </label>
               <input
+                id="runtime"
                 name="runtime"
                 type="number"
                 min={1}
                 defaultValue={movie.runtime?.toString()}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                placeholder="minutes"
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Price:
+            </div>
+
+            <div className="flex items-center gap-4">
+              <label htmlFor="price" className="w-28 text-sm font-medium text-gray-700">
+                Price
+              </label>
               <input
+                id="price"
                 name="price"
                 type="number"
                 step="0.01"
                 min={0}
                 defaultValue={String(movie.price ?? "")}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                placeholder="0.00"
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Stock:
+            </div>
+
+            <div className="flex items-center gap-4">
+              <label htmlFor="stock" className="w-28 text-sm font-medium text-gray-700">
+                Stock
+              </label>
               <input
+                id="stock"
                 name="stock"
                 type="number"
                 min={0}
                 defaultValue={movie.stock}
                 required
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                placeholder="qty"
               />
-            </label>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Genres (comma‑separated):
+            </div>
+
+            <div className="flex items-center gap-4 md:col-span-2">
+              <label htmlFor="genres" className="w-28 text-sm font-medium text-gray-700">
+                Genres
+              </label>
               <input
+                id="genres"
                 name="genres"
                 type="text"
                 defaultValue={genreNamesDefault}
                 placeholder="Action, Drama, Sci‑Fi"
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
               />
-            </label>
+            </div>
           </div>
-          <SaveButton />
+          <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+            <BackButton />
+            <SaveButton />
+          </div>
         </form>
       </div>
     </div>
