@@ -18,15 +18,28 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
   const query = sp.q ?? "";
   const selectedGenre = sp.genre ?? "";
 
-  // Fetch movies, optionally filtering by title
+  // Fetch movies, optionally filtering by title or people (actor/director)
   // Build `where` dynamically so we only include filters when present
   const where: Prisma.MovieWhereInput = {};
   if (query) {
     Object.assign(where, {
-      title: {
-        contains: query,
-        mode: "insensitive",
-      },
+      OR: [
+        {
+          title: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+        {
+          people: {
+            some: {
+              person: {
+                fullName: { contains: query, mode: "insensitive" },
+              },
+            },
+          },
+        },
+      ],
     });
   }
   if (selectedGenre) {
@@ -74,8 +87,8 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
   const genreOptions = usedGenres.map((g) => g.name);
 
   return (
-    <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-100 antialiased">
-      <main className="flex-grow px-4 sm:px-8 max-w-7xl mx-auto w-full pt-8 pb-12 box-border">
+    <div >
+      <main className="flex-grow px-2 sm:px-4 max-w-7xl mx-auto w-full pt-8 pb-12 box-border">
         <header className="mb-6">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-blue-400 text-center">
             Movies
@@ -87,7 +100,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
         </header>
 
         {/* Search and filter controls - modern inline with glass effect */}
-        <section className="mb-6">
+        {/* <section className="mb-6">
           <form
             method="GET"
             className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-white/3 backdrop-blur-sm border border-white/6 rounded-xl p-4 shadow-sm"
@@ -116,7 +129,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
               </div>
             </div>
           </form>
-        </section>
+        </section> */}
         {/* Inline Tailwind-only styles applied through classes below. */}
         {/* Movies grid */}
         <div className="min-h-[240px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
@@ -153,7 +166,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                   <div className="p-4">
                     <h2
                       id={`movie-${movie.id}-title`}
-                      className="text-base sm:text-lg font-semibold text-gray-100 line-clamp-2"
+                      className="text-base sm:text-lg font-semibold text-gray-100 hover:text-white hover:underline line-clamp-2"
                     >
                       {movie.title}
                     </h2>
@@ -173,7 +186,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                           {movie.genres?.slice(0, 3).map((g) => (
                             <span
                               key={g.genre.name}
-                              className="text-xs px-2 py-1 rounded-full bg-black/40 text-gray-100 backdrop-blur-sm"
+                              className="text-xs px-2 py-0.5 rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10"
                             >
                               {g.genre.name}
                             </span>

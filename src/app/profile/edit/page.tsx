@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
+import { SaveButton } from "@/components";
+import { updateProfile } from "@/server/actions/usersActions";
 
 type ProfileView = {
   id: string;
@@ -16,7 +18,15 @@ type ProfileView = {
 
 export default async function Page() {
   // require a signed-in session and fetch the user's profile
-  const session = await auth.api.getSession({ headers: await headers() });
+  let session;
+  try {
+    session = await auth.api.getSession({ headers: await headers() });
+  } catch (err) {
+    // If the auth library fails, treat as not found / unauthorized for this page
+    console.error("Failed to get session for profile edit page:", err);
+    notFound();
+  }
+
   if (!session || !session.user) {
     // no session -> 404 / redirect handled by caller; show notFound to match previous behavior
     notFound();
@@ -25,62 +35,238 @@ export default async function Page() {
   const userId = session.user.id as string | undefined;
   if (!userId) notFound();
 
-  const profile = (await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      id: true,
-      name: true,
-      image: true,
-      email: true,
-      createdAt: true,
-      updatedAt: true,
-      role: true,
-    },
-  })) as ProfileView | null;
+  let profile: ProfileView | null = null;
+  try {
+    profile = (await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        image: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+        role: true,
+      },
+    })) as ProfileView | null;
+  } catch (err) {
+    console.error("Error fetching profile for user", userId, err);
+    // avoid leaking implementation details to users; show 404 to match previous behavior
+    notFound();
+  }
 
   if (!profile) notFound();
 
+  // fetch the user's address if present so the client editor can prefill it
+  let address = null;
+  try {
+    address = await prisma.address.findFirst({ where: { userId: profile.id } });
+  } catch (err) {
+    console.error("Failed to fetch user address for profile edit", err);
+  }
+
   const avatarSrc =
-    profile.image ||
-    `https://avatars.dicebear.com/api/identicon/${encodeURIComponent(
-      profile.id
-    )}.svg`;
+    profile.image &&
+    typeof profile.image === "string" &&
+    profile.image.length > 0
+      ? profile.image
+      : `https://avatars.dicebear.com/api/identicon/${encodeURIComponent(
+          profile.id
+        )}.svg`;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-6">
-      <div className="mx-auto max-w-3xl">
-        <div className="rounded-2xl bg-white shadow-md overflow-hidden">
-          <div className="flex items-center gap-6 p-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+    <div className="mx-auto max-w-3xl">
+      <div className="rounded-2xl bg-white shadow-lg overflow-hidden">
+        <div className="flex items-center gap-6 p-6 bg-gradient-to-r from-sky-600 to-violet-600 text-white">
+          <label
+            className="relative flex items-center gap-4 cursor-pointer"
+            htmlFor="image"
+          >
             <Image
               src={avatarSrc}
               alt={`${profile.name ?? "profile"} avatar`}
-              width={80}
-              height={80}
-              className="h-20 w-20 rounded-full ring-2 ring-white object-cover"
+              width={88}
+              height={88}
+              className="h-22 w-22 rounded-full ring-2 ring-white object-cover"
+              unoptimized
             />
-            <div className="flex-1">
-              <h1 className="text-2xl font-semibold leading-tight">
-                {profile.name ?? "Unnamed"}
-              </h1>
-              <p className="mt-1 text-sm opacity-90">{profile.email}</p>
-            </div>
-            <div className="text-sm opacity-90">ID: {profile.id}</div>
-          </div>
+            <span className="absolute bottom-0 right-0 -mb-1 -mr-1 inline-flex items-center justify-center h-7 w-7 rounded-full bg-white/20 text-xs font-medium">
+              ✎
+            </span>
+          </label>
 
-          <div className="p-6">
-            <h2 className="text-lg font-medium mb-2">About</h2>
-            <p className="mb-4 text-sm text-gray-600">
-              A quick profile overview. Edit inline to keep your info up to
-              date.
-            </p>
+          <div className="flex-1 min-w-0">
+            <form action={updateProfile} className="flex flex-col gap-2">
+              <input type="hidden" name="userId" value={profile.id} />
+              <div className="flex items-baseline gap-4">
+                <input
+                  name="name"
+                  aria-label="Full name"
+                  defaultValue={profile.name ?? ""}
+                  placeholder="Your name"
+                  className="min-w-0 text-xl font-semibold bg-transparent border-0 focus:outline-none focus:ring-0 text-white placeholder-white/70"
+                />
+                <div className="text-sm text-white/90">
+                  · {profile.role ?? "user"}
+                </div>
+                <div className="ml-auto text-xs text-white/80">
+                  ID: {profile.id}
+                </div>
+              </div>
 
-            {/* Client-side editor removed temporarily — implement a client component at "src/components/profile-editor" to restore interactive editing */}
-            <div className="border border-dashed rounded-md p-4 text-sm text-gray-600">
-              Client editor not found during build; add
-              src/components/profile-editor (a client component) to enable
-              inline editing.
-            </div>
+              <div className="mt-1 flex items-center gap-3">
+                <input
+                  aria-label="Email"
+                  name="email"
+                  type="email"
+                  defaultValue={profile.email ?? ""}
+                  readOnly
+                  className="text-sm bg-white/10 px-3 py-1 rounded-full text-white/95 border border-white/10"
+                />
+                <div className="text-sm text-white/80">
+                  Joined{" "}
+                  <span className="font-medium">
+                    {profile.createdAt
+                      ? new Date(profile.createdAt).toLocaleDateString()
+                      : "-"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Hidden image input is part of the same form so clicking avatar focuses here */}
+              <input
+                id="image"
+                name="image"
+                defaultValue={profile.image ?? ""}
+                placeholder="https://.../avatar.jpg"
+                className="sr-only"
+              />
+            </form>
           </div>
+        </div>
+
+        <div className="p-6">
+          <form action={updateProfile} className="space-y-6">
+            <input type="hidden" name="userId" value={profile.id} />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label className="flex flex-col">
+                <span className="text-sm text-gray-600">Full name</span>
+                <input
+                  name="name"
+                  defaultValue={profile.name ?? ""}
+                  placeholder="Full name"
+                  className="mt-1 px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900"
+                />
+              </label>
+
+              <label className="flex flex-col">
+                <span className="text-sm text-gray-600">Email</span>
+                <input
+                  name="email"
+                  type="email"
+                  defaultValue={profile.email ?? ""}
+                  readOnly
+                  className="mt-1 px-4 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900"
+                />
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label className="flex flex-col">
+                <span className="text-sm text-gray-600">Phone (optional)</span>
+                <input
+                  name="phone"
+                  defaultValue={""}
+                  placeholder="Phone number"
+                  className="mt-1 px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  Not available for now due to DB (will be added later)
+                </p>
+              </label>
+
+              <label className="flex flex-col">
+                <span className="text-sm text-gray-600">Image URL</span>
+                <input
+                  name="image"
+                  defaultValue={profile.image ?? ""}
+                  placeholder="https://.../avatar.jpg"
+                  className="mt-1 px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900"
+                />
+              </label>
+            </div>
+
+            <label className="flex flex-col">
+              <span className="text-sm text-gray-600">Bio</span>
+              <textarea
+                name="bio"
+                defaultValue={""}
+                placeholder="A short bio (optional)"
+                rows={3}
+                className="mt-1 px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900"
+              />
+              <p className="mt-1 text-xs text-gray-500">
+                Not available for now due to DB (will be added later)
+              </p>
+            </label>
+
+            <fieldset className="rounded-md border border-gray-100 p-4 bg-gray-50">
+              <legend className="text-sm font-medium text-gray-700">
+                Address (optional)
+              </legend>
+              <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input
+                  name="addressLine1"
+                  defaultValue={address?.line1 ?? ""}
+                  placeholder="Address line 1"
+                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900"
+                />
+                <input
+                  name="addressLine2"
+                  defaultValue={address?.line2 ?? ""}
+                  placeholder="Address line 2"
+                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900"
+                />
+                <input
+                  name="city"
+                  defaultValue={address?.city ?? ""}
+                  placeholder="City"
+                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900"
+                />
+                <input
+                  name="postalCode"
+                  defaultValue={address?.postalCode ?? ""}
+                  placeholder="Postal code"
+                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900"
+                />
+                <input
+                  name="country"
+                  defaultValue={address?.country ?? ""}
+                  placeholder="Country"
+                  className="px-3 py-2 rounded-lg border border-gray-200 col-span-1 sm:col-span-2 text-gray-900"
+                />
+              </div>
+            </fieldset>
+
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-500">
+                Inline edits — click Save to persist changes.
+              </div>
+
+              <div className="flex items-center gap-3">
+                <a
+                  href="/profile"
+                  className="text-sm text-gray-600 hover:text-gray-800"
+                >
+                  Cancel
+                </a>
+                <div>
+                  <SaveButton label="Save" />
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
     </div>

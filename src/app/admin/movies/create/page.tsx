@@ -12,7 +12,7 @@ export default async function CreateMoviePage() {
   // redirect must match this page route
   await requireAdmin("/admin/movies/create");
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-6">
+    <div>
       <div className="mx-auto max-w-3xl bg-white/95 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-2xl">
         <header className="mb-6">
           <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
@@ -39,7 +39,7 @@ export default async function CreateMoviePage() {
               type="text"
               required
               placeholder="e.g., The Great Adventure"
-              className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
@@ -57,7 +57,7 @@ export default async function CreateMoviePage() {
                 name="releaseDate"
                 type="date"
                 required
-                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
@@ -75,7 +75,7 @@ export default async function CreateMoviePage() {
                 min={1}
                 required
                 placeholder="minutes"
-                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
@@ -95,7 +95,7 @@ export default async function CreateMoviePage() {
                 type="text"
                 required
                 placeholder="Director name"
-                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
@@ -111,7 +111,7 @@ export default async function CreateMoviePage() {
                 name="actors"
                 type="text"
                 placeholder="Comma-separated"
-                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
@@ -133,7 +133,7 @@ export default async function CreateMoviePage() {
                 min={0}
                 required
                 placeholder="0.00"
-                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
@@ -150,7 +150,7 @@ export default async function CreateMoviePage() {
                 type="number"
                 min={0}
                 required
-                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
@@ -169,7 +169,7 @@ export default async function CreateMoviePage() {
               type="url"
               required
               placeholder="https://..."
-              className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
@@ -186,7 +186,7 @@ export default async function CreateMoviePage() {
               name="genres"
               type="text"
               placeholder="Action, Drama, Sci‑Fi"
-              className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex-1 p-3 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
@@ -209,7 +209,7 @@ export default async function CreateMoviePage() {
               rows={5}
               required
               placeholder="A short synopsis..."
-              className="w-full p-4 border border-gray-200 rounded-lg bg-gray-50 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full p-4 border border-gray-200 rounded-lg bg-gray-50 text-gray-700 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 

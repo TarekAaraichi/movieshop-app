@@ -134,7 +134,7 @@ export default async function PersonPage({
   };
 
   return (
-    <div className="min-h-screen flex flex-col p-8 px-4 bg-[linear-gradient(180deg,#0f1724_0%,_#0b1220_50%,_#071025_100%)] text-[#e6eef8] font-sans">
+    <div >
       <main className="w-full max-w-[1100px] mx-auto flex-grow p-2">
       <section className="flex flex-row gap-6 items-start p-5 rounded-[14px] bg-[linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] shadow-[0_6px_30px_rgba(2,6,23,0.6)] backdrop-blur-sm">
         <div className="w-48 min-w-[192px] h-48 rounded-full overflow-hidden shadow-xl flex-shrink-0 relative bg-[#0b1220]">

@@ -2,7 +2,7 @@ import { Card } from "@/components";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950 px-6 py-16">
+    <div>
       <Card className="w-full max-w-4xl bg-white/5 backdrop-blur-sm border border-white/6 shadow-lg rounded-2xl p-6 md:p-10 transition-transform hover:-translate-y-1">
       <div className="flex flex-col md:flex-row gap-6">
         <div className="flex-1">

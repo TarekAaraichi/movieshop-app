@@ -61,8 +61,8 @@ export default async function CheckoutPage({
     }
   }
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-3xl bg-white/95 dark:bg-gray-900/80 backdrop-blur-sm shadow-lg rounded-2xl p-6 sm:p-8">
+    <div>
+      <div className="w-full m-auto max-w-3xl bg-white/95 dark:bg-gray-900/80 backdrop-blur-sm shadow-lg rounded-2xl p-6 sm:p-8">
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
@@ -91,10 +91,10 @@ export default async function CheckoutPage({
         <form
           id="checkout-form"
           action={createOrder}
-          className="grid grid-cols-1 gap-4 sm:gap-6"
+          className="grid grid-cols-1 gap-4 sm:gap-6 min-w-0"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label className="flex items-center gap-4">
+            <label className="flex items-center gap-4 min-w-0">
               <span className="w-28 text-sm font-medium text-gray-700 dark:text-gray-300">
                 Full name
               </span>
@@ -105,11 +105,11 @@ export default async function CheckoutPage({
                 placeholder="John Doe"
                 defaultValue={dbUser?.name ?? undefined}
                 required
-                className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                className="flex-1 min-w-0 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </label>
 
-            <label className="flex items-center gap-4">
+            <label className="flex items-center gap-4 min-w-0">
               <span className="w-28 text-sm font-medium text-gray-700 dark:text-gray-300">
                 Email
               </span>
@@ -120,13 +120,13 @@ export default async function CheckoutPage({
                 placeholder="john.doe@example.com"
                 defaultValue={dbUser?.email ?? undefined}
                 required
-                className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                className="flex-1 min-w-0 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </label>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <label className="flex items-center gap-4 sm:col-span-2">
+            <label className="flex items-center gap-4 sm:col-span-2 min-w-0">
               <span className="w-28 text-sm font-medium text-gray-700 dark:text-gray-300">
                 Address
               </span>
@@ -137,11 +137,11 @@ export default async function CheckoutPage({
                 placeholder="Street address"
                 defaultValue={dbAddress?.line1 ?? undefined}
                 required
-                className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                className="flex-1 min-w-0 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </label>
 
-            <label className="flex items-center gap-4">
+            <label className="flex items-center gap-4 min-w-0">
               <span className="w-28 text-sm font-medium text-gray-700 dark:text-gray-300">
                 City
               </span>
@@ -152,13 +152,13 @@ export default async function CheckoutPage({
                 placeholder="City"
                 defaultValue={dbAddress?.city ?? undefined}
                 required
-                className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                className="flex-1 min-w-0 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </label>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label className="flex items-center gap-4">
+            <label className="flex items-center gap-4 min-w-0">
               <span className="w-28 text-sm font-medium text-gray-700 dark:text-gray-300">
                 Postal
               </span>
@@ -169,11 +169,11 @@ export default async function CheckoutPage({
                 placeholder="ZIP"
                 defaultValue={dbAddress?.postalCode ?? undefined}
                 required
-                className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                className="flex-1 min-w-0 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </label>
 
-            <label className="flex items-center gap-4">
+            <label className="flex items-center gap-4 min-w-0">
               <span className="w-28 text-sm font-medium text-gray-700 dark:text-gray-300">
                 Country
               </span>
@@ -184,13 +184,13 @@ export default async function CheckoutPage({
                 placeholder="Country"
                 defaultValue={dbAddress?.country ?? undefined}
                 required
-                className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                className="flex-1 min-w-0 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </label>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
-            <label className="flex items-center gap-4 sm:col-span-2">
+            <label className="flex items-center gap-4 sm:col-span-2 min-w-0">
               <span className="w-28 text-sm font-medium text-gray-700 dark:text-gray-300">
                 Payment
               </span>
@@ -200,7 +200,7 @@ export default async function CheckoutPage({
                 type="text"
                 placeholder="card token"
                 required
-                className="flex-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+                className="flex-1 min-w-0 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 px-4 py-2 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
               />
             </label>
 

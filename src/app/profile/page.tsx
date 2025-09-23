@@ -53,7 +53,7 @@ export default async function ProfilePage() {
   // Using the `user` fetched from the database above for rendering.
 
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-b from-slate-50 to-slate-100">
+    <div>
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-6 gap-6">
           <div className="flex items-center gap-4">
@@ -61,7 +61,7 @@ export default async function ProfilePage() {
               {(user?.name?.[0] ?? user?.email?.[0] ?? "U").toUpperCase()}
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 leading-tight">
+              <h1 className="text-2xl md:text-3xl font-extrabold text-gray-600">
                 {user?.name ?? "Your profile"}
               </h1>
               <div className="flex items-center gap-3 mt-1">
@@ -91,7 +91,7 @@ export default async function ProfilePage() {
             )}
             <Link
               href="/profile/edit"
-              className="inline-flex items-center gap-2 text-sm border border-slate-200 bg-white px-3 py-2 rounded-md hover:shadow focus:outline-none"
+              className="inline-flex text-gray-900 items-center gap-2 text-sm border border-slate-200 bg-white px-3 py-2 rounded-md hover:shadow focus:outline-none"
             >
               Edit
             </Link>
@@ -118,9 +118,9 @@ export default async function ProfilePage() {
                 <div className="space-y-3">
                   {user.orders.map((o, idx) => {
                     const statusClasses =
-                      o.status === "completed"
+                      o.status === "PAID"
                         ? "bg-emerald-100 text-emerald-800"
-                        : o.status === "pending"
+                        : o.status === "PENDING"
                         ? "bg-yellow-100 text-yellow-800"
                         : "bg-red-100 text-red-800";
                     return (

@@ -256,7 +256,7 @@ export default async function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div >
       <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-6 items-start">
       <main className="flex-1 bg-white rounded-2xl shadow p-6">
         <div className="flex items-center justify-between mb-4">

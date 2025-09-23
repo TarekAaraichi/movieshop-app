@@ -33,20 +33,20 @@ export default async function EditPersonPage({
   const rolesDisplay = roles.length ? roles.map(pretty).join(", ") : "—";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-6 sm:p-8">
+    <div>
       <div className="mx-auto max-w-5xl bg-white/95 p-6 sm:p-8 rounded-2xl shadow-xl">
       <div className="flex items-start justify-between gap-4">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
         Edit Person
         </h1>
         <div className="hidden sm:flex items-center gap-3">
-        <button
+        {/* <button
           form="edit-person-form"
           type="submit"
           className="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-indigo-600 text-white font-medium shadow hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           Save
-        </button>
+        </button> */}
         </div>
       </div>
 
@@ -159,7 +159,7 @@ export default async function EditPersonPage({
 
         <div className="w-full">
           <a
-          href={`/admin/persons/${personId}`}
+          href={`/persons/${personId}`}
           className="block text-center text-sm text-indigo-600 hover:underline"
           >
           View person page

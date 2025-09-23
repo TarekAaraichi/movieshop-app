@@ -49,7 +49,7 @@ export default function AddToCartClientButton({
   }
 
   return (
-    <div className="flex flex-col items-start">
+    <div >
       <button
         type="button"
         onClick={handleAdd}

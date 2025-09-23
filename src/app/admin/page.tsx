@@ -135,7 +135,7 @@ export default async function AdminPage({
   // server actions are centralized under src/app/actions/*
 
   return (
-    <div className="min-h-screen p-6 bg-gray-50">
+    <div>
       {/* header */}
       <div className="max-w-7xl mx-auto flex items-center justify-between mb-6">
         <div>
@@ -227,7 +227,7 @@ export default async function AdminPage({
                     ? "Search people..."
                     : "Search users..."
                 }
-                className="pl-3 pr-10 py-1.5 text-sm border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-indigo-300"
+                className="pl-3 pr-10 py-1.5 text-gray-600 text-sm border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-indigo-300"
               />
               <button
                 type="submit"
@@ -402,35 +402,45 @@ export default async function AdminPage({
           <div className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
             <ul className="divide-y divide-gray-100">
               {persons.map((person) => {
-                const roles =
-                  Array.from(
-                    new Set((person.movies || []).map((m) => m.role))
-                  ).join(", ") || "—";
-                return (
-                  <li
-                    key={person.id}
-                    className="flex items-center justify-between px-4 py-3"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700 font-semibold">
-                        {person.fullName
-                          .split(" ")
-                          .map((s) => s[0])
-                          .slice(0, 2)
-                          .join("")}
-                      </div>
-                      <div>
-                        <div className="font-medium text-gray-800">
-                          {person.fullName}
-                        </div>
-                        <div className="text-sm text-gray-500">{roles}</div>
-                        <div className="text-xs text-gray-400 mt-1">
-                          {(person.movies || [])
-                            .map((m) => m.movie.title)
-                            .join(", ") || "—"}
-                        </div>
-                      </div>
-                    </div>
+          const roles =
+            Array.from(
+              new Set((person.movies || []).map((m) => m.role))
+            ).join(", ") || "—";
+          return (
+            <li
+              key={person.id}
+              className="flex items-center justify-between px-4 py-3"
+            >
+              <div className="flex items-center gap-3">
+                {person.imageUrl ? (
+            <img
+              src={person.imageUrl}
+              alt={person.fullName}
+              className="h-10 w-10 rounded-full bg-indigo-50 object-cover"
+              loading="lazy"
+              referrerPolicy="no-referrer"
+            />
+                ) : (
+            <div className="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700 font-semibold">
+              {person.fullName
+                .split(" ")
+                .map((s) => s[0])
+                .slice(0, 2)
+                .join("")}
+            </div>
+                )}
+                <div>
+            <div className="font-medium text-gray-800">
+              {person.fullName}
+            </div>
+            <div className="text-sm text-gray-500">{roles}</div>
+            <div className="text-xs text-gray-400 mt-1">
+              {(person.movies || [])
+                .map((m) => m.movie.title)
+                .join(", ") || "—"}
+            </div>
+                </div>
+              </div>
 
                     <div className="flex items-center gap-3">
                       <Link

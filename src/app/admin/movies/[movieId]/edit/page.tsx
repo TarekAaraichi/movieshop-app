@@ -36,7 +36,7 @@ export default async function EditMoviePage({
   const genreNamesDefault = movie.genres.map((mg) => mg.genre.name).join(", ");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-950 p-8">
+    <div >
       <div className="bg-white p-6 md:p-8 rounded-2xl shadow-2xl max-w-4xl mx-auto">
         <header className="mb-6 flex items-center justify-between">
           <div>
@@ -64,7 +64,7 @@ export default async function EditMoviePage({
                 type="text"
                 defaultValue={movie.title}
                 required
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
                 placeholder="Movie title"
               />
             </div>
@@ -79,7 +79,7 @@ export default async function EditMoviePage({
                 type="date"
                 defaultValue={movie.releaseDate.toISOString().split("T")[0]}
                 required
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
               />
             </div>
 
@@ -93,7 +93,7 @@ export default async function EditMoviePage({
                 rows={4}
                 defaultValue={movie.description}
                 required
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
                 placeholder="Short synopsis..."
               />
             </div>
@@ -108,7 +108,7 @@ export default async function EditMoviePage({
                 type="text"
                 defaultValue={directorName}
                 required
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
                 placeholder="Full name"
               />
             </div>
@@ -122,7 +122,7 @@ export default async function EditMoviePage({
                 name="actors"
                 type="text"
                 defaultValue={actorNames}
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
                 placeholder="Comma-separated list"
               />
             </div>
@@ -137,7 +137,7 @@ export default async function EditMoviePage({
                 type="url"
                 defaultValue={movie.imageUrl ?? ""}
                 required
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
                 placeholder="https://..."
               />
             </div>
@@ -153,7 +153,7 @@ export default async function EditMoviePage({
                 min={1}
                 defaultValue={movie.runtime?.toString()}
                 required
-                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
                 placeholder="minutes"
               />
             </div>
@@ -170,7 +170,7 @@ export default async function EditMoviePage({
                 min={0}
                 defaultValue={String(movie.price ?? "")}
                 required
-                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
                 placeholder="0.00"
               />
             </div>
@@ -186,7 +186,7 @@ export default async function EditMoviePage({
                 min={0}
                 defaultValue={movie.stock}
                 required
-                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
                 placeholder="qty"
               />
             </div>
@@ -201,12 +201,11 @@ export default async function EditMoviePage({
                 type="text"
                 defaultValue={genreNamesDefault}
                 placeholder="Action, Drama, Sci‑Fi"
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
               />
             </div>
           </div>
           <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
-            <BackButton />
             <SaveButton />
           </div>
         </form>

@@ -1,7 +1,7 @@
 export default function ContactPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 px-4 py-12">
-      <div className="max-w-4xl w-full bg-white/5 backdrop-blur-sm border border-white/6 rounded-2xl shadow-2xl p-6 sm:p-8">
+    <div>
+      <div className="m-auto max-w-4xl w-full bg-white/5 backdrop-blur-sm border border-white/6 rounded-2xl shadow-2xl p-6 sm:p-8">
         <header className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-semibold text-gray-100">
             Contact

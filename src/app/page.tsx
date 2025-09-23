@@ -157,15 +157,6 @@ export default async function HomePage() {
       )}
       </Link>
 
-      {/* Details */}
-      <div className="p-3 flex-1 flex flex-col gap-2">
-      <Link
-      href={`/movies/${movie.id}`}
-      className="text-base sm:text-lg font-semibold text-gray-100 hover:text-white hover:underline line-clamp-2"
-      >
-      {movie.title}
-      </Link>
-
       {/* Genres as modern chips */}
       {movie.genres && movie.genres.length > 0 && (
       <div className="flex flex-wrap gap-2 mt-1">
@@ -180,38 +171,22 @@ export default async function HomePage() {
       </div>
       )}
 
-      {/* Show up to 2 actors under genres */}
-      {((movie.people ?? []).filter((p) => String(p.role ?? "").toLowerCase() === "actor").slice(0, 2))?.length > 0 && (
-      <div className="flex flex-wrap gap-2 mt-2">
-      {movie.people
-        ?.filter((p) => String(p.role ?? "").toLowerCase() === "actor")
-        .slice(0, 2)
-        .map((a) => (
-        <span
-        key={a.person.id}
-        className="text-xs text-gray-200 bg-white/2 px-2 py-0.5 rounded-md backdrop-blur-sm border border-white/6"
-        >
-        {a.person.fullName}
-        </span>
-        ))}
-      </div>
-      )}
-
-      <div className="mt-auto flex items-center justify-center gap-3">
-      <div className="flex items-center gap-3">
-      {/* <span className="text-sm text-gray-300">
-      {movie.releaseDate ? new Date(movie.releaseDate).toLocaleDateString() : "—"}
-      </span> */}
-      </div>
+        {/* Details */}
+      <div className="p-3 flex-1 flex flex-col gap-2">
+      <Link
+      href={`/movies/${movie.id}`}
+      className="text-base sm:text-lg font-semibold text-gray-100 hover:text-white hover:underline line-clamp-2"
+      >
+      {movie.title}
+      </Link>
 
       <Link
         href={`/movies/${movie.id}`}
-        className="flex-1 min-w-0 inline-flex w-full justify-center items-center gap-2 rounded-md bg-gradient-to-r from-green-400 to-blue-500 text-black text-sm font-medium px-3 py-1.5 shadow-sm hover:scale-105 transition-transform"
+        className="flex mt-auto min-w-0  w-full justify-center items-center gap-2 rounded-md bg-gradient-to-r from-green-400 to-blue-500 text-black text-sm font-medium px-3 py-1.5 shadow-sm hover:scale-105 transition-transform"
         aria-label={`View details for ${movie.title}`}
       >
         View
       </Link>
-      </div>
       </div>
       </div>
       </div>

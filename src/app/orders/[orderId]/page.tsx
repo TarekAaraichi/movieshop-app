@@ -68,8 +68,8 @@ export default async function OrderPage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white p-6 flex items-start justify-center">
-      <div className="w-full max-w-4xl">
+    <div >
+      <div className="w-full m-auto max-w-4xl">
         <ClearCartOnConfirmation />
         <div className="bg-white rounded-2xl shadow-lg ring-1 ring-gray-100 overflow-hidden">
           <div className="p-6 md:p-8 flex items-start justify-between gap-4">

@@ -22,8 +22,8 @@ export default async function SignInPage({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
-      <div className="max-w-md w-full">
+    <div >
+      <div className="m-auto max-w-md w-full">
         <div className="rounded-2xl bg-white/5 backdrop-blur-md border border-white/6 shadow-lg overflow-hidden">
           <div className="p-6">
             <div className="flex items-center justify-between gap-3">

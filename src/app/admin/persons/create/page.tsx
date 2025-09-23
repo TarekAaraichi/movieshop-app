@@ -4,9 +4,17 @@ import { requireAdmin } from "@/lib/requireAdmin";
 export default function CreatePersonPage() {
   void requireAdmin("/admin/persons/create");
   return (
-    <div className="min-h-screen bg-gray-50 p-8 flex items-start justify-center">
-      <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-3xl">
-        <h2 className="text-2xl font-semibold mb-6">Create Person</h2>
+    <div>
+      <div className="mx-auto max-w-3xl bg-white/95 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-2xl">
+        <header className="mb-6">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
+            Create a Person
+          </h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Add a new person to the persons catalog. Use the inline fields for a quicker
+            workflow.
+          </p>
+        </header>
 
         <form action={createPerson} className="space-y-6">
           {/* Full Name (inline label) */}
@@ -20,7 +28,7 @@ export default function CreatePersonPage() {
                 required
                 placeholder="e.g. Christopher Nolan"
                 className="w-full rounded-lg border border-gray-200 px-4 py-2 shadow-sm
-                           focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+                           focus:outline-none focus:ring-2 focus:ring-green-500 transition text-gray-700 placeholder-gray-400"
               />
             </div>
           </div>
@@ -36,7 +44,7 @@ export default function CreatePersonPage() {
                 type="url"
                 placeholder="https://..."
                 className="flex-1 rounded-lg border border-gray-200 px-4 py-2 shadow-sm
-                           focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+                           focus:outline-none focus:ring-2 focus:ring-green-500 transition text-gray-700 placeholder-gray-400"
               />
               <div
                 aria-hidden
@@ -58,7 +66,7 @@ export default function CreatePersonPage() {
                 rows={4}
                 placeholder="Short biography, career highlights..."
                 className="w-full min-h-[110px] rounded-lg border border-gray-200 px-4 py-2 shadow-sm
-                           focus:outline-none focus:ring-2 focus:ring-green-500 transition resize-vertical"
+                           focus:outline-none focus:ring-2 focus:ring-green-500 transition resize-vertical text-gray-700 placeholder-gray-400"
               />
             </div>
           </div>

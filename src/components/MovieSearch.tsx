@@ -5,11 +5,13 @@ import { useRouter } from "next/navigation";
 type Props = {
   initialQuery?: string;
   selectedGenre?: string;
+  autoNavigateOnEmpty?: boolean;
 };
 
 export default function MovieSearch({
   initialQuery = "",
   selectedGenre = "",
+  autoNavigateOnEmpty = true,
 }: Props) {
   const router = useRouter();
   const [value, setValue] = React.useState(initialQuery);
@@ -35,21 +37,21 @@ export default function MovieSearch({
 
   // when user clears input, auto-navigate to apply genre-only filter
   React.useEffect(() => {
-    if (value === "") {
+    if (value === "" && autoNavigateOnEmpty) {
       // small timeout to allow user to continue typing; if truly empty, navigate
       const t = setTimeout(() => navigate(undefined), 250);
       return () => clearTimeout(t);
     }
     return undefined;
-  }, [value, navigate]);
+  }, [value, navigate, autoNavigateOnEmpty]);
 
   return (
     <div className="flex items-center w-full">
       <input
         name="q"
         type="search"
-        aria-label="Search by title"
-        placeholder="Search by title...🔍"
+        aria-label="Search by title, actor or director"
+        placeholder="Search by title, actor, or director...🔍"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={onKeyDown}
