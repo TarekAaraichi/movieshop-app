@@ -65,7 +65,9 @@ export default async function ProfilePage() {
                 {user?.name ?? "Your profile"}
               </h1>
               <div className="flex items-center gap-3 mt-1">
-                <div className="text-sm text-slate-600">{user?.email ?? "—"}</div>
+                <div className="text-sm text-slate-600">
+                  {user?.email ?? "—"}
+                </div>
                 <span
                   className={
                     "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium " +
@@ -113,7 +115,9 @@ export default async function ProfilePage() {
             </div>
 
             <div className="pt-4">
-              <h3 className="font-semibold text-sm text-slate-900 mb-3">Recent Orders</h3>
+              <h3 className="font-semibold text-sm text-slate-900 mb-3">
+                Recent Orders
+              </h3>
               {user?.orders && user.orders.length ? (
                 <div className="space-y-3">
                   {user.orders.map((o, idx) => {
@@ -152,24 +156,40 @@ export default async function ProfilePage() {
                               Order #{o.id ?? "—"}
                             </div>
                             <div className="text-xs text-slate-600 mt-1">
-                              {o.orderDate ? new Date(o.orderDate).toLocaleString() : "—"}
+                              {o.orderDate
+                                ? new Date(o.orderDate).toLocaleString()
+                                : "—"}
                               {" • "}
-                              <span className={"inline-flex items-center px-2 py-0.5 rounded-full text-xs " + statusClasses}>
+                              <span
+                                className={
+                                  "inline-flex items-center px-2 py-0.5 rounded-full text-xs " +
+                                  statusClasses
+                                }
+                              >
                                 {o.status ?? "—"}
                               </span>
                             </div>
                             <div className="mt-2 text-sm text-slate-700">
                               {o.items && o.items.length
-                                ? `${o.items.length} item${o.items.length > 1 ? "s" : ""}`
+                                ? `${o.items.length} item${
+                                    o.items.length > 1 ? "s" : ""
+                                  }`
                                 : "No items"}
                             </div>
                           </div>
                         </div>
 
                         <div className="ml-auto text-right flex flex-col items-end gap-2">
-                          <div className="text-sm font-semibold text-slate-900">Total</div>
-                          <div className="text-lg font-bold text-slate-900">${String(o.totalAmount ?? "0.00")}</div>
-                          <Link href={`/orders/${o.id ?? ""}`} className="text-sm text-indigo-600 hover:text-indigo-800">
+                          <div className="text-sm font-semibold text-slate-900">
+                            Total
+                          </div>
+                          <div className="text-lg font-bold text-slate-900">
+                            ${String(o.totalAmount ?? "0.00")}
+                          </div>
+                          <Link
+                            href={`/orders/${o.id ?? ""}`}
+                            className="text-sm text-indigo-600 hover:text-indigo-800"
+                          >
                             View
                           </Link>
                         </div>
@@ -178,13 +198,17 @@ export default async function ProfilePage() {
                   })}
                 </div>
               ) : (
-                <div className="text-sm text-slate-600">You have no recent orders.</div>
+                <div className="text-sm text-slate-600">
+                  You have no recent orders.
+                </div>
               )}
             </div>
           </section>
 
           <section className="bg-white shadow rounded-lg p-6">
-            <h2 className="font-semibold text-lg text-slate-900 mb-3">Addresses</h2>
+            <h2 className="font-semibold text-lg text-slate-900 mb-3">
+              Addresses
+            </h2>
             {user?.addresses && user.addresses.length ? (
               <div className="grid grid-cols-1 gap-3">
                 {user.addresses.map((a, idx) => (
@@ -192,14 +216,28 @@ export default async function ProfilePage() {
                     key={a.id ?? idx}
                     className="border border-slate-100 rounded-md p-3 bg-slate-50"
                   >
-                    <div className="text-sm font-medium text-slate-800">{a.line1}</div>
-                    {a.line2 && <div className="text-sm text-slate-700">{a.line2}</div>}
+                    <div className="text-sm font-medium text-slate-800">
+                      {a.line1}
+                    </div>
+                    {a.line2 && (
+                      <div className="text-sm text-slate-700">{a.line2}</div>
+                    )}
                     <div className="text-sm text-slate-700 mt-1">
                       {a.city}, {a.postalCode}, {a.country}
                     </div>
                     <div className="mt-3 flex gap-2">
-                      <Link href="#" className="text-xs text-indigo-600 hover:underline">Edit</Link>
-                      <Link href="#" className="text-xs text-red-600 hover:underline">Remove</Link>
+                      <Link
+                        href="#"
+                        className="text-xs text-indigo-600 hover:underline"
+                      >
+                        Edit
+                      </Link>
+                      <Link
+                        href="#"
+                        className="text-xs text-red-600 hover:underline"
+                      >
+                        Remove
+                      </Link>
                     </div>
                   </div>
                 ))}
@@ -211,18 +249,29 @@ export default async function ProfilePage() {
         </div>
 
         <section className="bg-white shadow rounded-lg p-6">
-          <h2 className="font-semibold text-lg text-slate-900 mb-3">Order History</h2>
+          <h2 className="font-semibold text-lg text-slate-900 mb-3">
+            Order History
+          </h2>
           {user?.orders && user.orders.length ? (
             <ul className="divide-y divide-slate-100">
               {user.orders.map((o, idx) => (
                 <li key={o.id ?? idx} className="py-4">
                   <div className="flex items-center justify-between gap-4">
-                    <div className="text-sm text-slate-800 font-medium">Order #{o.id ?? "—"}</div>
-                    <div className="text-sm text-slate-600">
-                      {o.orderDate ? new Date(o.orderDate).toLocaleDateString() : "—"}
+                    <div className="text-sm text-slate-800 font-medium">
+                      Order #{o.id ?? "—"}
                     </div>
-                    <div className="text-sm font-semibold text-slate-900">${String(o.totalAmount ?? "0.00")}</div>
-                    <Link href={`/orders/${o.id ?? ""}`} className="text-sm text-indigo-600 hover:text-indigo-800">
+                    <div className="text-sm text-slate-600">
+                      {o.orderDate
+                        ? new Date(o.orderDate).toLocaleDateString()
+                        : "—"}
+                    </div>
+                    <div className="text-sm font-semibold text-slate-900">
+                      ${String(o.totalAmount ?? "0.00")}
+                    </div>
+                    <Link
+                      href={`/orders/${o.id ?? ""}`}
+                      className="text-sm text-indigo-600 hover:text-indigo-800"
+                    >
                       Details
                     </Link>
                   </div>
@@ -230,7 +279,9 @@ export default async function ProfilePage() {
               ))}
             </ul>
           ) : (
-            <div className="text-sm text-slate-600">You have no orders yet.</div>
+            <div className="text-sm text-slate-600">
+              You have no orders yet.
+            </div>
           )}
         </section>
       </div>

@@ -129,7 +129,11 @@ export default async function RootLayout({
               {/* Inline search using MovieSearch component */}
               <div className="flex-1 flex justify-center">
                 <div className="w-full max-w-xl">
-                    <MovieSearch initialQuery="" selectedGenre="" autoNavigateOnEmpty={false} />
+                  <MovieSearch
+                    initialQuery=""
+                    selectedGenre=""
+                    autoNavigateOnEmpty={false}
+                  />
                 </div>
               </div>
 
