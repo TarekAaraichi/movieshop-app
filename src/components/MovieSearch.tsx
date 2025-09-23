@@ -1,4 +1,10 @@
 "use client";
+
+/**
+ * MovieSearch
+ * Client search input with autocomplete and optional auto-navigation behavior.
+ */
+
 import React from "react";
 import { useRouter } from "next/navigation";
 

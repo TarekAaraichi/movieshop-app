@@ -1,3 +1,7 @@
+/**
+ * API: /api/cart (ensured)
+ * Handles cart mutations (add/update/remove) and returns the canonical cart DTO.
+ */
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib";
 import * as cartService from "@/server/services";
@@ -78,14 +82,14 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  // Accept body like { action: 'add'|'update'|'remove', movieId, quantity }
+  // Accept body like { action: 'add'|'update'|'remove'|'clear', movieId, quantity }
   const body = await req.json().catch(() => ({}));
   const { action, movieId, quantity } = body as {
     action?: string;
     movieId?: string;
     quantity?: number;
   };
-  if (!movieId)
+  if (!movieId && action !== "clear")
     return NextResponse.json(
       { ok: false, message: "missing_movieId" },
       { status: 400 }
@@ -136,16 +140,20 @@ export async function POST(req: Request) {
   } catch {}
 
   if (action === "add") {
-    await cartService.addItemToCart(cart.id, movieId, quantity || 1);
+    // movieId is required for add/update/remove per earlier validation
+    const mId = movieId as string;
+    await cartService.addItemToCart(cart.id, mId, quantity || 1);
   } else if (action === "update") {
     if (typeof quantity !== "number")
       return NextResponse.json(
         { ok: false, message: "missing_quantity" },
         { status: 400 }
       );
-    await cartService.updateItemInCart(cart.id, movieId, quantity);
+    const mId = movieId as string;
+    await cartService.updateItemInCart(cart.id, mId, quantity);
   } else if (action === "remove") {
-    await cartService.removeItemFromCart(cart.id, movieId);
+    const mId = movieId as string;
+    await cartService.removeItemFromCart(cart.id, mId);
   } else if (action === "clear") {
     try {
       // If user cart, clear all items for user's carts; otherwise delete anonymous cart

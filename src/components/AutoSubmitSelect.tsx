@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * AutoSubmitSelect
+ * Select input that auto-submits its value on change (used in filters/pagination).
+ */
+
 import React from "react";
 
 export default function AutoSubmitSelect({

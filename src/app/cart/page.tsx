@@ -1,9 +1,14 @@
+/**
+ * Cart page
+ * Server component that displays full cart contents and checkout actions.
+ */
+
 import { CartClient } from "@/components";
 import { cookies, headers } from "next/headers";
 import Link from "next/link";
 import { prisma } from "@/lib";
 import { getCartIdFromCookie } from "@/server/services";
-import type { CartClientItem } from "@/types";
+import type { CartClientItem, ServerMovie } from "@/types";
 import { auth } from "@/lib/auth";
 
 // Helper: read cart items from legacy cookie payload
@@ -316,7 +321,7 @@ export default async function CartPage() {
             items.reduce(
             (sum, it) =>
               sum +
-              (Number((it.movie as any)?.price ?? "0").valueOf() || 0) *
+              (Number((it.movie as ServerMovie)?.price ?? "0") || 0) *
               it.quantity,
             0
             )
@@ -334,7 +339,6 @@ export default async function CartPage() {
           !items.length ? "opacity-50 pointer-events-none" : ""
           }`}
           disabled={!items.length}
-          aria-disabled={!items.length}
         >
           Checkout
         </button>

@@ -3,6 +3,11 @@ import { requireAdmin } from "@/lib/requireAdmin";
 import { SaveButton } from "@/components";
 import { updateUser } from "@/server/actions/usersActions";
 
+/**
+ * Admin: Edit user (duplicate)
+ * Server page to edit user roles and details.
+ */
+
 export default async function EditUserPage({
   params,
 }: {

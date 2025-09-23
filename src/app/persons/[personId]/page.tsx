@@ -1,3 +1,8 @@
+/**
+ * Person detail page (ensured)
+ * Server-rendered page that shows an actor/person details and associated movies.
+ */
+
 // src/app/persons/[personId]/page.tsx
 import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
@@ -151,7 +156,7 @@ export default async function PersonPage({
         <h1 className="text-[32px] font-extrabold m-0 flex items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-blue-500">
           {person.fullName}
           {rolesDisplay ? (
-          <span className="text-sm font-semibold px-2.5 py-1 rounded-full bg-gradient-to-r from-white/40 via-slate-400/30 text-white/80 border border-white/10 ml-2">
+          <span className="inline-flex items-center rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10 px-3 py-1 text-xs font-medium">
             {rolesDisplay}
           </span>
           ) : null}
@@ -163,7 +168,7 @@ export default async function PersonPage({
           <p className="text-slate-500 mt-2">No bio available.</p>
         )}
 
-        <h2 className="mt-5 mb-2 text-[20px] font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-400">
+        <h2 className="mt-5 mb-2 inline-flex items-center rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10 px-3 py-1 text-xs font-medium">
           Movies
         </h2>
 

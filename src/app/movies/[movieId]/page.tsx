@@ -1,3 +1,15 @@
+/**
+ * Movie detail page (ensured)
+ * Server-rendered page showing detailed movie information, cast, and add-to-cart control.
+ *
+ * Responsibilities:
+ * - Fetch a single movie (including `genres`, `people`, and `_count`) via Prisma.
+ * - Format runtime and release date for display and render poster, facts, cast, and Add-to-Cart.
+ *
+ * Notes:
+ * - This is a server component (uses Prisma) and revalidates every 60s (`export const revalidate = 60`).
+ * - Poster and person images are rendered with `next/image`; callers should ensure external URLs are allowed in `next.config.js` or `unoptimized` is used as here.
+ */
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -141,7 +153,7 @@ export default async function MoviePage({ params }: Props) {
 
   return (
     <div className="w-full max-w-[1100px] mx-auto flex items-start gap-6 p-2">
-      <aside className="flex-shrink-0">
+      <aside className="flex-shrink-0 p-2">
         <div className="w-64 min-w-[264px] h-[376px] rounded-xl overflow-hidden shadow-xl relative bg-[#0b1220]">
           {poster ? (
             <Image

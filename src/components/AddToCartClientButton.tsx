@@ -1,4 +1,14 @@
 "use client";
+
+/**
+ * AddToCartClientButton
+ * Client-side button that adds an item to the cart using the `useCart` hook.
+ */
+
+// - Client-only button that uses `useCart()` to perform an optimistic add
+//   to the cart. Shows a spinner while pending and uses `sonner` for toasts.
+// - Props: `movieId`, optional `disabled`, `className` for wrapper, and
+//   `buttonClassName` to allow pages to style the native <button>.
 import { useTransition } from "react";
 import { useCart } from "@/hooks";
 import { toast } from "sonner";

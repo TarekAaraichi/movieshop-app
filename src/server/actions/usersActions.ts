@@ -1,3 +1,8 @@
+/**
+ * Server action helpers: usersActions
+ * Collection of server-side helpers that perform user-related operations used by server routes and pages.
+ */
+
 "use server";
 
 import { revalidatePath } from "next/cache";

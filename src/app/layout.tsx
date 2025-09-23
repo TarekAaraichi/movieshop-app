@@ -1,3 +1,8 @@
+/**
+ * App layout
+ * Next.js root layout component for the App Router. Wraps pages with header and global styles.
+ */
+
 import type { Metadata } from "next";
 // dynamic import removed; using ClientShell client wrapper instead
 import { Geist, Geist_Mono } from "next/font/google";

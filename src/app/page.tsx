@@ -1,3 +1,8 @@
+/**
+ * Home page (ensured)
+ * Server component that renders the app's index/home page and featured movies.
+ */
+
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";

@@ -1,3 +1,8 @@
+/**
+ * Server action helpers: moviesActions
+ * Server-side helpers for querying and mutating movie records for pages and admin.
+ */
+
 "use server";
 
 import { cookies } from "next/headers";

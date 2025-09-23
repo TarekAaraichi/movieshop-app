@@ -1,3 +1,8 @@
+/**
+ * Contact page (ensured)
+ * Server-rendered contact form and contact information.
+ */
+
 export default function ContactPage() {
   return (
     <div>

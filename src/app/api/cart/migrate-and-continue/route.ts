@@ -3,6 +3,11 @@ import { cookies, headers } from "next/headers";
 import * as cartService from "@/server/services";
 import { auth } from "@/lib/auth";
 
+/**
+ * API: /api/cart/migrate-and-continue
+ * Handles migration of legacy cookie cart to a server-side cart and continues flow.
+ */
+
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const callback = url.searchParams.get("callback") || "/profile";

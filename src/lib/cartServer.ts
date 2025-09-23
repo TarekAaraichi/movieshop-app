@@ -1,3 +1,9 @@
+/**
+ * Cart server helpers
+ * Server-side logic to canonicalize cart DTOs and convert between cookie payloads
+ * and database representations.
+ */
+
 import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
 

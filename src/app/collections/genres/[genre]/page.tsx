@@ -10,6 +10,11 @@ async function getMoviesForGenre(name: string) {
   return g?.movies.map((m) => m.movie) ?? [];
 }
 
+/**
+ * Genre page (ensured)
+ * Server page that lists movies for a specific genre.
+ */
+
 export default async function GenrePage({ params }: Props) {
   const { genre } = params;
   const movies = await getMoviesForGenre(genre);

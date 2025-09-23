@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * DetailsMenu
+ * Client dropdown menu for actions like edit/delete; closes on pointer leave/selection.
+ */
+
 import React, { useRef, PropsWithChildren } from "react";
 
 export default function DetailsMenu({

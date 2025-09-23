@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * UI: Form primitives
+ * Collection of form-related UI helpers and wrappers used by forms in the app.
+ */
+
 import * as React from "react";
 import * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";

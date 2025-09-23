@@ -2,7 +2,9 @@ import { headers } from "next/headers";
 import { auth } from "./auth";
 
 /**
- * getServerSession - helper to read the current auth session in server components/actions.
+ * getServerSession
+ * Server helper to obtain the current session in server components and API routes.
+ *
  * This wraps the configured `auth` instance. In tests, `headers()` may be mocked or
  * absent; we guard accordingly so tests can mock this module via vi.mock.
  */

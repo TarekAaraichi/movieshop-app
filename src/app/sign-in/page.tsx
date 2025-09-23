@@ -1,3 +1,8 @@
+/**
+ * Sign-in page (ensured)
+ * Server page that renders the authentication sign-in form.
+ */
+
 import { headers } from "next/headers";
 import { Card } from "@/components";
 import { auth } from "@/lib/auth";

@@ -1,5 +1,9 @@
 # MovieShop Technical Specification&#x20;
 
+<!--
+  Project instructions and setup notes.
+-->
+
 ## Project Overview
 
 MovieShop is an e-commerce platform for purchasing and managing movies. The project will be developed by teams of 4–5 students.&#x20;

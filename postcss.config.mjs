@@ -1,3 +1,4 @@
+// PostCSS configuration (Tailwind integration)
 // Use explicit plugin names to avoid loading native bindings (lightningcss)
 // that some environments may not have available. This keeps PostCSS setup
 // compatible with Next/Turbopack dev runs.

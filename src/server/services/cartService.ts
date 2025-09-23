@@ -1,3 +1,8 @@
+/**
+ * Cart service (server)
+ * Contains server-side logic for creating and updating canonical carts in the database.
+ */
+
 import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
 

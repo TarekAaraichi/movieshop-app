@@ -1,3 +1,8 @@
+/**
+ * Server helpers: orderHelpersActions
+ * Small utilities used by order action flows (totaling, formatting, etc.).
+ */
+
 "use server";
 
 import { randomUUID } from "crypto";

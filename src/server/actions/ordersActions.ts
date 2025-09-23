@@ -1,3 +1,8 @@
+/**
+ * Server action helpers: ordersActions
+ * Helpers to query orders, format details, and support order-related pages.
+ */
+
 "use server";
 
 import { cookies } from "next/headers";

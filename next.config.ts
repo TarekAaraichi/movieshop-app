@@ -1,3 +1,8 @@
+/**
+ * Next.js configuration
+ * Next.js app router and turbopack configuration.
+ */
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {

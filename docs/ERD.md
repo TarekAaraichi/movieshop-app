@@ -1,5 +1,9 @@
 # ERD – MovieShop Database
 
+<!--
+  ERD: Entity Relationship Diagram notes for the data model.
+-->
+
 ```mermaid
 erDiagram
   Movie ||--|{ OrderItem : contains

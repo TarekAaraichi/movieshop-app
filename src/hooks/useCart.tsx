@@ -1,4 +1,24 @@
 "use client";
+
+/**
+ * useCart
+ * Client-side hook that manages the shopping cart with optimistic updates.
+ * - Exposes helpers to add, update, remove items and revalidate state.
+ * - Emits cross-tab/custom events and coordinates server mutations.
+ */
+
+/**
+ * useCart — client hook for optimistic shopping-cart UX.
+ *
+ * Responsibilities:
+ * - Maintain local optimistic `items` state and expose { items, add, update, remove, revalidate }.
+ * - Perform optimistic updates, POST mutations to `/api/cart`, and revalidate server state when safe.
+ * - Dispatch `cart:updated` CustomEvents for cross-component sync (badge, cart UI).
+ *
+ * Notes:
+ * - Revalidation is guarded while a mutation is inflight to avoid overwriting optimistic updates.
+ * - Intended consumers: `AddToCartClientButton`, `CartClient`, and header cart badge.
+ */
 import { useEffect, useRef, useState } from "react";
 import type { CartClientItem, ServerMovie } from "@/types";
 

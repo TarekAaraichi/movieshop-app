@@ -1,4 +1,10 @@
 "use client";
+
+/**
+ * AddToCartButton
+ * Reusable button component used to render add-to-cart actions; accepts styling props.
+ */
+
 import { useFormStatus } from "react-dom";
 
 export default function AddToCartButton({ disabled }: { disabled?: boolean }) {

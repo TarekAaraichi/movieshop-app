@@ -1,3 +1,8 @@
+/**
+ * UI: Card
+ * Small presentational card wrapper used for movie tiles and previews.
+ */
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"

@@ -1,4 +1,13 @@
 "use client";
+
+/**
+ * CartCountBadge
+ * Visual badge showing the current number of items in the cart.
+ */
+
+// CartCountBadge
+// - Small badge that displays the current cart item count.
+// - Must be rendered inside `CartCountProvider` (uses `useCartCount`).
 import { useCartCount } from "@/components";
 
 export default function CartCountBadge() {

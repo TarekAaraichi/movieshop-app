@@ -1,4 +1,8 @@
 <!--
+  Copilot instructions for contributors and tooling.
+-->
+
+<!--
 This file provides concise, project-specific guidance for AI coding assistants (Copilot-style agents).
 Keep it short (20-50 lines). Update when project conventions or key files change.
 -->

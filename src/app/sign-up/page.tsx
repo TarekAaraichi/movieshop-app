@@ -1,3 +1,8 @@
+/**
+ * Sign-up page (ensured)
+ * Server page that renders the authentication sign-up form.
+ */
+
 import { headers } from "next/headers";
 import SignUpForm from "../../components/signupForm";
 import { Card } from "@/components";

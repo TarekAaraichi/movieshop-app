@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * NavBarClient
+ * Client-only navigation bar shown on pages that require client interactivity.
+ * Contains search, cart count, and user menu controls.
+ */
+
 import React from "react";
 import Link from "next/link";
 import { CartCountBadge } from "@/components";

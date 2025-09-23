@@ -1,3 +1,8 @@
+/**
+ * Server action helpers: orderActions
+ * High-level server actions to create and manage orders used by pages and APIs.
+ */
+
 import * as orderService from "@/server/services/orderService";
 
 export async function serverCreateOrderFromCart(

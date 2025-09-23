@@ -1,3 +1,8 @@
+/**
+ * Server action helpers: cartActions
+ * Actions used by API routes and server pages to manipulate cart state.
+ */
+
 "use server";
 
 import { cookies } from "next/headers";

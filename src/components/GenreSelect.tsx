@@ -1,4 +1,10 @@
 "use client";
+
+/**
+ * GenreSelect
+ * Client select control for choosing movie genres in forms and filters.
+ */
+
 import { useRouter } from "next/navigation";
 import React from "react";
 

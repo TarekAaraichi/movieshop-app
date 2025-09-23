@@ -22,6 +22,11 @@ function formatPrice(p: unknown) {
   return String(p);
 }
 
+/**
+ * Order detail page (ensured)
+ * Server-rendered order details for a given order id.
+ */
+
 export default async function OrderPage({ params }: Props) {
   const { orderId } = params;
   // Only include the related items and their movies (these fields exist on Order)

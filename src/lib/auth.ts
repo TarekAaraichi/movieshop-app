@@ -1,3 +1,8 @@
+/**
+ * Auth server utilities (ensured)
+ * Server-side configuration and adapter wiring for the authentication system.
+ */
+
 // src/lib/auth.ts
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";

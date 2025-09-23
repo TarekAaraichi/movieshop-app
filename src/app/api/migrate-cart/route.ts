@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
+/**
+ * API: migrate-cart (ensured)
+ * Server endpoint used during sign-in to migrate anonymous cart to authenticated cart.
+ */
+
 export async function POST() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session)

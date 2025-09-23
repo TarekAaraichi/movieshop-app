@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * SignupForm
+ * Client component that renders and validates the user signup form.
+ * Integrates with react-hook-form and zod for validation and submission.
+ */
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

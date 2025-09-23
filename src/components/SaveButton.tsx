@@ -1,4 +1,10 @@
 "use client";
+
+/**
+ * SaveButton
+ * Reusable client button used for saving forms and showing loading state.
+ */
+
 import { useFormStatus } from "react-dom";
 
 type Props = {

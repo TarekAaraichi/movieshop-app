@@ -1,4 +1,16 @@
 "use client";
+
+/**
+ * ClientShell
+ * Client wrapper used to mount client-only UI pieces (e.g., client navbar) without
+ * affecting server-rendered layout. This file may be toggled to favor layout header.
+ */
+
+// ClientShell is a small client-only wrapper that provides client-scoped
+// providers (toasts, cart count) and intentionally keeps the component
+// navbar commented out so the server-rendered layout header is the only
+// visible navigation bar. This keeps navigation consistent and prevents
+// duplicate header UI while allowing easy re-enable for testing.
 import React from "react";
 import SonnerProvider from "@/app/SonnerProvider";
 import { CartCountProvider } from "@/components";

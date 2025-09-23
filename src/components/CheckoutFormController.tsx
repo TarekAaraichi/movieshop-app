@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * CheckoutFormController
+ * Client component that orchestrates checkout form submission and payment interactions.
+ */
+
 import { useEffect } from "react";
 
 export default function CheckoutFormController({

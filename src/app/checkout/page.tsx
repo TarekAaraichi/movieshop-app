@@ -1,3 +1,8 @@
+/**
+ * Checkout page
+ * Server component coordinating checkout form and payment flow.
+ */
+
 import React from "react";
 import { createOrder } from "@/server/actions/ordersActions";
 import CheckoutFormController from "../../components/CheckoutFormController";

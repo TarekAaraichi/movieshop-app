@@ -3,6 +3,11 @@ import { createMovie } from "@/server/actions/moviesActions";
 import { requireAdmin } from "@/lib/requireAdmin";
 
 /**
+ * Admin: Create movie (ensured)
+ * Server page to create a new movie (admin only).
+ */
+
+/**
  * Renders the Create Movie page with a form for adding a new movie.
  * The form includes fields for title, release date, description, director, actors, image URL, runtime, price, stock, and genres.
  * On submission, the form calls the createMovie server action to persist the new movie.

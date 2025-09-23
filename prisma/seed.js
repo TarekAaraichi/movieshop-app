@@ -1,3 +1,8 @@
+/*
+ * Database seed script
+ * Creates initial sample data for local development (movies, users, etc.).
+ */
+
 // Seed script
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();

@@ -1,3 +1,8 @@
+/**
+ * Admin: Create user (ensured)
+ * Server page to invite/create a new user account.
+ */
+
 export const runtime = "edge";
 
 export default function AdminCreateUserPage() {

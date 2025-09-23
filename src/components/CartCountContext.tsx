@@ -1,4 +1,14 @@
 "use client";
+
+/**
+ * CartCountContext
+ * Provides cart count state to client components via React context.
+ */
+
+// CartCountContext
+// - Provides a small global context for the cart item count.
+// - Listens for `cart:updated` CustomEvents (dispatched by `useCart`) to
+//   keep the badge and other UI in sync across independent components.
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const CartCountContext = createContext(

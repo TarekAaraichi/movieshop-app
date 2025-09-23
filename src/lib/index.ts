@@ -1,3 +1,7 @@
+/**
+ * Lib index (ensured)
+ */
+
 export { default as prisma } from "./prisma";
 export * from "./auth";
 export * from "./utils";

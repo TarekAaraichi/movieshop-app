@@ -1,3 +1,8 @@
+/**
+ * Shared Types
+ * Central location for TypeScript types used across server and client code.
+ */
+
 export type GenreRelation = { genre: { id: string; name: string } };
 
 export type ServerMovie = {

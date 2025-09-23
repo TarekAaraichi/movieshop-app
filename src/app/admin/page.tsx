@@ -1,3 +1,8 @@
+/**
+ * Admin dashboard (ensured)
+ * Server-rendered admin area index; requires admin guard.
+ */
+
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { AutoSubmitSelect } from "@/components";

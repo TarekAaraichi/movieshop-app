@@ -1,3 +1,8 @@
+/**
+ * Server action helpers: personsActions
+ * Helpers to fetch and mutate person/actor records for pages and admin tools.
+ */
+
 "use server";
 
 import { redirect } from "next/navigation";

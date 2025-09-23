@@ -4,6 +4,11 @@ import { headers } from "next/headers";
 import prisma from "@/lib/prisma";
 
 /**
+ * requireAdmin
+ * Server guard helper that throws/redirects when the current session lacks admin rights.
+ */
+
+/**
  * Server-side guard to require an admin session. Redirects to sign-in if missing,
  * or to root if the user is not an admin.
  */

@@ -1,3 +1,8 @@
+/**
+ * Cookie helpers
+ * Utilities for reading/writing and serializing the cart cookie and other app cookies.
+ */
+
 export type CartItem = { movieId: string; quantity: number };
 
 /**

@@ -1,3 +1,8 @@
+/**
+ * Admin: Edit movie (duplicate)
+ * Server page for editing movie details (admin only).
+ */
+
 import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 import { notFound } from "next/navigation";

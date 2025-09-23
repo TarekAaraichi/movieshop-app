@@ -1,3 +1,8 @@
+/**
+ * Order service (server)
+ * Server-side helpers for creating orders, computing totals, and storing order items.
+ */
+
 import { prisma } from "@/lib";
 
 type CartItemInput = { movieId: string; quantity: number };

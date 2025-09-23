@@ -4,6 +4,11 @@ import prisma from "@/lib/prisma";
 import * as cartService from "@/server/services";
 import { auth } from "@/lib/auth";
 
+/**
+ * API: /api/cart/convert-legacy
+ * Utility route to convert legacy cookie payloads to the current cart DTO format.
+ */
+
 export async function POST() {
   // Read legacy cookie value
   const maybeCookies = cookies();

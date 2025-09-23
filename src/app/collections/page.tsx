@@ -1,5 +1,10 @@
 import Link from "next/link";
 
+/**
+ * Collections index (ensured)
+ * Server page listing movie collections like top-rated, new, and genres.
+ */
+
 export default function CollectionsIndex() {
   return (
     <div>

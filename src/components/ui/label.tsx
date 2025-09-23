@@ -1,5 +1,11 @@
 "use client"
 
+/**
+ * UI: Label
+ * Simple styled label component used by forms across the app.
+ * Exports a small presentational wrapper around native <label>.
+ */
+
 import * as React from "react"
 import * as LabelPrimitive from "@radix-ui/react-label"
 

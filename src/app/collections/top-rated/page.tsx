@@ -1,3 +1,8 @@
+/**
+ * Top-rated collection page
+ * Lists top-rated movies.
+ */
+
 export default function TopRatedPage() {
   return (
     <div>

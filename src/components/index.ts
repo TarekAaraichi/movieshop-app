@@ -1,3 +1,8 @@
+/**
+ * Components index
+ * Re-export commonly used UI components for convenient imports.
+ */
+
 export { default as AddButton } from "./AddButton";
 // AddToCart components exported below once to avoid duplicate identifier errors
 export { default as CartClient } from "./CartClient";

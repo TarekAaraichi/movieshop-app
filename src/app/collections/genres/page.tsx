@@ -1,3 +1,8 @@
+/**
+ * Genres collection index
+ * Landing page for browsing movies by genre.
+ */
+
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 

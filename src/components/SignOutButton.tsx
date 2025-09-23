@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * SignOutButton
+ * Client-side button that triggers user sign-out and optional UI refresh/confirmation.
+ */
+
 import React from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";

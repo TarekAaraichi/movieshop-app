@@ -1,4 +1,15 @@
 "use client";
+
+/**
+ * CartClient
+ * Client-side cart UI component that renders the current cart and supports client actions.
+ */
+
+// CartClient (client component)
+// - Renders the interactive cart UI on `/cart` using the `useCart` hook.
+// - Handles optimistic increments/decrements and navigation to checkout.
+// - Avoids forced `router.refresh()` during mutations to prevent overwriting
+//   optimistic updates.
 import React, { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";

@@ -1,3 +1,6 @@
+// Prisma schema for the app's PostgreSQL database.
+// Models: User, Session, Account, Movie, Person, Order, OrderItem, etc.
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -171,10 +174,4 @@ enum OrderStatus {
   CANCELLED
 }
 
-// *** WARNING ***
-//
-// These models were enriched with `@@map` information taken from the previous Prisma schema:
-//   - "Account"
-//   - "Session"
-//   - "User"
 

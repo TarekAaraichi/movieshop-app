@@ -1,3 +1,8 @@
+/**
+ * About page (ensured)
+ * Server-rendered informational page about the project.
+ */
+
 import { Card } from "@/components";
 
 export default function AboutPage() {

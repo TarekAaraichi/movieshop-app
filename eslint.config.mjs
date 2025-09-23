@@ -1,3 +1,5 @@
+// ESLint configuration for the repo — rules and parser settings for TypeScript/Next.js
+
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";

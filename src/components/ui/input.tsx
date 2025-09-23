@@ -1,3 +1,8 @@
+/**
+ * UI: Input
+ * Styled input wrapper used in forms throughout the app.
+ */
+
 import * as React from "react";
 
 import { cn } from "@/lib/utils";

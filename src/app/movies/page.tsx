@@ -1,3 +1,8 @@
+/**
+ * Movies listing (ensured)
+ * Server-rendered page that lists movies with filtering and pagination.
+ */
+
 // src/app/movies/page.tsx
 import { prisma } from "@/lib";
 import Link from "next/link";

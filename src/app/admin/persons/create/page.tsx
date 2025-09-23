@@ -1,3 +1,8 @@
+/**
+ * Admin: Create person (ensured)
+ * Server page to create a person/actor record.
+ */
+
 import { createPerson } from "@/server/actions/personsActions";
 import { requireAdmin } from "@/lib/requireAdmin";
 

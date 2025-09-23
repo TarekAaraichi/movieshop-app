@@ -1,3 +1,12 @@
+/**
+ * Profile edit page
+ * Server page that renders the profile editor and save controls.
+ */
+
+// Profile edit page (server component)
+// - Requires a signed-in session. Fetches the user's profile and address
+//   server-side and renders an editable form that calls `updateProfile`
+//   server action to persist changes.
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";

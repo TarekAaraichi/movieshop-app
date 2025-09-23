@@ -1,3 +1,8 @@
+/**
+ * New releases collection page
+ * Lists recently added movies.
+ */
+
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 

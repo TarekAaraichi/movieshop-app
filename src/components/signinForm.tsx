@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * SigninForm
+ * Client form component for user authentication (sign in).
+ * Handles form state, validation, and submission to auth endpoints.
+ */
+
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

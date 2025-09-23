@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * ProfileEditor
+ * Client component for editing user profile information with validation.
+ */
+
 import React from "react";
 import Image from "next/image";
 import { useState } from "react";

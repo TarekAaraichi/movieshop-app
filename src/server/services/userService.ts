@@ -1,3 +1,8 @@
+/**
+ * User service (server)
+ * Server helpers for managing users, lookups, and admin tasks.
+ */
+
 import prisma from "@/lib/prisma";
 
 export async function findUserById(userId: string) {

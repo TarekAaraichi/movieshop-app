@@ -1,4 +1,10 @@
 "use client";
+
+/**
+ * AddButton
+ * Small presentational button used across the app for 'Add' actions.
+ */
+
 import { useFormStatus } from "react-dom";
 
 export default function AddButton() {

@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * clearCartOnConfirmation
+ * Client-side helper that clears the cart when an external confirmation event occurs.
+ */
+
 import { useEffect } from "react";
 import { useCartCount } from "@/components";
 
