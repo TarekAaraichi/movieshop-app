@@ -12,20 +12,18 @@ export default function CartClient({
   initialItems?: CartClientItem[];
 }) {
   // Use the client-side cart hook which posts to /api/cart
-  const { items, add, update, remove, revalidate } = useCart(
-    initialItems || []
-  );
+  const { items, add, update, remove } = useCart(initialItems || []);
   const { setCount } = useCartCount();
   const [isPending, startTransition] = useTransition();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const router = useRouter();
 
   function onAction() {
-    startTransition(() => {
-      setTimeout(() => {
-        router.refresh();
-      }, 80);
-    });
+    // Intentionally no-op: optimistic updates and the `useCart` hook's
+    // revalidation will keep client state in sync with the server.
+    // Avoid calling `router.refresh()` here because it triggers a server
+    // render before the POST mutation completes and can cause the UI to
+    // briefly revert to the server's (stale) state.
   }
 
   useEffect(() => {
@@ -37,8 +35,10 @@ export default function CartClient({
     setCount(
       items.reduce((sum: number, it: CartClientItem) => sum + it.quantity, 0)
     );
-    // ensure authoritative server state on mount/update
-    void revalidate();
+    // Do not call `revalidate()` here. Revalidation is performed by the
+    // mutate flow (mutateServer) after the POST completes to avoid races
+    // where a background GET could return stale server state and overwrite
+    // the optimistic update.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items]);
 

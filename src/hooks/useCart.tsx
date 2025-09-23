@@ -100,6 +100,11 @@ export function useCart(initialItems: CartClientItem[] = []) {
   }, []);
 
   async function revalidate() {
+    // If a mutation is in-flight, skip revalidation — the mutateServer() call
+    // will run a revalidate after it completes. This prevents a race where a
+    // background GET returns the previous server state and overwrites the
+    // optimistic update.
+    if (inflight.current) return;
     try {
       const res = await fetch("/api/cart", { credentials: "include" });
       if (!res.ok) return;

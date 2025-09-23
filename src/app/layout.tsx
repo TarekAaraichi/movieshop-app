@@ -10,6 +10,7 @@ import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
 import DetailsMenu from "@/components/DetailsMenu";
 import MovieSearch from "@/components/MovieSearch";
+import { CartCountBadge } from "@/components";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -67,7 +68,7 @@ export default async function RootLayout({
               >
                 <Link
                   href="/movies"
-                  className="px-3 py-1 rounded-md hover:bg-white/5 transition-colors duration-150"
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                   Browse
                 </Link>
@@ -77,7 +78,7 @@ export default async function RootLayout({
                   <DetailsMenu
                     className="group"
                     summary={
-                      <summary className="flex items-center gap-2 px-3 py-1 rounded-md hover:bg-white/5 transition-colors duration-150 cursor-pointer list-none">
+                      <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400">
                         <span>Collections</span>
                         <svg
                           className="w-3 h-3 opacity-80 transition-transform duration-150 group-open:rotate-180"
@@ -98,19 +99,19 @@ export default async function RootLayout({
                     <div className="absolute right-0 mt-2 w-48 bg-gray-900/95 border border-gray-800 rounded-lg shadow-lg py-1 z-50 ring-1 ring-black/20">
                       <Link
                         href="/collections/new"
-                        className="block px-4 py-2 text-sm hover:bg-white/5 transition-colors duration-150"
+                        className="block items-center px-4 py-2 text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                       >
                         New releases
                       </Link>
                       <Link
                         href="/collections/top-rated"
-                        className="block px-4 py-2 text-sm hover:bg-white/5 transition-colors duration-150"
+                        className="block items-center px-4 py-2 text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                       >
                         Top rated
                       </Link>
                       <Link
                         href="/collections/genres"
-                        className="block px-4 py-2 text-sm hover:bg-white/5 transition-colors duration-150"
+                        className="block items-center px-4 py-2 text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                       >
                         By genre
                       </Link>
@@ -120,7 +121,7 @@ export default async function RootLayout({
 
                 <Link
                   href="/about"
-                  className="px-3 py-1 rounded-md hover:bg-white/5 transition-colors duration-150"
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
                   About
                 </Link>
@@ -141,22 +142,28 @@ export default async function RootLayout({
               <div className="ml-auto flex items-center gap-3">
                 <a
                   href="/cart"
-                  className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 hover:bg-white/6 text-sm"
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
+                  {/* <span className="hidden sm:inline">Cart</span> */}
                   <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="w-5 h-5"
+                  aria-hidden="true"
                   >
-                    <path
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7h14l-2-7M10 21a1 1 0 11-2 0 1 1 0 012 0zm8 0a1 1 0 11-2 0 1 1 0 012 0z"
-                    />
+                  <path
+                    d="M3 3h2l.4 2M7 13h10l3-8H6.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <circle cx="10" cy="20" r="1" />
+                  <circle cx="18" cy="20" r="1" />
                   </svg>
-                  <span className="hidden sm:inline">Cart</span>
+
+                  <CartCountBadge />
                 </a>
 
                 {session ? (
@@ -264,22 +271,27 @@ export default async function RootLayout({
           <a
             href="/cart"
             aria-label="Open cart"
-            className="fixed right-4 bottom-6 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            className="fixed right-4 bottom-6 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
-            <svg
-              className="w-4 h-4"
+            {/* <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              className="w-5 h-5"
+              aria-hidden="true"
             >
               <path
-                strokeWidth="2"
+                d="M3 3h2l.4 2M7 13h10l3-8H6.4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 7h14l-2-7"
               />
-            </svg>
+              <circle cx="10" cy="20" r="1" />
+              <circle cx="18" cy="20" r="1" />
+            </svg> */}
             <span className="hidden sm:inline">Cart</span>
+            <CartCountBadge />
           </a>
         </ClientShell>
       </body>

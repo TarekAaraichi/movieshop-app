@@ -6,9 +6,15 @@ import { toast } from "sonner";
 export default function AddToCartClientButton({
   movieId,
   disabled,
+  className,
+  buttonClassName,
 }: {
   movieId: string;
   disabled?: boolean;
+  // optional class for outer wrapper div
+  className?: string;
+  // optional class to apply to the <button> so parent can override background/spacing
+  buttonClassName?: string;
 }) {
   const [isPending, startTransition] = useTransition();
   const { add } = useCart();
@@ -35,11 +41,13 @@ export default function AddToCartClientButton({
 
   if (disabled) {
     return (
-      <div className="flex flex-col items-start">
+      <div className={className ?? "flex flex-col items-start"}>
         <button
           type="button"
           disabled
-          className="w-full bg-gray-600 text-white py-2 px-4 rounded-md shadow disabled:opacity-60 flex items-center justify-center gap-2 cursor-not-allowed"
+          className={`w-full bg-gray-600 text-white py-2 px-4 rounded-md shadow disabled:opacity-60 flex items-center justify-center gap-2 cursor-not-allowed ${
+            buttonClassName ?? ""
+          }`}
           aria-disabled="true"
         >
           Archived
@@ -49,13 +57,15 @@ export default function AddToCartClientButton({
   }
 
   return (
-    <div >
+    <div className={className ?? ""}>
       <button
         type="button"
         onClick={handleAdd}
         disabled={isPending}
         aria-label={isPending ? "Adding to cart" : "Add to cart"}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 flex items-center justify-center gap-2"
+        className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 flex items-center justify-center gap-2 ${
+          buttonClassName ?? ""
+        }`}
       >
         {isPending ? (
           <>
