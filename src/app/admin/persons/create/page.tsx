@@ -16,8 +16,8 @@ export default function CreatePersonPage() {
             Create a Person
           </h1>
           <p className="mt-1 text-sm text-gray-500">
-            Add a new person to the persons catalog. Use the inline fields for a quicker
-            workflow.
+            Add a new person to the persons catalog. Use the inline fields for a
+            quicker workflow.
           </p>
         </header>
 

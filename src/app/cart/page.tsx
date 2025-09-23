@@ -261,96 +261,98 @@ export default async function CartPage() {
   }
 
   return (
-    <div >
+    <div>
       <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-6 items-start">
-      <main className="flex-1 bg-white rounded-2xl shadow p-6">
-        <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-lg md:text-2xl font-semibold text-slate-900">
-          Shopping Cart
-          </h1>
-          <p className="text-sm text-slate-500">
-          Manage items inline, update quantities or remove products
-          </p>
-        </div>
-        <div className="text-sm text-slate-600">
-          {items.length} {items.length === 1 ? "item" : "items"}
-        </div>
-        </div>
+        <main className="flex-1 bg-white rounded-2xl shadow p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-lg md:text-2xl font-semibold text-slate-900">
+                Shopping Cart
+              </h1>
+              <p className="text-sm text-slate-500">
+                Manage items inline, update quantities or remove products
+              </p>
+            </div>
+            <div className="text-sm text-slate-600">
+              {items.length} {items.length === 1 ? "item" : "items"}
+            </div>
+          </div>
 
-        {items.length === 0 ? (
-        <div className="py-12 flex flex-col items-center text-center text-slate-600">
-          <svg
-          aria-hidden
-          className="w-20 h-20 mb-4 text-slate-300"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          >
-          <path
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21a1 1 0 102 0M15 21a1 1 0 102 0"
-          />
-          </svg>
-          <Link
-            href="/movies"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm shadow-sm hover:bg-blue-700 focus:outline-none"
-          >
-            Browse Movies
-          </Link>
-        </div>
-        ) : (
-        <div className="space-y-4">
-          {/* Client-driven interactive cart; keeps controls inline and modern */}
-          <CartClient initialItems={items} />
-        </div>
-        )}
-      </main>
-
-      <aside className="w-full md:w-96 sticky top-6 self-start">
-        <div className="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
-        <div>
-          <h2 className="text-sm font-medium text-slate-600">Order summary</h2>
-          <p className="mt-2 text-2xl font-semibold text-slate-900">
-          {new Intl.NumberFormat("en-US", {
-            style: "currency",
-            currency: "USD",
-          }).format(
-            items.reduce(
-            (sum, it) =>
-              sum +
-              (Number((it.movie as ServerMovie)?.price ?? "0") || 0) *
-              it.quantity,
-            0
-            )
+          {items.length === 0 ? (
+            <div className="py-12 flex flex-col items-center text-center text-slate-600">
+              <svg
+                aria-hidden
+                className="w-20 h-20 mb-4 text-slate-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeWidth={1.5}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21a1 1 0 102 0M15 21a1 1 0 102 0"
+                />
+              </svg>
+              <Link
+                href="/movies"
+                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm shadow-sm hover:bg-blue-700 focus:outline-none"
+              >
+                Browse Movies
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* Client-driven interactive cart; keeps controls inline and modern */}
+              <CartClient initialItems={items} />
+            </div>
           )}
-          </p>
-        </div>
+        </main>
 
-        <div className="text-sm text-slate-500">
-          Shipping and taxes calculated at checkout.
-        </div>
+        <aside className="w-full md:w-96 sticky top-6 self-start">
+          <div className="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
+            <div>
+              <h2 className="text-sm font-medium text-slate-600">
+                Order summary
+              </h2>
+              <p className="mt-2 text-2xl font-semibold text-slate-900">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(
+                  items.reduce(
+                    (sum, it) =>
+                      sum +
+                      (Number((it.movie as ServerMovie)?.price ?? "0") || 0) *
+                        it.quantity,
+                    0
+                  )
+                )}
+              </p>
+            </div>
 
-        <button
-          type="button"
-          className={`w-full inline-flex justify-center items-center px-4 py-3 rounded-md text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow hover:from-blue-700 hover:to-indigo-700 focus:outline-none transition ${
-          !items.length ? "opacity-50 pointer-events-none" : ""
-          }`}
-          disabled={!items.length}
-        >
-          Checkout
-        </button>
+            <div className="text-sm text-slate-500">
+              Shipping and taxes calculated at checkout.
+            </div>
 
-        <Link
-          href="/movies"
-          className="w-full text-center block px-4 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-50"
-        >
-          Continue shopping
-        </Link>
-        </div>
-      </aside>
+            <button
+              type="button"
+              className={`w-full inline-flex justify-center items-center px-4 py-3 rounded-md text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow hover:from-blue-700 hover:to-indigo-700 focus:outline-none transition ${
+                !items.length ? "opacity-50 pointer-events-none" : ""
+              }`}
+              disabled={!items.length}
+            >
+              Checkout
+            </button>
+
+            <Link
+              href="/movies"
+              className="w-full text-center block px-4 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-50"
+            >
+              Continue shopping
+            </Link>
+          </div>
+        </aside>
       </div>
     </div>
   );

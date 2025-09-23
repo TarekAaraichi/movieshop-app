@@ -228,7 +228,10 @@ export default async function CheckoutPage({
         </div>
 
         {/* Client controller enables submit when form is valid */}
-        <CheckoutFormController formId="checkout-form" submitId="checkout-submit" />
+        <CheckoutFormController
+          formId="checkout-form"
+          submitId="checkout-submit"
+        />
       </div>
     </div>
   );

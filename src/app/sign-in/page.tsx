@@ -27,7 +27,7 @@ export default async function SignInPage({
   }
 
   return (
-    <div >
+    <div>
       <div className="m-auto max-w-md w-full">
         <div className="rounded-2xl bg-white/5 backdrop-blur-md border border-white/6 shadow-lg overflow-hidden">
           <div className="p-6">
@@ -37,14 +37,18 @@ export default async function SignInPage({
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-400">
                     MovieShop
                   </span>
-                  <span className="ml-2 text-sm text-gray-300 font-medium">Sign in</span>
+                  <span className="ml-2 text-sm text-gray-300 font-medium">
+                    Sign in
+                  </span>
                 </h1>
                 <p className="mt-1 text-xs text-gray-400">
                   Access favorites, orders, and personalized recommendations.
                 </p>
               </div>
               <div className="hidden sm:flex items-center text-xs text-gray-400">
-                <span className="px-3 py-1 rounded-full bg-white/3">Secure</span>
+                <span className="px-3 py-1 rounded-full bg-white/3">
+                  Secure
+                </span>
               </div>
             </div>
 
@@ -58,7 +62,9 @@ export default async function SignInPage({
                 <a
                   href={
                     searchParams && searchParams.callbackUrl
-                      ? `/sign-up?callbackUrl=${encodeURIComponent(searchParams.callbackUrl)}`
+                      ? `/sign-up?callbackUrl=${encodeURIComponent(
+                          searchParams.callbackUrl
+                        )}`
                       : "/sign-up"
                   }
                   className="text-indigo-400 hover:underline"
@@ -67,7 +73,10 @@ export default async function SignInPage({
                 </a>
               </div>
 
-              <a href="/forgot-password" className="text-indigo-400 hover:underline">
+              <a
+                href="/forgot-password"
+                className="text-indigo-400 hover:underline"
+              >
                 Forgot password?
               </a>
             </div>
@@ -78,7 +87,9 @@ export default async function SignInPage({
                   <div className="w-full border-t border-white/6" />
                 </div>
                 <div className="relative flex justify-center text-xs">
-                  <span className="bg-white/5 px-3 py-1 rounded-full text-gray-300">Or continue with</span>
+                  <span className="bg-white/5 px-3 py-1 rounded-full text-gray-300">
+                    Or continue with
+                  </span>
                 </div>
               </div>
 

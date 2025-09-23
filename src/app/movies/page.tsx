@@ -92,7 +92,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
   const genreOptions = usedGenres.map((g) => g.name);
 
   return (
-    <div >
+    <div>
       <main className="flex-grow px-2 sm:px-4 max-w-7xl mx-auto w-full pt-8 pb-12 box-border">
         <header className="mb-6">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-blue-400 text-center">

@@ -73,7 +73,7 @@ export default async function OrderPage({ params }: Props) {
   };
 
   return (
-    <div >
+    <div>
       <div className="w-full m-auto max-w-4xl">
         <ClearCartOnConfirmation />
         <div className="bg-white rounded-2xl shadow-lg ring-1 ring-gray-100 overflow-hidden">
@@ -87,7 +87,9 @@ export default async function OrderPage({ params }: Props) {
               </h1>
               <p className="text-sm text-slate-500 mt-1">
                 Order ID
-                <span className="ml-2 font-mono text-slate-700">{order.id}</span>
+                <span className="ml-2 font-mono text-slate-700">
+                  {order.id}
+                </span>
               </p>
             </div>
 
@@ -105,11 +107,15 @@ export default async function OrderPage({ params }: Props) {
                 <h2 className="text-sm font-medium text-slate-700">Buyer</h2>
                 {buyer ? (
                   <div className="mt-2 text-sm text-slate-600 space-y-0.5">
-                    <div className="font-medium text-slate-800">{buyer.name}</div>
+                    <div className="font-medium text-slate-800">
+                      {buyer.name}
+                    </div>
                     <div className="truncate">{buyer.email}</div>
                   </div>
                 ) : (
-                  <div className="mt-2 text-sm text-slate-600">No buyer information on file</div>
+                  <div className="mt-2 text-sm text-slate-600">
+                    No buyer information on file
+                  </div>
                 )}
               </div>
 
@@ -125,7 +131,9 @@ export default async function OrderPage({ params }: Props) {
                     <div>{address.country}</div>
                   </div>
                 ) : (
-                  <div className="mt-2 text-sm text-slate-600">No address on file</div>
+                  <div className="mt-2 text-sm text-slate-600">
+                    No address on file
+                  </div>
                 )}
               </div>
             </div>
@@ -141,7 +149,10 @@ export default async function OrderPage({ params }: Props) {
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 relative flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
                         <Image
-                          src={it.movie?.imageUrl || "https://via.placeholder.com/80"}
+                          src={
+                            it.movie?.imageUrl ||
+                            "https://via.placeholder.com/80"
+                          }
                           alt={it.movie?.title || "movie"}
                           fill
                           sizes="56px"
@@ -158,7 +169,8 @@ export default async function OrderPage({ params }: Props) {
                           </span>
                           <span className="text-xs">Purchased at</span>
                           <span className="font-mono text-slate-800">
-                            ${Number(formatPrice(it.priceAtPurchase)).toFixed(2)}
+                            $
+                            {Number(formatPrice(it.priceAtPurchase)).toFixed(2)}
                           </span>
                         </div>
                       </div>
@@ -167,7 +179,13 @@ export default async function OrderPage({ params }: Props) {
                     <div className="text-right">
                       <div className="text-sm text-slate-600">Line total</div>
                       <div className="text-sm font-semibold text-slate-900">
-                        ${Number(formatPrice((it.quantity as number) * Number(formatPrice(it.priceAtPurchase)))).toFixed(2)}
+                        $
+                        {Number(
+                          formatPrice(
+                            (it.quantity as number) *
+                              Number(formatPrice(it.priceAtPurchase))
+                          )
+                        ).toFixed(2)}
                       </div>
                     </div>
                   </div>
@@ -176,7 +194,9 @@ export default async function OrderPage({ params }: Props) {
 
               <div className="mt-6 flex items-center justify-between border-t pt-4">
                 <div className="text-sm text-slate-600">Payment method</div>
-                <div className="text-sm font-medium text-slate-800">Card •••• ••••</div>
+                <div className="text-sm font-medium text-slate-800">
+                  Card •••• ••••
+                </div>
               </div>
             </div>
           </div>

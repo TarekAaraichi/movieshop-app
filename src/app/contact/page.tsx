@@ -12,8 +12,9 @@ export default function ContactPage() {
             Contact
           </h1>
           <p className="mt-2 text-sm text-gray-300 max-w-2xl">
-            We&apos;d love to hear from you. For questions about the demo, contributions,
-            or feature requests, reach out to the team. Quick links and people below.
+            We&apos;d love to hear from you. For questions about the demo,
+            contributions, or feature requests, reach out to the team. Quick
+            links and people below.
           </p>
         </header>
 
@@ -175,8 +176,9 @@ export default function ContactPage() {
               </div>
 
               <div className="pt-3 border-t border-white/6 text-sm text-gray-400">
-                Want faster support or to contribute? Open an issue or pull request on
-                GitHub and tag the team — we usually respond within a few business days.
+                Want faster support or to contribute? Open an issue or pull
+                request on GitHub and tag the team — we usually respond within a
+                few business days.
               </div>
             </div>
           </section>

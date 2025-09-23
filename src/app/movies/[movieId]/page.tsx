@@ -185,12 +185,12 @@ export default async function MoviePage({ params }: Props) {
             />
           </div>
 
-        <Link
+          <Link
             href="/movies"
             className="mt-3 inline-flex w-full items-center justify-center rounded-md backdrop-blur-sm bg-gradient-to-r from-neutral-700/60 to-neutral-800/60 text-slate-200 border border-white/10 px-4 py-3 text-sm font-medium shadow-[0_4px_20px_rgba(2,6,23,0.6)] hover:from-neutral-600/80 hover:to-neutral-700/80 active:from-neutral-800/90 active:to-neutral-900/95 active:scale-95 transition-all duration-150"
-        >
+          >
             Back to catalog
-        </Link>
+          </Link>
         </div>
       </aside>
       <main className="w-full max-w-[1100px] mx-auto flex-grow p-2">

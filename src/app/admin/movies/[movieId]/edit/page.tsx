@@ -41,7 +41,7 @@ export default async function EditMoviePage({
   const genreNamesDefault = movie.genres.map((mg) => mg.genre.name).join(", ");
 
   return (
-    <div >
+    <div>
       <div className="bg-white p-6 md:p-8 rounded-2xl shadow-2xl max-w-4xl mx-auto">
         <header className="mb-6 flex items-center justify-between">
           <div>
@@ -60,7 +60,10 @@ export default async function EditMoviePage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="flex items-center gap-4">
-              <label htmlFor="title" className="w-28 text-sm font-medium text-gray-700">
+              <label
+                htmlFor="title"
+                className="w-28 text-sm font-medium text-gray-700"
+              >
                 Title
               </label>
               <input
@@ -75,7 +78,10 @@ export default async function EditMoviePage({
             </div>
 
             <div className="flex items-center gap-4">
-              <label htmlFor="releaseDate" className="w-28 text-sm font-medium text-gray-700">
+              <label
+                htmlFor="releaseDate"
+                className="w-28 text-sm font-medium text-gray-700"
+              >
                 Release
               </label>
               <input
@@ -89,7 +95,10 @@ export default async function EditMoviePage({
             </div>
 
             <div className="flex items-start gap-4 md:col-span-2">
-              <label htmlFor="description" className="w-28 text-sm font-medium text-gray-700 pt-2">
+              <label
+                htmlFor="description"
+                className="w-28 text-sm font-medium text-gray-700 pt-2"
+              >
                 Description
               </label>
               <textarea
@@ -104,7 +113,10 @@ export default async function EditMoviePage({
             </div>
 
             <div className="flex items-center gap-4">
-              <label htmlFor="director" className="w-28 text-sm font-medium text-gray-700">
+              <label
+                htmlFor="director"
+                className="w-28 text-sm font-medium text-gray-700"
+              >
                 Director
               </label>
               <input
@@ -119,7 +131,10 @@ export default async function EditMoviePage({
             </div>
 
             <div className="flex items-center gap-4">
-              <label htmlFor="actors" className="w-28 text-sm font-medium text-gray-700">
+              <label
+                htmlFor="actors"
+                className="w-28 text-sm font-medium text-gray-700"
+              >
                 Actors
               </label>
               <input
@@ -133,7 +148,10 @@ export default async function EditMoviePage({
             </div>
 
             <div className="flex items-center gap-4">
-              <label htmlFor="imageUrl" className="w-28 text-sm font-medium text-gray-700">
+              <label
+                htmlFor="imageUrl"
+                className="w-28 text-sm font-medium text-gray-700"
+              >
                 Image
               </label>
               <input
@@ -148,7 +166,10 @@ export default async function EditMoviePage({
             </div>
 
             <div className="flex items-center gap-4">
-              <label htmlFor="runtime" className="w-28 text-sm font-medium text-gray-700">
+              <label
+                htmlFor="runtime"
+                className="w-28 text-sm font-medium text-gray-700"
+              >
                 Runtime
               </label>
               <input
@@ -164,7 +185,10 @@ export default async function EditMoviePage({
             </div>
 
             <div className="flex items-center gap-4">
-              <label htmlFor="price" className="w-28 text-sm font-medium text-gray-700">
+              <label
+                htmlFor="price"
+                className="w-28 text-sm font-medium text-gray-700"
+              >
                 Price
               </label>
               <input
@@ -181,7 +205,10 @@ export default async function EditMoviePage({
             </div>
 
             <div className="flex items-center gap-4">
-              <label htmlFor="stock" className="w-28 text-sm font-medium text-gray-700">
+              <label
+                htmlFor="stock"
+                className="w-28 text-sm font-medium text-gray-700"
+              >
                 Stock
               </label>
               <input
@@ -197,7 +224,10 @@ export default async function EditMoviePage({
             </div>
 
             <div className="flex items-center gap-4 md:col-span-2">
-              <label htmlFor="genres" className="w-28 text-sm font-medium text-gray-700">
+              <label
+                htmlFor="genres"
+                className="w-28 text-sm font-medium text-gray-700"
+              >
                 Genres
               </label>
               <input
