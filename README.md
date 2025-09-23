@@ -1,79 +1,167 @@
-# 🎬 MovieShop - Delta team
+# 🎬 MovieShop — Beginner Friendly Guide
 
-Full-stack e-commerce platform for purchasing and managing movies.  
-Built with **Next.js 15**, **PostgreSQL**, **Prisma**, **Tailwind CSS**, **shadcn/ui**, **Better Auth**, and **Zod**.
+Welcome! This repository is a demo full‑stack storefront called MovieShop built with Next.js (App Router), Prisma (Postgres), Tailwind CSS, and Better Auth. This README helps a new contributor get the project running and points to important files and workflows.
 
-## 🚀 Setup instructions
+---
 
-1. Clone the repo and checkout the desired branch (default: `development`).
-2. Create a `.env` file in the project root. Copy from `.env.example` if available, and update your database credentials (DB password, etc.).
-3. Run `npm install` to install all required packages. If you see missing package errors (e.g. `react`, `react-dom`, `next`, `@prisma/client`), install them manually with `npm install <package>`.
-4. Ensure you have a local Postgres database named `movieshop` (or update your `.env` with your database name). Prisma will auto-create it if needed.
-5. If you get errors about Prisma client initialization, make sure:
-   - You have run `npm install @prisma/client prisma`.
-   - You have run `npx prisma generate` after installing packages.
-   - You are using the singleton pattern for Prisma client in `src/lib/prisma.ts` (see code comments for details).
-   - If you get schema output errors, comment out the `output` line in `prisma/schema.prisma`.
-6. Run `npx prisma migrate dev` to apply the schema and create tables.
-7. Run `npm run dev` to start the Next.js development server.
+## Quick start (5–10 minutes)
 
-## Seeding via Better Auth (recommended)
+1. Clone the repo and open it:
 
-If you want demo users created using the Better Auth library so passwords and accounts match the library's expectations, start the dev server first and then run:
+   ```pwsh
+   git clone <repo-url>
+   cd movieshop-app
+   ```
 
-```bash
-# in one terminal
+1. Install dependencies:
+
+   ```pwsh
+   npm install
+   ```
+
+1. Create a `.env` file at the project root. At minimum, add your database connection string (replace with your Postgres settings):
+
+   ```env
+   DATABASE_URL="postgresql://user:password@localhost:5432/movieshop?schema=public"
+   ```
+
+1. Generate Prisma client & run migrations (development):
+
+   ```pwsh
+   npx prisma generate
+   npx prisma migrate dev --name init
+   ```
+
+1. Start the dev server:
+
+   ```pwsh
+   npm run dev
+   ```
+
+1. Visit `http://localhost:3000` in your browser.
+
+---
+
+## Useful npm scripts
+
+- `npm run dev` — start Next.js dev server (with Turbopack).
+- `npm run build` — production build.
+- `npm run start` — start the production server (after `build`).
+- `npm run seed` — run `prisma/seed.js` to seed sample data.
+- `npm run seed:auth` — create demo users via the Better Auth API (use after `npm run dev`).
+- `npm test` — run unit tests (Vitest).
+- `npm run lint` — run ESLint.
+
+---
+
+## Helpful development tips
+
+If you run into Prisma issues:
+
+```pwsh
+npm install prisma @prisma/client
+npx prisma generate
+```
+
+Use `DISABLE_AUTH=true` to stub authentication in development (PowerShell example):
+
+```pwsh
+$env:DISABLE_AUTH = 'true'
 npm run dev
+```
 
-# in another terminal (project root)
+This makes `auth.api.getSession()` return a fake user for convenience while testing. Do not enable in production.
+
+---
+
+## Where to look in the codebase (high value files)
+
+- `src/app/layout.tsx` — root layout, header, and footer.
+- `src/app` — App Router routes (server components). Notable routes:
+  - `/movies` — browse movies
+  - `/movies/[movieId]` — movie details
+  - `/profile` and `/profile/edit` — user profile pages
+  - `/admin` — admin panel (protected)
+  - `/collections` — curated lists
+- `src/components` — reusable client components (search, cart, details menu, buttons).
+- `src/lib/prisma.ts` — Prisma client singleton.
+- `src/lib/auth.ts` and `src/app/api/auth/[...all]/route.ts` — Better Auth wrapper and API route.
+- `prisma/schema.prisma` — database models and enums.
+- `prisma/seed.js` — seed script to populate sample data.
+
+---
+
+## Common workflows
+
+Create or update Prisma models:
+
+1. Edit `prisma/schema.prisma`.
+1. Run `npx prisma migrate dev --name your-change`.
+1. Run `npx prisma generate` (if not run by migrate).
+
+Add a new page (App Router):
+
+1. Create folder under `src/app/your-route`.
+1. Add `page.tsx` (server component) and client components under `src/components` if needed.
+
+Add a server action:
+
+1. Create an exported async function inside `src/server/actions`.
+1. Use it from a server component or wire to a client form.
+
+---
+
+## Running and seeding demo users with Better Auth
+
+1. Start the dev server:
+
+```pwsh
+npm run dev
+```
+
+1. In another terminal, run:
+
+```pwsh
 npm run seed:auth
 ```
 
-This will POST to the library's `/api/auth/sign-up/email` endpoint and create the demo users (`demo@example.com` and `admin@example.com`).
+This will create demo accounts such as `demo@example.com` and `admin@example.com`.
 
-## Temporarily disabling authentication (show pages as signed-in)
+---
 
-If you want to run the app without the Better Auth checks (for development/testing or to view pages that are hidden behind auth), there's a non-destructive toggle.
+## Troubleshooting
 
-- Set `DISABLE_AUTH=true` in your environment before starting the dev server. The app will export a small shim that makes `auth.api.getSession()` return a fake user (by default `demo@example.com` with role `admin`) and `auth.api.signOut()` becomes a no-op. This preserves the existing code paths while letting you view protected pages.
+- "Prisma client missing" or `@prisma/client` errors:
 
-PowerShell example:
+  - Ensure you ran `npm install` and `npx prisma generate`.
 
-```powershell
-$env:DISABLE_AUTH = 'true'
-npm run dev
-```
+  - If you changed `schema.prisma`, run `npx prisma migrate dev`.
 
-To customize the fake user, set these environment variables before starting the server:
+- Server-side redirects when navigating to a page:
 
-```powershell
-$env:FAKE_USER_EMAIL = 'you@local.test'
-$env:FAKE_USER_NAME = 'Local User'
-$env:FAKE_USER_ROLE = 'admin'
-$env:DISABLE_AUTH = 'true'
-npm run dev
-```
+  - Some pages require authentication. If you aren't signed in they may redirect to `/sign-in`.
 
-To run normally again, unset `DISABLE_AUTH` or set it to any value other than `'true'`.
+  - Use `DISABLE_AUTH=true` in development to bypass auth for debugging.
 
-Note: This is intended strictly for local development and debugging. Do not enable `DISABLE_AUTH` in production.
+- TypeScript errors after edits:
 
-## 🌿 Branching Strategy
+  - Run `npx tsc --noEmit` to see errors, and fix types in the files indicated.
 
-- `main`: protected, stable branch
-- `development`: default branch for all work
-- Feature branches: `feat/<feature-name>` branched from `development`
-- Submit a PR back to development when done.
+---
 
-## 📂 Docs
+## Tests
 
-- [ERD Diagram](./docs/ERD.md) → database model overview
-- [Project Description & Requirements](./docs/MovieProject.pdf) → detailed overview of project goals and specifications
+- Unit tests are run with Vitest: `npm test`.
+- Tests live under `src/**/*.test.*`.
 
-## ✅ Tech Stack
+---
 
-- **Frontend**: Next.js 15 + App Router, Tailwind CSS, shadcn/ui
-- **Backend**: Prisma + PostgreSQL
-- **Auth**: Better Auth
-- **Validation**: Zod
-- **Version control**: GitHub with protected branches & PR workflow
+## Notes for contributors / maintainers
+
+- Keep `src/lib/prisma.ts`'s singleton pattern intact to avoid multiple PrismaClient instances in development.
+- When changing auth-related Prisma models (User, Session, Account), coordinate with `src/lib/auth.ts` and the Better Auth adapter expectations.
+- Follow the project's branching strategy: develop on `development` and open PRs to it.
+
+---
+
+If you'd like a walkthrough for a specific task (for example: "add an admin-only page" or "change the movie model & migrate"), tell me which area and I'll add step-by-step instructions.
