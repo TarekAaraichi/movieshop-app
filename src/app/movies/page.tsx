@@ -8,7 +8,7 @@ import { prisma } from "@/lib";
 import Link from "next/link";
 import Image from "next/image";
 import type { Prisma } from "@prisma/client";
-import { GenreSelect, MovieSearch } from "@/components";
+import { MovieSearch } from "@/components";
 
 interface MoviesPageProps {
   searchParams: {
@@ -75,21 +75,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
     },
   });
 
-  // Load distinct genres that are actually used by non-archived movies
-  const usedGenres = await prisma.genre.findMany({
-    where: {
-      movies: {
-        some: {
-          movie: {
-            isArchived: false,
-          },
-        },
-      },
-    },
-    orderBy: { name: "asc" },
-    select: { name: true },
-  });
-  const genreOptions = usedGenres.map((g) => g.name);
+  // Genre filtering temporarily disabled; remove genre query to avoid unnecessary work.
 
   return (
     <div>
@@ -104,16 +90,41 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
           </p>
         </header>
 
-        {/* Search and filter controls - modern inline with glass effect */}
-        {/* <section className="mb-6">
-          <form
-            method="GET"
-            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 bg-white/3 backdrop-blur-sm border border-white/6 rounded-xl p-4 shadow-sm"
-            role="search"
-            aria-label="Movie search and filters"
-          >
-            <div className="flex items-center gap-3 flex-1 w-full">
-              <div className="relative flex-1 w-full bg-transparent">
+        {/* Search and filter controls */}
+        <section className="mb-8">
+          {/* Simplified: remove outer background/border so only the search field has a single frame */}
+          <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
+            <div className="flex-1 min-w-[240px]">
+              <label className="sr-only" htmlFor="movie-search">
+                Search movies
+              </label>
+
+              {/* search wrapper with inline icon for a modern, compact look */}
+              <div className="relative w-full max-w-xl mx-auto rounded-md bg-[#071022]/60 border border-gray-600 focus-within:ring-2 focus-within:ring-indigo-400 transition flex items-center gap-2 px-2">
+                <span className="absolute auto-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    className="w-4 h-4"
+                    strokeWidth="1.5"
+                  >
+                    <path
+                      d="M21 21l-4.35-4.35"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <circle
+                      cx="11"
+                      cy="11"
+                      r="6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+                <br />
                 <MovieSearch
                   initialQuery={query}
                   selectedGenre={selectedGenre}
@@ -121,20 +132,16 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-3">
-                <div className="min-w-[160px]">
-                  <GenreSelect
-                    selectedGenre={selectedGenre}
-                    query={query}
-                    options={genreOptions}
-                  />
-                </div>
-                
-              </div>
-            </div>
-          </form>
-        </section> */}
+            {/* optional genre select (kept commented out) */}
+            {/* <div className="w-full md:w-64">
+              <GenreSelect
+                selectedGenre={selectedGenre}
+                query={query}
+                options={genreOptions}
+              />
+            </div> */}
+          </div>
+        </section>
         {/* Inline Tailwind-only styles applied through classes below. */}
         {/* Movies grid */}
         <div className="min-h-[240px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">

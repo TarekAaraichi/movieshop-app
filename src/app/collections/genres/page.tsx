@@ -5,6 +5,7 @@
 
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import Image from "next/image";
 
 async function getGenresWithMovies() {
   return prisma.genre.findMany({
@@ -43,15 +44,18 @@ export default async function GenresPage() {
                   className="bg-gray-900 rounded overflow-hidden flex flex-col"
                 >
                   {mg.movie.imageUrl ? (
-                    // allow external for dev
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={mg.movie.imageUrl}
-                      alt={mg.movie.title}
-                      className="w-full h-40 object-contain bg-gray-800"
-                    />
+                    <div className="relative w-full aspect-[2/3] bg-gray-900 overflow-hidden">
+                      <Image
+                        src={mg.movie.imageUrl}
+                        alt={mg.movie.title || "Movie poster"}
+                        fill
+                        unoptimized
+                        sizes="(max-width: 640px) 50vw, 20vw"
+                        className="object-cover"
+                      />
+                    </div>
                   ) : (
-                    <div className="w-full h-40 bg-gray-700 flex items-center justify-center">
+                    <div className="relative w-full aspect-[2/3] bg-gray-700 flex items-center justify-center text-xs text-gray-300">
                       No image
                     </div>
                   )}

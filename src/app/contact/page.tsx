@@ -155,7 +155,7 @@ export default function ContactPage() {
                 <div className="text-right">
                   <div className="text-xs text-gray-400">Open source</div>
                   <a
-                    href="https://github.com/tarek-aaraichi/movieshop-app"
+                    href="https://github.com/Gr-25-13/movieshop-delta"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-sm font-medium text-gray-100 bg-white/6 px-3 py-1 rounded-md hover:bg-white/10"

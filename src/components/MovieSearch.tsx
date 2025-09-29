@@ -11,12 +11,21 @@ import { useRouter } from "next/navigation";
 type Props = {
   initialQuery?: string;
   selectedGenre?: string;
+  /**
+   * Debounce duration (ms) before triggering navigation after user types.
+   * Defaults to 350ms.
+   */
+  debounceMs?: number;
+  /**
+   * @deprecated autoNavigateOnEmpty is now implicit; kept for backwards compat.
+   */
   autoNavigateOnEmpty?: boolean;
 };
 
 export default function MovieSearch({
   initialQuery = "",
   selectedGenre = "",
+  debounceMs = 350,
   autoNavigateOnEmpty = true,
 }: Props) {
   const router = useRouter();
@@ -33,43 +42,37 @@ export default function MovieSearch({
     [router, selectedGenre]
   );
 
-  // handle Enter key
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      navigate(value.trim() || undefined);
-    }
-  };
-
-  // when user clears input, auto-navigate to apply genre-only filter
+  // Debounced navigation on value change (reactive search)
   React.useEffect(() => {
+    // If empty and autoNavigateOnEmpty -> navigate to base (retain genre if present)
     if (value === "" && autoNavigateOnEmpty) {
-      // small timeout to allow user to continue typing; if truly empty, navigate
-      const t = setTimeout(() => navigate(undefined), 250);
+      const t = setTimeout(
+        () => navigate(undefined),
+        Math.min(250, debounceMs)
+      );
       return () => clearTimeout(t);
     }
-    return undefined;
-  }, [value, navigate, autoNavigateOnEmpty]);
+    // Otherwise debounce navigate with current value
+    const trimmed = value.trim();
+    const t = setTimeout(
+      () => navigate(trimmed === "" ? undefined : trimmed),
+      debounceMs
+    );
+    return () => clearTimeout(t);
+  }, [value, selectedGenre, debounceMs, autoNavigateOnEmpty, navigate]);
 
   return (
     <div className="flex items-center w-full">
       <input
+        id="movie-search"
         name="q"
         type="search"
         aria-label="Search by title, actor or director"
-        placeholder="Search by title, actor, or director...🔍"
+        placeholder="Search by title, actor, or director..."
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        onKeyDown={onKeyDown}
-        className="p-2 w-full sm:w-64 rounded-lg border border-gray-500 bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+        className="w-full bg-transparent px-4 py-3 text-base text-gray-200 placeholder-gray-400 focus:outline-none caret-teal-300"
       />
-      <button
-        type="button"
-        onClick={() => navigate(value.trim() || undefined)}
-        className="ml-3 px-3 py-2 rounded-lg bg-gray-600 text-gray-200 font-medium hover:bg-gray-500 transition focus:outline-none focus:ring-2 focus:ring-gray-400"
-      >
-        Search
-      </button>
     </div>
   );
 }

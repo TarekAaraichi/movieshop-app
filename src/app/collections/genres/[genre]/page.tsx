@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import Image from "next/image";
 
 type Props = { params: { genre: string } };
 
@@ -32,14 +33,18 @@ export default async function GenrePage({ params }: Props) {
               className="bg-gray-900 rounded overflow-hidden flex flex-col"
             >
               {m.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={m.imageUrl}
-                  alt={m.title}
-                  className="w-full h-44 object-contain bg-gray-800"
-                />
+                <div className="relative w-full aspect-[2/3] bg-gray-900 overflow-hidden">
+                  <Image
+                    src={m.imageUrl}
+                    alt={m.title || "Movie poster"}
+                    fill
+                    unoptimized
+                    sizes="(max-width: 640px) 100vw, 25vw"
+                    className="object-cover"
+                  />
+                </div>
               ) : (
-                <div className="w-full h-44 bg-gray-700 flex items-center justify-center">
+                <div className="relative w-full aspect-[2/3] bg-gray-700 flex items-center justify-center text-xs text-gray-300">
                   No image
                 </div>
               )}

@@ -14,7 +14,6 @@ import Link from "next/link";
 import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
 import DetailsMenu from "@/components/DetailsMenu";
-import MovieSearch from "@/components/MovieSearch";
 import { CartCountBadge } from "@/components";
 
 const geistSans = Geist({
@@ -132,16 +131,7 @@ export default async function RootLayout({
                 </Link>
               </nav>
 
-              {/* Inline search using MovieSearch component */}
-              <div className="flex-1 flex justify-center">
-                <div className="w-full max-w-xl">
-                  <MovieSearch
-                    initialQuery=""
-                    selectedGenre=""
-                    autoNavigateOnEmpty={false}
-                  />
-                </div>
-              </div>
+              {/* (Search moved to /movies page to declutter global nav) */}
 
               {/* Account / CTA */}
               <div className="ml-auto flex items-center gap-3">
