@@ -4,6 +4,7 @@
  *
  * Responsibilities:
  * - Fetch a single movie (including `genres`, `people`, and `_count`) via Prisma.
+ * - Use an aggregate SUM over OrderItem.quantity to display real sold units (not just number of order lines).
  * - Format runtime and release date for display and render poster, facts, cast, and Add-to-Cart.
  *
  * Notes:
@@ -62,37 +63,44 @@ type Movie = {
 export default async function MoviePage({ params }: Props) {
   const { movieId } = params;
 
-  // Lookup movie by id and include related genres and people
-  let movie;
-  try {
-    movie = await prisma.movie.findUnique({
-      where:
-        typeof movieId === "string"
-          ? { id: movieId }
-          : { id: movieId as never },
-      include: {
-        genres: { include: { genre: true } },
-        people: { include: { person: true } },
-        _count: {
-          select: {
-            orderItems: true,
-            cartItems: true,
-            genres: true,
-            people: true,
-          },
+  // Parallel: fetch movie & aggregate total units sold (sum of order item quantities)
+  const moviePromise = prisma.movie.findUnique({
+    where:
+      typeof movieId === "string" ? { id: movieId } : { id: movieId as never },
+    include: {
+      genres: { include: { genre: true } },
+      people: { include: { person: true } },
+      _count: {
+        select: {
+          orderItems: true, // distinct order lines (number of orders containing this movie)
+          cartItems: true,
+          genres: true,
+          people: true,
         },
       },
-    });
+    },
+  });
+  const aggregatePromise = prisma.orderItem.aggregate({
+    where: { movieId },
+    _sum: { quantity: true },
+  });
+
+  let movieResult, aggregateResult;
+  try {
+    [movieResult, aggregateResult] = await Promise.all([
+      moviePromise,
+      aggregatePromise,
+    ]);
   } catch (err) {
-    console.error("Error fetching movie", movieId, err);
+    console.error("Error fetching movie or aggregate", movieId, err);
     notFound();
   }
 
-  if (!movie) {
+  if (!movieResult) {
     notFound();
   }
 
-  const movieTyped = movie as unknown as Movie;
+  const movieTyped = movieResult as unknown as Movie;
 
   // Helpers for UI-safe values
   const title: string = movieTyped.title ?? "Untitled";
@@ -132,6 +140,10 @@ export default async function MoviePage({ params }: Props) {
   const actors = Array.isArray(movieTyped.people)
     ? movieTyped.people.filter((p) => p.role === "ACTOR").map((p) => p.person)
     : [];
+
+  // Aggregate totals
+  const totalUnitsSold = aggregateResult?._sum.quantity ?? 0;
+  const distinctOrders = movieTyped._count?.orderItems ?? 0;
 
   const formatRuntime = (mins?: number | null) => {
     if (!mins || mins <= 0) return "";
@@ -263,9 +275,14 @@ export default async function MoviePage({ params }: Props) {
                 </div>
                 <div className="h-4 w-px bg-[rgba(255,255,255,0.04)]" />
                 <div className="text-xs text-slate-400">
-                  {movieTyped._count
-                    ? `${movieTyped._count.orderItems ?? 0} sold`
-                    : ""}
+                  {`${totalUnitsSold} unit${
+                    totalUnitsSold === 1 ? "" : "s"
+                  } sold`}
+                  {distinctOrders > 0 && (
+                    <span>{` across ${distinctOrders} order${
+                      distinctOrders === 1 ? "" : "s"
+                    }`}</span>
+                  )}
                 </div>
               </div>
 
