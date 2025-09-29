@@ -28,8 +28,8 @@ export default function ContactPage() {
                   name: "Tarek Aaraichi",
                   role: "Frontend / Integrations",
                   linkedin: "https://www.linkedin.com/in/tarek-aaraichi",
-                  github: "https://github.com/tarek-aaraichi",
-                  email: "tarek@example.com",
+                  github: "https://github.com/TarekAaraichi",
+                  email: "tarek.aaraichi@gmail.com",
                   color: "bg-gradient-to-br from-rose-500 to-pink-500",
                 },
                 {
