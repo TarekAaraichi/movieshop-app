@@ -74,32 +74,39 @@ export default async function Page() {
     console.error("Failed to fetch user address for profile edit", err);
   }
 
+  // Avatar source logic:
+  // - Prefer user-provided image
+  // - Otherwise generate an identicon from DiceBear (new API). Old endpoint `https://avatars.dicebear.com/api/...` is deprecated
+  //   and returns an in-image warning banner (what you're seeing). Updated pattern:
+  //   https://api.dicebear.com/7.x/identicon/svg?seed=<seed>
+  // - Keep SVG (sharp at any size). Using `unoptimized` until remotePatterns added to next.config.
   const avatarSrc =
     profile.image &&
     typeof profile.image === "string" &&
     profile.image.length > 0
       ? profile.image
-      : `https://avatars.dicebear.com/api/identicon/${encodeURIComponent(
+      : `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(
           profile.id
-        )}.svg`;
+        )}`;
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <div className="rounded-2xl bg-white shadow-lg overflow-hidden">
+    <div className="mx-auto max-w-3xl px-4">
+      <div className="rounded-2xl bg-white shadow-lg overflow-hidden ring-1 ring-gray-100">
         <div className="flex items-center gap-6 p-6 bg-gradient-to-r from-sky-600 to-violet-600 text-white">
           <label
-            className="relative flex items-center gap-4 cursor-pointer"
+            className="relative flex items-center gap-4 cursor-pointer transform transition-transform duration-200 hover:scale-[1.03] focus:outline-none"
             htmlFor="image"
+            title="Click to edit image URL"
           >
             <Image
               src={avatarSrc}
               alt={`${profile.name ?? "profile"} avatar`}
-              width={88}
-              height={88}
-              className="h-22 w-22 rounded-full ring-2 ring-white object-cover"
+              width={96}
+              height={96}
+              className="h-24 w-24 rounded-full ring-2 ring-white object-cover shadow-sm transition-shadow duration-200 hover:shadow-lg"
               unoptimized
             />
-            <span className="absolute bottom-0 right-0 -mb-1 -mr-1 inline-flex items-center justify-center h-7 w-7 rounded-full bg-white/20 text-xs font-medium">
+            <span className="absolute bottom-0 right-0 -mb-1 -mr-1 inline-flex items-center justify-center h-7 w-7 rounded-full bg-white/20 text-xs font-medium backdrop-blur-sm">
               ✎
             </span>
           </label>
@@ -113,7 +120,8 @@ export default async function Page() {
                   aria-label="Full name"
                   defaultValue={profile.name ?? ""}
                   placeholder="Your name"
-                  className="min-w-0 text-xl font-semibold bg-transparent border-0 focus:outline-none focus:ring-0 text-white placeholder-white/70"
+                  autoComplete="name"
+                  className="min-w-0 text-xl font-semibold bg-transparent border-0 focus:outline-none focus:ring-2 focus:ring-white/40 focus:ring-offset-0 text-white placeholder-white/70 transition-colors duration-150"
                 />
                 <div className="text-sm text-white/90">
                   · {profile.role ?? "user"}
@@ -130,7 +138,8 @@ export default async function Page() {
                   type="email"
                   defaultValue={profile.email ?? ""}
                   readOnly
-                  className="text-sm bg-white/10 px-3 py-1 rounded-full text-white/95 border border-white/10"
+                  autoComplete="email"
+                  className="text-sm bg-white/10 px-3 py-1 rounded-full text-white/95 border border-white/10 shadow-sm"
                 />
                 <div className="text-sm text-white/80">
                   Joined{" "}
@@ -165,7 +174,8 @@ export default async function Page() {
                   name="name"
                   defaultValue={profile.name ?? ""}
                   placeholder="Full name"
-                  className="mt-1 px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900"
+                  autoComplete="name"
+                  className="mt-1 px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900 transition-shadow duration-150 shadow-sm hover:shadow"
                 />
               </label>
 
@@ -188,7 +198,8 @@ export default async function Page() {
                   name="phone"
                   defaultValue={""}
                   placeholder="Phone number"
-                  className="mt-1 px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900"
+                  inputMode="tel"
+                  className="mt-1 px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900 transition duration-150"
                 />
                 <p className="mt-1 text-xs text-gray-500">
                   Not available for now due to DB (will be added later)
@@ -201,7 +212,7 @@ export default async function Page() {
                   name="image"
                   defaultValue={profile.image ?? ""}
                   placeholder="https://.../avatar.jpg"
-                  className="mt-1 px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900"
+                  className="mt-1 px-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900 transition-colors duration-150"
                 />
               </label>
             </div>
@@ -213,14 +224,14 @@ export default async function Page() {
                 defaultValue={""}
                 placeholder="A short bio (optional)"
                 rows={3}
-                className="mt-1 px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900"
+                className="mt-1 px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-900 transition-shadow duration-150"
               />
               <p className="mt-1 text-xs text-gray-500">
                 Not available for now due to DB (will be added later)
               </p>
             </label>
 
-            <fieldset className="rounded-md border border-gray-100 p-4 bg-gray-50">
+            <fieldset className="rounded-md border border-gray-100 p-4">
               <legend className="text-sm font-medium text-gray-700">
                 Address (optional)
               </legend>
@@ -229,31 +240,31 @@ export default async function Page() {
                   name="addressLine1"
                   defaultValue={address?.line1 ?? ""}
                   placeholder="Address line 1"
-                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900"
+                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900 focus:ring-2 focus:ring-sky-500 transition duration-150"
                 />
                 <input
                   name="addressLine2"
                   defaultValue={address?.line2 ?? ""}
                   placeholder="Address line 2"
-                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900"
+                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900 focus:ring-2 focus:ring-sky-500 transition duration-150"
                 />
                 <input
                   name="city"
                   defaultValue={address?.city ?? ""}
                   placeholder="City"
-                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900"
+                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900 focus:ring-2 focus:ring-sky-500 transition duration-150"
                 />
                 <input
                   name="postalCode"
                   defaultValue={address?.postalCode ?? ""}
                   placeholder="Postal code"
-                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900"
+                  className="px-3 py-2 rounded-lg border border-gray-200 text-gray-900 focus:ring-2 focus:ring-sky-500 transition duration-150"
                 />
                 <input
                   name="country"
                   defaultValue={address?.country ?? ""}
                   placeholder="Country"
-                  className="px-3 py-2 rounded-lg border border-gray-200 col-span-1 sm:col-span-2 text-gray-900"
+                  className="px-3 py-2 rounded-lg border border-gray-200 col-span-1 sm:col-span-2 text-gray-900 focus:ring-2 focus:ring-sky-500 transition duration-150"
                 />
               </div>
             </fieldset>
@@ -266,12 +277,14 @@ export default async function Page() {
               <div className="flex items-center gap-3">
                 <a
                   href="/profile"
-                  className="text-sm text-gray-600 hover:text-gray-800"
+                  className="text-sm text-gray-600 hover:text-gray-800 rounded-md px-2 py-1 transition-colors duration-150"
                 >
                   Cancel
                 </a>
-                <div>
-                  <SaveButton label="Save" />
+                <div className="flex items-center">
+                  <div className="rounded-md shadow-sm hover:shadow-md transition-shadow duration-150">
+                    <SaveButton label="Save" />
+                  </div>
                 </div>
               </div>
             </div>

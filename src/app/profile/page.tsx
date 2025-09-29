@@ -189,7 +189,7 @@ export default async function ProfilePage() {
                             Total
                           </div>
                           <div className="text-lg font-bold text-slate-900">
-                            ${String(o.totalAmount ?? "0.00")}
+                            SEK{String(o.totalAmount ?? "0.00")}
                           </div>
                           <Link
                             href={`/orders/${o.id ?? ""}`}
@@ -271,7 +271,7 @@ export default async function ProfilePage() {
                         : "—"}
                     </div>
                     <div className="text-sm font-semibold text-slate-900">
-                      ${String(o.totalAmount ?? "0.00")}
+                      SEK{String(o.totalAmount ?? "0.00")}
                     </div>
                     <Link
                       href={`/orders/${o.id ?? ""}`}

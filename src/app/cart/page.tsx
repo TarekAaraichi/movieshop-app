@@ -4,11 +4,13 @@
  */
 
 import { CartClient } from "@/components";
+import OrderSummaryClient from "@/components/OrderSummaryClient";
+import CheckoutSecureButton from "@/components/CheckoutSecureButton";
 import { cookies, headers } from "next/headers";
 import Link from "next/link";
 import { prisma } from "@/lib";
 import { getCartIdFromCookie } from "@/server/services";
-import type { CartClientItem, ServerMovie } from "@/types";
+import type { CartClientItem } from "@/types";
 import { auth } from "@/lib/auth";
 
 // Helper: read cart items from legacy cookie payload
@@ -262,95 +264,101 @@ export default async function CartPage() {
 
   return (
     <div>
-      <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-6 items-start">
-        <main className="flex-1 bg-white rounded-2xl shadow p-6">
-          <div className="flex items-center justify-between mb-4">
+      <div className=" w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-8 items-start">
+        <main className="flex-1 bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-slate-100">
+          <div className="flex items-start justify-between mb-6 gap-4">
             <div>
               <h1 className="text-lg md:text-2xl font-semibold text-slate-900">
                 Shopping Cart
               </h1>
-              <p className="text-sm text-slate-500">
-                Manage items inline, update quantities or remove products
+              <p className="text-sm text-slate-500 mt-1">
+                Manage items inline — update quantities, save for later, or
+                remove products
               </p>
-            </div>
-            <div className="text-sm text-slate-600">
-              {items.length} {items.length === 1 ? "item" : "items"}
             </div>
           </div>
 
           {items.length === 0 ? (
-            <div className="py-12 flex flex-col items-center text-center text-slate-600">
-              <svg
-                aria-hidden
-                className="w-20 h-20 mb-4 text-slate-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeWidth={1.5}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21a1 1 0 102 0M15 21a1 1 0 102 0"
-                />
-              </svg>
-              <Link
-                href="/movies"
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm shadow-sm hover:bg-blue-700 focus:outline-none"
-              >
-                Browse Movies
-              </Link>
+            <div className="py-16 flex flex-col items-center text-center text-slate-600">
+              <div className="p-6 rounded-lg bg-gradient-to-b from-white to-slate-50 border border-slate-100 shadow-sm mb-6">
+                <svg
+                  aria-hidden
+                  className="w-20 h-20 mb-2 text-slate-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeWidth={1.5}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21a1 1 0 102 0M15 21a1 1 0 102 0"
+                  />
+                </svg>
+              </div>
+
+              <h2 className="text-lg font-medium text-slate-800 mb-2">
+                Your cart is empty
+              </h2>
+              <p className="text-sm text-slate-500 mb-4">
+                Browse our collection and add a few movies to get started.
+              </p>
+
+              <div className="flex gap-3">
+                <Link
+                  href="/movies"
+                  className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-md text-sm shadow-sm hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 transition"
+                >
+                  Browse Movies
+                </Link>
+
+                <Link
+                  href="/"
+                  className="inline-flex items-center px-4 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100 transition"
+                >
+                  Continue exploring
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">
+              <div className="flex items-center justify-between text-sm text-slate-500 border-b pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-slate-700">Cart items</span>
+                  {/* <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full">
+                    {items.length}
+                  </span> */}
+                </div>
+                <div className="ml-auto text-xs">Prices shown in SEK</div>
+              </div>
+
               {/* Client-driven interactive cart; keeps controls inline and modern */}
-              <CartClient initialItems={items} />
+              <div className="rounded-lg border border-slate-100 overflow-hidden">
+                <CartClient initialItems={items} />
+              </div>
             </div>
           )}
         </main>
 
         <aside className="w-full md:w-96 sticky top-6 self-start">
-          <div className="bg-white rounded-2xl shadow p-6 flex flex-col gap-4">
-            <div>
-              <h2 className="text-sm font-medium text-slate-600">
-                Order summary
-              </h2>
-              <p className="mt-2 text-2xl font-semibold text-slate-900">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(
-                  items.reduce(
-                    (sum, it) =>
-                      sum +
-                      (Number((it.movie as ServerMovie)?.price ?? "0") || 0) *
-                        it.quantity,
-                    0
-                  )
-                )}
-              </p>
+          <div className="bg-white rounded-2xl shadow-sm p-6 border border-slate-100 flex flex-col gap-4">
+            <OrderSummaryClient items={items} />
+
+            <div className="pt-3 border-t border-slate-100">
+              <CheckoutSecureButton initialItems={items} />
+
+              <Link
+                href="/movies"
+                className="w-full text-center block mt-3 px-4 py-2 rounded-md text-sm text-sky-800 bg-gradient-to-r from-sky-50 via-sky-100 to-sky-200 hover:from-sky-100 hover:to-sky-300 transition-shadow shadow-sm hover:shadow-md"
+              >
+                Continue shopping
+              </Link>
             </div>
 
-            <div className="text-sm text-slate-500">
-              Shipping and taxes calculated at checkout.
+            <div className="text-xs text-slate-400 pt-2">
+              By checking out you agree to our terms. Payments are processed
+              securely.
             </div>
-
-            <button
-              type="button"
-              className={`w-full inline-flex justify-center items-center px-4 py-3 rounded-md text-white bg-gradient-to-r from-blue-600 to-indigo-600 shadow hover:from-blue-700 hover:to-indigo-700 focus:outline-none transition ${
-                !items.length ? "opacity-50 pointer-events-none" : ""
-              }`}
-              disabled={!items.length}
-            >
-              Checkout
-            </button>
-
-            <Link
-              href="/movies"
-              className="w-full text-center block px-4 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-50"
-            >
-              Continue shopping
-            </Link>
           </div>
         </aside>
       </div>

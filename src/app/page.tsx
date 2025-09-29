@@ -131,75 +131,80 @@ export default async function HomePage() {
 
     // actors are intentionally not rendered here (kept commented in markup)
 
+    const year = movie.releaseDate
+      ? new Date(movie.releaseDate).getFullYear()
+      : null;
+    const genres = movie.genres?.slice(0, 3) || [];
+
     return (
-      <div className="group p-3">
-        <div className="relative flex flex-col h-full min-h-[180px] w-full bg-gradient-to-r from-gray-800/60 to-gray-700/40 border border-gray-700/60 rounded-2xl shadow-lg hover:shadow-2xl transform transition-all duration-200 ease-out hover:-translate-y-1 overflow-hidden">
-          {/* Image area */}
-          <Link
-            href={`/movies/${movie.id}`}
-            className="relative w-full h-48 sm:h-56 md:h-52 lg:h-44 shrink-0 block"
-            aria-label={`Open ${movie.title}`}
-          >
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent pointer-events-none" />
+      <article
+        className="relative group rounded-2xl overflow-hidden bg-gradient-to-br from-gray-800/70 via-gray-800/50 to-gray-700/50 border border-white/6 shadow-lg transition-[transform,box-shadow,filter] duration-[220ms] ease-[cubic-bezier(.2,.9,.2,1)] will-change-[transform] hover:shadow-[0_20px_40px_rgba(2,6,23,0.6)] hover:-translate-y-2 hover:scale-105"
+        aria-label={movie.title}
+      >
+        {/* Poster */}
+        <Link
+          href={`/movies/${movie.id}`}
+          className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
+          aria-label={`Open ${movie.title}`}
+        >
+          <div className="relative w-full aspect-[2/3] min-h-[220px] max-h-[420px] bg-[#071022] overflow-hidden">
             <Image
               src={imgSrc}
               alt={movie.title}
               fill
-              className="object-cover w-full h-full rounded-t-2xl"
+              sizes="(max-width: 640px) 100vw, 20vw"
+              className="object-contain object-center w-full h-full transition-[transform,filter] duration-[300ms] ease-[cubic-bezier(.2,.9,.2,1)] group-hover:scale-[1.02] group-hover:brightness-[1.03]"
               priority={false}
             />
-
-            {/* Price badge (top-left) */}
-            <div className="absolute left-3 top-3 bg-black/60 text-green-300 font-medium text-sm px-3 py-1 rounded-full backdrop-blur-sm border border-green-300/20">
-              ${Number(movie.price ?? 0).toFixed(2)}
+            {/* Price badge */}
+            <div className="absolute top-3 right-3">
+              <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-green-300 to-blue-400 text-black text-sm font-semibold">
+                SEK{Number(movie.price ?? 0).toFixed(2)}
+              </span>
             </div>
+          </div>
+        </Link>
 
-            {/* Year badge (top-right) */}
-            {movie.releaseDate && (
-              <div className="absolute right-3 top-3 bg-white/6 text-gray-100 text-sm px-2 py-1 rounded-full backdrop-blur-sm border border-white/6">
-                {new Date(movie.releaseDate).getFullYear()}
-              </div>
-            )}
-          </Link>
-
-          {/* Genres as modern chips */}
-          {movie.genres && movie.genres.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-1">
-              {movie.genres.map((g) => (
-                <span
-                  key={g.genre.id}
-                  className="text-xs px-2 py-0.5 rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10"
-                >
-                  {g.genre.name}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Details */}
-          <div className="p-3 flex-1 flex flex-col gap-2">
-            <Link
-              href={`/movies/${movie.id}`}
-              className="text-base sm:text-lg font-semibold text-gray-100 hover:text-white hover:underline line-clamp-2"
-            >
+        <div className="p-4 flex flex-col h-full">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-100 hover:text-white line-clamp-2">
+            <Link href={`/movies/${movie.id}`} className="hover:underline">
               {movie.title}
             </Link>
+          </h2>
 
+          <div className="mt-2 flex items-center justify-between text-sm text-gray-300">
+            <span>{year ?? "—"}</span>
+            <div className="flex items-center gap-2">
+              <div className="inline-flex items-center gap-2">
+                {genres.map((g) => (
+                  <span
+                    key={g.genre.id}
+                    className="text-xs px-2 py-0.5 rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10"
+                  >
+                    {g.genre.name}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Use regular top margin instead of mt-auto to guarantee visibility even if card height collapses */}
+          <div className="mt-4">
             <Link
               href={`/movies/${movie.id}`}
-              className="flex mt-auto min-w-0  w-full justify-center items-center gap-2 rounded-md bg-gradient-to-r from-green-400 to-blue-500 text-black text-sm font-medium px-3 py-1.5 shadow-sm hover:scale-105 transition-transform"
+              className="flex w-full justify-center items-center gap-2 rounded-md bg-gradient-to-r from-green-400 to-blue-500 text-black text-sm font-medium px-3 py-1.5 shadow-sm hover:scale-105 transition-transform focus:outline-none focus-visible:ring-2 focus-visible:ring-green-400"
               aria-label={`View details for ${movie.title}`}
             >
               View
             </Link>
           </div>
         </div>
-      </div>
+      </article>
     );
   }
 
   return (
-    <div className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 text-gray-200 antialiased">
+    <div>
       <main className="flex-grow px-4 sm:px-8 max-w-7xl mx-auto w-full pt-12 pb-12 box-border">
         <h1 className="text-4xl sm:text-5xl font-extrabold mb-10 text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
           Explore Our Movies

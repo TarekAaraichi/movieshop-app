@@ -309,7 +309,9 @@ export default async function AdminPage({
                     </div>
                     <div className="mt-2 flex items-center gap-2 text-sm">
                       <span className="text-gray-700 font-medium">
-                        {movie.price != null ? `$${String(movie.price)}` : "—"}
+                        {movie.price != null
+                          ? `SEK${String(movie.price)}`
+                          : "—"}
                       </span>
                       <span className="text-gray-500">•</span>
                       <span className="text-gray-500">

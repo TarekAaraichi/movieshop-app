@@ -263,11 +263,11 @@ export default async function RootLayout({
           </footer>
 
           {/* Floating quick-action (accessible, unobtrusive) */}
-          <a
+          {/* <a
             href="/cart"
             aria-label="Open cart"
             className="fixed right-4 bottom-6 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          >
+          > */}
             {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -285,9 +285,9 @@ export default async function RootLayout({
               <circle cx="10" cy="20" r="1" />
               <circle cx="18" cy="20" r="1" />
             </svg> */}
-            <span className="hidden sm:inline">Cart</span>
-            <CartCountBadge />
-          </a>
+            {/* <span className="hidden sm:inline">Cart</span> */}
+            {/* <CartCountBadge /> */}
+          {/* </a> */}
         </ClientShell>
       </body>
     </html>

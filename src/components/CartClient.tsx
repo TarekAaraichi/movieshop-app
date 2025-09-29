@@ -10,8 +10,7 @@
 // - Handles optimistic increments/decrements and navigation to checkout.
 // - Avoids forced `router.refresh()` during mutations to prevent overwriting
 //   optimistic updates.
-import React, { useState, useTransition, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import type { CartClientItem } from "@/types";
 import { useCartCount } from "@/components";
@@ -25,9 +24,7 @@ export default function CartClient({
   // Use the client-side cart hook which posts to /api/cart
   const { items, add, update, remove } = useCart(initialItems || []);
   const { setCount } = useCartCount();
-  const [isPending, startTransition] = useTransition();
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const router = useRouter();
+  const isPending = false; // simplified: parent no longer triggers transitions here
 
   function onAction() {
     // Intentionally no-op: optimistic updates and the `useCart` hook's
@@ -37,15 +34,19 @@ export default function CartClient({
     // briefly revert to the server's (stale) state.
   }
 
-  useEffect(() => {
-    if (!isPending && isCheckingOut) setIsCheckingOut(false);
-  }, [isPending, isCheckingOut]);
+  // no local checkout state; checkout handled by parent secure button
 
   // Keep global count in sync and ensure we have authoritative state from server
   useEffect(() => {
     setCount(
       items.reduce((sum: number, it: CartClientItem) => sum + it.quantity, 0)
     );
+    // Broadcast cart item changes for other client components (e.g., order summary, checkout button)
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(
+        new CustomEvent("cart:items-changed", { detail: items })
+      );
+    }
     // Do not call `revalidate()` here. Revalidation is performed by the
     // mutate flow (mutateServer) after the POST completes to avoid races
     // where a background GET could return stale server state and overwrite
@@ -73,37 +74,30 @@ export default function CartClient({
     onAction();
   }
 
-  const total = items.reduce(
-    (s, it) => s + Number(it.movie.price) * it.quantity,
-    0
-  );
-
+  // If we later reintroduce transitions, restore isPending logic
   if (isPending && items.length === 0)
     return <p className="text-gray-600">Loading...</p>;
-
   if (items.length === 0)
     return <p className="text-gray-600">Your cart is empty.</p>;
 
   return (
     <div className="space-y-4 text-gray-900">
       {items.map(({ movie, quantity }) => {
-        const genreNames = (movie.genres || [])
-          .map((g) => g?.genre?.name)
+        type MaybeGenre = { genre?: { name?: string }; name?: string };
+        const genreNames = (
+          (movie.genres as unknown as MaybeGenre[] | undefined) || []
+        )
+          .map((g) => g?.genre?.name || g?.name)
           .filter(Boolean)
           .slice(0, 3);
-        const year = movie.releaseDate
-          ? new Date(movie.releaseDate).getFullYear()
-          : null;
-        const runtime = movie.runtime ? `${movie.runtime} min` : null;
-        const rating =
-          typeof movie.rating === "number" ? movie.rating.toFixed(1) : "—";
+        // (year, runtime, rating omitted from cart row to keep layout compact)
 
         return (
           <div
             key={movie.id}
             className="flex items-center justify-between border-b pb-4"
           >
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center px-2 space-x-4">
               <div className="w-20 h-20 relative">
                 <Image
                   src={movie.imageUrl || "https://via.placeholder.com/80"}
@@ -119,20 +113,28 @@ export default function CartClient({
                 </h2>
                 <p className="text-sm text-gray-500">
                   {genreNames.length > 0 ? genreNames.join(", ") : "—"}
-                  {year ? ` · ${year}` : ""}
-                  {runtime ? ` · ${runtime}` : ""}
+                  <br />
+                  {/* {year ? ` ${year}` : ""}
+                  <br /> */}
+                  {movie.runtime
+                    ? (() => {
+                        const h = Math.floor(movie.runtime / 60);
+                        const m = movie.runtime % 60;
+                        return h > 0 ? ` ${h}h ${m}m` : ` ${m}m`;
+                      })()
+                    : ""}
                 </p>
-                <p className="text-xs text-gray-400">Rating: {rating}</p>
+                {/* <p className="text-xs text-gray-400">Rating: {rating}</p> */}
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1">
               <p className="text-lg font-medium text-gray-800">
-                ${Number(movie.price).toFixed(2)}
+                SEK{Number(movie.price).toFixed(2)}
               </p>
               <button
                 type="button"
                 onClick={() => onDec(movie.id)}
-                className="px-2 py-1 bg-gray-200 rounded"
+                className="px-2 bg-gray-200 rounded"
                 disabled={isPending}
               >
                 −
@@ -141,7 +143,7 @@ export default function CartClient({
               <button
                 type="button"
                 onClick={() => onInc(movie.id)}
-                className="px-2 py-1 bg-gray-200 rounded"
+                className="px-2 bg-gray-200 rounded"
                 disabled={isPending}
               >
                 +
@@ -154,37 +156,13 @@ export default function CartClient({
               >
                 Remove
               </button>
+              <br />
             </div>
           </div>
         );
       })}
 
-      <div className="mt-6 flex justify-between items-center">
-        <p className="text-lg font-semibold text-gray-800">
-          Total: ${total.toFixed(2)}
-        </p>
-        <button
-          type="button"
-          onClick={() => {
-            setIsCheckingOut(true);
-            startTransition(() => {
-              router.push("/checkout");
-            });
-          }}
-          disabled={isPending}
-          className={`px-6 py-2 text-white rounded-md disabled:opacity-50 ${
-            isPending
-              ? "bg-blue-400 hover:bg-blue-400 cursor-wait"
-              : "bg-blue-600 hover:bg-blue-700"
-          }`}
-        >
-          {isPending
-            ? isCheckingOut
-              ? "Checking out..."
-              : "Updating..."
-            : "Checkout"}
-        </button>
-      </div>
+      {/* Checkout button removed; handled by secure button in page aside */}
     </div>
   );
 }

@@ -110,7 +110,11 @@ export async function toDto(cart: {
 }) {
   const movieIds = cart.items?.map((i) => i.movieId) ?? [];
   const movies = movieIds.length
-    ? await prisma.movie.findMany({ where: { id: { in: movieIds } } })
+    ? await prisma.movie.findMany({
+        where: { id: { in: movieIds } },
+        // Include genres so client cart can display them without extra fetches
+        include: { genres: { include: { genre: true } } },
+      })
     : [];
   const movieMap = new Map(movies.map((m) => [m.id, m]));
   return {

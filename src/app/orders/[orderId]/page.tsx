@@ -96,7 +96,7 @@ export default async function OrderPage({ params }: Props) {
             <div className="text-right">
               <div className="text-sm text-slate-500">Total</div>
               <div className="text-2xl font-bold text-slate-900">
-                ${Number(total).toFixed(2)}
+                SEK{Number(total).toFixed(2)}
               </div>
             </div>
           </div>
@@ -169,7 +169,7 @@ export default async function OrderPage({ params }: Props) {
                           </span>
                           <span className="text-xs">Purchased at</span>
                           <span className="font-mono text-slate-800">
-                            $
+                            SEK
                             {Number(formatPrice(it.priceAtPurchase)).toFixed(2)}
                           </span>
                         </div>
@@ -179,7 +179,7 @@ export default async function OrderPage({ params }: Props) {
                     <div className="text-right">
                       <div className="text-sm text-slate-600">Line total</div>
                       <div className="text-sm font-semibold text-slate-900">
-                        $
+                        SEK
                         {Number(
                           formatPrice(
                             (it.quantity as number) *

@@ -8,7 +8,7 @@ import { prisma } from "@/lib";
 import Link from "next/link";
 import Image from "next/image";
 import type { Prisma } from "@prisma/client";
-import { MovieSearch } from "@/components";
+import { AddToCartClientButton, MovieSearch } from "@/components";
 
 interface MoviesPageProps {
   searchParams: {
@@ -170,7 +170,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                     {/* Price badge pinned to top-right */}
                     <div className="absolute top-3 right-3">
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-green-300 to-blue-400 text-black text-sm font-semibold">
-                        ${Number(movie.price).toFixed(2)}
+                        SEK{Number(movie.price).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -237,6 +237,15 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                       </Link>
                     </div>
                   )}
+
+                  {/* Add to cart button (replaces prior View button) */}
+                  <div className="mt-4">
+                    <AddToCartClientButton
+                      movieId={movie.id}
+                      disabled={Boolean(movie.isArchived) || (movie.stock != null ? movie.stock === 0 : false)}
+                      buttonClassName="rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 px-4 py-3 text-sm font-semibold text-white hover:from-emerald-600 hover:to-blue-600"
+                    />
+                  </div>
                 </div>
               </article>
             );
