@@ -242,7 +242,10 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                   <div className="mt-4">
                     <AddToCartClientButton
                       movieId={movie.id}
-                      disabled={Boolean(movie.isArchived) || (movie.stock != null ? movie.stock === 0 : false)}
+                      disabled={
+                        Boolean(movie.isArchived) ||
+                        (movie.stock != null ? movie.stock === 0 : false)
+                      }
                       buttonClassName="rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 px-4 py-3 text-sm font-semibold text-white hover:from-emerald-600 hover:to-blue-600"
                     />
                   </div>
