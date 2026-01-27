@@ -58,6 +58,7 @@ type Movie = {
     | { id: string; code?: string | null; name?: string | null }
     | null;
   price?: unknown; // Prisma Decimal or number/string
+  stock?: number | null;
 };
 
 export default async function MoviePage({ params }: Props) {
@@ -101,6 +102,8 @@ export default async function MoviePage({ params }: Props) {
   }
 
   const movieTyped = movieResult as unknown as Movie;
+
+  const stock = movieTyped.stock ?? null;
 
   // Helpers for UI-safe values
   const title: string = movieTyped.title ?? "Untitled";
@@ -154,15 +157,6 @@ export default async function MoviePage({ params }: Props) {
   };
   const runtimeFormatted = formatRuntime(movieTyped.runtime ?? null);
 
-  // Visual theme mirrors the person page (converted to Tailwind classes below)
-
-  // Stock computation and theme-friendly classes (mirrors person page palette)
-  const stockLeft =
-    movieTyped._count?.orderItems !== undefined
-      ? Math.max(0, 12 - (movieTyped._count.orderItems ?? 0))
-      : null;
-  // stockLeft is available for disabled checks or later UI hints
-
   return (
     <div className="w-full max-w-[1100px] mx-auto flex items-start gap-6 p-2">
       <aside className="flex-shrink-0 p-2">
@@ -182,6 +176,11 @@ export default async function MoviePage({ params }: Props) {
               <span className="text-sm">No poster available</span>
             </div>
           )}
+          {stock === 0 && (
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+              <span className="text-white font-bold text-lg">Out of Stock</span>
+            </div>
+          )}
         </div>
 
         {/* Buttons placed under the poster in the next row */}
@@ -189,10 +188,8 @@ export default async function MoviePage({ params }: Props) {
           <div className="w-full">
             <AddToCartClientButton
               movieId={movieId}
-              disabled={
-                Boolean(movieTyped.isArchived) ||
-                (stockLeft !== null ? stockLeft === 0 : false)
-              }
+              stock={stock}
+              disabled={Boolean(movieTyped.isArchived)}
               buttonClassName="rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 px-4 py-3 text-sm font-semibold text-white hover:from-emerald-600 hover:to-blue-600"
             />
           </div>
@@ -241,6 +238,12 @@ export default async function MoviePage({ params }: Props) {
                   </div>
                 </div>
               )}
+              {stock !== null && stock > 0 && (
+                <div className="rounded-lg bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] px-4 py-3 text-center shadow-sm">
+                  <div className="text-xs text-yellow-400">Stock</div>
+                  <div className="mt-1 text-sm font-semibold">{stock} left</div>
+                </div>
+              )}
             </div>
 
             <p className="text-slate-300 mt-4 leading-relaxed">{description}</p>
@@ -258,7 +261,7 @@ export default async function MoviePage({ params }: Props) {
                       {director.fullName}
                     </Link>
                   ) : (
-                    movieTyped.director ?? "Unknown"
+                    (movieTyped.director ?? "Unknown")
                   )}
                 </div>
               </div>
@@ -288,7 +291,7 @@ export default async function MoviePage({ params }: Props) {
 
               <a
                 href={`https://www.imdb.com/find?q=${encodeURIComponent(
-                  title
+                  title,
                 )}`}
                 target="_blank"
                 rel="noreferrer"

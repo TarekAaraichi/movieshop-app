@@ -74,7 +74,7 @@ export function useCart(initialItems: CartClientItem[] = []) {
         setItems(payload.items || []);
         const total = payload.items.reduce(
           (s: number, it: CartClientItem) => s + (it.quantity || 0),
-          0
+          0,
         );
         if (typeof window !== "undefined" && window.dispatchEvent) {
           void Promise.resolve().then(() => {
@@ -82,7 +82,7 @@ export function useCart(initialItems: CartClientItem[] = []) {
               window.dispatchEvent(
                 new CustomEvent("cart:updated", {
                   detail: { count: total },
-                })
+                }),
               );
             } catch {
               // swallow logging errors
@@ -95,7 +95,7 @@ export function useCart(initialItems: CartClientItem[] = []) {
       if (typeof window !== "undefined" && window.addEventListener) {
         window.addEventListener(
           "cart:revalidate",
-          onRevalidate as EventListener
+          onRevalidate as EventListener,
         );
         window.addEventListener("cart:migrated", onMigrated as EventListener);
       }
@@ -106,11 +106,11 @@ export function useCart(initialItems: CartClientItem[] = []) {
         if (typeof window !== "undefined" && window.removeEventListener) {
           window.removeEventListener(
             "cart:revalidate",
-            onRevalidate as EventListener
+            onRevalidate as EventListener,
           );
           window.removeEventListener(
             "cart:migrated",
-            onMigrated as EventListener
+            onMigrated as EventListener,
           );
         }
       } catch {}
@@ -135,7 +135,7 @@ export function useCart(initialItems: CartClientItem[] = []) {
         const total = Array.isArray(j.items)
           ? j.items.reduce(
               (s: number, it: FetchedItem) => s + (it.quantity || 0),
-              0
+              0,
             )
           : 0;
         // Dispatch a cross-window event so global listeners (e.g. CartCountProvider)
@@ -144,7 +144,7 @@ export function useCart(initialItems: CartClientItem[] = []) {
           Promise.resolve().then(() => {
             try {
               window.dispatchEvent(
-                new CustomEvent("cart:updated", { detail: { count: total } })
+                new CustomEvent("cart:updated", { detail: { count: total } }),
               );
             } catch {}
           });
@@ -154,7 +154,7 @@ export function useCart(initialItems: CartClientItem[] = []) {
   }
 
   function optimisticUpdate(
-    updater: (prev: CartClientItem[]) => CartClientItem[]
+    updater: (prev: CartClientItem[]) => CartClientItem[],
   ) {
     setItems((prev) => {
       const next = updater(prev.map((i) => ({ ...i })));
@@ -162,14 +162,14 @@ export function useCart(initialItems: CartClientItem[] = []) {
       try {
         const total = next.reduce(
           (s: number, it: CartClientItem) => s + (it.quantity || 0),
-          0
+          0,
         );
         if (typeof window !== "undefined" && window.dispatchEvent) {
           // dispatch asynchronously to avoid setState during render of other components
           Promise.resolve().then(() => {
             try {
               window.dispatchEvent(
-                new CustomEvent("cart:updated", { detail: { count: total } })
+                new CustomEvent("cart:updated", { detail: { count: total } }),
               );
             } catch {}
           });
@@ -198,16 +198,24 @@ export function useCart(initialItems: CartClientItem[] = []) {
     }
   }
 
-  async function add(movieId: string, qty = 1) {
+  async function add(movieId: string, qty = 1, stock: number | null = null) {
     optimisticUpdate((prev) => {
       const idx = prev.findIndex((p) => p.movie.id === movieId);
       if (idx >= 0) {
-        prev[idx].quantity += qty;
+        const newQuantity = prev[idx].quantity + qty;
+        // Respect stock limit in optimistic update
+        if (stock === null || newQuantity <= stock) {
+          prev[idx].quantity = newQuantity;
+        }
       } else {
+        // Do not add if stock is 0
+        if (stock !== null && stock < qty) return prev;
+
         const placeholder: ServerMovie = {
           id: movieId,
           title: "",
           price: "0",
+          stock: stock,
           genres: null,
           releaseDate: null,
           runtime: null,

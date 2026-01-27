@@ -39,12 +39,12 @@ export default function CartClient({
   // Keep global count in sync and ensure we have authoritative state from server
   useEffect(() => {
     setCount(
-      items.reduce((sum: number, it: CartClientItem) => sum + it.quantity, 0)
+      items.reduce((sum: number, it: CartClientItem) => sum + it.quantity, 0),
     );
     // Broadcast cart item changes for other client components (e.g., order summary, checkout button)
     if (typeof window !== "undefined") {
       window.dispatchEvent(
-        new CustomEvent("cart:items-changed", { detail: items })
+        new CustomEvent("cart:items-changed", { detail: items }),
       );
     }
     // Do not call `revalidate()` here. Revalidation is performed by the
@@ -55,9 +55,9 @@ export default function CartClient({
   }, [items]);
 
   // Items are updated by the `useCart` hook; keep a local revalidation helper
-  async function onInc(movieId: string) {
+  async function onInc(movieId: string, stock: number | null = null) {
     // optimistic update handled in hook
-    await add(movieId, 1);
+    await add(movieId, 1, stock);
     onAction();
   }
 
@@ -142,9 +142,11 @@ export default function CartClient({
               <span className="px-3">{quantity}</span>
               <button
                 type="button"
-                onClick={() => onInc(movie.id)}
+                onClick={() => onInc(movie.id, movie.stock ?? null)}
                 className="px-2 bg-gray-200 rounded"
-                disabled={isPending}
+                disabled={
+                  isPending || (movie.stock !== null && quantity >= movie.stock)
+                }
               >
                 +
               </button>

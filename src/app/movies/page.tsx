@@ -186,12 +186,19 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                       className="object-contain object-center w-full h-full transition-[transform,filter] duration-[300ms] ease-[cubic-bezier(.2,.9,.2,1)] group-hover:scale-[1.02] group-hover:brightness-[1.03]"
                     />
 
-                    {/* Price badge pinned to top-right */}
-                    <div className="absolute top-3 right-3">
+                    <div className="absolute top-3 right-3 z-10">
                       <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-green-300 to-blue-400 text-black text-sm font-semibold">
                         SEK{Number(movie.price).toFixed(2)}
                       </span>
                     </div>
+
+                    {movie.stock === 0 && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                        <span className="text-white font-bold text-lg">
+                          Out of Stock
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-4">
@@ -210,6 +217,14 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                             ).getFullYear()
                           : "—"}
                       </span>
+
+                      {movie.stock !== null &&
+                        movie.stock > 0 &&
+                        movie.stock <= 5 && (
+                          <span className="text-xs text-yellow-400">
+                            Only {movie.stock} left!
+                          </span>
+                        )}
 
                       {/* Inline genre badges (moved under release year) */}
                       <div className="flex items-center gap-2">
