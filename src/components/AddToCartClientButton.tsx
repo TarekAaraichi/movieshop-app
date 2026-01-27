@@ -11,7 +11,7 @@
 //   `buttonClassName` to allow pages to style the native <button>.
 import { useTransition } from "react";
 import { useCart } from "@/hooks";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 
 export default function AddToCartClientButton({
   movieId,
@@ -34,17 +34,9 @@ export default function AddToCartClientButton({
       try {
         const ok = await add(movieId, 1);
         if (!ok) throw new Error("add_failed");
-        toast.success("Added to cart!", {
-          position: "bottom-right",
-          dismissible: true,
-          duration: 2000,
-        });
+        toast.success("Added to cart!");
       } catch {
-        toast.error("Failed to add to cart.", {
-          position: "bottom-right",
-          dismissible: true,
-          duration: 2000,
-        });
+        toast.error("Failed to add to cart.");
       }
     });
   }
