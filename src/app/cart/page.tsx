@@ -6,6 +6,7 @@
 import { CartClient } from "@/components";
 import OrderSummaryClient from "@/components/OrderSummaryClient";
 import CheckoutSecureButton from "@/components/CheckoutSecureButton";
+import { EmptyCart } from "@/components/EmptyStates";
 import { cookies, headers } from "next/headers";
 import Link from "next/link";
 import { prisma } from "@/lib";
@@ -280,45 +281,7 @@ export default async function CartPage() {
 
           {items.length === 0 ? (
             <div className="py-16 flex flex-col items-center text-center text-slate-600">
-              <div className="p-6 rounded-lg bg-gradient-to-b from-white to-slate-50 border border-slate-100 shadow-sm mb-6">
-                <svg
-                  aria-hidden
-                  className="w-20 h-20 mb-2 text-slate-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeWidth={1.5}
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21a1 1 0 102 0M15 21a1 1 0 102 0"
-                  />
-                </svg>
-              </div>
-
-              <h2 className="text-lg font-medium text-slate-800 mb-2">
-                Your cart is empty
-              </h2>
-              <p className="text-sm text-slate-500 mb-4">
-                Browse our collection and add a few movies to get started.
-              </p>
-
-              <div className="flex gap-3">
-                <Link
-                  href="/movies"
-                  className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-md text-sm shadow-sm hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 transition"
-                >
-                  Browse Movies
-                </Link>
-
-                <Link
-                  href="/"
-                  className="inline-flex items-center px-4 py-2 rounded-md text-sm text-slate-700 hover:bg-slate-100 transition"
-                >
-                  Continue exploring
-                </Link>
-              </div>
+              <EmptyCart />
             </div>
           ) : (
             <div className="space-y-4">
