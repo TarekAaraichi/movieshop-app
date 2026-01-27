@@ -14,6 +14,7 @@ import {
 import { deletePerson } from "@/server/actions/personsActions";
 import { deleteUser, setUserRole } from "@/server/actions/usersActions";
 import { requireAdmin } from "@/lib/requireAdmin";
+import Image from "next/image";
 
 // AdminPage server component
 export default async function AdminPage({
@@ -125,15 +126,15 @@ export default async function AdminPage({
   const persons = personsRaw as Array<PersonWithMovies>;
 
   const personRoles = Array.from(
-    new Set(personRolesRaw.map((r) => r.role))
+    new Set(personRolesRaw.map((r) => r.role)),
   ).filter(Boolean);
   const userRoles = Array.from(new Set(userRolesRaw.map((r) => r.role))).filter(
-    Boolean
+    Boolean,
   );
 
   // compute order reference counts per movie so we can control permanent delete UI
   const orderCountsArr = await Promise.all(
-    movies.map((m) => prisma.orderItem.count({ where: { movieId: m.id } }))
+    movies.map((m) => prisma.orderItem.count({ where: { movieId: m.id } })),
   );
   const orderCounts = new Map(movies.map((m, i) => [m.id, orderCountsArr[i]]));
 
@@ -229,8 +230,8 @@ export default async function AdminPage({
                   tab === "movies"
                     ? "Search movies..."
                     : tab === "persons"
-                    ? "Search people..."
-                    : "Search users..."
+                      ? "Search people..."
+                      : "Search users..."
                 }
                 className="pl-3 pr-10 py-1.5 text-gray-600 text-sm border border-gray-200 rounded-md bg-white focus:outline-none focus:ring-1 focus:ring-indigo-300"
               />
@@ -411,7 +412,7 @@ export default async function AdminPage({
               {persons.map((person) => {
                 const roles =
                   Array.from(
-                    new Set((person.movies || []).map((m) => m.role))
+                    new Set((person.movies || []).map((m) => m.role)),
                   ).join(", ") || "—";
                 return (
                   <li
@@ -420,13 +421,16 @@ export default async function AdminPage({
                   >
                     <div className="flex items-center gap-3">
                       {person.imageUrl ? (
-                        <img
-                          src={person.imageUrl}
-                          alt={person.fullName}
-                          className="h-10 w-10 rounded-full bg-indigo-50 object-cover"
-                          loading="lazy"
-                          referrerPolicy="no-referrer"
-                        />
+                        <div className="relative h-10 w-10 rounded-full bg-indigo-50 overflow-hidden">
+                          <Image
+                            src={person.imageUrl}
+                            alt={person.fullName}
+                            fill
+                            sizes="40px"
+                            className="object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                        </div>
                       ) : (
                         <div className="h-10 w-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-700 font-semibold">
                           {person.fullName

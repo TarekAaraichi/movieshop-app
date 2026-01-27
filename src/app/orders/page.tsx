@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { EmptyOrders } from "@/components/EmptyStates";
 import Link from "next/link";
+import Image from "next/image";
 
 export default async function OrdersPage() {
   const session = await auth.api.getSession();
@@ -54,29 +55,49 @@ export default async function OrdersPage() {
           <div key={order.id} className="bg-white p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-4">
               <div>
-                <h2 className="text-xl font-semibold">Order #{order.id.substring(0, 8)}</h2>
+                <h2 className="text-xl font-semibold">
+                  Order #{order.id.substring(0, 8)}
+                </h2>
                 <p className="text-sm text-gray-500">
                   {new Date(order.createdAt).toLocaleDateString()}
                 </p>
               </div>
               <div className="text-right">
-                <p className="text-lg font-semibold">Total: ${order.total.toFixed(2)}</p>
-                <Link href={`/orders/${order.id}`} className="text-blue-600 hover:underline">
+                <p className="text-lg font-semibold">
+                  Total: ${order.total.toFixed(2)}
+                </p>
+                <Link
+                  href={`/orders/${order.id}`}
+                  className="text-blue-600 hover:underline"
+                >
                   View Details
                 </Link>
               </div>
             </div>
             <div>
               {order.items.map((item) => (
-                <div key={item.id} className="flex items-center py-2 border-b last:border-b-0">
-                  <div className="w-16 h-24 bg-gray-200 rounded-md overflow-hidden mr-4">
-                    <img src={item.movie.posterUrl ?? ''} alt={item.movie.title} className="w-full h-full object-cover" />
+                <div
+                  key={item.id}
+                  className="flex items-center py-2 border-b last:border-b-0"
+                >
+                  <div className="relative w-16 h-24 bg-gray-200 rounded-md overflow-hidden mr-4">
+                    <Image
+                      src={item.movie.posterUrl ?? "/placeholder.png"}
+                      alt={item.movie.title}
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
                   </div>
                   <div>
                     <h3 className="font-semibold">{item.movie.title}</h3>
-                    <p className="text-sm text-gray-500">Quantity: {item.quantity}</p>
+                    <p className="text-sm text-gray-500">
+                      Quantity: {item.quantity}
+                    </p>
                   </div>
-                  <p className="ml-auto font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="ml-auto font-semibold">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </p>
                 </div>
               ))}
             </div>

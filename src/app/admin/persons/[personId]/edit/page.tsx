@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 import { updatePerson } from "@/server/actions/personsActions";
 import { SaveButton } from "@/components";
+import Image from "next/image";
 
 /**
  * Admin: Edit person (duplicate)
@@ -138,13 +139,14 @@ export default async function EditPersonPage({
           {/* Right column: image preview & quick info */}
           <aside className="flex flex-col items-center gap-4">
             <div className="w-full rounded-lg border border-gray-100 bg-gray-50 p-4 flex flex-col items-center">
-              <div className="w-36 h-36 rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
+              <div className="relative w-36 h-36 rounded-lg overflow-hidden bg-gray-200 flex items-center justify-center">
                 {person.imageUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <Image
                     src={person.imageUrl}
                     alt={person.fullName}
-                    className="w-full h-full object-cover"
+                    fill
+                    sizes="144px"
+                    className="object-cover"
                   />
                 ) : (
                   <div className="text-gray-400 text-4xl">
