@@ -187,7 +187,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                       <span>
                         {movie.releaseDate
                           ? new Date(
-                              movie.releaseDate as unknown as string
+                              movie.releaseDate as unknown as string,
                             ).getFullYear()
                           : "—"}
                       </span>
