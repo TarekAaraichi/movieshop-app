@@ -10,6 +10,7 @@ export type ServerMovie = {
   title: string;
   imageUrl?: string | null;
   price: number | string;
+  stock?: number | null;
   genres?: GenreRelation[] | null;
   releaseDate?: string | null;
   runtime?: number | null;

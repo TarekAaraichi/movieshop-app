@@ -22,13 +22,37 @@ export async function addToCart(formData: FormData) {
   const movieId = formData.get("movieId") as string | null;
   if (!movieId) return;
 
+  // lazy import prisma to avoid cycles
+  const prisma = (await import("@/lib/prisma")).default;
+
+  // Check stock before adding
+  const movie = await prisma.movie.findUnique({
+    where: { id: movieId },
+    select: { stock: true },
+  });
+
+  if (!movie) return; // Movie not found
+
   const cookieStore = await cookies();
   const cartCookie = cookieStore.get("cart")?.value || "[]";
   const cart = parseCart(cartCookie);
 
+  const existingItem = cart.find((c) => c.movieId === movieId);
+  const currentQuantityInCart = existingItem?.quantity ?? 0;
+
+  // Do not add if stock is 0 or cart quantity meets/exceeds stock
+  if (movie.stock === null || movie.stock <= currentQuantityInCart) {
+    // We could return an error here, but for now we'll just fail silently
+    // on the server and let the client-side handle the UI feedback.
+    return;
+  }
+
   const idx = cart.findIndex((c) => c.movieId === movieId);
-  if (idx >= 0) cart[idx].quantity += 1;
-  else cart.push({ movieId, quantity: 1 });
+  if (idx >= 0) {
+    cart[idx].quantity += 1;
+  } else {
+    cart.push({ movieId, quantity: 1 });
+  }
 
   cookieStore.set("cart", JSON.stringify(cart), {
     path: "/",
@@ -46,11 +70,29 @@ export async function updateCart(formData: FormData) {
   const cookieStore = await cookies();
   const cartCookie = cookieStore.get("cart")?.value || "[]";
   const cart = parseCart(cartCookie);
-
   const idx = cart.findIndex((c) => c.movieId === movieId);
+
   if (action === "inc") {
-    if (idx >= 0) cart[idx].quantity += 1;
-    else cart.push({ movieId, quantity: 1 });
+    // lazy import prisma to avoid cycles
+    const prisma = (await import("@/lib/prisma")).default;
+    const movie = await prisma.movie.findUnique({
+      where: { id: movieId },
+      select: { stock: true },
+    });
+
+    if (!movie) return;
+
+    const currentQuantityInCart = idx >= 0 ? cart[idx].quantity : 0;
+    if (movie.stock !== null && movie.stock <= currentQuantityInCart) {
+      // Stock limit reached, do not increment
+      return;
+    }
+
+    if (idx >= 0) {
+      cart[idx].quantity += 1;
+    } else {
+      cart.push({ movieId, quantity: 1 });
+    }
   } else if (action === "dec") {
     if (idx >= 0) {
       cart[idx].quantity -= 1;
@@ -111,7 +153,7 @@ export async function getCartItems() {
 // Server action: migrate cookie cart items into a user's DB cart
 export async function migrateCartToUser(
   userId: string,
-  items: { movieId: string; quantity: number }[]
+  items: { movieId: string; quantity: number }[],
 ) {
   if (!userId) throw new Error("missing_userId");
   const prisma = (await import("@/lib/prisma")).default;
@@ -177,7 +219,7 @@ export async function linkAccountAndMigrate(userId: string) {
       | ((
           name: string,
           value: string,
-          opts?: { path?: string; maxAge?: number }
+          opts?: { path?: string; maxAge?: number },
         ) => void);
     delete?: (name: string) => void;
   };
@@ -207,7 +249,7 @@ export async function linkAccountAndMigrate(userId: string) {
         type CookieSetArgs = (
           name: string,
           value: string,
-          opts?: { path?: string; maxAge?: number }
+          opts?: { path?: string; maxAge?: number },
         ) => void;
         const setFn = cs.set as unknown as CookieSetObj | CookieSetArgs;
         try {
