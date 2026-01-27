@@ -12,7 +12,6 @@
 // visible navigation bar. This keeps navigation consistent and prevents
 // duplicate header UI while allowing easy re-enable for testing.
 import React from "react";
-import SonnerProvider from "@/app/SonnerProvider";
 import { CartCountProvider } from "@/components";
 
 type ClientShellProps = {
@@ -35,7 +34,6 @@ export default function ClientShell({
 
   return (
     <>
-      <SonnerProvider />
       <CartCountProvider>
         {/* NavBarClient is intentionally commented out so the layout navbar in
             `src/app/layout.tsx` is the only visible navigation bar.

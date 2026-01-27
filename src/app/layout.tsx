@@ -15,6 +15,7 @@ import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
 import DetailsMenu from "@/components/DetailsMenu";
 import { CartCountBadge } from "@/components";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,6 +57,7 @@ export default async function RootLayout({
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-gray-100">
         <ClientShell serverSession={session}>
+          <Toaster />
           {/* Top navigation - compact, inline, modern */}
           <header className="sticky top-0 z-50 backdrop-blur-sm bg-black/40 border-b border-gray-800">
             <div className="max-w-7xl mx-auto flex items-center gap-4 px-4 py-3">
