@@ -9,19 +9,31 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Prisma } from "@prisma/client";
 import { AddToCartClientButton, MovieSearch } from "@/components";
+import PaginationControls from "@/components/PaginationControls";
 
 interface MoviesPageProps {
   searchParams: {
     q?: string;
     genre?: string;
+    page?: string;
+    per_page?: string;
   };
 }
 
 export default async function MoviesPage({ searchParams }: MoviesPageProps) {
   // `searchParams` is a potentially async wrapper in Next.js — await it before use
-  const sp = (await searchParams) as { q?: string; genre?: string };
+  const sp = (await searchParams) as {
+    q?: string;
+    genre?: string;
+    page?: string;
+    per_page?: string;
+  };
   const query = sp.q ?? "";
   const selectedGenre = sp.genre ?? "";
+  const page = Number(sp.page ?? "1");
+  const perPage = Number(sp.per_page ?? "10");
+
+  const skip = (page - 1) * perPage;
 
   // Fetch movies, optionally filtering by title or people (actor/director)
   // Build `where` dynamically so we only include filters when present
@@ -62,9 +74,13 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
   // exclude archived movies from public listing
   Object.assign(where, { isArchived: false });
 
+  const totalCount = await prisma.movie.count({ where });
+
   const movies = await prisma.movie.findMany({
     where,
     orderBy: { releaseDate: "desc" },
+    take: perPage,
+    skip,
     include: {
       people: {
         include: { person: true },
@@ -74,6 +90,9 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
       },
     },
   });
+
+  const hasNextPage = skip + perPage < totalCount;
+  const hasPrevPage = skip > 0;
 
   // Genre filtering temporarily disabled; remove genre query to avoid unnecessary work.
 
@@ -85,8 +104,8 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
             Movies
           </h1>
           <p className="mt-2 text-center text-sm text-gray-300">
-            Browse the latest non-archived titles — showing {movies.length}{" "}
-            {movies.length === 1 ? "movie" : "movies"}.
+            Showing {movies.length} of {totalCount}{" "}
+            {totalCount === 1 ? "movie" : "movies"}.
           </p>
         </header>
 
@@ -262,6 +281,13 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
             </div>
           )}
         </div>
+
+        <PaginationControls
+          hasNextPage={hasNextPage}
+          hasPrevPage={hasPrevPage}
+          totalCount={totalCount}
+          pageSize={perPage}
+        />
       </main>
     </div>
   );
