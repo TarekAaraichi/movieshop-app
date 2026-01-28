@@ -42,13 +42,13 @@ export default async function EditMoviePage({
 
   return (
     <div>
-      <div className="bg-white p-6 md:p-8 rounded-2xl shadow-2xl max-w-4xl mx-auto">
+      <div className="bg-gray-900 p-6 md:p-8 rounded-2xl shadow-2xl max-w-4xl mx-auto border border-gray-800">
         <header className="mb-6 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-gray-100">
               Edit Movie
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-gray-400 mt-1">
               Update movie details inline. Changes are applied after saving.
             </p>
           </div>
@@ -62,7 +62,7 @@ export default async function EditMoviePage({
             <div className="flex items-center gap-4">
               <label
                 htmlFor="title"
-                className="w-28 text-sm font-medium text-gray-700"
+                className="w-28 text-sm font-medium text-gray-300"
               >
                 Title
               </label>
@@ -72,7 +72,7 @@ export default async function EditMoviePage({
                 type="text"
                 defaultValue={movie.title}
                 required
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-100"
                 placeholder="Movie title"
               />
             </div>
@@ -80,7 +80,7 @@ export default async function EditMoviePage({
             <div className="flex items-center gap-4">
               <label
                 htmlFor="releaseDate"
-                className="w-28 text-sm font-medium text-gray-700"
+                className="w-28 text-sm font-medium text-gray-300"
               >
                 Release
               </label>
@@ -90,14 +90,14 @@ export default async function EditMoviePage({
                 type="date"
                 defaultValue={movie.releaseDate.toISOString().split("T")[0]}
                 required
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-100"
               />
             </div>
 
             <div className="flex items-start gap-4 md:col-span-2">
               <label
                 htmlFor="description"
-                className="w-28 text-sm font-medium text-gray-700 pt-2"
+                className="w-28 text-sm font-medium text-gray-300 pt-2"
               >
                 Description
               </label>
@@ -107,7 +107,7 @@ export default async function EditMoviePage({
                 rows={4}
                 defaultValue={movie.description}
                 required
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-100"
                 placeholder="Short synopsis..."
               />
             </div>
@@ -115,7 +115,7 @@ export default async function EditMoviePage({
             <div className="flex items-center gap-4">
               <label
                 htmlFor="director"
-                className="w-28 text-sm font-medium text-gray-700"
+                className="w-28 text-sm font-medium text-gray-300"
               >
                 Director
               </label>
@@ -125,7 +125,7 @@ export default async function EditMoviePage({
                 type="text"
                 defaultValue={directorName}
                 required
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-100"
                 placeholder="Full name"
               />
             </div>
@@ -133,7 +133,7 @@ export default async function EditMoviePage({
             <div className="flex items-center gap-4">
               <label
                 htmlFor="actors"
-                className="w-28 text-sm font-medium text-gray-700"
+                className="w-28 text-sm font-medium text-gray-300"
               >
                 Actors
               </label>
@@ -142,7 +142,7 @@ export default async function EditMoviePage({
                 name="actors"
                 type="text"
                 defaultValue={actorNames}
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-100"
                 placeholder="Comma-separated list"
               />
             </div>
@@ -150,7 +150,7 @@ export default async function EditMoviePage({
             <div className="flex items-center gap-4">
               <label
                 htmlFor="imageUrl"
-                className="w-28 text-sm font-medium text-gray-700"
+                className="w-28 text-sm font-medium text-gray-300"
               >
                 Image
               </label>
@@ -160,7 +160,7 @@ export default async function EditMoviePage({
                 type="url"
                 defaultValue={movie.imageUrl ?? ""}
                 required
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-100"
                 placeholder="https://..."
               />
             </div>
@@ -168,7 +168,7 @@ export default async function EditMoviePage({
             <div className="flex items-center gap-4">
               <label
                 htmlFor="runtime"
-                className="w-28 text-sm font-medium text-gray-700"
+                className="w-28 text-sm font-medium text-gray-300"
               >
                 Runtime
               </label>
@@ -179,7 +179,7 @@ export default async function EditMoviePage({
                 min={1}
                 defaultValue={movie.runtime?.toString()}
                 required
-                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
+                className="w-36 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-100"
                 placeholder="minutes"
               />
             </div>
@@ -187,7 +187,7 @@ export default async function EditMoviePage({
             <div className="flex items-center gap-4">
               <label
                 htmlFor="price"
-                className="w-28 text-sm font-medium text-gray-700"
+                className="w-28 text-sm font-medium text-gray-300"
               >
                 Price
               </label>
@@ -199,7 +199,7 @@ export default async function EditMoviePage({
                 min={0}
                 defaultValue={String(movie.price ?? "")}
                 required
-                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
+                className="w-36 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-100"
                 placeholder="0.00"
               />
             </div>
@@ -207,7 +207,7 @@ export default async function EditMoviePage({
             <div className="flex items-center gap-4">
               <label
                 htmlFor="stock"
-                className="w-28 text-sm font-medium text-gray-700"
+                className="w-28 text-sm font-medium text-gray-300"
               >
                 Stock
               </label>
@@ -218,15 +218,15 @@ export default async function EditMoviePage({
                 min={0}
                 defaultValue={movie.stock}
                 required
-                className="w-36 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
+                className="w-36 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-100"
                 placeholder="qty"
               />
             </div>
 
-            <div className="flex items-center gap-4 md:col-span-2">
+            <div className="flex items-start gap-4 md:col-span-2">
               <label
                 htmlFor="genres"
-                className="w-28 text-sm font-medium text-gray-700"
+                className="w-28 text-sm font-medium text-gray-300 pt-2"
               >
                 Genres
               </label>
@@ -235,12 +235,13 @@ export default async function EditMoviePage({
                 name="genres"
                 type="text"
                 defaultValue={genreNamesDefault}
+                className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-100"
                 placeholder="Action, Drama, Sci‑Fi"
-                className="flex-1 bg-white border border-gray-200 rounded-lg px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 text-gray-700"
               />
             </div>
           </div>
-          <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+
+          <div className="pt-4 border-t border-gray-700 flex items-center justify-end gap-3">
             <SaveButton />
           </div>
         </form>

@@ -30,7 +30,7 @@ export default function AutoSubmitSelect({
           .form as HTMLFormElement | null;
         if (form) form.requestSubmit();
       }}
-      className={`p-2 border border-gray-300 rounded bg-white text-gray-800 ${className}`}
+      className={`p-2 border border-gray-700 rounded bg-gray-900 text-gray-100 ${className}`}
     >
       <option value="">All</option>
       {options.map((o) => (

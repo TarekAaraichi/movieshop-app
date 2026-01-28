@@ -29,7 +29,7 @@ export default async function SignInPage({
   return (
     <div>
       <div className="m-auto max-w-md w-full">
-        <div className="rounded-2xl bg-white/5 backdrop-blur-md border border-white/6 shadow-lg overflow-hidden">
+        <Card className="overflow-hidden bg-gray-900/50 border-gray-800">
           <div className="p-6">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -46,7 +46,7 @@ export default async function SignInPage({
                 </p>
               </div>
               <div className="hidden sm:flex items-center text-xs text-gray-400">
-                <span className="px-3 py-1 rounded-full bg-white/3">
+                <span className="px-3 py-1 rounded-full bg-gray-800/60 text-gray-300">
                   Secure
                 </span>
               </div>
@@ -63,7 +63,7 @@ export default async function SignInPage({
                   href={
                     searchParams && searchParams.callbackUrl
                       ? `/sign-up?callbackUrl=${encodeURIComponent(
-                          searchParams.callbackUrl
+                          searchParams.callbackUrl,
                         )}`
                       : "/sign-up"
                   }
@@ -84,10 +84,10 @@ export default async function SignInPage({
             <div className="mt-6">
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/6" />
+                  <div className="w-full border-t border-gray-700" />
                 </div>
                 <div className="relative flex justify-center text-xs">
-                  <span className="bg-white/5 px-3 py-1 rounded-full text-gray-300">
+                  <span className="bg-gray-900 px-3 text-gray-400">
                     Or continue with
                   </span>
                 </div>
@@ -96,20 +96,20 @@ export default async function SignInPage({
               <div className="mt-4 flex gap-3">
                 <a
                   href="/api/auth/provider/google"
-                  className="flex-1 inline-flex justify-center items-center gap-2 py-2 rounded-md bg-white/6 hover:bg-white/8 text-sm text-gray-200"
+                  className="flex-1 inline-flex justify-center items-center gap-2 py-2 rounded-md bg-gray-800/60 hover:bg-gray-800/90 text-sm text-gray-300"
                 >
                   Google
                 </a>
                 <a
                   href="/api/auth/provider/github"
-                  className="flex-1 inline-flex justify-center items-center gap-2 py-2 rounded-md bg-white/6 hover:bg-white/8 text-sm text-gray-200"
+                  className="flex-1 inline-flex justify-center items-center gap-2 py-2 rounded-md bg-gray-800/60 hover:bg-gray-800/90 text-sm text-gray-300"
                 >
                   GitHub
                 </a>
               </div>
             </div>
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );

@@ -52,7 +52,7 @@ export default async function OrdersPage() {
       <h1 className="text-3xl font-bold mb-8">Your Orders</h1>
       <div className="space-y-8">
         {orders.map((order) => (
-          <div key={order.id} className="bg-white p-6 rounded-lg shadow-md">
+          <div key={order.id} className="bg-gray-900 p-6 rounded-lg shadow-md">
             <div className="flex justify-between items-center mb-4">
               <div>
                 <h2 className="text-xl font-semibold">
@@ -68,7 +68,7 @@ export default async function OrdersPage() {
                 </p>
                 <Link
                   href={`/orders/${order.id}`}
-                  className="text-blue-600 hover:underline"
+                  className="text-indigo-400 hover:underline"
                 >
                   View Details
                 </Link>
@@ -78,9 +78,9 @@ export default async function OrdersPage() {
               {order.items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center py-2 border-b last:border-b-0"
+                  className="flex items-center py-2 border-b last:border-b-0 border-gray-700"
                 >
-                  <div className="relative w-16 h-24 bg-gray-200 rounded-md overflow-hidden mr-4">
+                  <div className="relative w-16 h-24 bg-gray-800 rounded-md overflow-hidden mr-4">
                     <Image
                       src={item.movie.posterUrl ?? "/placeholder.png"}
                       alt={item.movie.title}
@@ -90,12 +90,14 @@ export default async function OrdersPage() {
                     />
                   </div>
                   <div>
-                    <h3 className="font-semibold">{item.movie.title}</h3>
-                    <p className="text-sm text-gray-500">
+                    <h3 className="font-semibold text-gray-100">
+                      {item.movie.title}
+                    </h3>
+                    <p className="text-sm text-gray-300">
                       Quantity: {item.quantity}
                     </p>
                   </div>
-                  <p className="ml-auto font-semibold">
+                  <p className="ml-auto font-semibold text-gray-100">
                     ${(item.price * item.quantity).toFixed(2)}
                   </p>
                 </div>

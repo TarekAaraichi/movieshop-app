@@ -35,7 +35,7 @@ export default function OrderSummaryClient({ items }: Props) {
     return () =>
       window.removeEventListener(
         "cart:items-changed",
-        handler as EventListener
+        handler as EventListener,
       );
   }, []);
 
@@ -53,11 +53,11 @@ export default function OrderSummaryClient({ items }: Props) {
       (sum, it) =>
         sum +
         (Number((it.movie as ServerMovie)?.price ?? "0") || 0) * it.quantity,
-      0
+      0,
     );
     const tax = subtotalVal * 0.08;
     const FIXED_SHIPPING_FEE = 49; // base shipping
-    const FREE_SHIPPING_THRESHOLD = 500; // threshold for free shipping (SEK)
+    const FREE_SHIPPING_THRESHOLD = 100; // threshold for free shipping (SEK) - testing
     const hasFreeShipping = subtotalVal >= FREE_SHIPPING_THRESHOLD;
     const shipping =
       subtotalVal > 0 ? (hasFreeShipping ? 0 : FIXED_SHIPPING_FEE) : 0;
@@ -66,7 +66,7 @@ export default function OrderSummaryClient({ items }: Props) {
       : Math.max(0, FREE_SHIPPING_THRESHOLD - subtotalVal);
     const progressPercent = Math.min(
       100,
-      (subtotalVal / FREE_SHIPPING_THRESHOLD) * 100
+      (subtotalVal / FREE_SHIPPING_THRESHOLD) * 100,
     );
     return {
       subtotal: subtotalVal,
@@ -122,7 +122,7 @@ export default function OrderSummaryClient({ items }: Props) {
             ];
             const closest = steps.reduce(
               (a, b) => (Math.abs(b - pct) < Math.abs(a - pct) ? b : a),
-              0
+              0,
             );
             const widthClass = {
               0: "w-0",

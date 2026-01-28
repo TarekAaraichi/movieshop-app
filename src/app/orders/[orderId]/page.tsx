@@ -46,7 +46,7 @@ export default async function OrderPage({ params }: Props) {
   } | null;
   if (!s || !s.user)
     redirect(
-      `/sign-in?callbackUrl=${encodeURIComponent(`/orders/${orderId}`)}`
+      `/sign-in?callbackUrl=${encodeURIComponent(`/orders/${orderId}`)}`,
     );
   if (order.userId && s.user.id !== order.userId && s.user.role !== "admin") {
     // not the owner nor admin
@@ -76,53 +76,51 @@ export default async function OrderPage({ params }: Props) {
     <div>
       <div className="w-full m-auto max-w-4xl">
         <ClearCartOnConfirmation />
-        <div className="bg-white rounded-2xl shadow-lg ring-1 ring-gray-100 overflow-hidden">
+        <div className="bg-gray-900 rounded-2xl shadow-lg ring-1 ring-gray-800 overflow-hidden">
           <div className="p-6 md:p-8 flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-xl md:text-2xl font-semibold text-slate-800 flex items-center gap-3">
+              <h1 className="text-xl md:text-2xl font-semibold text-gray-100 flex items-center gap-3">
                 <span>Order Confirmed</span>
-                <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-900/20 text-green-300">
                   Paid
                 </span>
               </h1>
-              <p className="text-sm text-slate-500 mt-1">
+              <p className="text-sm text-gray-300 mt-1">
                 Order ID
-                <span className="ml-2 font-mono text-slate-700">
-                  {order.id}
-                </span>
+                <span className="ml-2 font-mono text-gray-300">{order.id}</span>
               </p>
             </div>
 
             <div className="text-right">
-              <div className="text-sm text-slate-500">Total</div>
-              <div className="text-2xl font-bold text-slate-900">
+              <div className="text-sm text-gray-300">Total</div>
+              <div className="text-2xl font-bold text-gray-100">
                 SEK{Number(total).toFixed(2)}
               </div>
             </div>
           </div>
 
-          <div className="border-t border-gray-100 p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="border-t border-gray-700 p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="md:col-span-1 space-y-4">
               <div>
-                <h2 className="text-sm font-medium text-slate-700">Buyer</h2>
+                <h2 className="text-sm font-medium text-gray-200">Buyer</h2>
                 {buyer ? (
-                  <div className="mt-2 text-sm text-slate-600 space-y-0.5">
-                    <div className="font-medium text-slate-800">
+                  <div className="mt-2 text-sm text-gray-300 space-y-0.5">
+                    <div className="font-medium text-gray-100">
                       {buyer.name}
                     </div>
                     <div className="truncate">{buyer.email}</div>
                   </div>
                 ) : (
-                  <div className="mt-2 text-sm text-slate-600">
+                  <div className="mt-2 text-sm text-gray-300">
                     No buyer information on file
                   </div>
                 )}
               </div>
 
               <div>
-                <h2 className="text-sm font-medium text-slate-700">Shipping</h2>
+                <h2 className="text-sm font-medium text-gray-200">Shipping</h2>
                 {address ? (
-                  <div className="mt-2 text-sm text-slate-600">
+                  <div className="mt-2 text-sm text-gray-300">
                     <div>{address.line1}</div>
                     {address.line2 && <div>{address.line2}</div>}
                     <div className="mt-1">
@@ -131,7 +129,7 @@ export default async function OrderPage({ params }: Props) {
                     <div>{address.country}</div>
                   </div>
                 ) : (
-                  <div className="mt-2 text-sm text-slate-600">
+                  <div className="mt-2 text-sm text-gray-300">
                     No address on file
                   </div>
                 )}
@@ -139,15 +137,15 @@ export default async function OrderPage({ params }: Props) {
             </div>
 
             <div className="md:col-span-2">
-              <h3 className="text-sm font-medium text-slate-700 mb-3">Items</h3>
+              <h3 className="text-sm font-medium text-gray-200 mb-3">Items</h3>
               <div className="space-y-4">
                 {order.items.map((it: OrderItemLike) => (
                   <div
                     key={it.movieId}
-                    className="flex items-center justify-between gap-4 bg-gray-50 rounded-lg p-3"
+                    className="flex items-center justify-between gap-4 bg-gray-800 rounded-lg p-3"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 relative flex-shrink-0 rounded-md overflow-hidden bg-gray-100">
+                      <div className="w-14 h-14 relative flex-shrink-0 rounded-md overflow-hidden bg-gray-800">
                         <Image
                           src={
                             it.movie?.imageUrl ||
@@ -160,15 +158,17 @@ export default async function OrderPage({ params }: Props) {
                         />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-sm font-medium text-slate-800 truncate">
+                        <div className="text-sm font-medium text-gray-100 truncate">
                           {it.movie?.title}
                         </div>
-                        <div className="text-xs text-slate-500 mt-1 flex items-center gap-2">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs">
+                        <div className="text-xs text-gray-300 mt-1 flex items-center gap-2">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded bg-gray-700 text-gray-200 text-xs">
                             Qty {it.quantity}
                           </span>
-                          <span className="text-xs">Purchased at</span>
-                          <span className="font-mono text-slate-800">
+                          <span className="text-xs text-gray-300">
+                            Purchased at
+                          </span>
+                          <span className="font-mono text-gray-100">
                             SEK
                             {Number(formatPrice(it.priceAtPurchase)).toFixed(2)}
                           </span>
@@ -177,14 +177,14 @@ export default async function OrderPage({ params }: Props) {
                     </div>
 
                     <div className="text-right">
-                      <div className="text-sm text-slate-600">Line total</div>
-                      <div className="text-sm font-semibold text-slate-900">
+                      <div className="text-sm text-gray-300">Line total</div>
+                      <div className="text-sm font-semibold text-gray-100">
                         SEK
                         {Number(
                           formatPrice(
                             (it.quantity as number) *
-                              Number(formatPrice(it.priceAtPurchase))
-                          )
+                              Number(formatPrice(it.priceAtPurchase)),
+                          ),
                         ).toFixed(2)}
                       </div>
                     </div>
@@ -193,8 +193,8 @@ export default async function OrderPage({ params }: Props) {
               </div>
 
               <div className="mt-6 flex items-center justify-between border-t pt-4">
-                <div className="text-sm text-slate-600">Payment method</div>
-                <div className="text-sm font-medium text-slate-800">
+                <div className="text-sm text-gray-300">Payment method</div>
+                <div className="text-sm font-medium text-gray-100">
                   Card •••• ••••
                 </div>
               </div>

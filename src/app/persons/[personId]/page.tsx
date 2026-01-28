@@ -8,6 +8,7 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { MovieCard } from "@/components";
 
 export default async function PersonPage({
   params,
@@ -20,7 +21,14 @@ export default async function PersonPage({
     where: { id: personId },
     include: {
       movies: {
-        include: { movie: true },
+        include: {
+          movie: {
+            include: {
+              genres: { include: { genre: true } },
+              people: { include: { person: true } },
+            },
+          },
+        },
       },
     },
   });
@@ -184,36 +192,9 @@ export default async function PersonPage({
             {movies.length === 0 ? (
               <p className="text-slate-400">No movies found for this person.</p>
             ) : (
-              <div className="flex flex-wrap gap-3 mt-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mt-3">
                 {movies.map((mp) => (
-                  <Link
-                    key={`${mp.movie.id}-${mp.role}`}
-                    href={`/movies/${mp.movie.id}`}
-                    className="flex gap-3 items-center p-3 rounded-lg bg-[rgba(255,255,255,0.02)] transition-transform duration-150 ease-in-out hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(2,6,23,0.6)] cursor-pointer min-w-[280px]"
-                  >
-                    {mp.movie.imageUrl ? (
-                      <div className="w-16 h-24 relative flex-shrink-0 rounded-md overflow-hidden">
-                        <Image
-                          src={mp.movie.imageUrl}
-                          alt={mp.movie.title}
-                          fill
-                          sizes="64px"
-                          className="object-cover rounded-md"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-16 h-24 bg-[#061827] rounded-md flex-shrink-0" />
-                    )}
-
-                    <div className="flex flex-col">
-                      <div className="font-bold text-[#e6eef8]">
-                        {mp.movie.title}
-                      </div>
-                      <div className="text-sm text-slate-400 mt-1">
-                        {prettyRole(mp.role)}
-                      </div>
-                    </div>
-                  </Link>
+                  <MovieCard key={mp.movie.id} movie={mp.movie} compact />
                 ))}
               </div>
             )}

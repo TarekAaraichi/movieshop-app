@@ -81,7 +81,7 @@ export default function CartClient({
     return <p className="text-gray-600">Your cart is empty.</p>;
 
   return (
-    <div className="space-y-4 text-gray-900">
+    <div className="space-y-4 text-gray-100">
       {items.map(({ movie, quantity }) => {
         type MaybeGenre = { genre?: { name?: string }; name?: string };
         const genreNames = (
@@ -108,9 +108,18 @@ export default function CartClient({
                 />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-blue-500">
-                  {movie.title}
-                </h2>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-semibold text-blue-500">
+                    {movie.title}
+                  </h2>
+                  {typeof movie.stock === "number" &&
+                    movie.stock > 0 &&
+                    movie.stock <= 5 && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-600 text-white text-xs font-semibold">
+                        Only {movie.stock} left
+                      </span>
+                    )}
+                </div>
                 <p className="text-sm text-gray-500">
                   {genreNames.length > 0 ? genreNames.join(", ") : "—"}
                   <br />
@@ -150,6 +159,11 @@ export default function CartClient({
               >
                 +
               </button>
+              {typeof movie.stock === "number" && quantity >= movie.stock && (
+                <div className="text-xs text-red-600 ml-2">
+                  Reached max stock
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => onRemove(movie.id)}

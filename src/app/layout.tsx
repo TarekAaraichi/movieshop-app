@@ -15,6 +15,7 @@ import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
 import DetailsMenu from "@/components/DetailsMenu";
 import { CartCountBadge } from "@/components";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
@@ -54,7 +55,10 @@ export default async function RootLayout({
   });
 
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      className={`dark ${geistSans.variable} ${geistMono.variable}`}
+    >
       <body className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-gray-100">
         <ClientShell serverSession={session}>
           <Toaster />
@@ -168,8 +172,8 @@ export default async function RootLayout({
                     <DetailsMenu
                       className="group"
                       summary={
-                        <summary className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/6 hover:bg-white/8 text-sm cursor-pointer list-none">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-xs font-medium text-black overflow-hidden">
+                        <summary className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/8 hover:bg-white/12 text-sm cursor-pointer list-none">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-xs font-medium text-white overflow-hidden">
                             {session.user?.image ? (
                               <Image
                                 src={session.user.image}
@@ -179,7 +183,7 @@ export default async function RootLayout({
                                 className="w-8 h-8 rounded-full object-cover"
                               />
                             ) : (
-                              <span>
+                              <span className="text-white">
                                 {(session.user?.name || "U").charAt(0)}
                               </span>
                             )}
@@ -207,7 +211,7 @@ export default async function RootLayout({
                       <div className="absolute right-0 mt-2 w-48 bg-gray-900/95 border border-gray-800 rounded-lg shadow-lg py-1 z-50 ring-1 ring-black/20">
                         <Link
                           href="/profile"
-                          className="block px-4 py-2 text-sm hover:bg-white/5 transition-colors duration-150"
+                          className="block px-4 py-2 text-sm hover:bg-white/6 transition-colors duration-150"
                         >
                           View profile
                         </Link>
@@ -224,6 +228,11 @@ export default async function RootLayout({
                     Sign in
                   </a>
                 )}
+                {/* Theme toggle placed next to account */}
+                <div className="ml-2">
+                  {/* Client component `ThemeToggle` — Next will hydrate it on the client */}
+                  <ThemeToggle />
+                </div>
               </div>
             </div>
           </header>
@@ -231,7 +240,7 @@ export default async function RootLayout({
           {/* Main content centered with modern card-like container */}
           <main className="flex-1">
             <div className="max-w-7xl mx-auto px-4 py-8">
-              <div className="bg-gradient-to-br from-gray-900/60 to-gray-900/40 border border-gray-800 rounded-2xl shadow-lg p-6 min-h-[60vh]">
+              <div className="main-content bg-gradient-to-br from-gray-900/60 to-gray-900/40 border border-gray-800 rounded-2xl shadow-lg p-6 min-h-[60vh]">
                 {children}
               </div>
             </div>
@@ -270,7 +279,7 @@ export default async function RootLayout({
             aria-label="Open cart"
             className="fixed right-4 bottom-6 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           > */}
-            {/* <svg
+          {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="none"
@@ -287,8 +296,8 @@ export default async function RootLayout({
               <circle cx="10" cy="20" r="1" />
               <circle cx="18" cy="20" r="1" />
             </svg> */}
-            {/* <span className="hidden sm:inline">Cart</span> */}
-            {/* <CartCountBadge /> */}
+          {/* <span className="hidden sm:inline">Cart</span> */}
+          {/* <CartCountBadge /> */}
           {/* </a> */}
         </ClientShell>
       </body>
