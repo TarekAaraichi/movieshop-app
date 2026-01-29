@@ -41,22 +41,22 @@ export default async function EditUserPage({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 via-white to-gray-50 p-8 flex items-center justify-center">
-      <div className="w-full max-w-2xl bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+    <div className="min-h-screen bg-gradient-to-b from-gray-950 to-gray-900 p-8 flex items-center justify-center">
+      <div className="w-full max-w-2xl bg-gray-900 p-6 rounded-2xl shadow-lg border border-gray-800">
         <div className="flex items-center gap-4 mb-4">
           <div className="h-14 w-14 rounded-full bg-indigo-700 flex items-center justify-center text-xl font-semibold text-white">
             {user?.name ? user.name.charAt(0).toUpperCase() : "U"}
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">Edit user</h1>
-            <p className="text-sm text-slate-700 font-medium">{user?.email}</p>
+            <h1 className="text-2xl font-bold text-gray-100">Edit user</h1>
+            <p className="text-sm text-gray-300 font-medium">{user?.email}</p>
           </div>
         </div>
 
-        <div className="mb-4 grid grid-cols-2 gap-3 text-sm text-slate-600">
+        <div className="mb-4 grid grid-cols-2 gap-3 text-sm text-gray-300">
           <div className="flex flex-col">
             <span className="text-xs text-slate-500">User ID</span>
-            <span className="text-slate-800 font-mono text-sm break-all">
+            <span className="text-gray-200 font-mono text-sm break-all">
               {user?.id}
             </span>
           </div>
@@ -85,7 +85,7 @@ export default async function EditUserPage({
                 name="name"
                 defaultValue={user.name ?? ""}
                 placeholder="Full name"
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg shadow-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </label>
 
@@ -98,7 +98,7 @@ export default async function EditUserPage({
                 defaultValue={user.email ?? ""}
                 placeholder="Email address"
                 readOnly
-                className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg shadow-sm text-gray-600"
+                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg shadow-sm text-gray-300"
               />
             </label>
           </div>
@@ -110,7 +110,7 @@ export default async function EditUserPage({
                 name="phone"
                 defaultValue={phoneVal}
                 placeholder="Phone number (optional)"
-                className="w-full mt-1 px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                className="w-full mt-1 px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg shadow-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-600"
               />
             </label>
 
@@ -120,7 +120,7 @@ export default async function EditUserPage({
                 name="bio"
                 defaultValue={bioVal}
                 placeholder="Short biography or profile notes (optional)"
-                className="w-full mt-1 px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                className="w-full mt-1 px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg shadow-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-600"
                 rows={4}
               />
             </label>
@@ -135,13 +135,13 @@ export default async function EditUserPage({
                 name="image"
                 defaultValue={user.image ?? ""}
                 placeholder="https://.../avatar.jpg"
-                className="w-full mt-1 px-4 py-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full mt-1 px-4 py-3 bg-gray-900 border border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-gray-100"
               />
             </label>
           </div>
 
-          <fieldset className="mt-2 border-t border-gray-200 pt-4">
-            <legend className="text-sm font-semibold text-gray-800">
+          <fieldset className="mt-2 border-t border-gray-700 pt-4">
+            <legend className="text-sm font-semibold text-gray-200">
               Address (optional)
             </legend>
             <div className="grid grid-cols-1 gap-2 mt-2 sm:grid-cols-2">
@@ -149,44 +149,44 @@ export default async function EditUserPage({
                 name="addressLine1"
                 defaultValue={address?.line1 ?? ""}
                 placeholder="Address line 1"
-                className="px-4 py-2 bg-white border border-gray-300 rounded"
+                className="px-4 py-2 bg-gray-900 border border-gray-700 rounded text-gray-100"
               />
               <input
                 name="addressLine2"
                 defaultValue={address?.line2 ?? ""}
                 placeholder="Address line 2"
-                className="px-4 py-2 bg-white border border-gray-300 rounded"
+                className="px-4 py-2 bg-gray-900 border border-gray-700 rounded text-gray-100"
               />
               <input
                 name="city"
                 defaultValue={address?.city ?? ""}
                 placeholder="City"
-                className="px-4 py-2 bg-white border border-gray-300 rounded"
+                className="px-4 py-2 bg-gray-900 border border-gray-700 rounded text-gray-100"
               />
               <input
                 name="postalCode"
                 defaultValue={address?.postalCode ?? ""}
                 placeholder="Postal code"
-                className="px-4 py-2 bg-white border border-gray-300 rounded"
+                className="px-4 py-2 bg-gray-900 border border-gray-700 rounded text-gray-100"
               />
               <input
                 name="country"
                 defaultValue={address?.country ?? ""}
                 placeholder="Country"
-                className="px-4 py-2 bg-white border border-gray-300 rounded"
+                className="px-4 py-2 bg-gray-900 border border-gray-700 rounded text-gray-100"
               />
             </div>
           </fieldset>
 
           <div className="flex items-center justify-between mt-2">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-400">
               Changes are saved to the user record when you click Save.
             </p>
 
             <div className="flex items-center gap-3">
               <a
                 href={`/admin/users/${user.id}`}
-                className="text-sm text-gray-600 hover:text-gray-800"
+                className="text-sm text-gray-300 hover:text-gray-100"
               >
                 Cancel
               </a>

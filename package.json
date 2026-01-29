@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build --turbopack",
     "start": "next start",
     "seed": "node prisma/seed.js",
     "seed:auth": "node ./scripts/seed-via-better-auth.js",
     "lint": "eslint",
-    "test": "vitest"
+    "test": "vitest",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -27,6 +28,7 @@
     "react-hook-form": "^7.62.0",
     "react-hot-toast": "^2.6.0",
     "tailwind-merge": "^3.3.1",
+    "use-debounce": "^10.1.0",
     "zod": "^4.1.8"
   },
   "devDependencies": {
@@ -44,6 +46,6 @@
     "tailwindcss": "^4.1.12",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5",
-    "vitest": "^1.6.1"
+    "vitest": "^4.0.18"
   }
 }

@@ -32,7 +32,7 @@ export default function SignOutButton() {
   return (
     <button
       type="button"
-      className="w-full text-left px-4 py-2 text-sm hover:bg-white/5 transition-colors duration-150"
+      className="w-full text-left px-4 py-2 text-sm bg-transparent text-gray-200 hover:bg-gray-700 transition-colors duration-150"
       onClick={handleSignOut}
     >
       Sign out

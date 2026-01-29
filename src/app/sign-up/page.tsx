@@ -28,10 +28,10 @@ export default async function SignUpPage({
       <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
         {/* Form column (DOM first for accessibility / SSR) */}
         <Card className="w-full rounded-2xl p-1 lg:order-last">
-          <div className="bg-white/95 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-200/60 dark:border-gray-800/60">
+          <div className="backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-700/60 dark:border-gray-800/60">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                <h1 className="text-2xl font-bold text-gray-100">
                   Create your account
                 </h1>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -39,22 +39,9 @@ export default async function SignUpPage({
                   recommendations.
                 </p>
               </div>
-              <div className="hidden sm:flex items-center rounded-full px-3 py-1 text-xs bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
-                <svg
-                  className="w-4 h-4 mr-2 text-indigo-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden
-                >
-                  <path
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 11c0 2 4 4 4 4m-8 0s4-2 4-4"
-                  />
-                </svg>
-                Free · Secure
+              <div className="hidden sm:flex items-center rounded-full px-3 py-1 text-xs bg-gray-800 text-gray-200">
+                
+                Free Secure
               </div>
             </div>
 
@@ -63,7 +50,7 @@ export default async function SignUpPage({
               <div className="flex gap-3">
                 <button
                   type="button"
-                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm hover:shadow-md transition"
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 shadow-sm hover:shadow-md transition"
                   aria-label="Continue with Google"
                 >
                   <svg
@@ -93,7 +80,7 @@ export default async function SignUpPage({
 
                 <button
                   type="button"
-                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-700 shadow-sm hover:shadow-md transition"
+                  className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 shadow-sm hover:shadow-md transition"
                   aria-label="Continue with GitHub"
                 >
                   <svg
@@ -110,8 +97,8 @@ export default async function SignUpPage({
 
               {/* Divider */}
               <div className="relative text-center my-2">
-                <span className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 border-t border-gray-200 dark:border-gray-800" />
-                <span className="relative inline-block bg-white dark:bg-gray-900 px-3 text-xs text-gray-500">
+                <span className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 border-t border-gray-700" />
+                <span className="relative inline-block bg-gray-800 px-3 text-xs text-gray-300">
                   or
                 </span>
               </div>
@@ -121,17 +108,17 @@ export default async function SignUpPage({
                 <SignUpForm />
               </div>
 
-              <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+              <div className="mt-4 text-center text-sm text-gray-300">
                 Already have an account?{" "}
                 <a
                   href={
                     searchParams && searchParams.callbackUrl
                       ? `/sign-in?callbackUrl=${encodeURIComponent(
-                          String(searchParams.callbackUrl)
+                          String(searchParams.callbackUrl),
                         )}`
                       : "/sign-in"
                   }
-                  className="inline-flex items-center gap-1 text-indigo-600 dark:text-indigo-400 font-medium hover:underline"
+                  className="inline-flex items-center gap-1 text-indigo-400 font-medium hover:underline"
                 >
                   Sign in
                 </a>
@@ -154,7 +141,7 @@ export default async function SignUpPage({
 
           <ul className="space-y-4">
             <li className="flex items-center gap-3">
-              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/20">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-green-400">
                 <svg
                   className="w-5 h-5 text-white"
                   fill="none"
@@ -175,8 +162,8 @@ export default async function SignUpPage({
               </span>
             </li>
 
-            <li className="flex items-center gap-3">
-              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/20">
+            <li className="flex items-cente gap-3">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-green-400">
                 <svg
                   className="w-5 h-5 text-white"
                   fill="none"
@@ -198,7 +185,7 @@ export default async function SignUpPage({
             </li>
 
             <li className="flex items-center gap-3">
-              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white/20">
+              <span className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-green-400">
                 <svg
                   className="w-5 h-5 text-white"
                   fill="none"

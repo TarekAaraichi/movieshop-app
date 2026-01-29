@@ -92,7 +92,7 @@ export default function SignUpForm() {
             }
             if (shouldWrite) {
               document.cookie = `cart=${encodeURIComponent(
-                JSON.stringify(pj.items)
+                JSON.stringify(pj.items),
               )}; path=/; max-age=${60 * 60 * 24 * 30}`;
             }
           } catch {}
@@ -116,7 +116,7 @@ export default function SignUpForm() {
         const cb = callbackUrl || "/profile";
         if (typeof window !== "undefined") {
           window.location.assign(
-            `/api/cart/migrate-and-continue?callback=${encodeURIComponent(cb)}`
+            `/api/cart/migrate-and-continue?callback=${encodeURIComponent(cb)}`,
           );
         } else {
           try {
@@ -140,7 +140,7 @@ export default function SignUpForm() {
   }
 
   return (
-    <Card className="max-w-md mx-auto bg-gradient-to-r from-white to-indigo-50">
+    <Card className="max-w-md mx-auto bg-gradient-to-r from-white to-indigo-50 dark:from-gray-800 dark:to-gray-900">
       <div className="py-3 px-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -151,7 +151,7 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} className="bg-white text-black" />
+                    <Input {...field} className="bg-gray-900 text-gray-100" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

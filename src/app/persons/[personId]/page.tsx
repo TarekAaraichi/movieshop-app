@@ -8,6 +8,7 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { MovieCard } from "@/components";
 
 export default async function PersonPage({
   params,
@@ -20,7 +21,14 @@ export default async function PersonPage({
     where: { id: personId },
     include: {
       movies: {
-        include: { movie: true },
+        include: {
+          movie: {
+            include: {
+              genres: { include: { genre: true } },
+              people: { include: { person: true } },
+            },
+          },
+        },
       },
     },
   });
@@ -45,175 +53,59 @@ export default async function PersonPage({
   };
   const rolesDisplay = roles.length ? roles.map(prettyRole).join(", ") : null;
 
-  const containerStyle: React.CSSProperties = {
-    fontFamily:
-      "Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue'",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    background: "linear-gradient(180deg,#0f1724 0%, #0b1220 50%, #071025 100%)",
-    color: "#e6eef8",
-    padding: "2rem 1rem",
-  };
-
-  const mainStyle: React.CSSProperties = {
-    width: "100%",
-    maxWidth: 1100,
-    margin: "0 auto",
-    flexGrow: 1,
-    padding: 8,
-  };
-
-  const cardStyle: React.CSSProperties = {
-    display: "flex",
-    flexDirection: "row",
-    gap: 24,
-    alignItems: "flex-start",
-    padding: 20,
-    borderRadius: 14,
-    background:
-      "linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))",
-    boxShadow: "0 6px 30px rgba(2,6,23,0.6)",
-    backdropFilter: "blur(6px)",
-  };
-
-  const avatarWrapStyle: React.CSSProperties = {
-    width: 192,
-    minWidth: 192,
-    height: 192,
-    borderRadius: "50%",
-    overflow: "hidden",
-    boxShadow: "0 8px 30px rgba(3,7,18,0.6)",
-    flexShrink: 0,
-    position: "relative",
-    background: "#0b1220",
-  };
-
-  const titleStyle: React.CSSProperties = {
-    fontSize: 32,
-    fontWeight: 800,
-    margin: 0,
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    background: "linear-gradient(90deg,#22c55e,#3b82f6)",
-    WebkitBackgroundClip: "text",
-    backgroundClip: "text",
-    color: "transparent",
-  };
-
-  const roleChipStyle: React.CSSProperties = {
-    fontSize: 14,
-    fontWeight: 600,
-    padding: "6px 10px",
-    borderRadius: 999,
-    background:
-      "linear-gradient(to right, rgba(255,255,255,0.4), rgba(148,163,184,0.3))",
-    color: "rgba(255,255,255,0.8)",
-    border: "1px solid rgba(255,255,255,0.1)",
-    display: "inline-block",
-    marginLeft: 8,
-  };
-
-  const bioStyle: React.CSSProperties = {
-    color: "#cbd5e1",
-    marginTop: 10,
-    lineHeight: 1.5,
-  };
-
-  const moviesGridStyle: React.CSSProperties = {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 12,
-    marginTop: 14,
-  };
-
-  const movieCardStyle: React.CSSProperties = {
-    display: "flex",
-    gap: 12,
-    alignItems: "center",
-    padding: 12,
-    borderRadius: 12,
-    background: "rgba(255,255,255,0.02)",
-    transition: "transform .18s ease, box-shadow .18s ease",
-    cursor: "pointer",
-    minWidth: 280,
-  };
-
-  const movieCardHover: React.CSSProperties = {
-    transform: "translateY(-4px)",
-    boxShadow: "0 10px 30px rgba(2,6,23,0.6)",
-  };
-
   return (
-    <div>
-      <main className="w-full max-w-[1100px] mx-auto flex-grow p-2">
-        <section className="flex flex-row gap-6 items-start p-5 rounded-[14px] bg-[linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] shadow-[0_6px_30px_rgba(2,6,23,0.6)] backdrop-blur-sm">
-          <div className="w-48 min-w-[192px] h-48 rounded-full overflow-hidden shadow-xl flex-shrink-0 relative bg-[#0b1220]">
-            <Image
-              src={person.imageUrl ?? "/file.svg"}
-              alt={person.fullName}
-              fill
-              sizes="(max-width: 768px) 100vw, 200px"
-              className="object-cover"
-            />
-          </div>
-
+    <div className="w-full mx-auto flex items-start gap-2 p-1 bg-gray-900 rounded-2xl">
+      <aside className="flex-shrink-0 p-2">
+        <div className="w-64 min-w-[264px] h-64 rounded-full overflow-hidden shadow-xl relative bg-neutral-900">
+          <Image
+            src={person.imageUrl ?? "/file.svg"}
+            alt={person.fullName}
+            fill
+            sizes="(max-width: 768px) 100vw, 264px"
+            className="object-cover"
+            priority
+            unoptimized
+          />
+        </div>
+        <div className="mt-4 w-64 min-w-[264px]">
+          <Link
+            href="/persons"
+            className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-neutral-800 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
+          >
+            Back to Persons
+          </Link>
+        </div>
+      </aside>
+      <main className="w-full mx-auto flex-grow p-2">
+        <section className="flex flex-col gap-6 items-start p-5 rounded-[14px] bg-neutral-900/50 border border-neutral-800 shadow-2xl backdrop-blur-md">
           <div className="flex-1 min-w-0">
-            <h1 className="text-[32px] font-extrabold m-0 flex items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-blue-500">
+            <h1 className="text-[32px] font-extrabold m-0 flex items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-blue-400">
               {person.fullName}
               {rolesDisplay ? (
-                <span className="inline-flex items-center rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10 px-3 py-1 text-xs font-medium">
+                <span className="inline-flex items-center rounded-full bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-neutral-700 px-3 py-1 text-xs font-medium">
                   {rolesDisplay}
                 </span>
               ) : null}
             </h1>
 
             {person.bio ? (
-              <p className="text-slate-300 mt-2 leading-relaxed">
+              <p className="text-neutral-300 mt-2 leading-relaxed">
                 {person.bio}
               </p>
             ) : (
-              <p className="text-slate-500 mt-2">No bio available.</p>
+              <p className="text-neutral-500 mt-2">No bio available.</p>
             )}
+          </div>
 
-            <h2 className="mt-5 mb-2 inline-flex items-center rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10 px-3 py-1 text-xs font-medium">
-              Movies
-            </h2>
+          <div className="w-full">
+            <h2 className="mt-5 mb-2 text-sm text-neutral-400">Known For</h2>
 
             {movies.length === 0 ? (
               <p className="text-slate-400">No movies found for this person.</p>
             ) : (
-              <div className="flex flex-wrap gap-3 mt-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
                 {movies.map((mp) => (
-                  <Link
-                    key={`${mp.movie.id}-${mp.role}`}
-                    href={`/movies/${mp.movie.id}`}
-                    className="flex gap-3 items-center p-3 rounded-lg bg-[rgba(255,255,255,0.02)] transition-transform duration-150 ease-in-out hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(2,6,23,0.6)] cursor-pointer min-w-[280px]"
-                  >
-                    {mp.movie.imageUrl ? (
-                      <div className="w-16 h-24 relative flex-shrink-0 rounded-md overflow-hidden">
-                        <Image
-                          src={mp.movie.imageUrl}
-                          alt={mp.movie.title}
-                          fill
-                          sizes="64px"
-                          className="object-cover rounded-md"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-16 h-24 bg-[#061827] rounded-md flex-shrink-0" />
-                    )}
-
-                    <div className="flex flex-col">
-                      <div className="font-bold text-[#e6eef8]">
-                        {mp.movie.title}
-                      </div>
-                      <div className="text-sm text-slate-400 mt-1">
-                        {prettyRole(mp.role)}
-                      </div>
-                    </div>
-                  </Link>
+                  <MovieCard key={mp.movie.id} movie={mp.movie} />
                 ))}
               </div>
             )}

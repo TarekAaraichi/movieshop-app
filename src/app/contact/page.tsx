@@ -6,7 +6,8 @@
 export default function ContactPage() {
   return (
     <div>
-      <div className="m-auto max-w-4xl w-full bg-white/5 backdrop-blur-sm border border-white/6 rounded-2xl shadow-2xl p-6 sm:p-8">
+      <div className="m-auto max-w-4xl w-full">
+        <Card className="p-6 sm:p-8">
         <header className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-semibold text-gray-100">
             Contact
@@ -51,7 +52,7 @@ export default function ContactPage() {
               ].map((p) => (
                 <li
                   key={p.email}
-                  className="flex items-center gap-4 bg-white/3 rounded-lg p-3 sm:p-4 hover:bg-white/6 transition-colors"
+                  className="flex items-center gap-4 bg-gray-800/40 rounded-lg p-3 sm:p-4 hover:bg-gray-800/50 transition-colors"
                 >
                   <div
                     className={`flex items-center justify-center h-10 w-10 rounded-full text-white ${p.color} flex-shrink-0`}
@@ -81,7 +82,7 @@ export default function ContactPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={`${p.name} on LinkedIn`}
-                          className="p-2 rounded-md bg-white/4 hover:bg-white/8 transition-colors text-blue-300"
+                          className="p-2 rounded-md bg-gray-800/40 hover:bg-gray-800/50 transition-colors text-blue-300"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -90,13 +91,13 @@ export default function ContactPage() {
                             viewBox="0 0 24 24"
                             fill="currentColor"
                             aria-hidden="true"
+                          <a
+                            href={p.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${p.name} on GitHub`}
+                            className="p-2 rounded-md bg-gray-800/40 hover:bg-gray-800/50 transition-colors text-gray-100"
                           >
-                            <path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM0 8.5h5V24H0V8.5zM8.5 8.5h4.8v2.06h.07c.67-1.27 2.3-2.6 4.73-2.6 5.06 0 6 3.33 6 7.66V24h-5V16.6c0-1.76-.03-4.03-2.46-4.03-2.47 0-2.85 1.93-2.85 3.92V24h-5V8.5z" />
-                          </svg>
-                        </a>
-
-                        <a
-                          href={p.github}
                           target="_blank"
                           rel="noopener noreferrer"
                           aria-label={`${p.name} on GitHub`}
@@ -117,7 +118,7 @@ export default function ContactPage() {
                         <a
                           href={`mailto:${p.email}`}
                           aria-label={`Email ${p.name}`}
-                          className="p-2 rounded-md bg-white/4 hover:bg-white/8 transition-colors text-rose-300"
+                          className="p-2 rounded-md bg-gray-800/40 hover:bg-gray-800/50 transition-colors text-rose-300"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -138,7 +139,7 @@ export default function ContactPage() {
             </ul>
           </section>
 
-          <section className="bg-gradient-to-b from-white/3 to-white/2 rounded-xl p-5 sm:p-6">
+          <section className="bg-gradient-to-b from-gray-800/20 to-gray-800/10 rounded-xl p-5 sm:p-6">
             <h2 className="text-sm font-medium text-gray-200">Get in touch</h2>
             <div className="mt-3 text-sm text-gray-300 space-y-3">
               <div className="flex items-center justify-between gap-4">
@@ -182,7 +183,7 @@ export default function ContactPage() {
               </div>
             </div>
           </section>
-        </div>
+        </Card>
       </div>
     </div>
   );

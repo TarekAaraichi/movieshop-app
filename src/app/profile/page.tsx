@@ -9,6 +9,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import Link from "next/link";
 import Image from "next/image";
+import { PageWrapper } from "@/components/PageThemeContext";
 
 export default async function ProfilePage() {
   // require sign-in
@@ -57,239 +58,200 @@ export default async function ProfilePage() {
 
   // Using the `user` fetched from the database above for rendering.
 
+  // Build a list of unique addresses by normalized fields so the profile
+  // doesn't show duplicate address records that differ only by id but are
+  // textually identical (common when an address was stored per-order).
+  const normalize = (s: string | undefined | null) =>
+    (s ?? "").toString().trim().toLowerCase();
+  const addressGroups = new Map<
+    string,
+    {
+      rep: (typeof addresses)[number] | null;
+      ids: Set<string>;
+      orderCount: number;
+    }
+  >();
+  for (const a of addresses) {
+    const key = [a.line1, a.line2, a.city, a.postalCode, a.country]
+      .map(normalize)
+      .join("|");
+    if (!addressGroups.has(key)) {
+      addressGroups.set(key, { rep: a, ids: new Set([a.id]), orderCount: 0 });
+    } else {
+      addressGroups.get(key)!.ids.add(a.id);
+    }
+  }
+  // Map addressId -> key for quick lookup from orders
+  const addrIdToKey = new Map<string, string>();
+  for (const [k, v] of addressGroups.entries()) {
+    for (const id of v.ids) addrIdToKey.set(id, k);
+  }
+  for (const o of orders) {
+    const aid = o.addressId;
+    if (!aid) continue;
+    const k = addrIdToKey.get(aid);
+    if (k && addressGroups.has(k)) {
+      addressGroups.get(k)!.orderCount++;
+    }
+  }
+  const uniqueAddresses = Array.from(addressGroups.values()).map((g) => ({
+    ...(g.rep || {}),
+    _orderCount: g.orderCount,
+  }));
+
   return (
-    <div>
-      <div className="max-w-5xl mx-auto">
-        <div className="flex items-center justify-between mb-6 gap-6">
-          <div className="flex items-center gap-4">
-            <div className="h-16 w-16 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-xl shrink-0">
-              {(user?.name?.[0] ?? user?.email?.[0] ?? "U").toUpperCase()}
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-gray-600">
-                {user?.name ?? "Your profile"}
-              </h1>
-              <div className="flex items-center gap-3 mt-1">
-                <div className="text-sm text-slate-600">
-                  {user?.email ?? "—"}
-                </div>
-                <span
-                  className={
-                    "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium " +
-                    (user?.role === "admin"
-                      ? "bg-indigo-100 text-indigo-800"
-                      : "bg-slate-100 text-slate-800")
-                  }
-                >
-                  {user?.role ?? "user"}
-                </span>
+    <PageWrapper>
+      <div className="max-w-4xl mx-auto">
+        <header className="mb-8">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+            My Profile
+          </h1>
+          <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+            View your account details and order history.
+          </p>
+        </header>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="md:col-span-1">
+            <div className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg shadow-md p-6 text-center">
+              <div className="relative w-32 h-32 mx-auto mb-4">
+                <Image
+                  src={user.image ?? "/placeholder.png"}
+                  alt="User avatar"
+                  width={128}
+                  height={128}
+                  className="rounded-full object-cover border-4 border-neutral-200 dark:border-neutral-700"
+                />
               </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            {user?.role === "admin" && (
+              <h2 className="text-xl font-bold text-neutral-800 dark:text-white">
+                {user.name}
+              </h2>
+              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                {user.email}
+              </p>
               <Link
-                href="/admin"
-                className="inline-flex items-center gap-2 text-sm bg-indigo-700 hover:bg-indigo-800 text-white px-3 py-2 rounded-md shadow-sm transition"
+                href="/profile/edit"
+                className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors"
               >
-                Admin
+                Edit Profile
               </Link>
-            )}
-            <Link
-              href="/profile/edit"
-              className="inline-flex text-gray-900 items-center gap-2 text-sm border border-slate-200 bg-white px-3 py-2 rounded-md hover:shadow focus:outline-none"
-            >
-              Edit
-            </Link>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <section className="lg:col-span-2 bg-white shadow rounded-lg p-6 divide-y divide-slate-100">
-            <div className="pb-4">
-              <h2 className="font-semibold text-lg text-slate-900">Account</h2>
-              <p className="mt-3 text-sm text-slate-700">
-                <span className="font-medium text-slate-800">Name:</span>{" "}
-                <span className="ml-1">{user?.name ?? "—"}</span>
-              </p>
-              <p className="mt-2 text-sm text-slate-700">
-                <span className="font-medium text-slate-800">Email:</span>{" "}
-                <span className="ml-1">{user?.email ?? "—"}</span>
-              </p>
             </div>
+          </div>
 
-            <div className="pt-4">
-              <h3 className="font-semibold text-sm text-slate-900 mb-3">
-                Recent Orders
+          <div className="md:col-span-2">
+            <section className="mb-8">
+              <h3 className="text-xl font-bold mb-4 text-neutral-800 dark:text-white">
+                Shipping Addresses
               </h3>
-              {user?.orders && user.orders.length ? (
-                <div className="space-y-3">
-                  {user.orders.map((o, idx) => {
-                    const statusClasses =
-                      o.status === "PAID"
-                        ? "bg-emerald-100 text-emerald-800"
-                        : o.status === "PENDING"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800";
-                    return (
-                      <div
-                        key={o.id ?? idx}
-                        className="flex items-start justify-between gap-4 p-3 rounded-md hover:shadow-sm transition bg-slate-50 border border-slate-100"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="flex flex-col gap-2">
-                            {o.items && o.items.length ? (
-                              <div className="flex -space-x-2">
-                                {o.items.slice(0, 3).map((it, i) => (
-                                  <Image
-                                    key={it.movieId ?? i}
-                                    src={it.movie?.imageUrl ?? "/file.svg"}
-                                    alt={it.movie?.title ?? "Movie poster"}
-                                    width={44}
-                                    height={64}
-                                    className="object-cover rounded-md border border-slate-200 bg-white"
-                                  />
-                                ))}
-                              </div>
-                            ) : (
-                              <div className="h-14 w-10 bg-slate-100 rounded-md" />
-                            )}
-                          </div>
-                          <div>
-                            <div className="text-sm font-medium text-slate-900">
-                              Order #{o.id ?? "—"}
-                            </div>
-                            <div className="text-xs text-slate-600 mt-1">
-                              {o.orderDate
-                                ? new Date(o.orderDate).toLocaleString()
-                                : "—"}
-                              {" • "}
-                              <span
-                                className={
-                                  "inline-flex items-center px-2 py-0.5 rounded-full text-xs " +
-                                  statusClasses
-                                }
-                              >
-                                {o.status ?? "—"}
-                              </span>
-                            </div>
-                            <div className="mt-2 text-sm text-slate-700">
-                              {o.items && o.items.length
-                                ? `${o.items.length} item${
-                                    o.items.length > 1 ? "s" : ""
-                                  }`
-                                : "No items"}
-                            </div>
-                          </div>
-                        </div>
+              <div className="space-y-4">
+                {uniqueAddresses.length > 0 ? (
+                  uniqueAddresses.map((addr) => (
+                    <div
+                      key={addr.id}
+                      className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg p-4"
+                    >
+                      <p className="font-semibold text-neutral-700 dark:text-neutral-300">
+                        {addr.line1}
+                      </p>
+                      {addr.line2 && (
+                        <p className="text-neutral-600 dark:text-neutral-400">
+                          {addr.line2}
+                        </p>
+                      )}
+                      <p className="text-neutral-600 dark:text-neutral-400">
+                        {addr.city}, {addr.postalCode}, {addr.country}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-neutral-500 dark:text-neutral-400">
+                    No addresses found.
+                  </p>
+                )}
+              </div>
+            </section>
 
-                        <div className="ml-auto text-right flex flex-col items-end gap-2">
-                          <div className="text-sm font-semibold text-slate-900">
-                            Total
+            <section>
+              <h3 className="text-xl font-bold mb-4 text-neutral-800 dark:text-white">
+                Order History
+              </h3>
+              <div className="space-y-6">
+                {orders.length > 0 ? (
+                  orders.map((order) => (
+                    <div
+                      key={order.id}
+                      className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg overflow-hidden"
+                    >
+                      <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <p className="font-bold text-lg text-neutral-800 dark:text-white">
+                              Order #{order.id.substring(0, 8)}
+                            </p>
+                            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                              {new Date(order.orderDate).toLocaleDateString()}
+                            </p>
                           </div>
-                          <div className="text-lg font-bold text-slate-900">
-                            SEK{String(o.totalAmount ?? "0.00")}
+                          <div className="text-right">
+                            <p className="font-bold text-lg text-neutral-800 dark:text-white">
+                              ${order.totalAmount.toFixed(2)}
+                            </p>
+                            <span
+                              className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                                order.status === "PAID"
+                                  ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300"
+                                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300"
+                              }`}
+                            >
+                              {order.status}
+                            </span>
                           </div>
-                          <Link
-                            href={`/orders/${o.id ?? ""}`}
-                            className="text-sm text-indigo-600 hover:text-indigo-800"
-                          >
-                            View
-                          </Link>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="text-sm text-slate-600">
-                  You have no recent orders.
-                </div>
-              )}
-            </div>
-          </section>
-
-          <section className="bg-white shadow rounded-lg p-6">
-            <h2 className="font-semibold text-lg text-slate-900 mb-3">
-              Addresses
-            </h2>
-            {user?.addresses && user.addresses.length ? (
-              <div className="grid grid-cols-1 gap-3">
-                {user.addresses.map((a, idx) => (
-                  <div
-                    key={a.id ?? idx}
-                    className="border border-slate-100 rounded-md p-3 bg-slate-50"
-                  >
-                    <div className="text-sm font-medium text-slate-800">
-                      {a.line1}
+                      <div className="p-4">
+                        <ul className="space-y-2">
+                          {order.items.map((item) => (
+                            <li
+                              key={item.movieId}
+                              className="flex items-center gap-4"
+                            >
+                              <Image
+                                src={item.movie.imageUrl ?? "/placeholder.png"}
+                                alt={item.movie.title}
+                                width={40}
+                                height={60}
+                                className="rounded-md object-cover"
+                              />
+                              <div className="flex-1">
+                                <p className="font-semibold text-neutral-700 dark:text-neutral-300">
+                                  {item.movie.title}
+                                </p>
+                                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                                  Quantity: {item.quantity}
+                                </p>
+                              </div>
+                              <p className="font-semibold text-neutral-700 dark:text-neutral-300">
+                                $
+                                {(
+                                  Number(item.priceAtPurchase) * item.quantity
+                                ).toFixed(2)}
+                              </p>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
-                    {a.line2 && (
-                      <div className="text-sm text-slate-700">{a.line2}</div>
-                    )}
-                    <div className="text-sm text-slate-700 mt-1">
-                      {a.city}, {a.postalCode}, {a.country}
-                    </div>
-                    <div className="mt-3 flex gap-2">
-                      <Link
-                        href="#"
-                        className="text-xs text-indigo-600 hover:underline"
-                      >
-                        Edit
-                      </Link>
-                      <Link
-                        href="#"
-                        className="text-xs text-red-600 hover:underline"
-                      >
-                        Remove
-                      </Link>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-neutral-500 dark:text-neutral-400">
+                    You haven't placed any orders yet.
+                  </p>
+                )}
               </div>
-            ) : (
-              <div className="text-sm text-slate-600">No saved addresses</div>
-            )}
-          </section>
+            </section>
+          </div>
         </div>
-
-        <section className="bg-white shadow rounded-lg p-6">
-          <h2 className="font-semibold text-lg text-slate-900 mb-3">
-            Order History
-          </h2>
-          {user?.orders && user.orders.length ? (
-            <ul className="divide-y divide-slate-100">
-              {user.orders.map((o, idx) => (
-                <li key={o.id ?? idx} className="py-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="text-sm text-slate-800 font-medium">
-                      Order #{o.id ?? "—"}
-                    </div>
-                    <div className="text-sm text-slate-600">
-                      {o.orderDate
-                        ? new Date(o.orderDate).toLocaleDateString()
-                        : "—"}
-                    </div>
-                    <div className="text-sm font-semibold text-slate-900">
-                      SEK{String(o.totalAmount ?? "0.00")}
-                    </div>
-                    <Link
-                      href={`/orders/${o.id ?? ""}`}
-                      className="text-sm text-indigo-600 hover:text-indigo-800"
-                    >
-                      Details
-                    </Link>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="text-sm text-slate-600">
-              You have no orders yet.
-            </div>
-          )}
-        </section>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

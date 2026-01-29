@@ -158,9 +158,9 @@ export default async function MoviePage({ params }: Props) {
   const runtimeFormatted = formatRuntime(movieTyped.runtime ?? null);
 
   return (
-    <div className="w-full max-w-[1100px] mx-auto flex items-start gap-6 p-2">
+    <div className="w-full  mx-auto flex items-start gap-2 p-1 bg-gray-900 rounded-2xl">
       <aside className="flex-shrink-0 p-2">
-        <div className="w-64 min-w-[264px] h-[376px] rounded-xl overflow-hidden shadow-xl relative bg-[#0b1220]">
+        <div className="w-64 min-w-[264px] h-[376px] rounded-xl overflow-hidden shadow-xl relative bg-neutral-900">
           {poster ? (
             <Image
               src={poster}
@@ -172,13 +172,15 @@ export default async function MoviePage({ params }: Props) {
               unoptimized
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-neutral-900 to-neutral-800 text-neutral-400">
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-neutral-900 to-neutral-800 text-neutral-500">
               <span className="text-sm">No poster available</span>
             </div>
           )}
           {stock === 0 && (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">Out of Stock</span>
+            <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+              <span className="text-white font-bold text-lg tracking-wider">
+                Out of Stock
+              </span>
             </div>
           )}
         </div>
@@ -196,20 +198,20 @@ export default async function MoviePage({ params }: Props) {
 
           <Link
             href="/movies"
-            className="mt-3 inline-flex w-full items-center justify-center rounded-md backdrop-blur-sm bg-gradient-to-r from-neutral-700/60 to-neutral-800/60 text-slate-200 border border-white/10 px-4 py-3 text-sm font-medium shadow-[0_4px_20px_rgba(2,6,23,0.6)] hover:from-neutral-600/80 hover:to-neutral-700/80 active:from-neutral-800/90 active:to-neutral-900/95 active:scale-95 transition-all duration-150"
+            className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-neutral-800 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
           >
             Back to catalog
           </Link>
         </div>
       </aside>
-      <main className="w-full max-w-[1100px] mx-auto flex-grow p-2">
-        <section className="flex flex-row gap-6 items-start p-5 rounded-[14px] bg-[linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] shadow-[0_6px_30px_rgba(2,6,23,0.6)] backdrop-blur-sm">
+      <main className="w-full  mx-auto flex-grow p-2">
+        <section className="flex flex-row gap-6 items-start p-5 rounded-[14px] bg-neutral-900/50 border border-neutral-800 shadow-2xl backdrop-blur-md">
           <div className="flex-1 min-w-0">
-            <h1 className="text-[32px] font-extrabold m-0 flex items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-blue-500">
+            <h1 className="text-[32px] font-extrabold m-0 flex items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-blue-400">
               {title}
             </h1>
             {tagline && (
-              <p className="text-slate-300 mt-2 leading-relaxed italic">
+              <p className="text-neutral-400 mt-2 leading-relaxed italic">
                 {tagline}
               </p>
             )}
@@ -218,7 +220,7 @@ export default async function MoviePage({ params }: Props) {
               {genres.map((g, i) => (
                 <span
                   key={i}
-                  className="inline-flex items-center rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10 px-3 py-1 text-xs font-medium"
+                  className="inline-flex items-center rounded-full bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-neutral-700 px-3 py-1 text-xs font-medium"
                 >
                   {g}
                 </span>
@@ -226,37 +228,43 @@ export default async function MoviePage({ params }: Props) {
             </div>
 
             <div className="mt-4 flex gap-3 items-center">
-              <div className="rounded-lg bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] px-4 py-3 text-center shadow-sm">
-                <div className="text-xs text-[#93c5fd]">Release</div>
-                <div className="mt-1 text-sm font-semibold">{release}</div>
+              <div className="rounded-lg bg-neutral-800/50 px-4 py-3 text-center shadow-sm">
+                <div className="text-xs text-blue-300">Release</div>
+                <div className="mt-1 text-sm font-semibold text-neutral-200">
+                  {release}
+                </div>
               </div>
               {runtimeFormatted && (
-                <div className="rounded-lg bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] px-4 py-3 text-center shadow-sm">
-                  <div className="text-xs text-[#93c5fd]">Runtime</div>
-                  <div className="mt-1 text-sm font-semibold">
+                <div className="rounded-lg bg-neutral-800/50 px-4 py-3 text-center shadow-sm">
+                  <div className="text-xs text-blue-300">Runtime</div>
+                  <div className="mt-1 text-sm font-semibold text-neutral-200">
                     {runtimeFormatted}
                   </div>
                 </div>
               )}
               {stock !== null && stock > 0 && (
-                <div className="rounded-lg bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] px-4 py-3 text-center shadow-sm">
+                <div className="rounded-lg bg-neutral-800/50 px-4 py-3 text-center shadow-sm">
                   <div className="text-xs text-yellow-400">Stock</div>
-                  <div className="mt-1 text-sm font-semibold">{stock} left</div>
+                  <div className="mt-1 text-sm font-semibold text-neutral-200">
+                    {stock} left
+                  </div>
                 </div>
               )}
             </div>
 
-            <p className="text-slate-300 mt-4 leading-relaxed">{description}</p>
+            <p className="text-neutral-300 mt-4 leading-relaxed">
+              {description}
+            </p>
 
             {/* Quick facts */}
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-[rgba(255,255,255,0.04)] bg-[rgba(255,255,255,0.01)] p-4">
-                <div className="text-xs text-slate-400">Director</div>
-                <div className="mt-1 text-sm font-medium">
+              <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4">
+                <div className="text-xs text-neutral-400">Director</div>
+                <div className="mt-1 text-sm font-medium text-neutral-200">
                   {director ? (
                     <Link
                       href={`/persons/${director.id}`}
-                      className="hover:underline"
+                      className="hover:underline text-blue-300"
                     >
                       {director.fullName}
                     </Link>
@@ -265,19 +273,21 @@ export default async function MoviePage({ params }: Props) {
                   )}
                 </div>
               </div>
-              <div className="rounded-xl border border-[rgba(255,255,255,0.04)] bg-[rgba(255,255,255,0.01)] p-4">
-                <div className="text-xs text-slate-400">Language</div>
-                <div className="mt-1 text-sm font-medium">{languageValue}</div>
+              <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-4">
+                <div className="text-xs text-neutral-400">Language</div>
+                <div className="mt-1 text-sm font-medium text-neutral-200">
+                  {languageValue}
+                </div>
               </div>
             </div>
 
             <div className="mt-6 flex items-center gap-4">
-              <div className="flex items-center gap-3 rounded-md bg-[rgba(255,255,255,0.02)] px-3 py-2">
+              <div className="flex items-center gap-3 rounded-md bg-neutral-800/50 px-3 py-2">
                 <div className="text-sm text-yellow-400 font-medium">
                   {rating !== null ? `${rating}/10` : "No rating"}
                 </div>
-                <div className="h-4 w-px bg-[rgba(255,255,255,0.04)]" />
-                <div className="text-xs text-slate-400">
+                <div className="h-4 w-px bg-neutral-700" />
+                <div className="text-xs text-neutral-400">
                   {`${totalUnitsSold} unit${
                     totalUnitsSold === 1 ? "" : "s"
                   } sold`}
@@ -295,7 +305,7 @@ export default async function MoviePage({ params }: Props) {
                 )}`}
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm text-[#93c5fd] hover:underline"
+                className="text-sm text-blue-300 hover:underline"
               >
                 Check external ratings
               </a>
@@ -304,15 +314,15 @@ export default async function MoviePage({ params }: Props) {
             {/* Cast */}
             {actors.length > 0 && (
               <div className="mt-6">
-                <h3 className="text-sm text-slate-400 mb-3">Cast</h3>
+                <h3 className="text-sm text-neutral-400 mb-3">Cast</h3>
                 <div className="flex flex-wrap gap-3">
                   {actors.map((a) => (
                     <Link
                       key={a.id}
                       href={`/persons/${a.id}`}
-                      className="flex items-center gap-3 p-3 rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10"
+                      className="flex items-center gap-3 p-2 rounded-lg bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-neutral-800 hover:bg-neutral-700/70 transition-colors"
                     >
-                      <div className="w-12 h-12 rounded-full overflow-hidden bg-[#071025] flex-shrink-0">
+                      <div className="w-12 h-12 rounded-full overflow-hidden bg-neutral-900 flex-shrink-0">
                         {a.imageUrl ? (
                           <Image
                             src={a.imageUrl}
@@ -322,10 +332,12 @@ export default async function MoviePage({ params }: Props) {
                             className="object-cover"
                           />
                         ) : (
-                          <div className="w-12 h-12 bg-[#061827]" />
+                          <div className="w-12 h-12 bg-neutral-700" />
                         )}
                       </div>
-                      <div className="text-sm font-medium">{a.fullName}</div>
+                      <div className="text-sm font-medium text-neutral-200 hover:text-emerald-400">
+                        {a.fullName}
+                      </div>
                     </Link>
                   ))}
                 </div>

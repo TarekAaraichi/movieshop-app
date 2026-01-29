@@ -74,7 +74,7 @@ export function SignInForm() {
             }
             if (shouldWrite) {
               document.cookie = `cart=${encodeURIComponent(
-                JSON.stringify(pj.items)
+                JSON.stringify(pj.items),
               )}; path=/; max-age=${60 * 60 * 24 * 30}`;
             }
           } catch {}
@@ -100,7 +100,7 @@ export function SignInForm() {
       // location.assign ensures cookies are sent and the browser follows
       // the redirect returned by the server route.
       window.location.assign(
-        `/api/cart/migrate-and-continue?callback=${encodeURIComponent(cb)}`
+        `/api/cart/migrate-and-continue?callback=${encodeURIComponent(cb)}`,
       );
     } else {
       try {
@@ -112,7 +112,7 @@ export function SignInForm() {
   }
 
   return (
-    <Card className="max-w-md mx-auto bg-gradient-to-r from-white to-indigo-50">
+    <Card className="max-w-md mx-auto bg-gradient-to-r from-white to-indigo-50 dark:from-gray-800 dark:to-gray-900">
       <div className="py-3 px-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

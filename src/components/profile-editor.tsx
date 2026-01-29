@@ -79,7 +79,7 @@ export default function ProfileEditor({
         />
       </div>
 
-      <fieldset className="border-t border-gray-200 pt-4">
+      <fieldset className="border-t border-gray-700 pt-4">
         <legend className="text-sm font-medium text-slate-700">Address</legend>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
           <input

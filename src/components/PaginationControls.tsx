@@ -8,6 +8,7 @@ interface PaginationControlsProps {
   hasPrevPage: boolean;
   totalCount: number;
   pageSize: number;
+  basePath: string;
 }
 
 export default function PaginationControls({
@@ -15,6 +16,7 @@ export default function PaginationControls({
   hasPrevPage,
   totalCount,
   pageSize,
+  basePath,
 }: PaginationControlsProps) {
   const searchParams = useSearchParams();
   const page = searchParams.get("page") ?? "1";
@@ -26,7 +28,7 @@ export default function PaginationControls({
   const getPageLink = (p: number) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", p.toString());
-    return `/movies?${params.toString()}`;
+    return `${basePath}?${params.toString()}`;
   };
 
   const renderPageNumbers = () => {

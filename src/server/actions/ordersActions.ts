@@ -15,11 +15,14 @@ import { findOrCreateUser } from "./orderHelpersActions";
 const checkoutSchema = z.object({
   fullName: z.string().min(2),
   email: z.string().email(),
-  line1: z.string().min(2),
+  // address fields are optional here because callers may submit an existing address id
+  line1: z.string().min(2).optional(),
   line2: z.string().optional(),
-  city: z.string().min(1),
-  postalCode: z.string().min(1),
-  country: z.string().min(1),
+  city: z.string().min(1).optional(),
+  postalCode: z.string().min(1).optional(),
+  country: z.string().min(1).optional(),
+  selectedAddressId: z.string().optional(),
+  saveAddress: z.string().optional(),
   paymentToken: z.string().optional(),
 });
 
@@ -27,7 +30,7 @@ type CartItem = { movieId: string; quantity: number };
 
 function parseCartCookie(cookieStore: unknown) {
   function hasGetMethod(
-    obj: unknown
+    obj: unknown,
   ): obj is { get: (name: string) => { value?: string } | undefined } {
     return (
       typeof obj === "object" &&
@@ -55,10 +58,10 @@ export async function createOrder(formData: FormData): Promise<void> {
     const formatted: Record<string, string> = {};
     const flat = parsed.error.flatten();
     for (const [k, v] of Object.entries(flat.fieldErrors)) {
-      formatted[k] = Array.isArray(v) ? v[0] ?? "Invalid" : "Invalid";
+      formatted[k] = Array.isArray(v) ? (v[0] ?? "Invalid") : "Invalid";
     }
     const qs = encodeURIComponent(
-      JSON.stringify({ _type: "validation", fields: formatted })
+      JSON.stringify({ _type: "validation", fields: formatted }),
     );
     redirect(`/checkout?errors=${qs}`);
     return;
@@ -151,7 +154,7 @@ export async function createOrder(formData: FormData): Promise<void> {
   }
   if (items.length === 0) {
     const qs = encodeURIComponent(
-      JSON.stringify({ _type: "business", message: "Cart is empty" })
+      JSON.stringify({ _type: "business", message: "Cart is empty" }),
     );
     redirect(`/checkout?errors=${qs}`);
     return;
@@ -163,12 +166,12 @@ export async function createOrder(formData: FormData): Promise<void> {
   } else {
     console.debug(
       "orders.createOrder: calling findOrCreateUser",
-      typeof findOrCreateUser
+      typeof findOrCreateUser,
     );
     const guest = await findOrCreateUser(
       prisma,
       parsed.data.email,
-      parsed.data.fullName
+      parsed.data.fullName,
     );
     userId = guest.id as string;
   }
@@ -192,7 +195,7 @@ export async function createOrder(formData: FormData): Promise<void> {
         JSON.stringify({
           _type: "business",
           message: `Movie ${it.movieId} not found`,
-        })
+        }),
       );
       redirect(`/checkout?errors=${qs}`);
       return;
@@ -202,7 +205,7 @@ export async function createOrder(formData: FormData): Promise<void> {
         JSON.stringify({
           _type: "business",
           message: `Not enough stock for ${movie.title || movie.id}`,
-        })
+        }),
       );
       redirect(`/checkout?errors=${qs}`);
       return;
@@ -217,22 +220,113 @@ export async function createOrder(formData: FormData): Promise<void> {
     });
   }
 
+  // Determine address to use: prefer an explicitly selected address id; otherwise
+  // deduplicate by comparing normalized address fields and create if none found.
+  const selectedAddressIdRaw = raw["selectedAddressId"] as string | undefined;
+  const selectedAddressId =
+    selectedAddressIdRaw && selectedAddressIdRaw !== "NEW"
+      ? String(selectedAddressIdRaw)
+      : undefined;
+  const saveAddressFlag = String(raw["saveAddress"] ?? "") === "1";
+
+  // If a selectedAddressId was provided, verify it belongs to the user
+  if (selectedAddressId) {
+    try {
+      const found = await prisma.address.findUnique({
+        where: { id: selectedAddressId },
+      });
+      if (!found || found.userId !== userId) {
+        const qs = encodeURIComponent(
+          JSON.stringify({
+            _type: "business",
+            message: "Selected address is not valid",
+          }),
+        );
+        redirect(`/checkout?errors=${qs}`);
+        return;
+      }
+    } catch (e) {
+      const qs = encodeURIComponent(
+        JSON.stringify({
+          _type: "business",
+          message: "Selected address is not valid",
+        }),
+      );
+      redirect(`/checkout?errors=${qs}`);
+      return;
+    }
+  }
+
+  // If we're not using an existing address id, ensure address fields are present
+  if (!selectedAddressId) {
+    const missing = [] as string[];
+    if (!parsed.data.line1) missing.push("line1");
+    if (!parsed.data.city) missing.push("city");
+    if (!parsed.data.postalCode) missing.push("postalCode");
+    if (!parsed.data.country) missing.push("country");
+    if (missing.length > 0) {
+      const formatted: Record<string, string> = {};
+      for (const m of missing) formatted[m] = "Invalid";
+      const qs = encodeURIComponent(
+        JSON.stringify({ _type: "validation", fields: formatted }),
+      );
+      redirect(`/checkout?errors=${qs}`);
+      return;
+    }
+  }
+
+  // Try to find an existing address that matches the submitted fields (case-insensitive)
+  let existingAddressId: string | undefined;
+  if (!selectedAddressId) {
+    try {
+      const maybe = await prisma.address.findFirst({
+        where: {
+          userId,
+          line1: {
+            equals: (parsed.data.line1 ?? "").trim(),
+            mode: "insensitive",
+          },
+          city: {
+            equals: (parsed.data.city ?? "").trim(),
+            mode: "insensitive",
+          },
+          postalCode: {
+            equals: (parsed.data.postalCode ?? "").trim(),
+            mode: "insensitive",
+          },
+          country: {
+            equals: (parsed.data.country ?? "").trim(),
+            mode: "insensitive",
+          },
+        },
+      });
+      if (maybe) existingAddressId = maybe.id;
+    } catch (e) {
+      // ignore and fallthrough to creating a new address
+    }
+  }
+
   const result = await prisma.$transaction(async (tx) => {
-    const address = await tx.address.create({
-      data: {
-        userId,
-        line1: parsed.data.line1,
-        line2: parsed.data.line2 ?? null,
-        city: parsed.data.city,
-        postalCode: parsed.data.postalCode,
-        country: parsed.data.country,
-      },
-    });
+    const address = selectedAddressId
+      ? await tx.address.findUnique({ where: { id: selectedAddressId } })
+      : existingAddressId
+        ? await tx.address.findUnique({ where: { id: existingAddressId } })
+        : await tx.address.create({
+            data: {
+              userId,
+              line1: parsed.data.line1 as string,
+              line2: parsed.data.line2 ?? null,
+              city: parsed.data.city as string,
+              postalCode: parsed.data.postalCode as string,
+              country: parsed.data.country as string,
+            },
+          });
+
     const order = await tx.order.create({
       data: {
         userId,
         totalAmount: `${(totalCents / 100).toFixed(2)}`,
-        addressId: address.id,
+        addressId: address?.id ?? null,
         items: {
           create: orderItems.map((oi) => ({
             movieId: oi.movieId,
@@ -269,12 +363,12 @@ export async function createOrder(formData: FormData): Promise<void> {
           });
           console.log(
             "[orders.createOrder] removed source anonymous cart:",
-            sourceCartId
+            sourceCartId,
           );
         } catch (e) {
           console.error(
             "[orders.createOrder] failed to remove source cart:",
-            e
+            e,
           );
         }
       }
@@ -293,7 +387,7 @@ export async function createOrder(formData: FormData): Promise<void> {
     type CookieSetArgs = (
       name: string,
       value: string,
-      opts?: { path?: string; maxAge?: number }
+      opts?: { path?: string; maxAge?: number },
     ) => void;
     const cookieObj = cookieStore as unknown as {
       set?: CookieSetObj | CookieSetArgs;
@@ -331,13 +425,13 @@ export async function createOrder(formData: FormData): Promise<void> {
             userId,
             cartIds,
             "deletedCount:",
-            deleted.count ?? deleted
+            deleted.count ?? deleted,
           );
         }
       } catch (e) {
         console.error(
           "[orders.createOrder] failed to clean remaining user cart items:",
-          e
+          e,
         );
       }
     }
