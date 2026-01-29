@@ -76,7 +76,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
 
             {/* low stock badge */}
             {typeof stock === "number" && stock > 0 && stock <= 5 && (
-              <div className="absolute top-3 left-3 z-10">
+              <div className="absolute bottom-3 left-3 z-10">
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-600 text-white text-xs font-semibold shadow-sm">
                   Only {stock} left
                 </span>

@@ -31,7 +31,7 @@ export function MovieCarousel({
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-3xl font-bold tracking-tight">{title}</h2>
         {viewMoreHref ? (
-          <Link href={viewMoreHref} className="text-sm text-indigo-400">
+          <Link href={viewMoreHref} className="text-sm text-gray-400 hover:text-blue-400 underline font-medium">
             View more
           </Link>
         ) : null}

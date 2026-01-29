@@ -95,13 +95,13 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
   // Genre filtering temporarily disabled; remove genre query to avoid unnecessary work.
 
   return (
-    <div>
-      <main className="flex-grow px-2 sm:px-4 max-w-7xl mx-auto w-full pt-8 pb-12 box-border">
+    <div className="bg-gray-900 text-white min-h-screen flex flex-col rounded-2xl">
+      <main className="flex-grow px-2 sm:px-4 max-w-7xl mx-auto w-full pt-8 pb-12 box-border border-gray-700 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
         <header className="mb-6">
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-blue-400 text-center">
             Movies
           </h1>
-          <p className="mt-2 text-center text-sm text-gray-300">
+          <p className="mt-2 text-center text-sm text-gray-400">
             Showing {movies.length} of {totalCount}{" "}
             {totalCount === 1 ? "movie" : "movies"}.
           </p>
@@ -117,8 +117,8 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
               </label>
 
               {/* search wrapper with inline icon for a modern, compact look */}
-              <div className="relative w-full max-w-xl mx-auto rounded-md bg-[#071022]/60 border border-gray-600 focus-within:ring-2 focus-within:ring-indigo-400 transition flex items-center gap-2 px-2">
-                <span className="absolute auto-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+              <div className="relative w-full max-w-xl mx-auto rounded-md bg-gray-600 border border-gray-700 focus-within:ring-2 focus-within:ring-sky-500 transition flex items-center gap-2 px-2">
+                <span className="absolute auto-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -141,7 +141,6 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
                     />
                   </svg>
                 </span>
-                <br />
                 <MovieSearch
                   initialQuery={query}
                   selectedGenre={selectedGenre}
@@ -168,7 +167,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
 
           {movies.length === 0 && (
             <div className="col-span-full p-8 rounded-lg bg-gray-800 border border-gray-700 text-center">
-              <p className="text-gray-300">
+              <p className="text-gray-400">
                 No movies found matching your filters.
               </p>
             </div>

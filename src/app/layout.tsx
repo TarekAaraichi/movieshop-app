@@ -80,7 +80,13 @@ export default async function RootLayout({
                   href="/movies"
                   className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                 >
-                  Browse
+                  Movies
+                </Link>
+                <Link
+                  href="/persons"
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                  People
                 </Link>
 
                 <div className="relative">
@@ -239,8 +245,10 @@ export default async function RootLayout({
 
           {/* Main content centered with modern card-like container */}
           <main className="flex-1">
-            <div className="max-w-7xl mx-auto px-4 py-8">
-              <div className="main-content bg-gradient-to-br from-gray-900/60 to-gray-900/40 border border-gray-800 rounded-2xl shadow-lg p-6 min-h-[60vh]">
+            <div className="relative max-w-7xl mx-auto px-4 py-8">
+              {/* LED glow effect */}
+              <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 -z-10 w-full h-3/4 mx-auto blur-3xl opacity-20 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600"></div>
+              <div className="main-content bg-gradient-to-br from-gray-900/60 to-gray-900/40 border border-gray-800 rounded-2xl shadow-lg p-1 min-h-[60vh]">
                 {children}
               </div>
             </div>

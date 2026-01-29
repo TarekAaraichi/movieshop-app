@@ -51,19 +51,23 @@ export default async function HomePage() {
     ]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gray-900 rounded-2xl">
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-lg bg-card p-8 sm:p-16 text-center mb-12">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
+      <section
+        className="relative overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat p-8 sm:p-16 text-center mb-12 border border-primary/30 shadow-2xl shadow-primary/15"
+        style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-gray-900/75" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/25 via-transparent to-secondary/25 opacity-40" />
         <div
           aria-hidden="true"
-          className="absolute inset-0 w-full h-full bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,hsl(var(--primary)/0.1),transparent)]"
+          className="absolute inset-0 w-full h-full  bg-black/20 backdrop-blur-sm p-8 rounded-xl"
         />
         <div className="relative z-10">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent">
-            Welcome to WovieShop
+          <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">
+            Welcome to MovieShop
           </h1>
-          <p className="mt-6 text-lg leading-8 text-muted-foreground max-w-2xl mx-auto">
+          <p className="mt-6 text-lg leading-8 text-gray-400 max-w-2xl mx-auto">
             Your one-stop shop for the greatest movies ever made. Discover new
             releases, timeless classics, and hidden gems.
           </p>
@@ -71,7 +75,7 @@ export default async function HomePage() {
             <Button asChild size="lg">
               <Link href="/movies">Browse All Movies</Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="secondary" size="lg">
               <Link href="/collections/top-rated">Top Rated</Link>
             </Button>
           </div>

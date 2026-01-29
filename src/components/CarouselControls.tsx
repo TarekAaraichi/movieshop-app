@@ -278,7 +278,7 @@ export default function CarouselControls({ containerId, step = 0.8 }: Props) {
               title={`Show page ${i + 1} of ${totalPages}`}
               className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-transform focus:outline-none ${
                 i === currentPage
-                  ? "bg-indigo-400 scale-110"
+                  ? "bg-gray-400 scale-110"
                   : "bg-white/8 hover:bg-white/16"
               }`}
             />
