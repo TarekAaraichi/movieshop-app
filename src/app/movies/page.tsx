@@ -179,6 +179,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
           hasPrevPage={hasPrevPage}
           totalCount={totalCount}
           pageSize={perPage}
+          basePath="/movies"
         />
       </main>
     </div>

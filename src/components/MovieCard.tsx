@@ -46,7 +46,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
   return (
     <Card
       className={
-        "group relative overflow-hidden flex flex-col h-full w-full min-w-0 transition-transform duration-200 ease-in-out hover:-translate-y-1 rounded-xl pt-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] border border-[rgba(255,255,255,0.04)] shadow-[0_6px_30px_rgba(2,6,23,0.6)] backdrop-blur-sm"
+        "group relative overflow-hidden flex flex-col h-full w-full min-w-0 transition duration-200 ease-in-out hover:scale-105 hover:shadow-2xl rounded-xl pt-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] border border-[rgba(255,255,255,0.04)] shadow-[0_6px_30px_rgba(2,6,23,0.6)] backdrop-blur-sm"
       }
     >
       <CardHeader className="p-0">

@@ -142,7 +142,7 @@
 }
 .dark [class*="bg-white/"] {
   /* some utilities include opacity like bg-white/5 — handle them too */
-  background-color: color-mix(in srgb, var(--card) 80%, black 0%) !important;
+  background-color: color-mix(in srgb, var(--card) 80%, #000000 0%) !important;
 }
 
 @layer base {

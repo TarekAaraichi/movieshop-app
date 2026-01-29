@@ -53,10 +53,7 @@ export default async function HomePage() {
   return (
     <div className="container mx-auto px-4 py-8 bg-gray-900 rounded-2xl">
       {/* Hero Section */}
-      <section
-        className="relative overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat p-8 sm:p-16 text-center mb-12 border border-primary/30 shadow-2xl shadow-primary/15"
-        style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
-      >
+      <section className="relative overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat p-8 sm:p-16 text-center mb-12 border border-primary/30 shadow-2xl shadow-primary/15 bg-[url('/images/hero-bg.jpg')]">
         <div className="absolute inset-0 bg-gray-900/75" />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/25 via-transparent to-secondary/25 opacity-40" />
         <div
