@@ -9,12 +9,13 @@ import {
 } from "@/components/ui/card";
 import { AddToCartClientButton } from "@/components";
 import type { Movie } from "@prisma/client";
+import type { Decimal } from "@prisma/client/runtime/library";
 
 // Movie shape expected by card: includes genres and optional stock/price
 type MovieWithGenres = Movie & {
   genres?: { genre: { name: string } }[];
   stock?: number | null;
-  price?: number | string | null;
+  price?: number | string | Decimal | null;
   imageUrl?: string | null;
   people?:
     | {
