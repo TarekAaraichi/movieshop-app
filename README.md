@@ -43,7 +43,7 @@ The project leverages a modern, type-safe technology stack:
 
 The codebase is organized into a `src` directory, following modern Next.js conventions.
 
-```
+```text
 /
 ├── prisma/               # Prisma schema, database migrations, and seed scripts
 ├── public/               # Static assets (images, fonts)
@@ -95,7 +95,7 @@ npm install
 
 Create a `.env` file in the project root and add your PostgreSQL database connection string:
 
-```
+```bash
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 ```
 
