@@ -5,9 +5,10 @@
 
 // src/app/movies/page.tsx
 import { prisma } from "@/lib";
-import type { Prisma } from "@prisma/client";
-import { MovieSearch, MovieCard } from "@/components";
+import type { Prisma, Movie } from "@prisma/client";
+import { MovieSearch, MovieCard, AutoSubmitSelect } from "@/components";
 import PaginationControls from "@/components/PaginationControls";
+import { PageWrapper } from "@/components/PageThemeContext";
 
 interface MoviesPageProps {
   searchParams: {
@@ -92,82 +93,43 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
   const hasNextPage = skip + perPage < totalCount;
   const hasPrevPage = skip > 0;
 
-  // Genre filtering temporarily disabled; remove genre query to avoid unnecessary work.
+  // Fetch all genres for filter options
+  const genres = await prisma.genre.findMany({ orderBy: { name: "asc" } });
+  const genreOptions = genres.map((g) => ({ value: g.name, label: g.name }));
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen flex flex-col rounded-2xl">
-      <main className="flex-grow px-2 sm:px-4 max-w-7xl mx-auto w-full pt-8 pb-12 box-border border-gray-700 rounded-2xl bg-gray-900/50 backdrop-blur-sm">
-        <header className="mb-6">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 to-blue-400 text-center">
+    <PageWrapper>
+      <div className="w-full max-w-6xl mx-auto">
+        <header className="mb-8 text-center relative">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-sky-400">
             Movies
           </h1>
-          <p className="mt-2 text-center text-sm text-gray-400">
-            Showing {movies.length} of {totalCount}{" "}
-            {totalCount === 1 ? "movie" : "movies"}.
+          <p className="mt-2 text-sm text-neutral-400">
+            Showing {movies.length} of {totalCount} movies.
           </p>
         </header>
 
-        {/* Search and filter controls */}
-        <section className="mb-8">
-          {/* Simplified: remove outer background/border so only the search field has a single frame */}
-          <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center">
-            <div className="flex-1 min-w-[240px]">
-              <label className="sr-only" htmlFor="movie-search">
-                Search movies
-              </label>
-
-              {/* search wrapper with inline icon for a modern, compact look */}
-              <div className="relative w-full max-w-xl mx-auto rounded-md bg-gray-600 border border-gray-700 focus-within:ring-2 focus-within:ring-sky-500 transition flex items-center gap-2 px-2">
-                <span className="absolute auto-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    className="w-4 h-4"
-                    strokeWidth="1.5"
-                  >
-                    <path
-                      d="M21 21l-4.35-4.35"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <circle
-                      cx="11"
-                      cy="11"
-                      r="6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-                <MovieSearch
-                  initialQuery={query}
-                  selectedGenre={selectedGenre}
-                />
-              </div>
-            </div>
-
-            {/* optional genre select (kept commented out) */}
-            {/* <div className="w-full md:w-64">
-              <GenreSelect
-                selectedGenre={selectedGenre}
-                query={query}
-                options={genreOptions}
-              />
-            </div> */}
+        <form className="mb-8 flex flex-col md:flex-row gap-4 items-center">
+          <MovieSearch />
+          <div className="w-full md:w-auto">
+            <AutoSubmitSelect
+              name="genre"
+              value={selectedGenre}
+              ariaLabel="Filter by genre"
+              options={genreOptions}
+              className="w-full"
+            />
           </div>
-        </section>
-        {/* Inline Tailwind-only styles applied through classes below. */}
-        {/* Movies grid */}
+        </form>
+
         <div className="min-h-[240px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
           {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie as any} />
+            <MovieCard key={movie.id} movie={movie as Movie} />
           ))}
 
           {movies.length === 0 && (
-            <div className="col-span-full p-8 rounded-lg bg-gray-800 border border-gray-700 text-center">
-              <p className="text-gray-400">
+            <div className="col-span-full text-center py-12">
+              <p className="text-neutral-500 dark:text-neutral-400">
                 No movies found matching your filters.
               </p>
             </div>
@@ -181,7 +143,7 @@ export default async function MoviesPage({ searchParams }: MoviesPageProps) {
           pageSize={perPage}
           basePath="/movies"
         />
-      </main>
-    </div>
+      </div>
+    </PageWrapper>
   );
 }
