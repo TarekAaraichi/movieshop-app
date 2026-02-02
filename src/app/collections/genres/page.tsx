@@ -6,7 +6,8 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import Image from "next/image";
-import { MovieCard } from "@/components";
+import { MovieCard, MovieCarousel } from "@/components";
+import { PageWrapper } from "@/components/PageThemeContext";
 
 async function getGenresWithMovies() {
   return prisma.genre.findMany({
@@ -30,29 +31,27 @@ export default async function GenresPage() {
   const genres = await getGenresWithMovies();
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-6">Genres</h1>
-      <div className="space-y-8">
-        {genres.map((g) => (
-          <section key={g.id}>
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-lg font-semibold">{g.name}</h2>
-              <Link
-                href={`/collections/genres/${encodeURIComponent(g.name)}`}
-                className="text-sm text-indigo-400"
-              >
-                View more
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-              {g.movies.map((mg) => (
-                <MovieCard key={mg.movieId} movie={mg.movie} />
-              ))}
-            </div>
-          </section>
-        ))}
+    <PageWrapper>
+      <div className="container mx-auto px-4 py-8 rounded-2xl">
+        <header className="mb-8 text-center relative">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-sky-400">
+            Browse by Genre
+          </h1>
+          
+        </header>
+        <div className="space-y-12">
+          {genres.map((genre) => (
+            <MovieCarousel
+              key={genre.id}
+              title={genre.name}
+              movies={genre.movies.map((gm) => gm.movie)}
+              viewMoreHref={`/collections/genres/${encodeURIComponent(
+                genre.name,
+              )}`}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }
