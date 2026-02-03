@@ -111,7 +111,7 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                 </div>
                 <div className="p-3">
-                  <h3 className="text-sm font-semibold text-neutral-800 dark:text-white truncate group-hover:bg-gradient-to-r group-hover:from-emerald-400 group-hover:to-sky-400 group-hover:text-transparent group-hover:bg-clip-text">
+                  <h3 className="text-base sm:text-lg font-semibold leading-tight bg-clip-text text-transparent bg-cyan-50 line-clamp-2 truncate">
                     {person.fullName}
                   </h3>
                 </div>

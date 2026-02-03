@@ -4,7 +4,8 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
+import { MovieCard } from "@/components";
+import { PageWrapper } from "@/components/PageThemeContext";
 
 async function getRecentMovies() {
   const now = new Date();
@@ -28,47 +29,45 @@ async function getRecentMovies() {
 
 export default async function NewReleasesPage() {
   const { recent, year } = await getRecentMovies();
-
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">New releases</h1>
-      <section className="mb-6">
-        <h2 className="text-lg font-semibold mb-2">Last month</h2>
-        {recent.length === 0 ? (
-          <p>No releases in the last month.</p>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {recent.map((m) => (
-              <Link
-                key={m.id}
-                href={`/movies/${m.id}`}
-                className="block bg-gray-900 rounded p-2"
-              >
-                {m.title}
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
+    <PageWrapper>
+      <div className="w-full max-w-6xl mx-auto">
+        <header className="mb-8 text-center relative">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-pink-400">
+            New Releases
+          </h1>
+        </header>
 
-      <section>
-        <h2 className="text-lg font-semibold mb-2">Last year</h2>
-        {year.length === 0 ? (
-          <p>No releases in the last year.</p>
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {year.map((m) => (
-              <Link
-                key={m.id}
-                href={`/movies/${m.id}`}
-                className="block bg-gray-900 rounded p-2"
-              >
-                {m.title}
-              </Link>
-            ))}
-          </div>
-        )}
-      </section>
-    </div>
+        <section className="mb-10">
+          <h2 className="text-lg font-semibold mb-4 text-center">Last Month</h2>
+          {recent.length === 0 ? (
+            <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">
+              No releases in the last month.
+            </div>
+          ) : (
+            <div className="min-h-[120px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+              {recent.map((m) => (
+                <MovieCard key={m.id} movie={m} />
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section>
+          <h2 className="text-lg font-semibold mb-4 text-center">Last Year</h2>
+          {year.length === 0 ? (
+            <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">
+              No releases in the last year.
+            </div>
+          ) : (
+            <div className="min-h-[120px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+              {year.map((m) => (
+                <MovieCard key={m.id} movie={m} />
+              ))}
+            </div>
+          )}
+        </section>
+      </div>
+    </PageWrapper>
   );
 }

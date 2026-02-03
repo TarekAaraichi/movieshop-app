@@ -9,6 +9,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { MovieCard } from "@/components";
+import { PageWrapper } from "@/components/PageThemeContext";
 
 export default async function PersonPage({
   params,
@@ -54,7 +55,8 @@ export default async function PersonPage({
   const rolesDisplay = roles.length ? roles.map(prettyRole).join(", ") : null;
 
   return (
-    <div className="w-full mx-auto flex items-start gap-2 p-1 bg-gray-900 rounded-2xl">
+    <PageWrapper>
+    <div className="w-full  mx-auto flex items-start gap-2 p-1 rounded-2xl">
       <aside className="flex-shrink-0 p-2">
         <div className="w-64 min-w-[264px] h-64 rounded-full overflow-hidden shadow-xl relative bg-neutral-900">
           <Image
@@ -77,7 +79,7 @@ export default async function PersonPage({
         </div>
       </aside>
       <main className="w-full mx-auto flex-grow p-2">
-        <section className="flex flex-col gap-6 items-start p-5 rounded-[14px] bg-neutral-900/50 border border-neutral-800 shadow-2xl backdrop-blur-md">
+        <section className="flex flex-col gap-6 items-start p-5 rounded-[14px] bg-gray-900 border border-neutral-800 shadow-2xl backdrop-blur-md">
           <div className="flex-1 min-w-0">
             <h1 className="text-[32px] font-extrabold m-0 flex items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-blue-400">
               {person.fullName}
@@ -113,5 +115,6 @@ export default async function PersonPage({
         </section>
       </main>
     </div>
+    </PageWrapper>
   );
 }
