@@ -1,3 +1,4 @@
+import { PageWrapper } from "@/components/PageThemeContext";
 /**
  * Cart page
  * Server component that displays full cart contents and checkout actions.
@@ -174,9 +175,8 @@ export default async function CartPage() {
   if (!items.length) {
     const legacyCart = await readCart();
     if (legacyCart.length > 0 && sessionUserId) {
-      const { migrateLegacyToUser } = await import(
-        "@/server/actions/cartActions"
-      );
+      const { migrateLegacyToUser } =
+        await import("@/server/actions/cartActions");
       try {
         await migrateLegacyToUser(sessionUserId, legacyCart);
         // after migration, reload user cart
@@ -204,7 +204,7 @@ export default async function CartPage() {
             };
           });
           const movieMapSerialized = new Map(
-            serialMovies.map((m) => [m.id, m])
+            serialMovies.map((m) => [m.id, m]),
           );
           items = dbCart.items
             .map((c) => ({
@@ -264,7 +264,7 @@ export default async function CartPage() {
   }
 
   return (
-    <div>
+    <PageWrapper>
       <div className=" w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-8 items-start">
         <main className="flex-1 bg-white rounded-2xl shadow-sm p-6 md:p-8 border border-slate-100">
           <div className="flex items-start justify-between mb-6 gap-4">
@@ -325,6 +325,6 @@ export default async function CartPage() {
           </div>
         </aside>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

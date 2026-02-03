@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { PageWrapper } from "@/components/PageThemeContext";
 
 /**
  * Contact page (ensured)
@@ -7,6 +8,7 @@ import { Card } from "@/components/ui/card";
 
 export default function ContactPage() {
   return (
+    <PageWrapper>
     <div>
       <div className="m-auto max-w-4xl w-full">
         <Card className="p-6 sm:p-8">
@@ -29,27 +31,11 @@ export default function ContactPage() {
                 {[
                   {
                     name: "Tarek Aaraichi",
-                    role: "Frontend / Integrations",
+                    role: "Full-Stack Developer",
                     linkedin: "https://www.linkedin.com/in/tarek-aaraichi",
                     github: "https://github.com/TarekAaraichi",
                     email: "tarek.aaraichi@gmail.com",
                     color: "bg-gradient-to-br from-rose-500 to-pink-500",
-                  },
-                  {
-                    name: "Johan Skaneby",
-                    role: "Backend / DB",
-                    linkedin: "https://www.linkedin.com/in/johan-skaneby",
-                    github: "https://github.com/johanskaneby",
-                    email: "johan@example.com",
-                    color: "bg-gradient-to-br from-blue-500 to-indigo-500",
-                  },
-                  {
-                    name: "Josef Rega",
-                    role: "UX / Design",
-                    linkedin: "https://www.linkedin.com/in/josef-rega",
-                    github: "https://github.com/josefrega",
-                    email: "josef@example.com",
-                    color: "bg-gradient-to-br from-emerald-400 to-teal-600",
                   },
                 ].map((p) => (
                   <li
@@ -189,5 +175,6 @@ export default function ContactPage() {
         </Card>
       </div>
     </div>
+    </PageWrapper>
   );
 }

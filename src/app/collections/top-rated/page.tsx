@@ -20,7 +20,11 @@ async function TopRatedGrid() {
     take: 30,
   });
   if (movies.length === 0) {
-    return <div className="text-center text-neutral-500 dark:text-neutral-400 py-12">No top-rated movies found.</div>;
+    return (
+      <div className="text-center text-neutral-500 dark:text-neutral-400 py-12">
+        No top-rated movies found.
+      </div>
+    );
   }
   return (
     <div className="min-h-[120px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
@@ -39,6 +43,9 @@ export default function TopRatedPage() {
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-pink-400">
             Top Rated
           </h1>
+          <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+            Discover the highest-rated movies as voted by our community.
+          </p>
         </header>
         <Suspense fallback={<MoviesGridSkeleton count={10} />}>
           <TopRatedGrid />
