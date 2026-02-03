@@ -13,7 +13,7 @@ export default async function TopRatedPage() {
     orderBy: [
       { rating: "desc" },
       { voteCount: "desc" },
-      { releaseDate: "desc" }
+      { releaseDate: "desc" },
     ],
     take: 30,
   });

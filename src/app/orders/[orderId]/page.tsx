@@ -1,4 +1,6 @@
 import React from "react";
+import { OrderMovieRatingClient } from "@/components/OrderMovieRatingClient";
+import { rateMovie } from "@/server/actions/movieRatingActions";
 import ClearCartOnConfirmation from "../../../components/clearCartOnConfirmation";
 import prisma from "@/lib/prisma";
 import Image from "next/image";
@@ -72,70 +74,35 @@ export default async function OrderPage({ params }: Props) {
     movie?: { imageUrl?: string | null; title?: string | null } | null;
   };
 
+  // Fetch user ratings for movies in this order
+  const userId = s?.user?.id;
+  const movieIds = order.items.map((it: OrderItemLike) => it.movieId);
+  const ratings = userId
+    ? await prisma.movieRating.findMany({
+        where: { userId, movieId: { in: movieIds } },
+      })
+    : [];
+
+  function getUserRating(movieId: string) {
+    return ratings.find((r) => r.movieId === movieId)?.rating ?? 0;
+  }
+
+  async function handleRate(movieId: string, rating: number) {
+    "use server";
+    await rateMovie({ movieId, rating });
+    // Optionally, revalidate or refresh page
+  }
+
   return (
     <div>
       <div className="w-full m-auto max-w-4xl">
         <ClearCartOnConfirmation />
         <div className="bg-gray-900 rounded-2xl shadow-lg ring-1 ring-gray-800 overflow-hidden">
           <div className="p-6 md:p-8 flex items-start justify-between gap-4">
-            <div>
-              <h1 className="text-xl md:text-2xl font-semibold text-gray-100 flex items-center gap-3">
-                <span>Order Confirmed</span>
-                <span className="inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-green-900/20 text-green-300">
-                  Paid
-                </span>
-              </h1>
-              <p className="text-sm text-gray-300 mt-1">
-                Order ID
-                <span className="ml-2 font-mono text-gray-300">{order.id}</span>
-              </p>
-            </div>
-
-            <div className="text-right">
-              <div className="text-sm text-gray-300">Total</div>
-              <div className="text-2xl font-bold text-gray-100">
-                SEK{Number(total).toFixed(2)}
-              </div>
-            </div>
+            {/* ...existing code... */}
           </div>
-
           <div className="border-t border-gray-700 p-6 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-1 space-y-4">
-              <div>
-                <h2 className="text-sm font-medium text-gray-200">Buyer</h2>
-                {buyer ? (
-                  <div className="mt-2 text-sm text-gray-300 space-y-0.5">
-                    <div className="font-medium text-gray-100">
-                      {buyer.name}
-                    </div>
-                    <div className="truncate">{buyer.email}</div>
-                  </div>
-                ) : (
-                  <div className="mt-2 text-sm text-gray-300">
-                    No buyer information on file
-                  </div>
-                )}
-              </div>
-
-              <div>
-                <h2 className="text-sm font-medium text-gray-200">Shipping</h2>
-                {address ? (
-                  <div className="mt-2 text-sm text-gray-300">
-                    <div>{address.line1}</div>
-                    {address.line2 && <div>{address.line2}</div>}
-                    <div className="mt-1">
-                      {address.city} {address.postalCode}
-                    </div>
-                    <div>{address.country}</div>
-                  </div>
-                ) : (
-                  <div className="mt-2 text-sm text-gray-300">
-                    No address on file
-                  </div>
-                )}
-              </div>
-            </div>
-
+            {/* ...existing code for buyer and address... */}
             <div className="md:col-span-2">
               <h3 className="text-sm font-medium text-gray-200 mb-3">Items</h3>
               <div className="space-y-4">
@@ -173,9 +140,15 @@ export default async function OrderPage({ params }: Props) {
                             {Number(formatPrice(it.priceAtPurchase)).toFixed(2)}
                           </span>
                         </div>
+                        {/* Rating UI for this movie */}
+                        <OrderMovieRatingClient
+                          movieId={it.movieId}
+                          initialRating={getUserRating(it.movieId)}
+                          disabled={!userId}
+                          onRateServer={handleRate}
+                        />
                       </div>
                     </div>
-
                     <div className="text-right">
                       <div className="text-sm text-gray-300">Line total</div>
                       <div className="text-sm font-semibold text-gray-100">
@@ -191,7 +164,6 @@ export default async function OrderPage({ params }: Props) {
                   </div>
                 ))}
               </div>
-
               <div className="mt-6 flex items-center justify-between border-t pt-4">
                 <div className="text-sm text-gray-300">Payment method</div>
                 <div className="text-sm font-medium text-gray-100">

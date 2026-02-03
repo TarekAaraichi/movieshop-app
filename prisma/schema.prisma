@@ -1,3 +1,15 @@
+model MovieRating {
+  id        String   @id @default(cuid())
+  movie     Movie    @relation(fields: [movieId], references: [id])
+  movieId   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  rating    Int      // 1-5 stars
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([movieId, userId])
+}
 // Prisma schema for the app's PostgreSQL database.
 // Models: User, Session, Account, Movie, Person, Order, OrderItem, etc.
 
@@ -28,6 +40,7 @@ model Movie {
   genres      MovieGenre[]
   people      MoviePerson[]
   orderItems  OrderItem[]
+  ratings     MovieRating[]
 }
 
 model Genre {
@@ -121,6 +134,7 @@ model User {
   updatedAt     DateTime? @default(now()) @updatedAt @db.Timestamptz(6)
   accounts      Account[]
   sessions      Session[]
+  ratings       MovieRating[]
   @@map("user")
 }
 
