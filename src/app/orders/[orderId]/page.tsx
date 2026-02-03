@@ -63,13 +63,13 @@ export default async function OrderPage({ params }: Props) {
         </a>
       </div>
 
-      <div className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg shadow-md p-6 mb-8">
+      <div className="bg-gray-900 rounded-lg shadow-md p-6 mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-bold text-neutral-800 dark:text-white mb-1">
+            <h2 className="text-2xl font-bold text-white mb-1">
               Order #{order.id.substring(0, 8)}
             </h2>
-            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+            <p className="text-sm text-gray-400">
               Placed on {new Date(order.orderDate).toLocaleDateString()}
             </p>
           </div>
@@ -77,23 +77,23 @@ export default async function OrderPage({ params }: Props) {
             <span
               className={`px-3 py-1 text-sm font-semibold rounded-full ${
                 order.status === "PAID"
-                  ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300"
-                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300"
+                  ? "bg-green-900/70 text-green-300"
+                  : "bg-yellow-900/70 text-yellow-300"
               }`}
             >
               {order.status}
             </span>
-            <div className="text-lg font-bold text-neutral-800 dark:text-white mt-2">
+            <div className="text-lg font-bold text-white mt-2">
               ${order.totalAmount.toFixed(2)}
             </div>
           </div>
         </div>
 
         <div className="mb-4">
-          <h3 className="text-lg font-semibold mb-2 text-neutral-800 dark:text-white">
+          <h3 className="text-lg font-semibold mb-2 text-white">
             Shipping Address
           </h3>
-          <div className="text-neutral-700 dark:text-neutral-300">
+          <div className="text-gray-300">
             {order.address ? (
               <>
                 <p>{order.address.line1}</p>
@@ -110,10 +110,8 @@ export default async function OrderPage({ params }: Props) {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-2 text-neutral-800 dark:text-white">
-            Items
-          </h3>
-          <ul className="divide-y divide-neutral-200 dark:divide-neutral-700">
+          <h3 className="text-lg font-semibold mb-2 text-white">Items</h3>
+          <ul className="divide-y divide-gray-800">
             {order.items.map((item) => (
               <li key={item.movieId} className="flex items-center py-4 gap-4">
                 <Image
@@ -124,10 +122,10 @@ export default async function OrderPage({ params }: Props) {
                   className="rounded-md object-cover"
                 />
                 <div className="flex-1">
-                  <p className="font-semibold text-neutral-700 dark:text-neutral-300">
+                  <p className="font-semibold text-gray-200">
                     {item.movie.title}
                   </p>
-                  <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                  <p className="text-sm text-gray-400">
                     Quantity: {item.quantity}
                   </p>
                   <OrderMovieRatingClient
@@ -138,10 +136,10 @@ export default async function OrderPage({ params }: Props) {
                   />
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-neutral-700 dark:text-neutral-300">
+                  <p className="font-semibold text-gray-200">
                     ${Number(item.priceAtPurchase).toFixed(2)}
                   </p>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                  <p className="text-xs text-gray-400">
                     Total: $
                     {(Number(item.priceAtPurchase) * item.quantity).toFixed(2)}
                   </p>

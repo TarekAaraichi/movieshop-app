@@ -113,14 +113,23 @@ export default async function ProfilePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
           <div className="md:col-span-1">
-            <div className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg shadow-md p-6 text-center">
+            <div className="bg-gray-900 rounded-lg shadow-md p-6 text-center">
               <div className="relative w-32 h-32 mx-auto mb-4">
                 <Image
-                  src={user.image ?? "/placeholder.png"}
+                  src={
+                    user.image &&
+                    typeof user.image === "string" &&
+                    user.image.length > 0
+                      ? user.image
+                      : user.id
+                        ? `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(user.id)}`
+                        : "/placeholder.png"
+                  }
                   alt="User avatar"
                   width={128}
                   height={128}
                   className="rounded-full object-cover border-4 border-neutral-200 dark:border-neutral-700"
+                  unoptimized
                 />
               </div>
               <h2 className="text-xl font-bold text-neutral-800 dark:text-white">
@@ -152,10 +161,7 @@ export default async function ProfilePage() {
               <div className="space-y-4">
                 {uniqueAddresses.length > 0 ? (
                   uniqueAddresses.map((addr) => (
-                    <div
-                      key={addr.id}
-                      className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg p-4"
-                    >
+                    <div key={addr.id} className="bg-gray-900 rounded-lg p-4">
                       <p className="font-semibold text-neutral-700 dark:text-neutral-300">
                         {addr.line1}
                       </p>
