@@ -147,7 +147,7 @@ export default function ContactPage() {
                       href="https://github.com/Gr-25-13/movieshop-delta"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-gray-100 bg-white/6 px-3 py-1 rounded-md hover:bg-white/10"
+                      className="inline-flex items-center gap-2 text-sm font-medium  px-3 py-1 rounded-md bg-gray-800/40 hover:bg-gray-800/50 transition-colors text-gray-100"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
