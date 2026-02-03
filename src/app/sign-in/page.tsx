@@ -5,6 +5,7 @@
 
 import { headers } from "next/headers";
 import { Card } from "@/components";
+import { PageWrapper } from "@/components/PageThemeContext";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { SignInForm } from "../../components/signinForm";
@@ -27,9 +28,9 @@ export default async function SignInPage({
   }
 
   return (
-    <div>
+    <PageWrapper>
       <div className="m-auto max-w-md w-full">
-        <Card className="overflow-hidden bg-gray-900/50 border-gray-800">
+        <Card className="overflow-hidden">
           <div className="p-6">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -111,6 +112,6 @@ export default async function SignInPage({
           </div>
         </Card>
       </div>
-    </div>
+    </PageWrapper>
   );
 }
