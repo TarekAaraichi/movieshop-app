@@ -111,7 +111,7 @@ export default async function ProfilePage() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
           <div className="md:col-span-1">
             <div className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg shadow-md p-6 text-center">
               <div className="relative w-32 h-32 mx-auto mb-4">

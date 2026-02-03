@@ -40,6 +40,18 @@ export const metadata: Metadata = {
 // avoid calling client-only APIs from server components. See
 // `src/components/SignOutButton.tsx` for the implementation.
 
+// Patch: Extend session user type to include 'role' for admin menu logic
+type SessionUserWithRole = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  email: string;
+  emailVerified: boolean;
+  name: string;
+  image?: string | null;
+  role?: string;
+};
+
 export default async function RootLayout({
   children,
 }: {
@@ -56,6 +68,12 @@ export default async function RootLayout({
   const session = await auth.api.getSession({
     headers: headerObj as unknown as Headers,
   });
+
+  // DEBUG: Print session object in dropdown for troubleshooting
+  // Remove after verifying role is present
+  // (This will show up in the dropdown for logged-in users)
+  // @ts-expect-error: debug only
+  const debugSession = JSON.stringify(session, null, 2);
 
   return (
     <html
@@ -223,7 +241,9 @@ export default async function RootLayout({
                           >
                             View profile
                           </Link>
-                          {session.user?.role === "admin" ? (
+                          {/* DEBUG: Show session object for troubleshooting */}
+                          <pre className="text-xs text-gray-400 whitespace-pre-wrap break-all p-2 bg-gray-800 rounded mb-2 max-h-40 overflow-auto">{debugSession}</pre>
+                          {((session.user as SessionUserWithRole)?.role === "admin") ? (
                             <Link
                               href="/admin"
                               className="block px-4 py-2 text-sm text-emerald-300 hover:bg-gray-700 transition-colors duration-150 font-semibold"
