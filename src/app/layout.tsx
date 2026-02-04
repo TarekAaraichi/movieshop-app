@@ -20,6 +20,7 @@ import {
   PageThemeSwitcher,
 } from "@/components/PageThemeContext";
 import { Toaster } from "react-hot-toast";
+import prisma from "@/lib/prisma";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -74,6 +75,16 @@ export default async function RootLayout({
   // (This will show up in the dropdown for logged-in users)
   // @ts-expect-error: debug only
   const debugSession = JSON.stringify(session, null, 2);
+
+  const sessionUser = session?.user as SessionUserWithRole | undefined;
+  let isAdmin = sessionUser?.role === "admin";
+  if (!isAdmin && sessionUser?.id) {
+    const dbUser = await prisma.user.findUnique({
+      where: { id: sessionUser.id },
+      select: { role: true },
+    });
+    isAdmin = dbUser?.role === "admin";
+  }
 
   return (
     <html
@@ -241,16 +252,15 @@ export default async function RootLayout({
                           >
                             View profile
                           </Link>
-                          {/* DEBUG: Show session object for troubleshooting */}
-                          <pre className="text-xs text-gray-400 whitespace-pre-wrap break-all p-2 bg-gray-800 rounded mb-2 max-h-40 overflow-auto">{debugSession}</pre>
-                          {((session.user as SessionUserWithRole)?.role === "admin") ? (
+                          {isAdmin && (
                             <Link
                               href="/admin"
                               className="block px-4 py-2 text-sm text-emerald-300 hover:bg-gray-700 transition-colors duration-150 font-semibold"
                             >
                               Admin
                             </Link>
-                          ) : null}
+                          )}
+                          
                           <SignOutButton />
                         </div>
                       </DetailsMenu>
