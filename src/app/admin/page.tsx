@@ -16,6 +16,7 @@ import { deleteUser, setUserRole } from "@/server/actions/usersActions";
 import { requireAdmin } from "@/lib/requireAdmin";
 import Image from "next/image";
 import { Card } from "@/components";
+import { PageWrapper } from "@/components/PageThemeContext";
 
 // AdminPage server component
 export default async function AdminPage({
@@ -142,7 +143,8 @@ export default async function AdminPage({
   // server actions are centralized under src/app/actions/*
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4 sm:p-6 lg:p-8">
+    <PageWrapper>
+      <div className="min-h-screen bg-transparent text-gray-900 dark:text-gray-100 p-4 sm:p-6 lg:p-8">
       <header className="max-w-7xl mx-auto mb-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -534,6 +536,7 @@ export default async function AdminPage({
           )}
         </div>
       </Card>
-    </div>
+      </div>
+    </PageWrapper>
   );
 }
