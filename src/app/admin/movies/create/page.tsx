@@ -1,4 +1,5 @@
 import { AddButton } from "@/components";
+import { Card } from "@/components/ui";
 import { createMovie } from "@/server/actions/moviesActions";
 import { requireAdmin } from "@/lib/requireAdmin";
 

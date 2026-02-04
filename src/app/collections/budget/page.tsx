@@ -15,7 +15,13 @@ interface Props {
 
 import { Suspense } from "react";
 
-async function BudgetGrid({ page, perPage }: { page: number; perPage: number }) {
+async function BudgetGrid({
+  page,
+  perPage,
+}: {
+  page: number;
+  perPage: number;
+}) {
   const skip = (page - 1) * perPage;
   const where: Prisma.MovieWhereInput = { isArchived: false };
   const totalCount = await prisma.movie.count({ where });
@@ -39,7 +45,9 @@ async function BudgetGrid({ page, perPage }: { page: number; perPage: number }) 
         ))}
         {movies.length === 0 && (
           <div className="col-span-full text-center py-12">
-            <p className="text-neutral-500 dark:text-neutral-400">No budget movies found.</p>
+            <p className="text-neutral-500 dark:text-neutral-400">
+              No budget movies found.
+            </p>
           </div>
         )}
       </div>
@@ -65,7 +73,9 @@ export default function BudgetPage({ searchParams }: Props) {
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-lime-400">
             Budget Friendly
           </h1>
-          <p className="mt-2 text-sm text-neutral-400">Great movies that won't break the bank.</p>
+          <p className="mt-2 text-sm text-neutral-400">
+            Great movies that will not break the bank.
+          </p>
         </header>
         <Suspense fallback={<MoviesGridSkeleton count={10} />}>
           <BudgetGrid page={page} perPage={perPage} />

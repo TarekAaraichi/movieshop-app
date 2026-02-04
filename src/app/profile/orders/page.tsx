@@ -1,11 +1,11 @@
+import { PageWrapper } from "@/components/PageThemeContext";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { headers } from "next/headers";
-import { redirect } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
-import { PageWrapper } from "@/components/PageThemeContext";
-import { Suspense } from "react";
+import { headers } from "next/headers";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import type { Prisma } from "@prisma/client";
 
 // Pagination constants
 const PAGE_SIZE = 5;
@@ -14,16 +14,20 @@ type OrdersPageProps = {
   searchParams?: Record<string, string | string[]>;
 };
 
-
-export default async function ProfileOrdersPage({ searchParams }: OrdersPageProps) {
+export default async function ProfileOrdersPage({
+  searchParams,
+}: OrdersPageProps) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/sign-in");
-  const userId = session?.user?.id as string | undefined;
+  const userId = session.user?.id;
+  if (!userId) redirect("/sign-in");
 
   // --- Year filter logic ---
   let filterYear: number | undefined = undefined;
   if (searchParams && searchParams.year) {
-    const y = Array.isArray(searchParams.year) ? searchParams.year[0] : searchParams.year;
+    const y = Array.isArray(searchParams.year)
+      ? searchParams.year[0]
+      : searchParams.year;
     const n = parseInt(y, 10);
     if (!isNaN(n)) filterYear = n;
   }
@@ -43,13 +47,15 @@ export default async function ProfileOrdersPage({ searchParams }: OrdersPageProp
   // Get current page from search params
   let page = 1;
   if (searchParams && searchParams.page) {
-    const p = Array.isArray(searchParams.page) ? searchParams.page[0] : searchParams.page;
+    const p = Array.isArray(searchParams.page)
+      ? searchParams.page[0]
+      : searchParams.page;
     const n = parseInt(p, 10);
     if (!isNaN(n) && n > 0) page = n;
   }
 
   // Build filter for Prisma
-  const where: any = { userId };
+  const where: Prisma.OrderWhereInput = { userId };
   if (filterYear) {
     where.orderDate = {
       gte: new Date(`${filterYear}-01-01T00:00:00.000Z`),
@@ -85,7 +91,9 @@ export default async function ProfileOrdersPage({ searchParams }: OrdersPageProp
         </header>
         {/* Year filter dropdown */}
         <form method="get" className="mb-6 flex items-center gap-2">
-          <label htmlFor="year" className="text-sm text-gray-500">Filter by year:</label>
+          <label htmlFor="year" className="text-sm text-gray-500">
+            Filter by year:
+          </label>
           <select
             id="year"
             name="year"
@@ -95,7 +103,9 @@ export default async function ProfileOrdersPage({ searchParams }: OrdersPageProp
           >
             <option value="">All years</option>
             {years.map((y) => (
-              <option key={y} value={y}>{y}</option>
+              <option key={y} value={y}>
+                {y}
+              </option>
             ))}
           </select>
           {/* Keep page param if present */}
@@ -171,7 +181,7 @@ export default async function ProfileOrdersPage({ searchParams }: OrdersPageProp
             ))
           ) : (
             <p className="text-neutral-500 dark:text-neutral-400">
-              You haven't placed any orders yet.
+              You have not placed any orders yet.
             </p>
           )}
         </div>

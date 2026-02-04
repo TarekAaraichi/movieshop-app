@@ -3,10 +3,10 @@
  * Server page for editing movie details (admin only).
  */
 
+import { SaveButton } from "@/components";
 import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 import { notFound } from "next/navigation";
-import { SaveButton, Button as BackButton } from "@/components";
 import { updateMovie } from "@/server/actions/moviesActions";
 
 // Component that renders the form

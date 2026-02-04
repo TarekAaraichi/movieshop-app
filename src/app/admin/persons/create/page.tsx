@@ -3,6 +3,7 @@
  * Server page to create a person/actor record.
  */
 
+import { Card } from "@/components/ui";
 import { createPerson } from "@/server/actions/personsActions";
 import { requireAdmin } from "@/lib/requireAdmin";
 

@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface Props {
   containerId: string;
-  step?: number; // pixels or fraction will be interpreted as fraction if <=1
 }
 
-export default function CarouselControls({ containerId, step = 0.8 }: Props) {
+export default function CarouselControls({ containerId }: Props) {
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(false);
   const [announcement, setAnnouncement] = useState("");
@@ -17,6 +16,78 @@ export default function CarouselControls({ containerId, step = 0.8 }: Props) {
   const [totalPages, setTotalPages] = useState(0);
 
   // (no autoplay) — keep controls manual only
+
+  const scroll = useCallback(
+    (dir: number) => {
+      const el = document.getElementById(containerId) as HTMLElement | null;
+      if (!el) return;
+
+      const children = Array.from(el.children) as HTMLElement[];
+      if (children.length === 0) return;
+
+      const visibleIndex = children.findIndex((c) => {
+        const rect = c.getBoundingClientRect();
+        const parentRect = el.getBoundingClientRect();
+        return (
+          rect.left >= parentRect.left - 1 && rect.left < parentRect.right - 1
+        );
+      });
+
+      let targetIndex = 0;
+      if (visibleIndex === -1) {
+        targetIndex = dir > 0 ? 0 : children.length - 1;
+      } else {
+        targetIndex = Math.min(
+          Math.max(visibleIndex + dir, 0),
+          children.length - 1,
+        );
+      }
+
+      const target = children[targetIndex];
+      if (!target) return;
+
+      const parentRect = el.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      const delta = rect.left - parentRect.left;
+      const newLeft = Math.round(el.scrollLeft + delta);
+      el.scrollTo({ left: newLeft, behavior: "smooth" });
+
+      setTimeout(() => {
+        const childrenAfter = Array.from(el.children) as HTMLElement[];
+        const parentRectAfter = el.getBoundingClientRect();
+        const vis = childrenAfter.findIndex((child) => {
+          const rectAfter = child.getBoundingClientRect();
+          return (
+            rectAfter.left >= parentRectAfter.left - 1 &&
+            rectAfter.left < parentRectAfter.right - 1
+          );
+        });
+        const idxAfter = vis === -1 ? targetIndex : vis;
+        const gapStr =
+          getComputedStyle(el).gap || getComputedStyle(el).columnGap || "0px";
+        const gap = parseFloat(gapStr) || 0;
+        const firstRect = childrenAfter[0]?.getBoundingClientRect();
+        const itemFullWidth = firstRect
+          ? firstRect.width + gap
+          : el.clientWidth;
+        const visibleCountAfter = Math.max(
+          1,
+          Math.floor(el.clientWidth / itemFullWidth),
+        );
+        const pagesAfter = Math.max(
+          1,
+          childrenAfter.length - visibleCountAfter + 1,
+        );
+        const pageAfter = Math.min(idxAfter, Math.max(0, pagesAfter - 1));
+        setAnnouncement(`Showing ${pageAfter + 1} of ${pagesAfter}`);
+        setCurrentIndex(idxAfter);
+        setTotalCount(childrenAfter.length);
+        setTotalPages(pagesAfter);
+        setCurrentPage(pageAfter);
+      }, 350);
+    },
+    [containerId],
+  );
 
   useEffect(() => {
     const el = document.getElementById(containerId) as HTMLElement | null;
@@ -73,88 +144,14 @@ export default function CarouselControls({ containerId, step = 0.8 }: Props) {
 
     update();
     el.addEventListener("scroll", update);
-    el.addEventListener("keydown", onKey as any);
+    el.addEventListener("keydown", onKey);
     window.addEventListener("resize", update);
     return () => {
       el.removeEventListener("scroll", update);
-      el.removeEventListener("keydown", onKey as any);
+      el.removeEventListener("keydown", onKey);
       window.removeEventListener("resize", update);
     };
-  }, [containerId]);
-
-  const scroll = (dir: number) => {
-    const el = document.getElementById(containerId) as HTMLElement | null;
-    if (!el) return;
-
-    // Prefer snapping to the next/previous child to align with snap points
-    const children = Array.from(el.children) as HTMLElement[];
-    if (children.length === 0) return;
-
-    // Find the first fully or partially visible child index
-    const visibleIndex = children.findIndex((c) => {
-      const rect = c.getBoundingClientRect();
-      const parentRect = el.getBoundingClientRect();
-      // consider visible if left edge is within parent viewport
-      return (
-        rect.left >= parentRect.left - 1 && rect.left < parentRect.right - 1
-      );
-    });
-
-    let targetIndex = 0;
-    if (visibleIndex === -1) {
-      targetIndex = dir > 0 ? 0 : children.length - 1;
-    } else {
-      targetIndex = Math.min(
-        Math.max(visibleIndex + dir, 0),
-        children.length - 1,
-      );
-    }
-
-    const target = children[targetIndex];
-    if (target) {
-      // perform horizontal-only scroll to avoid vertical jumps
-      const parentRect = el.getBoundingClientRect();
-      const rect = target.getBoundingClientRect();
-      const delta = rect.left - parentRect.left;
-      const newLeft = Math.round(el.scrollLeft + delta);
-      el.scrollTo({ left: newLeft, behavior: "smooth" });
-      // update announcement shortly after scroll completes
-      setTimeout(() => {
-        const childrenAfter = Array.from(el.children) as HTMLElement[];
-        const parentRectAfter = el.getBoundingClientRect();
-        const vis = childrenAfter.findIndex((c) => {
-          const rect = c.getBoundingClientRect();
-          return (
-            rect.left >= parentRectAfter.left - 1 &&
-            rect.left < parentRectAfter.right - 1
-          );
-        });
-        const idxAfter = vis === -1 ? targetIndex : vis;
-        // recompute pages after scroll completes
-        const gapStr =
-          getComputedStyle(el).gap || getComputedStyle(el).columnGap || "0px";
-        const gap = parseFloat(gapStr) || 0;
-        const firstRect = childrenAfter[0]?.getBoundingClientRect();
-        const itemFullWidth = firstRect
-          ? firstRect.width + gap
-          : el.clientWidth;
-        const visibleCountAfter = Math.max(
-          1,
-          Math.floor(el.clientWidth / itemFullWidth),
-        );
-        const pagesAfter = Math.max(
-          1,
-          childrenAfter.length - visibleCountAfter + 1,
-        );
-        const pageAfter = Math.min(idxAfter, Math.max(0, pagesAfter - 1));
-        setAnnouncement(`Showing ${pageAfter + 1} of ${pagesAfter}`);
-        setCurrentIndex(idxAfter);
-        setTotalCount(childrenAfter.length);
-        setTotalPages(pagesAfter);
-        setCurrentPage(pageAfter);
-      }, 350);
-    }
-  };
+  }, [containerId, scroll]);
   const goToPage = (page: number) => {
     const el = document.getElementById(containerId) as HTMLElement | null;
     if (!el) return;
@@ -182,26 +179,6 @@ export default function CarouselControls({ containerId, step = 0.8 }: Props) {
   };
 
   // autoplay removed — carousel is manual only (chevrons/dots)
-
-  const goToIndex = (index: number) => {
-    const el = document.getElementById(containerId) as HTMLElement | null;
-    if (!el) return;
-    const children = Array.from(el.children) as HTMLElement[];
-    const target = children[index];
-    if (target) {
-      const parentRect = el.getBoundingClientRect();
-      const rect = target.getBoundingClientRect();
-      const delta = rect.left - parentRect.left;
-      const newLeft = Math.round(el.scrollLeft + delta);
-      el.scrollTo({ left: newLeft, behavior: "smooth" });
-      setCurrentIndex(index);
-      setAnnouncement(`Showing ${index + 1} of ${children.length}`);
-    }
-  };
-  useEffect(() => {
-    // no progress bar
-  }, []);
-
   return (
     <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
       <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-auto z-10">

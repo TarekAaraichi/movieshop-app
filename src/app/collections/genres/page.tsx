@@ -3,10 +3,8 @@
  * Landing page for browsing movies by genre.
  */
 
+import { MovieCarousel } from "@/components";
 import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import Image from "next/image";
-import { MovieCard, MovieCarousel } from "@/components";
 import { PageWrapper } from "@/components/PageThemeContext";
 
 async function getGenresWithMovies() {
@@ -37,7 +35,6 @@ export default async function GenresPage() {
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-sky-400">
             Browse by Genre
           </h1>
-          
         </header>
         <div className="space-y-12">
           {genres.map((genre) => (

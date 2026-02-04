@@ -70,12 +70,6 @@ export default async function RootLayout({
     headers: headerObj as unknown as Headers,
   });
 
-  // DEBUG: Print session object in dropdown for troubleshooting
-  // Remove after verifying role is present
-  // (This will show up in the dropdown for logged-in users)
-  // @ts-expect-error: debug only
-  const debugSession = JSON.stringify(session, null, 2);
-
   const sessionUser = session?.user as SessionUserWithRole | undefined;
   let isAdmin = sessionUser?.role === "admin";
   if (!isAdmin && sessionUser?.id) {
@@ -260,7 +254,7 @@ export default async function RootLayout({
                               Admin
                             </Link>
                           )}
-                          
+
                           <SignOutButton />
                         </div>
                       </DetailsMenu>

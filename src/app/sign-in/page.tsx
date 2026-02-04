@@ -3,12 +3,13 @@
  * Server page that renders the authentication sign-in form.
  */
 
-import { headers } from "next/headers";
 import { Card } from "@/components";
 import { PageWrapper } from "@/components/PageThemeContext";
 import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
 import { SignInForm } from "../../components/signinForm";
+import { headers } from "next/headers";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default async function SignInPage({
   searchParams,
@@ -60,7 +61,7 @@ export default async function SignInPage({
             <div className="mt-4 flex items-center justify-between text-xs text-gray-400">
               <div className="flex items-center gap-2">
                 <span>New here?</span>
-                <a
+                <Link
                   href={
                     searchParams && searchParams.callbackUrl
                       ? `/sign-up?callbackUrl=${encodeURIComponent(
@@ -71,15 +72,15 @@ export default async function SignInPage({
                   className="text-indigo-400 hover:underline"
                 >
                   Create an account
-                </a>
+                </Link>
               </div>
 
-              <a
+              <Link
                 href="/forgot-password"
                 className="text-indigo-400 hover:underline"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             <div className="mt-6">
@@ -95,18 +96,20 @@ export default async function SignInPage({
               </div>
 
               <div className="mt-4 flex gap-3">
-                <a
+                <Link
                   href="/api/auth/provider/google"
                   className="flex-1 inline-flex justify-center items-center gap-2 py-2 rounded-md bg-gray-800/60 hover:bg-gray-800/90 text-sm text-gray-300"
+                  prefetch={false}
                 >
                   Google
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/api/auth/provider/github"
                   className="flex-1 inline-flex justify-center items-center gap-2 py-2 rounded-md bg-gray-800/60 hover:bg-gray-800/90 text-sm text-gray-300"
+                  prefetch={false}
                 >
                   GitHub
-                </a>
+                </Link>
               </div>
             </div>
           </div>

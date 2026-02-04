@@ -1,7 +1,8 @@
+import { SaveButton } from "@/components";
+import { Card } from "@/components/ui";
 import prisma from "@/lib/prisma";
 import { requireAdmin } from "@/lib/requireAdmin";
 import { updatePerson } from "@/server/actions/personsActions";
-import { SaveButton } from "@/components";
 import Image from "next/image";
 
 /**
