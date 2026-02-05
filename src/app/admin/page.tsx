@@ -195,32 +195,6 @@ export default async function AdminPage({
                   </p>
                 )}
               </div>
-              <div className="flex flex-wrap items-center gap-3">
-                {tab === "movies" && (
-                  <Link
-                    href="/admin/movies/create"
-                    className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
-                  >
-                    + New Movie
-                  </Link>
-                )}
-                {tab === "persons" && (
-                  <Link
-                    href="/admin/persons/create"
-                    className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
-                  >
-                    + New Person
-                  </Link>
-                )}
-                {tab === "users" && (
-                  <Link
-                    href="/admin/users/create"
-                    className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
-                  >
-                    + New User
-                  </Link>
-                )}
-              </div>
             </div>
           </div>
         </header>
@@ -357,6 +331,32 @@ export default async function AdminPage({
 
           {/* content */}
           <div className="p-4">
+            <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
+              {tab === "movies" && (
+                <Link
+                  href="/admin/movies/create"
+                  className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
+                >
+                  + New Movie
+                </Link>
+              )}
+              {tab === "persons" && (
+                <Link
+                  href="/admin/persons/create"
+                  className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
+                >
+                  + New Person
+                </Link>
+              )}
+              {tab === "users" && (
+                <Link
+                  href="/admin/users/create"
+                  className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
+                >
+                  + New User
+                </Link>
+              )}
+            </div>
             {tab === "movies" && (
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {movies.map((movie) => (
