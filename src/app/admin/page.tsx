@@ -3,20 +3,10 @@
  * Server-rendered admin area index; requires admin guard.
  */
 
-import Image from "next/image";
-import Link from "next/link";
 import prisma from "@/lib/prisma";
-import { AdminSearchInput, AutoSubmitSelect } from "@/components";
 import { PageWrapper } from "@/components/PageThemeContext";
-import { Card } from "@/components/ui";
 import { requireAdmin } from "@/lib/requireAdmin";
-import {
-  archiveMovie,
-  deleteMovie,
-  unarchiveMovie,
-} from "@/server/actions/moviesActions";
-import { deletePerson } from "@/server/actions/personsActions";
-import { deleteUser, setUserRole } from "@/server/actions/usersActions";
+import AdminDashboardContent from "./AdminDashboardContent";
 
 type PersonWithMovies = {
   id: string;
@@ -32,59 +22,37 @@ type PersonWithMovies = {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: { q?: string; tab?: string; genre?: string; role?: string };
+  searchParams: {
+    q?: string;
+    tab?: string;
+    genre?: string;
+    role?: string;
+    personRole?: string;
+    userRole?: string;
+  };
 }) {
   const q = searchParams.q ?? "";
-  const tab = (searchParams.tab ?? "movies") as string;
+  const tabParam = searchParams.tab;
+  const tab =
+    tabParam === "persons" || tabParam === "users" ? tabParam : "movies";
+
+  const initialPersonRoleParam =
+    (searchParams.personRole as string | undefined) ??
+    (tab === "persons" ? (searchParams.role as string | undefined) : undefined);
+  const initialUserRoleParam =
+    (searchParams.userRole as string | undefined) ??
+    (tab === "users" ? (searchParams.role as string | undefined) : undefined);
 
   const { user: adminUser } = await requireAdmin("/admin");
 
   const moviesPromise = prisma.movie.findMany({
-    where: {
-      AND: [
-        q
-          ? {
-              title: { contains: q, mode: "insensitive" },
-            }
-          : {},
-        searchParams.genre
-          ? {
-              genres: {
-                some: { genreId: { equals: searchParams.genre as string } },
-              },
-            }
-          : {},
-      ],
-    },
     orderBy: { createdAt: "desc" },
     include: {
       genres: { include: { genre: true } },
-      people: { include: { person: true } },
     },
   });
 
   const personsPromise = prisma.person.findMany({
-    where: {
-      AND: [
-        q
-          ? {
-              fullName: { contains: q, mode: "insensitive" },
-            }
-          : {},
-        tab === "persons" && searchParams.role
-          ? {
-              movies: {
-                some: {
-                  role: {
-                    equals:
-                      searchParams.role as unknown as import("@prisma/client").PersonRole,
-                  },
-                },
-              },
-            }
-          : {},
-      ],
-    },
     orderBy: { fullName: "asc" },
     include: { movies: { include: { movie: true } } },
   });
@@ -93,10 +61,6 @@ export default async function AdminPage({
   >;
 
   const usersPromise = prisma.user.findMany({
-    where:
-      tab === "users" && searchParams.role
-        ? { role: { equals: searchParams.role as string } }
-        : undefined,
     orderBy: { email: "asc" },
   });
 
@@ -123,8 +87,6 @@ export default async function AdminPage({
       userRolesPromise,
     ]);
 
-  const persons = personsRaw as Array<PersonWithMovies>;
-
   const personRoles = Array.from(
     new Set(personRolesRaw.map((r) => r.role)),
   ).filter(Boolean);
@@ -140,6 +102,8 @@ export default async function AdminPage({
   const orderCounts = new Map<string, number>(
     movies.map((movie, index) => [movie.id, orderCountsArr[index]]),
   );
+
+  const persons = personsRaw as Array<PersonWithMovies>;
 
   const activeMoviesCount = movies.filter((m) => !m.isArchived).length;
   const stats = [
@@ -168,12 +132,6 @@ export default async function AdminPage({
       accent: "from-amber-500 to-orange-500",
     },
   ];
-
-  const tabBaseClasses = "rounded-full px-4 py-2 transition";
-  const tabActiveClasses =
-    "bg-indigo-100 text-indigo-700 shadow-sm dark:bg-white/15 dark:text-white dark:shadow-[0_0_0_1px_rgba(255,255,255,0.15)]";
-  const tabInactiveClasses =
-    "text-gray-600 hover:bg-indigo-50 hover:text-indigo-700 dark:text-gray-300 dark:hover:bg-white/5 dark:hover:text-gray-100";
 
   return (
     <PageWrapper>
@@ -227,362 +185,49 @@ export default async function AdminPage({
           </div>
         </section>
 
-        <Card className="max-w-7xl mx-auto border border-gray-200 bg-white shadow-sm dark:border-gray-900/70 dark:bg-gray-950/70 dark:backdrop-blur">
-          {/* tabs + search row */}
-          <div className="p-4 border-b border-gray-200 dark:border-gray-800/70">
-            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-              <div className="flex items-center gap-1 rounded-full border border-gray-200 bg-gray-50 p-1 text-sm font-medium text-gray-600 dark:border-gray-800/70 dark:bg-gray-900/60 dark:text-gray-400">
-                <Link
-                  href="/admin?tab=movies"
-                  className={`${tabBaseClasses} ${
-                    tab === "movies" ? tabActiveClasses : tabInactiveClasses
-                  }`}
-                >
-                  Movies
-                </Link>
-                <Link
-                  href="/admin?tab=persons"
-                  className={`${tabBaseClasses} ${
-                    tab === "persons" ? tabActiveClasses : tabInactiveClasses
-                  }`}
-                >
-                  Persons
-                </Link>
-                <Link
-                  href="/admin?tab=users"
-                  className={`${tabBaseClasses} ${
-                    tab === "users" ? tabActiveClasses : tabInactiveClasses
-                  }`}
-                >
-                  Users
-                </Link>
-              </div>
-
-              <div
-                role="search"
-                className="flex flex-col gap-2 rounded-2xl border border-gray-200 bg-gray-50 p-3 md:flex-row md:items-center md:gap-3 md:p-2 dark:border-gray-800/70 dark:bg-gray-900/50"
-              >
-                <AdminSearchInput
-                  placeholder={
-                    tab === "movies"
-                      ? "Search movies..."
-                      : tab === "persons"
-                        ? "Search people..."
-                        : "Search users..."
-                  }
-                />
-
-                {tab === "movies" && (
-                  <AutoSubmitSelect
-                    name="genre"
-                    value={searchParams.genre as string}
-                    ariaLabel="Filter by genre"
-                    options={genres.map((g) => ({
-                      value: g.id,
-                      label: g.name,
-                    }))}
-                    className="min-w-[160px] border-gray-300 bg-white text-gray-900 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-100"
-                  />
-                )}
-
-                {tab === "persons" && (
-                  <AutoSubmitSelect
-                    name="role"
-                    value={searchParams.role as string}
-                    ariaLabel="Filter by person role"
-                    options={personRoles.map((r) => ({ value: r, label: r }))}
-                    className="min-w-[160px] border-gray-300 bg-white text-gray-900 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-100"
-                  />
-                )}
-
-                {tab === "users" && (
-                  <AutoSubmitSelect
-                    name="role"
-                    value={searchParams.role as string}
-                    ariaLabel="Filter by user role"
-                    options={userRoles.map((r) => ({ value: r, label: r }))}
-                    className="min-w-[160px] border-gray-300 bg-white text-gray-900 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-100"
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* content */}
-          <div className="p-4">
-            <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
-              {tab === "movies" && (
-                <Link
-                  href="/admin/movies/create"
-                  className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
-                >
-                  + New Movie
-                </Link>
-              )}
-              {tab === "persons" && (
-                <Link
-                  href="/admin/persons/create"
-                  className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
-                >
-                  + New Person
-                </Link>
-              )}
-              {tab === "users" && (
-                <Link
-                  href="/admin/users/create"
-                  className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
-                >
-                  + New User
-                </Link>
-              )}
-            </div>
-            {tab === "movies" && (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {movies.map((movie) => (
-                  <Card
-                    key={movie.id}
-                    className="flex flex-col justify-between gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-indigo-500/40 hover:shadow-lg dark:border-gray-900/70 dark:bg-gray-950/70"
-                  >
-                    <div>
-                      <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                          {movie.title}
-                        </h3>
-                        {movie.isArchived && (
-                          <span className="whitespace-nowrap rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
-                            Archived
-                          </span>
-                        )}
-                      </div>
-                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                        {movie.releaseDate?.getFullYear() ?? "—"} &middot;{" "}
-                        {movie.genres.map((g) => g.genre.name).join(", ") ||
-                          "—"}
-                      </p>
-                      <div className="mt-4 flex items-center gap-3 text-sm">
-                        <span className="font-semibold text-emerald-600 dark:text-emerald-300">
-                          {movie.price != null
-                            ? `SEK ${String(movie.price)}`
-                            : "—"}
-                        </span>
-                        <span className="text-gray-400 dark:text-gray-600">
-                          |
-                        </span>
-                        <span className="text-gray-600 dark:text-gray-400">
-                          Stock {movie.stock ?? "—"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="mt-2 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-800/70">
-                      <Link
-                        href={`/admin/movies/${movie.id}/edit`}
-                        className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-white"
-                      >
-                        Edit
-                      </Link>
-
-                      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide">
-                        {!movie.isArchived ? (
-                          <form action={archiveMovie}>
-                            <input
-                              type="hidden"
-                              name="movieId"
-                              value={movie.id}
-                            />
-                            <button
-                              type="submit"
-                              className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-amber-700 transition hover:bg-amber-100 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-300 dark:hover:bg-amber-400/10"
-                            >
-                              Archive
-                            </button>
-                          </form>
-                        ) : (
-                          <form action={unarchiveMovie}>
-                            <input
-                              type="hidden"
-                              name="movieId"
-                              value={movie.id}
-                            />
-                            <button
-                              type="submit"
-                              className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/10"
-                            >
-                              Unarchive
-                            </button>
-                          </form>
-                        )}
-
-                        <form action={deleteMovie}>
-                          <input
-                            type="hidden"
-                            name="movieId"
-                            value={movie.id}
-                          />
-                          <button
-                            type="submit"
-                            disabled={(orderCounts.get(movie.id) ?? 0) > 0}
-                            className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-400 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10 dark:disabled:border-gray-700 dark:disabled:bg-transparent dark:disabled:text-gray-500"
-                            title={
-                              (orderCounts.get(movie.id) ?? 0) > 0
-                                ? "Cannot delete: movie has associated orders"
-                                : "Permanently delete movie"
-                            }
-                          >
-                            Delete
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            )}
-
-            {tab === "persons" && (
-              <div className="grid grid-cols-1 gap-4">
-                {persons.map((person) => {
-                  const roles =
-                    Array.from(
-                      new Set((person.movies || []).map((m) => m.role)),
-                    ).join(", ") || "Not assigned";
-                  return (
-                    <div
-                      key={person.id}
-                      className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-indigo-500/40 hover:shadow-lg sm:flex-row sm:items-center sm:justify-between dark:border-gray-900/70 dark:bg-gray-950/70"
-                    >
-                      <div className="flex items-center gap-4">
-                        {person.imageUrl ? (
-                          <Image
-                            src={person.imageUrl}
-                            alt={person.fullName}
-                            width={48}
-                            height={48}
-                            className="h-12 w-12 rounded-full object-cover"
-                            referrerPolicy="no-referrer"
-                          />
-                        ) : (
-                          <div className="flex h-12 w-12 items-center justify-center rounded-full border border-indigo-200 bg-indigo-50 text-sm font-semibold uppercase text-indigo-700 dark:border-indigo-400/40 dark:bg-indigo-400/10 dark:text-indigo-200">
-                            {person.fullName
-                              .split(" ")
-                              .map((s) => s[0])
-                              .slice(0, 2)
-                              .join("")}
-                          </div>
-                        )}
-                        <div>
-                          <div className="text-base font-semibold text-gray-900 dark:text-white">
-                            {person.fullName}
-                          </div>
-                          <div className="mt-1 text-xs uppercase tracking-wide text-gray-600 dark:text-gray-500">
-                            {roles}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
-                        <Link
-                          href={`/admin/persons/${person.id}/edit`}
-                          className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-indigo-700 transition hover:bg-indigo-100 dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-200 dark:hover:bg-indigo-400/10"
-                        >
-                          Edit
-                        </Link>
-                        <form action={deletePerson}>
-                          <input
-                            type="hidden"
-                            name="personId"
-                            value={person.id}
-                          />
-                          <button
-                            type="submit"
-                            className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10"
-                          >
-                            Delete
-                          </button>
-                        </form>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-
-            {tab === "users" && (
-              <div className="grid grid-cols-1 gap-4">
-                {users.map((u) => (
-                  <div
-                    key={u.id}
-                    className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-indigo-500/40 hover:shadow-lg md:flex-row md:items-center md:justify-between dark:border-gray-900/70 dark:bg-gray-950/70"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-sm font-semibold uppercase text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-200">
-                        {u.name
-                          ? u.name
-                              .split(" ")
-                              .map((s) => s[0])
-                              .slice(0, 2)
-                              .join("")
-                          : u.email[0].toUpperCase()}
-                      </div>
-                      <div>
-                        <div className="text-base font-semibold text-gray-900 dark:text-white">
-                          {u.name ?? "—"}
-                        </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
-                          {u.email}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
-                      <span
-                        className={`rounded-full border px-3 py-1 ${
-                          u.role === "admin"
-                            ? "border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-200"
-                            : "border-gray-200 bg-gray-100 text-gray-700 dark:border-gray-600/40 dark:bg-gray-700/40 dark:text-gray-300"
-                        }`}
-                      >
-                        {u.role ?? "user"}
-                      </span>
-
-                      <form action={setUserRole} className="inline-flex">
-                        <input type="hidden" name="userId" value={u.id} />
-                        <input
-                          type="hidden"
-                          name="role"
-                          value={u.role === "admin" ? "user" : "admin"}
-                        />
-                        <button
-                          type="submit"
-                          className={`rounded-full border px-3 py-1 transition ${
-                            u.role === "admin"
-                              ? "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-300 dark:hover:bg-amber-400/10"
-                              : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/10"
-                          }`}
-                          title={
-                            u.role === "admin" ? "Revoke admin" : "Grant admin"
-                          }
-                        >
-                          {u.role === "admin" ? "Revoke" : "Grant"}
-                        </button>
-                      </form>
-
-                      <form action={deleteUser}>
-                        <input type="hidden" name="userId" value={u.id} />
-                        <button
-                          type="submit"
-                          className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10"
-                        >
-                          Delete
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </Card>
+        <AdminDashboardContent
+          initialTab={tab as "movies" | "persons" | "users"}
+          initialSearch={q}
+          initialGenre={searchParams.genre as string | undefined}
+          initialPersonRole={initialPersonRoleParam}
+          initialUserRole={initialUserRoleParam}
+          movies={movies.map((movie) => ({
+            id: movie.id,
+            title: movie.title,
+            releaseYear: movie.releaseDate?.getFullYear() ?? null,
+            price:
+              movie.price != null
+                ? typeof movie.price === "object"
+                  ? movie.price.toString()
+                  : String(movie.price)
+                : null,
+            stock: movie.stock ?? null,
+            isArchived: movie.isArchived,
+            genres: movie.genres.map((g) => ({
+              id: g.genreId,
+              name: g.genre.name,
+            })),
+          }))}
+          persons={persons.map((person) => ({
+            id: person.id,
+            fullName: person.fullName,
+            imageUrl: person.imageUrl,
+            movies: (person.movies || []).map((m) => ({
+              role: m.role,
+              movieTitle: m.movie.title,
+            })),
+          }))}
+          users={users.map((user) => ({
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+          }))}
+          genres={genres.map((genre) => ({ id: genre.id, name: genre.name }))}
+          personRoles={personRoles}
+          userRoles={userRoles}
+          orderCounts={Object.fromEntries(orderCounts.entries())}
+        />
       </div>
     </PageWrapper>
   );
