@@ -105,14 +105,14 @@ export default async function Page() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-1">
-            <div className="bg-gray-900 rounded-lg shadow-md p-6 text-center">
+            <div className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg shadow-md p-6 text-center">
               <div className="relative w-32 h-32 mx-auto mb-4">
                 <Image
                   src={avatarSrc}
                   alt={profile.name ?? "profile avatar"}
                   width={128}
                   height={128}
-                  className="rounded-full object-cover border-4 border-neutral-200 dark:border-neutral-700"
+                  className="rounded-full object-cover border-1 border-neutral-200 dark:border-neutral-700"
                   unoptimized
                 />
                 <label
@@ -128,7 +128,7 @@ export default async function Page() {
                   defaultValue={profile.name ?? ""}
                   placeholder="Full name"
                   autoComplete="name"
-                  className="bg-transparent text-center font-bold text-xl outline-none border-none focus:ring-0 text-neutral-800 dark:text-white"
+                  className=" text-center font-bold text-xl outline-none border-none focus:ring-0 text-neutral-800 dark:text-white"
                   form="profile-edit-form"
                 />
               </h2>
@@ -138,7 +138,7 @@ export default async function Page() {
                   type="email"
                   defaultValue={profile.email ?? ""}
                   readOnly
-                  className="bg-transparent text-center text-sm outline-none border-none focus:ring-0 text-neutral-500 dark:text-neutral-400"
+                  className=" text-center text-sm outline-none border-none focus:ring-0 text-neutral-500 dark:text-neutral-400"
                   form="profile-edit-form"
                 />
               </p>
@@ -163,7 +163,7 @@ export default async function Page() {
                     defaultValue={""}
                     placeholder="Phone number"
                     inputMode="tel"
-                    className="mt-1 px-4 py-2 rounded-lg border bg-gray-800 border-gray-700 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-100 transition duration-150"
+                    className="mt-1 px-4 py-2 rounded-lg border bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 border-gray-700 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-100 transition duration-150"
                   />
                   <p className="mt-1 text-xs text-gray-400">
                     Not available for now due to DB (will be added later)
@@ -171,25 +171,29 @@ export default async function Page() {
                 </label>
 
                 <label className="flex flex-col">
-                  <span className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">Image URL</span>
+                  <span className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+                    Image URL
+                  </span>
                   <input
                     id="image"
                     name="image"
                     defaultValue={profile.image ?? ""}
                     placeholder="https://.../avatar.jpg"
-                    className="mt-1 px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-100 transition-colors duration-150"
+                    className="mt-1 px-4 py-2 rounded-lg bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 border border-gray-700 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-100 transition-colors duration-150"
                   />
                 </label>
               </div>
 
               <label className="flex flex-col">
-                <span className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">Bio</span>
+                <span className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+                  Bio
+                </span>
                 <textarea
                   name="bio"
                   defaultValue={""}
                   placeholder="A short bio (optional)"
                   rows={3}
-                  className="mt-1 px-4 py-3 rounded-lg border border-gray-700 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-100 transition-shadow duration-150 bg-gray-800"
+                  className="mt-1 px-4 py-3 rounded-lg border border-gray-700 focus:ring-2 focus:ring-sky-500 focus:border-transparent text-gray-100 transition-shadow duration-150 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50"
                 />
                 <p className="mt-1 text-xs text-gray-400">
                   Not available for now due to DB (will be added later)
@@ -205,31 +209,31 @@ export default async function Page() {
                     name="addressLine1"
                     defaultValue={address?.line1 ?? ""}
                     placeholder="Address line 1"
-                    className="px-3 py-2 rounded-lg border border-gray-700 text-gray-100 bg-gray-800 focus:ring-2 focus:ring-sky-500 transition duration-150"
+                    className="px-3 py-2 rounded-lg border border-gray-700 text-gray-100 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 focus:ring-2 focus:ring-sky-500 transition duration-150"
                   />
                   <input
                     name="addressLine2"
                     defaultValue={address?.line2 ?? ""}
                     placeholder="Address line 2"
-                    className="px-3 py-2 rounded-lg border border-gray-700 text-gray-100 bg-gray-800 focus:ring-2 focus:ring-sky-500 transition duration-150"
+                    className="px-3 py-2 rounded-lg border border-gray-700 text-gray-100 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 focus:ring-2 focus:ring-sky-500 transition duration-150"
                   />
                   <input
                     name="city"
                     defaultValue={address?.city ?? ""}
                     placeholder="City"
-                    className="px-3 py-2 rounded-lg border border-gray-700 text-gray-100 bg-gray-800 focus:ring-2 focus:ring-sky-500 transition duration-150"
+                    className="px-3 py-2 rounded-lg border border-gray-700 text-gray-100 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 focus:ring-2 focus:ring-sky-500 transition duration-150"
                   />
                   <input
                     name="postalCode"
                     defaultValue={address?.postalCode ?? ""}
                     placeholder="Postal code"
-                    className="px-3 py-2 rounded-lg border border-gray-700 text-gray-100 bg-gray-800 focus:ring-2 focus:ring-sky-500 transition duration-150"
+                    className="px-3 py-2 rounded-lg border border-gray-700 text-gray-100 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 focus:ring-2 focus:ring-sky-500 transition duration-150"
                   />
                   <input
                     name="country"
                     defaultValue={address?.country ?? ""}
                     placeholder="Country"
-                    className="px-3 py-2 rounded-lg border border-gray-700 col-span-1 sm:col-span-2 text-gray-100 bg-gray-800 focus:ring-2 focus:ring-sky-500 transition duration-150"
+                    className="px-3 py-2 rounded-lg border border-gray-700 col-span-1 sm:col-span-2 text-gray-100 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 focus:ring-2 focus:ring-sky-500 transition duration-150"
                   />
                 </div>
               </fieldset>
@@ -242,9 +246,11 @@ export default async function Page() {
                 <div className="flex items-center gap-3">
                   <a
                     href="/profile"
-                    className="text-sm text-gray-300 hover:text-gray-100 rounded-md px-2 py-1 transition-colors duration-150"
+                    aria-label="Cancel and return to profile"
+                    className="inline-flex items-center gap-2 text-sm rounded-md px-3 py-2 border border-neutral-700 bg-neutral-800 text-gray-200 hover:bg-neutral-800/30 hover:text-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 transition-colors duration-150"
                   >
-                    Cancel
+                    <span className="text-xs">✕</span>
+                    <span>Cancel</span>
                   </a>
                   <div className="flex items-center">
                     <div className="rounded-md shadow-sm hover:shadow-md transition-shadow duration-150">

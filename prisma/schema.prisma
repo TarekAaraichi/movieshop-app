@@ -62,6 +62,7 @@ model Person {
   fullName String        @unique
   bio      String?
   imageUrl String?
+  primaryRole PersonRole?
   movies   MoviePerson[]
 }
 

@@ -88,7 +88,7 @@ export default function OrderSummaryClient({ items }: Props) {
 
   return (
     <div
-      className="flex flex-col gap-6 rounded-xl bg-gray-900 p-6 shadow-lg"
+      className="flex flex-col gap-6 rounded-xl bg-gray-700 p-6 shadow-lg"
       aria-live="polite"
     >
       <div>

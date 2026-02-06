@@ -11,7 +11,7 @@ export default function ContactPage() {
     <PageWrapper>
     <div>
       <div className="m-auto max-w-4xl w-full">
-        <Card className="p-6 sm:p-8">
+        <Card className="p-6 sm:p-8 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50">
           <header className="mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl font-semibold text-gray-100">
               Contact
@@ -27,7 +27,7 @@ export default function ContactPage() {
             <section className="space-y-4">
               <h2 className="text-sm font-medium text-gray-200">Team</h2>
 
-              <ul className="space-y-3">
+              <ul className="space-y-3 rounded-lg bg-gray-700">
                 {[
                   {
                     name: "Tarek Aaraichi",
@@ -125,7 +125,7 @@ export default function ContactPage() {
               </ul>
             </section>
 
-            <section className="bg-gradient-to-b from-gray-800/20 to-gray-800/10 rounded-xl p-5 sm:p-6">
+            <section className="bg-gray-700 rounded-xl p-5 sm:p-6">
               <h2 className="text-sm font-medium text-gray-200">
                 Get in touch
               </h2>

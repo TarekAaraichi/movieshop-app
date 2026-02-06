@@ -36,7 +36,9 @@ async function NewReleasesGrid() {
       <section className="mb-10">
         <h2 className="text-lg font-semibold mb-4 text-center">Last Month</h2>
         {recent.length === 0 ? (
-          <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">No releases in the last month.</div>
+          <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">
+            No releases in the last month.
+          </div>
         ) : (
           <div className="min-h-[120px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {recent.map((m) => (
@@ -46,9 +48,13 @@ async function NewReleasesGrid() {
         )}
       </section>
       <section>
-        <h2 className="text-lg font-semibold mb-4 text-center">Last Year</h2>
+        <h2 className="text-lg font-semibold mb-4 text-center text-black dark:text-white">
+          Last Year
+        </h2>
         {year.length === 0 ? (
-          <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">No releases in the last year.</div>
+          <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">
+            No releases in the last year.
+          </div>
         ) : (
           <div className="min-h-[120px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {year.map((m) => (

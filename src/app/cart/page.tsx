@@ -266,7 +266,7 @@ export default async function CartPage() {
   return (
     <PageWrapper>
       <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-8 items-start">
-        <main className="flex-1 bg-gray-900 rounded-2xl shadow-sm p-6 md:p-8 border border-gray-800">
+        <main className="flex-1 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-2xl shadow-sm p-6 md:p-8 border border-gray-800">
           <div className="flex items-start justify-between mb-6 gap-4">
             <div>
               <h1 className="text-lg md:text-2xl font-semibold text-slate-100">
@@ -308,7 +308,7 @@ export default async function CartPage() {
         </main>
 
         <aside className="w-full md:w-96 sticky top-6 self-start">
-          <div className="bg-gray-900 rounded-2xl shadow-sm p-0 border border-gray-800 flex flex-col gap-4 overflow-hidden">
+          <div className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-2xl shadow-sm p-0 border border-gray-800 flex flex-col gap-4 overflow-hidden">
             {/* Order summary card with no extra padding, only inside content */}
             <div className="p-6">
               <OrderSummaryClient items={items} />

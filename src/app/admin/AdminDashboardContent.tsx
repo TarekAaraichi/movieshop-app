@@ -11,7 +11,6 @@ import {
   deleteMovie,
   unarchiveMovie,
 } from "@/server/actions/moviesActions";
-import { deletePerson } from "@/server/actions/personsActions";
 import { deleteUser, setUserRole } from "@/server/actions/usersActions";
 
 type AdminTab = "movies" | "persons" | "users";
@@ -101,9 +100,9 @@ function AdminPagination({
   const buttonBase =
     "min-w-[2.5rem] px-3 py-2 rounded-lg border text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-indigo-200/60 dark:focus:ring-indigo-400/40";
   const inactiveClasses =
-    "border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:text-indigo-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-indigo-400 dark:hover:text-white";
+    "border-gray-200 text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 dark:border-gray-700 bg-gray-900 dark:text-gray-200 dark:hover:border-indigo-500/60 dark:hover:bg-indigo-500/10 dark:hover:text-white";
   const activeClasses =
-    "border-indigo-300 bg-indigo-50 text-indigo-700 shadow-sm dark:border-indigo-400 dark:bg-indigo-500/20 dark:text-indigo-100";
+    "border-indigo-300 bg-indigo-100 text-indigo-800 shadow-sm dark:border-indigo-400/60 dark:bg-indigo-500/30 dark:text-indigo-100";
   const disabledClasses = "opacity-40 cursor-not-allowed";
 
   return (
@@ -215,22 +214,37 @@ export default function AdminDashboardContent({
     setActiveTab(initialTab);
   }, [initialTab]);
 
-  // Show a one-time toast when arriving after creating a movie
+  // Show a one-time toast when arriving after creating an item or on error
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
     const created = params.get("created");
-    const title = params.get("title");
+    const title = params.get("title") || params.get("name");
+    const error = params.get("error");
+
     if (created) {
-      const msg = title ? `Added "${title}"` : "Movie added";
+      const msg = title ? `Added "${title}"` : "Item added";
       toast.success(`${msg}!`);
       params.delete("created");
       params.delete("title");
-      const next = params.toString()
-        ? `${window.location.pathname}?${params.toString()}`
-        : window.location.pathname;
-      window.history.replaceState(null, "", next);
     }
+
+    if (error) {
+      if (error === "exists") {
+        const msg = title ? `"${title}" already exists` : "Item already exists";
+        toast.error(msg);
+      } else {
+        toast.error("An error occurred");
+      }
+      params.delete("error");
+      params.delete("name");
+      params.delete("title");
+    }
+
+    const next = params.toString()
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname;
+    window.history.replaceState(null, "", next);
   }, []);
 
   React.useEffect(() => {
@@ -484,22 +498,7 @@ export default function AdminDashboardContent({
               + New Movie
             </Link>
           )}
-          {activeTab === "persons" && (
-            <Link
-              href="/admin/persons/create"
-              className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
-            >
-              + New Person
-            </Link>
-          )}
-          {activeTab === "users" && (
-            <Link
-              href="/admin/users/create"
-              className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
-            >
-              + New User
-            </Link>
-          )}
+          
         </div>
 
         {activeTab === "movies" && (
@@ -609,7 +608,7 @@ export default function AdminDashboardContent({
               })}
 
               {filteredMovies.length === 0 && (
-                <div className="col-span-full rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
+                <div className="col-span-full rounded-2xl p-6 text-center text-sm text-gray-500  dark:text-gray-400">
                   No movies match the current filters.
                 </div>
               )}
@@ -673,30 +672,33 @@ export default function AdminDashboardContent({
                     <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
                       <Link
                         href={`/admin/persons/${person.id}/edit`}
-                        className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-indigo-700 transition hover:bg-indigo-100 dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-200 dark:hover:bg-indigo-400/10"
+                        className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
                       >
                         Edit
                       </Link>
-                      <form action={deletePerson}>
-                        <input
-                          type="hidden"
-                          name="personId"
-                          value={person.id}
-                        />
-                        <button
-                          type="submit"
-                          className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10"
-                        >
-                          Delete
-                        </button>
-                      </form>
+                      {/* <button
+                        type="button"
+                        onClick={async () => {
+                          if (
+                            !window.confirm(
+                              `Delete "${person.fullName}"? This is permanent.`,
+                            )
+                          )
+                            return;
+                          await deletePerson(person.id);
+                          toast.success(`Deleted "${person.fullName}"`);
+                        }}
+                        className="font-semibold text-red-600 hover:text-red-500 dark:text-red-500 dark:hover:text-red-400"
+                      >
+                        Delete
+                      </button> */}
                     </div>
                   </div>
                 );
               })}
 
               {filteredPersons.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
+                <div className="rounded-2xl p-6 text-center text-sm text-gray-500 dark:text-gray-400">
                   No people match the current filters.
                 </div>
               )}
@@ -794,7 +796,7 @@ export default function AdminDashboardContent({
               })}
 
               {filteredUsers.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
+                <div className="rounded-2xl  p-6 text-center text-sm text-gray-500   dark:text-gray-400">
                   No users match the current filters.
                 </div>
               )}

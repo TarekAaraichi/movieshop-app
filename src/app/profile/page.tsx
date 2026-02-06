@@ -113,7 +113,7 @@ export default async function ProfilePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
           <div className="md:col-span-1">
-            <div className="bg-gray-900 rounded-lg shadow-md p-6 text-center">
+            <div className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg shadow-md p-6 text-center">
               <div className="relative w-32 h-32 mx-auto mb-4">
                 <Image
                   src={
@@ -128,14 +128,14 @@ export default async function ProfilePage() {
                   alt="User avatar"
                   width={128}
                   height={128}
-                  className="rounded-full object-cover border-4 border-neutral-200 dark:border-neutral-700"
+                  className="rounded-full object-cover border-1 border-neutral-200 dark:border-neutral-700"
                   unoptimized
                 />
               </div>
               <h2 className="text-xl font-bold text-neutral-800 dark:text-white">
                 {user.name}
               </h2>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              <p className="text-sm text-neutral-500 dark:text-neutral-600">
                 {user.email}
               </p>
               <Link
@@ -155,13 +155,13 @@ export default async function ProfilePage() {
 
           <div className="md:col-span-2">
             <section className="mb-8">
-              <h3 className="text-xl font-bold mb-4 text-neutral-800 dark:text-white">
+              <h3 className="text-xl font-bold mb-4 text-black dark:text-white">
                 Shipping Addresses
               </h3>
               <div className="space-y-4">
                 {uniqueAddresses.length > 0 ? (
                   uniqueAddresses.map((addr) => (
-                    <div key={addr.id} className="bg-gray-900 rounded-lg p-4">
+                    <div key={addr.id} className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg p-4">
                       <p className="font-semibold text-neutral-700 dark:text-neutral-300">
                         {addr.line1}
                       </p>

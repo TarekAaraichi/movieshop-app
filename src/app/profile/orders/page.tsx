@@ -97,7 +97,7 @@ export default async function ProfileOrdersPage({
           <select
             id="year"
             name="year"
-            className="bg-gray-800 text-white rounded px-3 py-1 text-sm border border-gray-700 focus:ring-2 focus:ring-blue-500"
+            className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-white rounded px-3 py-1 text-sm border border-gray-700 focus:ring-2 focus:ring-blue-500"
             defaultValue={filterYear ?? ""}
             onChange="this.form.submit()"
           >
@@ -117,7 +117,7 @@ export default async function ProfileOrdersPage({
             orders.map((order) => (
               <div
                 key={order.id}
-                className="bg-gray-900 rounded-lg overflow-hidden shadow-md"
+                className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg overflow-hidden shadow-md"
               >
                 <div className="p-4 border-b border-gray-800 flex justify-between items-center">
                   <div>
@@ -191,7 +191,7 @@ export default async function ProfileOrdersPage({
           <div className="flex justify-center items-center gap-2 mt-8">
             <Link
               href={`?${filterYear ? `year=${filterYear}&` : ""}page=${page - 1}`}
-              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${page === 1 ? "bg-gray-800 text-gray-500 cursor-not-allowed" : "bg-gray-700 hover:bg-gray-600 text-white"}`}
+              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${page === 1 ? "bg-gray-700 text-gray-500 cursor-not-allowed" : "bg-gray-700 hover:bg-gray-600 text-white"}`}
               aria-disabled={page === 1}
               tabIndex={page === 1 ? -1 : 0}
             >

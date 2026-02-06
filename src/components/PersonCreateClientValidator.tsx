@@ -6,6 +6,9 @@ import toast from "react-hot-toast";
 
 const personCreateClientSchema = z.object({
   fullName: z.string().min(1, "Full name is required"),
+  role: z.enum(["DIRECTOR", "ACTOR"], {
+    errorMap: () => ({ message: "Select a role" }),
+  }),
   bio: z.string().optional().nullable(),
   imageUrl: z.preprocess(
     (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),

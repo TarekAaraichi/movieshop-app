@@ -10,7 +10,7 @@ export default function AboutPage() {
   return (
     <PageWrapper>
     <div className="main-content rounded-2xl">
-      <Card className="w-full bg-gray-900 backdrop-blur-sm border border-zinc-800 shadow-lg rounded-2xl p-6 md:p-10 transition-transform center mx-auto">
+      <Card className="w-full bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 backdrop-blur-sm border border-zinc-800 shadow-lg rounded-2xl p-6 md:p-10 transition-transform center mx-auto">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1">
             <div className="flex items-center gap-4">
