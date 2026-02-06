@@ -42,7 +42,7 @@ export default function GenrePage({ params }: Props) {
       );
     }
     return (
-      <div className="min-h-[120px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+      <div className="min-h-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
         {movies.map((m) => (
           <MovieCard key={m.id} movie={m} />
         ))}
@@ -54,7 +54,7 @@ export default function GenrePage({ params }: Props) {
     <PageWrapper>
       <div className="w-full max-w-6xl mx-auto">
         <header className="mb-8 text-center relative">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-sky-400">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-sky-400">
             {genre.charAt(0).toUpperCase() + genre.slice(1)} Movies
           </h1>
         </header>
