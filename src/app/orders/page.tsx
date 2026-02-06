@@ -1,5 +1,5 @@
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { EmptyOrders } from "@/components/EmptyStates";
 import Link from "next/link";
 import Image from "next/image";

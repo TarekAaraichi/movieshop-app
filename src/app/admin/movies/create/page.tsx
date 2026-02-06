@@ -232,7 +232,7 @@ export default async function CreateMoviePage() {
                   name="description"
                   rows={6}
                   placeholder="A concise synopsis for merchandising and storefront placement."
-                  className="w-full rounded-lg border border-slate-300 !bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 placeholder:text-slate-500"
+                  className="w-full rounded-lg border border-slate-300 bg-white! px-4 py-3 text-sm font-medium text-slate-900 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 placeholder:text-slate-500"
                 />
               </div>
 

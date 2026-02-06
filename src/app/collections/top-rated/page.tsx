@@ -3,7 +3,7 @@
  * Lists top-rated movies.
  */
 
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { MovieCard, MoviesGridSkeleton } from "@/components";
 import { PageWrapper } from "@/components/PageThemeContext";
 

@@ -2,7 +2,7 @@ import { AutoSubmitSelect } from "@/components";
 import PaginationControls from "@/components/PaginationControls";
 import { PersonSearch } from "@/components/PersonSearch";
 import { PageWrapper } from "@/components/PageThemeContext";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
 import { PersonRole } from "@prisma/client";

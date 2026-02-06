@@ -73,7 +73,7 @@ function AdminPagination({
   const pages: Array<number | string> = [];
   const maxVisible = 5;
   let startPage = Math.max(1, currentPage - 2);
-  let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+  const endPage = Math.min(totalPages, startPage + maxVisible - 1);
 
   if (endPage - startPage + 1 < maxVisible) {
     startPage = Math.max(1, endPage - maxVisible + 1);
@@ -442,7 +442,7 @@ export default function AdminDashboardContent({
                 aria-label="Filter by genre"
                 value={selectedGenre}
                 onChange={(event) => setSelectedGenre(event.target.value)}
-                className="min-w-[160px] rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
+                className="min-w-40 rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
               >
                 <option value="">All genres</option>
                 {genres.map((genre) => (
@@ -458,7 +458,7 @@ export default function AdminDashboardContent({
                 aria-label="Filter by person role"
                 value={selectedPersonRole}
                 onChange={(event) => setSelectedPersonRole(event.target.value)}
-                className="min-w-[160px] rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
+                className="min-w-40 rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
               >
                 <option value="">All roles</option>
                 {personRoles.map((role) => (
@@ -474,7 +474,7 @@ export default function AdminDashboardContent({
                 aria-label="Filter by user role"
                 value={selectedUserRole}
                 onChange={(event) => setSelectedUserRole(event.target.value)}
-                className="min-w-[160px] rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
+                className="min-w-40 rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
               >
                 <option value="">All roles</option>
                 {userRoles.map((role) => (
@@ -498,7 +498,6 @@ export default function AdminDashboardContent({
               + New Movie
             </Link>
           )}
-          
         </div>
 
         {activeTab === "movies" && (

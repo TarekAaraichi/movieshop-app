@@ -3,7 +3,7 @@
  * Lists oldest movies by release date
  */
 
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import type { Prisma, Movie } from "@prisma/client";
 import { MovieCard, MoviesGridSkeleton } from "@/components";
 import PaginationControls from "@/components/PaginationControls";
@@ -15,7 +15,13 @@ interface Props {
 
 import { Suspense } from "react";
 
-async function ClassicsGrid({ page, perPage }: { page: number; perPage: number }) {
+async function ClassicsGrid({
+  page,
+  perPage,
+}: {
+  page: number;
+  perPage: number;
+}) {
   const skip = (page - 1) * perPage;
   const where: Prisma.MovieWhereInput = { isArchived: false };
   const totalCount = await prisma.movie.count({ where });
@@ -39,7 +45,9 @@ async function ClassicsGrid({ page, perPage }: { page: number; perPage: number }
         ))}
         {movies.length === 0 && (
           <div className="col-span-full text-center py-12">
-            <p className="text-neutral-500 dark:text-neutral-400">No classics found.</p>
+            <p className="text-neutral-500 dark:text-neutral-400">
+              No classics found.
+            </p>
           </div>
         )}
       </div>

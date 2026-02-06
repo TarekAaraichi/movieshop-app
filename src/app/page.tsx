@@ -3,7 +3,7 @@
  * Server component that renders the app's index/home page and featured movies.
  */
 
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { MovieCarousel } from "@/components/MovieCarousel";
 import { Button } from "@/components/ui/button";

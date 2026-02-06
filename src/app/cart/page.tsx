@@ -297,11 +297,7 @@ export default async function CartPage() {
 
               {/* Client-driven interactive cart; keeps controls inline and modern */}
               <div className="rounded-lg border border-slate-700 overflow-hidden">
-                <CartClient
-                  initialItems={items}
-                  plusButtonClassName="text-sky-400 hover:text-sky-300"
-                  minusButtonClassName="text-sky-400 hover:text-sky-300"
-                />
+                <CartClient initialItems={items} />
               </div>
             </div>
           )}

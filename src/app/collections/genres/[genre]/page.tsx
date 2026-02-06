@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { MovieCard, MoviesGridSkeleton } from "@/components";
 import { PageWrapper } from "@/components/PageThemeContext";
 import { Suspense } from "react";
@@ -59,7 +59,6 @@ export default function GenrePage({ params }: Props) {
           </h1>
         </header>
         <Suspense fallback={<MoviesGridSkeleton count={10} />}>
-          {/* @ts-expect-error Async Server Component */}
           <GenreGrid />
         </Suspense>
       </div>
