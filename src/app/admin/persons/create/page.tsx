@@ -5,92 +5,117 @@
 
 import { Card } from "@/components/ui";
 import { createPerson } from "@/server/actions/personsActions";
+import PersonCreateClientValidator from "@/components/PersonCreateClientValidator";
+import { PageWrapper } from "@/components/PageThemeContext";
 import { requireAdmin } from "@/lib/requireAdmin";
 
 export default function CreatePersonPage() {
   void requireAdmin("/admin/persons/create");
-  return (
-    <div>
-      <div className="mx-auto max-w-3xl">
-        <Card className="p-6 sm:p-8 rounded-2xl shadow-2xl bg-gray-900 border border-gray-800">
-          <header className="mb-6">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-100">
-              Create a Person
-            </h1>
-            <p className="mt-1 text-sm text-gray-400">
-              Add a new person to the persons catalog. Use the inline fields for
-              a quicker workflow.
-            </p>
-          </header>
 
-          <form action={createPerson} className="space-y-6">
-            {/* Full Name (inline label) */}
-            <div className="grid grid-cols-12 gap-4 items-center">
-              <label className="col-span-3 text-sm font-medium text-gray-300">
-                Full Name
-              </label>
-              <div className="col-span-9">
+  const inputClasses =
+    "w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 placeholder:text-slate-500 !bg-white";
+  const fieldLabelClasses = "text-sm font-semibold text-slate-200";
+  const fieldHintClasses = "mt-1 text-xs font-medium text-slate-400";
+  const fieldGrid = "grid gap-2 sm:grid-cols-[160px_1fr] sm:items-center";
+
+  return (
+    <PageWrapper>
+      <div className="min-h-screen bg-transparent px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl space-y-10">
+          <div className="rounded-3xl border border-slate-200/10 bg-gray-600 p-6 sm:p-8 shadow-2xl">
+            <h1 className="text-3xl font-bold text-white sm:text-4xl">
+              Create Person
+            </h1>
+            <p className="mt-2 max-w-2xl text-sm text-indigo-100/90">
+              Add a new person to the catalog. Fields marked with * are
+              required.
+            </p>
+          </div>
+
+          <Card className="rounded-3xl border-slate-800 bg-gray-600 p-6 text-slate-100 shadow-2xl sm:p-8">
+            <form
+              id="create-person-form"
+              action={createPerson}
+              className="space-y-6"
+            >
+              <div className={fieldGrid}>
+                <div>
+                  <label htmlFor="fullName" className={fieldLabelClasses}>
+                    Full name *
+                  </label>
+                  <p className={fieldHintClasses}>
+                    Use the person's full name.
+                  </p>
+                </div>
                 <input
+                  id="fullName"
                   name="fullName"
                   required
                   placeholder="e.g. Christopher Nolan"
-                  className="w-full rounded-lg border border-gray-700 px-4 py-2 bg-gray-900 shadow-sm
-                           focus:outline-none focus:ring-2 focus:ring-green-500 transition text-gray-100 placeholder-gray-500"
+                  className={inputClasses}
                 />
               </div>
-            </div>
 
-            {/* Image URL (inline with a compact preview placeholder) */}
-            <div className="grid grid-cols-12 gap-4 items-center">
-              <label className="col-span-3 text-sm font-medium text-gray-300">
-                Image URL
-              </label>
-              <div className="col-span-9 flex items-center gap-4">
-                <input
-                  name="imageUrl"
-                  type="url"
-                  placeholder="https://..."
-                  className="flex-1 rounded-lg border border-gray-700 px-4 py-2 bg-gray-900 shadow-sm
-                           focus:outline-none focus:ring-2 focus:ring-green-500 transition text-gray-100 placeholder-gray-500"
-                />
-                <div
-                  aria-hidden
-                  className="w-14 h-14 bg-gray-800 rounded-full flex items-center justify-center text-xs text-gray-300 border border-gray-700"
-                >
-                  Avatar
+              <div className={fieldGrid}>
+                <div>
+                  <label htmlFor="imageUrl" className={fieldLabelClasses}>
+                    Image URL
+                  </label>
+                  <p className={fieldHintClasses}>
+                    Secure (https) link to avatar.
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <input
+                    id="imageUrl"
+                    name="imageUrl"
+                    type="url"
+                    placeholder="https://..."
+                    className={inputClasses}
+                  />
+                  <div
+                    aria-hidden
+                    className="w-14 h-14 bg-gray-600 rounded-full flex items-center justify-center text-xs text-gray-300 border border-gray-700"
+                  >
+                    Avatar
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Bio (label inline, textarea spans) */}
-            <div className="grid grid-cols-12 gap-4 items-start">
-              <label className="col-span-3 text-sm font-medium text-gray-300">
-                Bio
-              </label>
-              <div className="col-span-9">
+              <div className={fieldGrid}>
+                <div>
+                  <label htmlFor="bio" className={fieldLabelClasses}>
+                    Bio
+                  </label>
+                  <p className={fieldHintClasses}>
+                    Short biography and highlights.
+                  </p>
+                </div>
                 <textarea
+                  id="bio"
                   name="bio"
-                  rows={4}
+                  rows={5}
                   placeholder="Short biography, career highlights..."
-                  className="w-full min-h-[110px] rounded-lg border border-gray-700 px-4 py-2 bg-gray-900 shadow-sm
-                           focus:outline-none focus:ring-2 focus:ring-green-500 transition resize-vertical text-gray-100 placeholder-gray-500"
+                  className="w-full rounded-lg border border-slate-300 !bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 placeholder:text-slate-500"
                 />
               </div>
-            </div>
 
-            <div>
-              <button
-                type="submit"
-                className="w-full inline-flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700
-                         text-white py-3 rounded-lg font-medium transition-shadow shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                Create Person
-              </button>
-            </div>
-          </form>
-        </Card>
+              <div className="flex justify-end">
+                <div className="w-full sm:w-auto">
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-2 px-4 rounded-md shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+                  >
+                    Create Person
+                  </button>
+                </div>
+              </div>
+            </form>
+            <PersonCreateClientValidator formId="create-person-form" />
+          </Card>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }
 

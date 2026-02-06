@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import toast from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
 import AdminSearchInput from "@/components/AdminSearchInput";
@@ -213,6 +214,24 @@ export default function AdminDashboardContent({
   React.useEffect(() => {
     setActiveTab(initialTab);
   }, [initialTab]);
+
+  // Show a one-time toast when arriving after creating a movie
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    const created = params.get("created");
+    const title = params.get("title");
+    if (created) {
+      const msg = title ? `Added "${title}"` : "Movie added";
+      toast.success(`${msg}!`);
+      params.delete("created");
+      params.delete("title");
+      const next = params.toString()
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname;
+      window.history.replaceState(null, "", next);
+    }
+  }, []);
 
   React.useEffect(() => {
     setSearchTerm(initialSearch);

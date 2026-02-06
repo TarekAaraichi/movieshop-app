@@ -14,7 +14,10 @@ import { requireAdmin } from "@/lib/requireAdmin";
 const personSchema = z.object({
   fullName: z.string().min(1),
   bio: z.string().optional().nullable(),
-  imageUrl: z.string().url().optional().nullable(),
+  imageUrl: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().url().optional().nullable(),
+  ),
 });
 
 export async function createPerson(formData: FormData) {
@@ -31,7 +34,12 @@ export async function createPerson(formData: FormData) {
   });
 
   revalidatePath("/admin");
-  redirect("/admin?tab=persons");
+  // include created flag and title to show toast in admin UI
+  redirect(
+    `/admin?tab=persons&created=1&title=${encodeURIComponent(
+      parsed.fullName.trim(),
+    )}`,
+  );
 }
 
 export async function updatePerson(formData: FormData) {
