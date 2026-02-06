@@ -20,6 +20,7 @@ import {
   PageThemeSwitcher,
 } from "@/components/PageThemeContext";
 import { Toaster } from "react-hot-toast";
+import prisma from "@/lib/prisma";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,18 @@ export const metadata: Metadata = {
 // avoid calling client-only APIs from server components. See
 // `src/components/SignOutButton.tsx` for the implementation.
 
+// Patch: Extend session user type to include 'role' for admin menu logic
+type SessionUserWithRole = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  email: string;
+  emailVerified: boolean;
+  name: string;
+  image?: string | null;
+  role?: string;
+};
+
 export default async function RootLayout({
   children,
 }: {
@@ -56,6 +69,16 @@ export default async function RootLayout({
   const session = await auth.api.getSession({
     headers: headerObj as unknown as Headers,
   });
+
+  const sessionUser = session?.user as SessionUserWithRole | undefined;
+  let isAdmin = sessionUser?.role === "admin";
+  if (!isAdmin && sessionUser?.id) {
+    const dbUser = await prisma.user.findUnique({
+      where: { id: sessionUser.id },
+      select: { role: true },
+    });
+    isAdmin = dbUser?.role === "admin";
+  }
 
   return (
     <html
@@ -223,6 +246,14 @@ export default async function RootLayout({
                           >
                             View profile
                           </Link>
+                          {isAdmin && (
+                            <Link
+                              href="/admin"
+                              className="block px-4 py-2 text-sm text-emerald-300 hover:bg-gray-700 transition-colors duration-150 font-semibold"
+                            >
+                              Admin
+                            </Link>
+                          )}
 
                           <SignOutButton />
                         </div>

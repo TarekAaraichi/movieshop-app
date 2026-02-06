@@ -98,7 +98,7 @@ export default function CartClient({
             className="flex items-center justify-between border-b pb-4"
           >
             <div className="flex items-center px-2 space-x-4">
-              <div className="w-20 h-20 relative">
+              <div className="w-20 h-20 relative mt-2">
                 <Image
                   src={movie.imageUrl || "https://via.placeholder.com/80"}
                   alt={movie.title}
@@ -137,13 +137,19 @@ export default function CartClient({
               </div>
             </div>
             <div className="flex items-center space-x-1">
-              <p className="text-lg font-medium text-gray-800">
-                SEK{Number(movie.price).toFixed(2)}
-              </p>
+              <div className="flex items-center gap-1">
+                <span className="text-base font-semibold text-green-500">
+                  {Number(movie.price).toLocaleString("sv-SE", {
+                    style: "currency",
+                    currency: "SEK",
+                    minimumFractionDigits: 2,
+                  })}
+                </span>
+              </div>
               <button
                 type="button"
                 onClick={() => onDec(movie.id)}
-                className="px-2 bg-gray-200 rounded"
+                className="px-2 bg-blue-100 hover:bg-blue-300 transition-colors duration-150 text-blue-700 font-bold text-lg flex items-center justify-center w-8 h-8 rounded"
                 disabled={isPending}
               >
                 −
@@ -152,7 +158,7 @@ export default function CartClient({
               <button
                 type="button"
                 onClick={() => onInc(movie.id, movie.stock ?? null)}
-                className="px-2 bg-gray-200 rounded"
+                className="px-2 bg-blue-100 hover:bg-blue-300 transition-colors duration-150 text-blue-700 font-bold text-lg flex items-center justify-center w-8 h-8 rounded"
                 disabled={
                   isPending || (movie.stock !== null && quantity >= movie.stock)
                 }

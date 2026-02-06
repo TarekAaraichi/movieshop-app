@@ -200,14 +200,14 @@ export default async function MoviePage({ params }: Props) {
 
           <Link
             href="/movies"
-            className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-neutral-800 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
+            className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
           >
-            Back to catalog
+            Back to Movies
           </Link>
         </div>
       </aside>
       <main className="w-full  mx-auto flex-grow p-2">
-        <section className="flex flex-row gap-6 items-start p-5 rounded-[14px] bg-gray-900 border border-neutral-800 shadow-2xl backdrop-blur-md">
+        <section className="flex flex-row gap-6 items-start p-5 rounded-[14px] bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 border border-neutral-800 shadow-2xl backdrop-blur-md">
           <div className="flex-1 min-w-0">
             <h1 className="text-[32px] font-extrabold m-0 flex items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-blue-400">
               {title}

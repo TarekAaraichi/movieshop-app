@@ -111,22 +111,31 @@ export default async function ProfilePage() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
           <div className="md:col-span-1">
-            <div className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg shadow-md p-6 text-center">
+            <div className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg shadow-md p-6 text-center">
               <div className="relative w-32 h-32 mx-auto mb-4">
                 <Image
-                  src={user.image ?? "/placeholder.png"}
+                  src={
+                    user.image &&
+                    typeof user.image === "string" &&
+                    user.image.length > 0
+                      ? user.image
+                      : user.id
+                        ? `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(user.id)}`
+                        : "/placeholder.png"
+                  }
                   alt="User avatar"
                   width={128}
                   height={128}
-                  className="rounded-full object-cover border-4 border-neutral-200 dark:border-neutral-700"
+                  className="rounded-full object-cover border-1 border-neutral-200 dark:border-neutral-700"
+                  unoptimized
                 />
               </div>
               <h2 className="text-xl font-bold text-neutral-800 dark:text-white">
                 {user.name}
               </h2>
-              <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              <p className="text-sm text-neutral-500 dark:text-neutral-600">
                 {user.email}
               </p>
               <Link
@@ -135,21 +144,24 @@ export default async function ProfilePage() {
               >
                 Edit Profile
               </Link>
+              <Link
+                href="/profile/orders"
+                className="mt-4 ml-2 inline-block bg-emerald-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-emerald-700 transition-colors"
+              >
+                My Orders
+              </Link>
             </div>
           </div>
 
           <div className="md:col-span-2">
             <section className="mb-8">
-              <h3 className="text-xl font-bold mb-4 text-neutral-800 dark:text-white">
+              <h3 className="text-xl font-bold mb-4 text-black dark:text-white">
                 Shipping Addresses
               </h3>
               <div className="space-y-4">
                 {uniqueAddresses.length > 0 ? (
                   uniqueAddresses.map((addr) => (
-                    <div
-                      key={addr.id}
-                      className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg p-4"
-                    >
+                    <div key={addr.id} className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg p-4">
                       <p className="font-semibold text-neutral-700 dark:text-neutral-300">
                         {addr.line1}
                       </p>
@@ -170,85 +182,7 @@ export default async function ProfilePage() {
                 )}
               </div>
             </section>
-
-            <section>
-              <h3 className="text-xl font-bold mb-4 text-neutral-800 dark:text-white">
-                Order History
-              </h3>
-              <div className="space-y-6">
-                {orders.length > 0 ? (
-                  orders.map((order) => (
-                    <div
-                      key={order.id}
-                      className="bg-neutral-100 dark:bg-neutral-800/50 rounded-lg overflow-hidden"
-                    >
-                      <div className="p-4 border-b border-neutral-200 dark:border-neutral-700">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="font-bold text-lg text-neutral-800 dark:text-white">
-                              Order #{order.id.substring(0, 8)}
-                            </p>
-                            <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                              {new Date(order.orderDate).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-bold text-lg text-neutral-800 dark:text-white">
-                              ${order.totalAmount.toFixed(2)}
-                            </p>
-                            <span
-                              className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                                order.status === "PAID"
-                                  ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300"
-                                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300"
-                              }`}
-                            >
-                              {order.status}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="p-4">
-                        <ul className="space-y-2">
-                          {order.items.map((item) => (
-                            <li
-                              key={item.movieId}
-                              className="flex items-center gap-4"
-                            >
-                              <Image
-                                src={item.movie.imageUrl ?? "/placeholder.png"}
-                                alt={item.movie.title}
-                                width={40}
-                                height={60}
-                                className="rounded-md object-cover"
-                              />
-                              <div className="flex-1">
-                                <p className="font-semibold text-neutral-700 dark:text-neutral-300">
-                                  {item.movie.title}
-                                </p>
-                                <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                                  Quantity: {item.quantity}
-                                </p>
-                              </div>
-                              <p className="font-semibold text-neutral-700 dark:text-neutral-300">
-                                $
-                                {(
-                                  Number(item.priceAtPurchase) * item.quantity
-                                ).toFixed(2)}
-                              </p>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-neutral-500 dark:text-neutral-400">
-                    You haven't placed any orders yet.
-                  </p>
-                )}
-              </div>
-            </section>
+            {/* Order history moved to /profile/orders */}
           </div>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { PageWrapper } from "@/components/PageThemeContext";
 
 /**
  * Contact page (ensured)
@@ -7,9 +8,10 @@ import { Card } from "@/components/ui/card";
 
 export default function ContactPage() {
   return (
+    <PageWrapper>
     <div>
       <div className="m-auto max-w-4xl w-full">
-        <Card className="p-6 sm:p-8">
+        <Card className="p-6 sm:p-8 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50">
           <header className="mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl font-semibold text-gray-100">
               Contact
@@ -25,31 +27,15 @@ export default function ContactPage() {
             <section className="space-y-4">
               <h2 className="text-sm font-medium text-gray-200">Team</h2>
 
-              <ul className="space-y-3">
+              <ul className="space-y-3 rounded-lg bg-gray-700">
                 {[
                   {
                     name: "Tarek Aaraichi",
-                    role: "Frontend / Integrations",
+                    role: "Full-Stack Developer",
                     linkedin: "https://www.linkedin.com/in/tarek-aaraichi",
                     github: "https://github.com/TarekAaraichi",
                     email: "tarek.aaraichi@gmail.com",
                     color: "bg-gradient-to-br from-rose-500 to-pink-500",
-                  },
-                  {
-                    name: "Johan Skaneby",
-                    role: "Backend / DB",
-                    linkedin: "https://www.linkedin.com/in/johan-skaneby",
-                    github: "https://github.com/johanskaneby",
-                    email: "johan@example.com",
-                    color: "bg-gradient-to-br from-blue-500 to-indigo-500",
-                  },
-                  {
-                    name: "Josef Rega",
-                    role: "UX / Design",
-                    linkedin: "https://www.linkedin.com/in/josef-rega",
-                    github: "https://github.com/josefrega",
-                    email: "josef@example.com",
-                    color: "bg-gradient-to-br from-emerald-400 to-teal-600",
                   },
                 ].map((p) => (
                   <li
@@ -139,7 +125,7 @@ export default function ContactPage() {
               </ul>
             </section>
 
-            <section className="bg-gradient-to-b from-gray-800/20 to-gray-800/10 rounded-xl p-5 sm:p-6">
+            <section className="bg-gray-700 rounded-xl p-5 sm:p-6">
               <h2 className="text-sm font-medium text-gray-200">
                 Get in touch
               </h2>
@@ -161,7 +147,7 @@ export default function ContactPage() {
                       href="https://github.com/Gr-25-13/movieshop-delta"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-gray-100 bg-white/6 px-3 py-1 rounded-md hover:bg-white/10"
+                      className="inline-flex items-center gap-2 text-sm font-medium  px-3 py-1 rounded-md bg-gray-800/40 hover:bg-gray-800/50 transition-colors text-gray-100"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -189,5 +175,6 @@ export default function ContactPage() {
         </Card>
       </div>
     </div>
+    </PageWrapper>
   );
 }

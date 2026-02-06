@@ -56,7 +56,7 @@ export async function addToCart(formData: FormData) {
     type CookieSetArgs = (
       name: string,
       value: string,
-      opts?: { path?: string }
+      opts?: { path?: string },
     ) => void;
     const setFn = cs.set as unknown as CookieSetObj | CookieSetArgs;
     try {
@@ -84,18 +84,21 @@ export async function updateMovie(formData: FormData) {
     description: z.string().min(1),
     director: z.string().min(1),
     actors: z.string().optional().nullable(),
-    imageUrl: z.string().optional().nullable(),
+    imageUrl: z.preprocess(
+      (v) => (typeof v === "string" && v.trim() === "" ? null : v),
+      z.string().optional().nullable(),
+    ),
     runtime: z.preprocess(
       (v) => (typeof v === "string" ? parseInt(v, 10) : v),
-      z.number().int().nonnegative()
+      z.number().int().nonnegative(),
     ),
     price: z.preprocess(
       (v) => (typeof v === "string" ? parseFloat(v) : v),
-      z.number().nonnegative()
+      z.number().nonnegative(),
     ),
     stock: z.preprocess(
       (v) => (typeof v === "string" ? parseInt(v, 10) : v),
-      z.number().int().nonnegative()
+      z.number().int().nonnegative(),
     ),
     genres: z.string().optional().nullable(),
   });
@@ -133,8 +136,8 @@ export async function updateMovie(formData: FormData) {
         where: { fullName: name },
         update: {},
         create: { fullName: name },
-      })
-    )
+      }),
+    ),
   );
 
   const genreNames =
@@ -144,8 +147,8 @@ export async function updateMovie(formData: FormData) {
       .filter(Boolean) ?? [];
   const genreRecords = await Promise.all(
     genreNames.map((name) =>
-      prisma.genre.upsert({ where: { name }, update: {}, create: { name } })
-    )
+      prisma.genre.upsert({ where: { name }, update: {}, create: { name } }),
+    ),
   );
 
   await prisma.movie.update({
@@ -187,18 +190,21 @@ const movieCreateSchema = z.object({
   description: z.string().min(1),
   director: z.string().min(1),
   actors: z.string().optional().nullable(),
-  imageUrl: z.string().url().optional(),
+  imageUrl: z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    z.string().url().optional(),
+  ),
   runtime: z.preprocess(
     (v) => (typeof v === "string" ? parseInt(v, 10) : v),
-    z.number().int().positive()
+    z.number().int().positive(),
   ),
   price: z.preprocess(
     (v) => (typeof v === "string" ? parseFloat(v) : v),
-    z.number().nonnegative()
+    z.number().nonnegative(),
   ),
   stock: z.preprocess(
     (v) => (typeof v === "string" ? parseInt(v, 10) : v),
-    z.number().int().nonnegative()
+    z.number().int().nonnegative(),
   ),
   genres: z.string().optional().nullable(),
 });
@@ -237,8 +243,8 @@ export async function createMovie(formData: FormData) {
         where: { fullName: name },
         update: {},
         create: { fullName: name },
-      })
-    )
+      }),
+    ),
   );
 
   const genreNames =
@@ -248,8 +254,8 @@ export async function createMovie(formData: FormData) {
       .filter(Boolean) ?? [];
   const genreRecords = await Promise.all(
     genreNames.map((name) =>
-      prisma.genre.upsert({ where: { name }, update: {}, create: { name } })
-    )
+      prisma.genre.upsert({ where: { name }, update: {}, create: { name } }),
+    ),
   );
 
   await prisma.movie.create({
@@ -277,7 +283,8 @@ export async function createMovie(formData: FormData) {
   });
 
   revalidatePath("/admin");
-  redirect("/admin");
+  // Redirect with a query param so the admin UI can show a success toast
+  redirect(`/admin?created=1&title=${encodeURIComponent(title)}`);
 }
 
 export async function archiveMovie(formData: FormData) {
@@ -303,7 +310,7 @@ export async function deleteMovie(formData: FormData) {
   const orderRefs = await prisma.orderItem.count({ where: { movieId: id } });
   if (orderRefs > 0) {
     throw new Error(
-      "Cannot delete movie: it has associated orders. Remove related orders or keep the movie for order history."
+      "Cannot delete movie: it has associated orders. Remove related orders or keep the movie for order history.",
     );
   }
   await prisma.cartItem.deleteMany({ where: { movieId: id } });

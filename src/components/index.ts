@@ -9,6 +9,8 @@ export { default as CartClient } from "./CartClient";
 export { CartCountProvider, useCartCount } from "./CartCountContext";
 export { default as CartCountBadge } from "./CartCountBadge";
 export { default as ClientShell } from "./ClientShell";
+export { default as AdminSearchInput } from "./AdminSearchInput";
+export { default as AdminTabSwitcher } from "./AdminTabSwitcher";
 export { default as GenreSelect } from "./GenreSelect";
 export { default as MovieSearch } from "./MovieSearch";
 export { default as NavBarClient } from "./NavBarClient";

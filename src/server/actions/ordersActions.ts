@@ -227,8 +227,6 @@ export async function createOrder(formData: FormData): Promise<void> {
     selectedAddressIdRaw && selectedAddressIdRaw !== "NEW"
       ? String(selectedAddressIdRaw)
       : undefined;
-  const saveAddressFlag = String(raw["saveAddress"] ?? "") === "1";
-
   // If a selectedAddressId was provided, verify it belongs to the user
   if (selectedAddressId) {
     try {
@@ -245,7 +243,7 @@ export async function createOrder(formData: FormData): Promise<void> {
         redirect(`/checkout?errors=${qs}`);
         return;
       }
-    } catch (e) {
+    } catch {
       const qs = encodeURIComponent(
         JSON.stringify({
           _type: "business",
@@ -301,7 +299,7 @@ export async function createOrder(formData: FormData): Promise<void> {
         },
       });
       if (maybe) existingAddressId = maybe.id;
-    } catch (e) {
+    } catch {
       // ignore and fallthrough to creating a new address
     }
   }

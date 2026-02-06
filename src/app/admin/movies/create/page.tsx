@@ -1,6 +1,9 @@
 import { AddButton } from "@/components";
-import { createMovie } from "@/server/actions/moviesActions";
+import { PageWrapper } from "@/components/PageThemeContext";
+import MovieCreateClientValidator from "@/components/MovieCreateClientValidator";
+import { Card } from "@/components/ui";
 import { requireAdmin } from "@/lib/requireAdmin";
+import { createMovie } from "@/server/actions/moviesActions";
 
 /**
  * Admin: Create movie (ensured)
@@ -16,216 +19,233 @@ export default async function CreateMoviePage() {
   // Note: this is a server component; call shared requireAdmin at render-time
   // redirect must match this page route
   await requireAdmin("/admin/movies/create");
+  const inputClasses =
+    "w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 placeholder:text-slate-500 !bg-white";
+  const fieldLabelClasses = "text-sm font-semibold text-slate-200";
+  const fieldHintClasses = "mt-1 text-xs font-medium text-slate-400";
+  const fieldGrid = "grid gap-2 sm:grid-cols-[160px_1fr] sm:items-center";
+
   return (
-    <div>
-      <div className="mx-auto max-w-3xl">
-        <Card className="p-6 sm:p-8 rounded-2xl shadow-2xl">
-          <header className="mb-6">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-100">
+    <PageWrapper>
+      <div className="min-h-screen bg-transparent px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl space-y-10">
+          <div className="rounded-3xl border border-slate-200/10 bg-gray-600 p-6 sm:p-8 shadow-2xl">
+            <h1 className="text-3xl font-bold text-white sm:text-4xl">
               Create Movie
             </h1>
-            <p className="mt-1 text-sm text-gray-400">
-              Add a new movie to the catalog. Use the inline fields for a
-              quicker workflow.
+            <p className="mt-2 max-w-2xl text-sm text-indigo-100/90">
+              Provide production details, pricing, and metadata to publish a new
+              movie in the catalog. Fields marked with * are required.
             </p>
-          </header>
+          </div>
 
-          <form action={createMovie} className="space-y-6">
-            {/* Title */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <label
-                htmlFor="title"
-                className="w-full sm:w-36 text-sm font-medium text-gray-300"
-              >
-                Title
-              </label>
-              <input
-                id="title"
-                name="title"
-                type="text"
-                required
-                placeholder="e.g., The Great Adventure"
-                className="flex-1 p-3 border border-gray-700 rounded-lg bg-gray-900 text-gray-100 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            {/* Release Date + Runtime (inline) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label
-                  htmlFor="releaseDate"
-                  className="w-full sm:w-36 text-sm font-medium text-gray-300"
-                >
-                  Release
-                </label>
+          <Card className="rounded-3xl border-slate-800 bg-gray-600 p-6 text-slate-100 shadow-2xl sm:p-8">
+            <form
+              id="create-movie-form"
+              action={createMovie}
+              className="space-y-6"
+            >
+              <div className={fieldGrid}>
+                <div>
+                  <label htmlFor="title" className={fieldLabelClasses}>
+                    Title *
+                  </label>
+                  <p className={fieldHintClasses}>
+                    Use the official release title.
+                  </p>
+                </div>
                 <input
-                  id="releaseDate"
-                  name="releaseDate"
-                  type="date"
-                  required
-                  className="flex-1 p-3 border border-gray-700 rounded-lg bg-gray-900 text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label
-                  htmlFor="runtime"
-                  className="w-full sm:w-36 text-sm font-medium text-gray-300"
-                >
-                  Runtime
-                </label>
-                <input
-                  id="runtime"
-                  name="runtime"
-                  type="number"
-                  min={1}
-                  required
-                  placeholder="minutes"
-                  className="flex-1 p-3 border border-gray-700 rounded-lg bg-gray-900 text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-            </div>
-
-            {/* Director + Actors (inline) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label
-                  htmlFor="director"
-                  className="w-full sm:w-36 text-sm font-medium text-gray-300"
-                >
-                  Director
-                </label>
-                <input
-                  id="director"
-                  name="director"
+                  id="title"
+                  name="title"
                   type="text"
                   required
-                  placeholder="Director name"
-                  className="flex-1 p-3 border border-gray-700 rounded-lg bg-gray-900 text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="e.g., The Great Adventure"
+                  className={inputClasses}
                 />
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label
-                  htmlFor="actors"
-                  className="w-full sm:w-36 text-sm font-medium text-gray-300"
-                >
-                  Actors
-                </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className={fieldGrid}>
+                  <div>
+                    <label htmlFor="releaseDate" className={fieldLabelClasses}>
+                      Release Date *
+                    </label>
+                    <p className={fieldHintClasses}>
+                      Accepted format: YYYY-MM-DD.
+                    </p>
+                  </div>
+                  <input
+                    id="releaseDate"
+                    name="releaseDate"
+                    type="date"
+                    required
+                    className={inputClasses}
+                  />
+                </div>
+
+                <div className={fieldGrid}>
+                  <div>
+                    <label htmlFor="runtime" className={fieldLabelClasses}>
+                      Runtime *
+                    </label>
+                    <p className={fieldHintClasses}>
+                      Enter the duration in minutes.
+                    </p>
+                  </div>
+                  <input
+                    id="runtime"
+                    name="runtime"
+                    type="number"
+                    min={1}
+                    required
+                    placeholder="120"
+                    className={inputClasses}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className={fieldGrid}>
+                  <div>
+                    <label htmlFor="director" className={fieldLabelClasses}>
+                      Director *
+                    </label>
+                    <p className={fieldHintClasses}>
+                      New names are added automatically.
+                    </p>
+                  </div>
+                  <input
+                    id="director"
+                    name="director"
+                    type="text"
+                    required
+                    placeholder="Director name"
+                    className={inputClasses}
+                  />
+                </div>
+
+                <div className={fieldGrid}>
+                  <div>
+                    <label htmlFor="actors" className={fieldLabelClasses}>
+                      Cast
+                    </label>
+                    <p className={fieldHintClasses}>
+                      Separate each actor with a comma.
+                    </p>
+                  </div>
+                  <input
+                    id="actors"
+                    name="actors"
+                    type="text"
+                    placeholder="Lead Actor, Supporting Actor"
+                    className={inputClasses}
+                  />
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className={fieldGrid}>
+                  <div>
+                    <label htmlFor="price" className={fieldLabelClasses}>
+                      Price *
+                    </label>
+                    <p className={fieldHintClasses}>
+                      Specify the retail price in USD.
+                    </p>
+                  </div>
+                  <input
+                    id="price"
+                    name="price"
+                    type="number"
+                    step="0.01"
+                    min={0}
+                    required
+                    placeholder="19.99"
+                    className={inputClasses}
+                  />
+                </div>
+
+                <div className={fieldGrid}>
+                  <div>
+                    <label htmlFor="stock" className={fieldLabelClasses}>
+                      Stock *
+                    </label>
+                    <p className={fieldHintClasses}>
+                      Inventory available for purchase.
+                    </p>
+                  </div>
+                  <input
+                    id="stock"
+                    name="stock"
+                    type="number"
+                    min={0}
+                    required
+                    placeholder="50"
+                    className={inputClasses}
+                  />
+                </div>
+              </div>
+
+              <div className={fieldGrid}>
+                <div>
+                  <label htmlFor="imageUrl" className={fieldLabelClasses}>
+                    Poster URL
+                  </label>
+                  <p className={fieldHintClasses}>
+                    Use a secure (https) link to the artwork.
+                  </p>
+                </div>
                 <input
-                  id="actors"
-                  name="actors"
+                  id="imageUrl"
+                  name="imageUrl"
+                  type="url"
+                  placeholder="https://..."
+                  className={inputClasses}
+                />
+              </div>
+
+              <div className={fieldGrid}>
+                <div>
+                  <label htmlFor="genres" className={fieldLabelClasses}>
+                    Genres *
+                  </label>
+                  <p className={fieldHintClasses}>
+                    Comma-separated values—new genres are created automatically.
+                  </p>
+                </div>
+                <input
+                  id="genres"
+                  name="genres"
                   type="text"
-                  placeholder="Comma-separated"
-                  className="flex-1 p-3 border border-gray-700 rounded-lg bg-gray-900 text-gray-100 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-            </div>
-
-            {/* Price + Stock (inline) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label
-                  htmlFor="price"
-                  className="w-full sm:w-36 text-sm font-medium text-gray-300"
-                >
-                  Price
-                </label>
-                <input
-                  id="price"
-                  name="price"
-                  type="number"
-                  step="0.01"
-                  min={0}
                   required
-                  placeholder="0.00"
-                  className="flex-1 p-3 border border-gray-700 rounded-lg bg-gray-900 text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Action, Drama, Sci-Fi"
+                  className={inputClasses}
                 />
               </div>
 
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label
-                  htmlFor="stock"
-                  className="w-full sm:w-36 text-sm font-medium text-gray-300"
-                >
-                  Stock
-                </label>
-                <input
-                  id="stock"
-                  name="stock"
-                  type="number"
-                  min={0}
-                  required
-                  className="flex-1 p-3 border border-gray-700 rounded-lg bg-gray-900 text-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-            </div>
-
-            {/* Image URL */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <label
-                htmlFor="imageUrl"
-                className="w-full sm:w-36 text-sm font-medium text-gray-300"
-              >
-                Poster
-              </label>
-              <input
-                id="imageUrl"
-                name="imageUrl"
-                type="url"
-                required
-                placeholder="https://..."
-                className="flex-1 p-3 border border-gray-700 rounded-lg bg-gray-900 text-gray-100 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            {/* Genres */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <label
-                htmlFor="genres"
-                className="w-full sm:w-36 text-sm font-medium text-gray-300"
-              >
-                Genres
-              </label>
-              <input
-                id="genres"
-                name="genres"
-                type="text"
-                placeholder="Action, Drama, Sci‑Fi"
-                className="flex-1 p-3 border border-gray-700 rounded-lg bg-gray-900 text-gray-100 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            {/* Description */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <label
-                  htmlFor="description"
-                  className="w-36 text-sm font-medium text-gray-300 hidden sm:block"
-                >
+              <div className="space-y-2">
+                <label htmlFor="description" className={fieldLabelClasses}>
                   Description
                 </label>
-                <span className="text-sm font-medium text-gray-300 sm:hidden">
-                  Description
-                </span>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows={6}
+                  placeholder="A concise synopsis for merchandising and storefront placement."
+                  className="w-full rounded-lg border border-slate-300 !bg-white px-4 py-3 text-sm font-medium text-slate-900 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 placeholder:text-slate-500"
+                />
               </div>
-              <textarea
-                id="description"
-                name="description"
-                rows={5}
-                required
-                placeholder="A short synopsis..."
-                className="w-full p-4 border border-gray-700 rounded-lg bg-gray-900 text-gray-100 text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
 
-            {/* Actions */}
-            <div className="flex items-center justify-end gap-3">
-              <AddButton />
-            </div>
-          </form>
-        </Card>
+              <div className="flex justify-end">
+                <div className="w-full sm:w-auto">
+                  <AddButton />
+                </div>
+              </div>
+            </form>
+            <MovieCreateClientValidator formId="create-movie-form" />
+          </Card>
+        </div>
       </div>
-    </div>
+    </PageWrapper>
   );
 }

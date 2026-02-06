@@ -12,6 +12,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
+import { PageWrapper } from "@/components/PageThemeContext";
 
 export default async function CheckoutPage({
   searchParams,
@@ -33,14 +34,6 @@ export default async function CheckoutPage({
   const userId = (session as SessionWithUser)?.user?.id;
   let dbUser = null;
   let dbAddress = null;
-  let dbAddresses: {
-    id: string;
-    line1: string;
-    city: string;
-    postalCode: string;
-    country: string;
-    line2?: string | null;
-  }[] = [];
   if (userId) {
     dbUser = await prisma.user.findUnique({
       where: { id: userId },
@@ -49,18 +42,6 @@ export default async function CheckoutPage({
     dbAddress = await prisma.address.findFirst({
       where: { userId },
       orderBy: { id: "asc" },
-    });
-    dbAddresses = await prisma.address.findMany({
-      where: { userId },
-      orderBy: { id: "asc" },
-      select: {
-        id: true,
-        line1: true,
-        line2: true,
-        city: true,
-        postalCode: true,
-        country: true,
-      },
     });
   }
 
@@ -87,232 +68,217 @@ export default async function CheckoutPage({
       // ignore parse errors
     }
   }
+  // Track if user has a default address and should show "Save this address" checkbox
   return (
-    <div>
-      <div className="w-full m-auto max-w-3xl">
-        <Card className="p-6 sm:p-8">
-          <div className="flex items-start justify-between gap-4 mb-6">
-          <div>
-              <h1 className="text-2xl font-semibold text-gray-100">
-              Checkout
-            </h1>
-            <p className="text-sm text-gray-400 mt-1">
-              Review your details and complete payment
-            </p>
-          </div>
-        </div>
-
-        {serverErrors.length > 0 && (
-          <div
-            role="alert"
-            aria-live="polite"
-            className="mb-4 rounded-md bg-red-50 border border-red-200 text-red-800 px-4 py-3 text-sm"
-          >
-            <ul className="list-disc list-inside">
-              {serverErrors.map((e, i) => (
-                <li key={i}>{e}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <form
-          id="checkout-form"
-          action={createOrder}
-          className="grid grid-cols-1 gap-4 sm:gap-6 min-w-0"
-        >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <label className="flex items-center gap-4 min-w-0">
-              <span className="w-28 text-sm font-medium text-gray-300">
-                Full name
-              </span>
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                placeholder="John Doe"
-                defaultValue={dbUser?.name ?? undefined}
-                required
-                 className="flex-1 min-w-0 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-              />
-            </label>
-
-            <label className="flex items-center gap-4 min-w-0">
-              <span className="w-28 text-sm font-medium text-gray-300">
-                Email
-              </span>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="john.doe@example.com"
-                defaultValue={dbUser?.email ?? undefined}
-                required
-                 className="flex-1 min-w-0 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-              />
-            </label>
-          </div>
-
-          <div className="grid grid-cols-1 gap-3">
-            {dbAddress ? (
-              <div className="flex items-start gap-4">
-                <div className="w-28 text-sm font-medium text-gray-300">
-                  Address
-                </div>
-                <div className="flex-1">
-                  <input
-                    type="hidden"
-                    name="selectedAddressId"
-                    value={dbAddress.id}
-                  />
-                    <div className="text-sm text-gray-100">
-                    <div>{dbAddress.line1}</div>
-                    {dbAddress.line2 ? <div>{dbAddress.line2}</div> : null}
-                    <div>
-                      {dbAddress.city} {dbAddress.postalCode}
-                    </div>
-                    <div>{dbAddress.country}</div>
-                  </div>
-                </div>
-                <label className="flex items-center gap-2 text-sm text-gray-300">
-                  <input
-                    type="checkbox"
-                    name="useNewAddress"
-                    value="1"
-                    className="rounded"
-                  />
-                  Deliver to another address
-                </label>
+    <PageWrapper>
+      <div>
+        <div className="w-full m-auto max-w-3xl">
+          <Card className="p-8 bg-gradient-to-br from-neutral-900 via-neutral-800 to-indigo-950 border border-indigo-300 shadow-2xl">
+            <div className="flex items-start justify-between gap-4 mb-8">
+              <div>
+                <h1 className="text-3xl font-extrabold text-indigo-400 tracking-tight">
+                  Checkout
+                </h1>
+                <p className="text-base text-neutral-200 mt-2">
+                  Confirm your details and securely complete your purchase.
+                </p>
               </div>
-            ) : (
-              <div className="flex items-start gap-4">
-                <div className="w-28 text-sm font-medium text-gray-300">
-                  Street
-                </div>
-                <div className="text-sm text-gray-100">
-                  Please enter your delivery address below
-                </div>
+            </div>
+
+            {serverErrors.length > 0 && (
+              <div
+                role="alert"
+                aria-live="polite"
+                className="mb-6 rounded-lg bg-red-200/90 border border-red-400 text-red-900 px-5 py-4 text-base shadow"
+              >
+                <ul className="list-disc list-inside space-y-1">
+                  {serverErrors.map((e, i) => (
+                    <li key={i}>{e}</li>
+                  ))}
+                </ul>
               </div>
             )}
 
-            <div
-              id="address-fields"
-              className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            <form
+              id="checkout-form"
+              action={createOrder}
+              className="grid grid-cols-1 gap-6 min-w-0"
+              autoComplete="off"
             >
-              <label className="flex items-center gap-4 sm:col-span-2 min-w-0">
-                <span className="w-28 text-sm font-medium text-gray-300">
-                  Street
-                </span>
-                <input
-                  id="line1"
-                  name="line1"
-                  type="text"
-                  placeholder="Street address"
-                  defaultValue={dbAddress?.line1 ?? undefined}
-                  required
-                   className="flex-1 min-w-0 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                />
-              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="flex items-center gap-4 min-w-0">
+                  <span className="w-32 text-base font-medium text-indigo-300">
+                    Full name
+                  </span>
+                  <span className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-neutral-900 px-4 py-2 text-neutral-100">
+                    {dbUser?.name || (
+                      <span className="italic text-neutral-500">No name</span>
+                    )}
+                  </span>
+                </div>
+                <div className="flex items-center gap-4 min-w-0">
+                  <span className="w-32 text-base font-medium text-indigo-300">
+                    Email
+                  </span>
+                  <span className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-neutral-900 px-4 py-2 text-neutral-100">
+                    {dbUser?.email || (
+                      <span className="italic text-neutral-500">No email</span>
+                    )}
+                  </span>
+                </div>
+              </div>
 
-              <label className="flex items-center gap-4 min-w-0">
-                <span className="w-28 text-sm font-medium text-gray-300">
-                  City
-                </span>
-                <input
-                  id="city"
-                  name="city"
-                  type="text"
-                  placeholder="City"
-                  defaultValue={dbAddress?.city ?? undefined}
-                  required
-                   className="flex-1 min-w-0 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                />
-              </label>
+              <div className="grid grid-cols-1 gap-4">
+                {dbAddress ? (
+                  <div className="flex items-start gap-4">
+                    <div className="w-32 text-base font-medium text-indigo-300">
+                      Address
+                    </div>
+                    <div className="flex-1">
+                      <input
+                        type="hidden"
+                        name="selectedAddressId"
+                        value={dbAddress.id}
+                      />
+                      <div className="text-base text-neutral-100 space-y-0.5">
+                        <div>{dbAddress.line1}</div>
+                        {dbAddress.line2 ? <div>{dbAddress.line2}</div> : null}
+                        <div>
+                          {dbAddress.city} {dbAddress.postalCode}
+                        </div>
+                        <div>{dbAddress.country}</div>
+                      </div>
+                    </div>
+                    <label className="flex items-center gap-2 text-base text-indigo-200 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        name="useNewAddress"
+                        value="1"
+                        className="rounded border-indigo-300 text-indigo-600 focus:ring-2 focus:ring-indigo-100 focus:border-white transition"
+                        data-toggle-save-address
+                      />
+                      <span>Deliver to another address</span>
+                    </label>
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-4">
+                    <div className="w-32 text-base font-medium text-indigo-300">
+                      Street
+                    </div>
+                    <div className="text-base text-indigo-400">
+                      Please enter your delivery address below.
+                    </div>
+                  </div>
+                )}
 
-              <label className="flex items-center gap-4 min-w-0">
-                <span className="w-28 text-sm font-medium text-gray-300">
-                  Postal
-                </span>
-                <input
-                  id="postalCode"
-                  name="postalCode"
-                  type="text"
-                  placeholder="ZIP"
-                  defaultValue={dbAddress?.postalCode ?? undefined}
-                  required
-                   className="flex-1 min-w-0 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                />
-              </label>
+                <div
+                  id="address-fields"
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+                >
+                  <label className="flex items-center gap-4 sm:col-span-2 min-w-0">
+                    <span className="w-32 text-base font-medium text-indigo-300">
+                      Street
+                    </span>
+                    <input
+                      id="line1"
+                      name="line1"
+                      type="text"
+                      placeholder="Street address"
+                      defaultValue={dbAddress?.line1 ?? undefined}
+                      required
+                      className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-white dark:bg-neutral-900 px-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition"
+                    />
+                  </label>
 
-              <label className="flex items-center gap-4 min-w-0">
-                <span className="w-28 text-sm font-medium text-gray-300">
-                  Country
-                </span>
-                <input
-                  id="country"
-                  name="country"
-                  type="text"
-                  placeholder="Country"
-                  defaultValue={dbAddress?.country ?? undefined}
-                  required
-                   className="flex-1 min-w-0 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-                />
-              </label>
+                  <label className="flex items-center gap-4 min-w-0">
+                    <span className="w-32 text-base font-medium text-indigo-300">
+                      City
+                    </span>
+                    <input
+                      id="city"
+                      name="city"
+                      type="text"
+                      placeholder="City"
+                      defaultValue={dbAddress?.city ?? undefined}
+                      required
+                      className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-white dark:bg-neutral-900 px-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition"
+                    />
+                  </label>
+
+                  <label className="flex items-center gap-4 min-w-0">
+                    <span className="w-32 text-base font-medium text-indigo-300">
+                      Postal
+                    </span>
+                    <input
+                      id="postalCode"
+                      name="postalCode"
+                      type="text"
+                      placeholder="ZIP"
+                      defaultValue={dbAddress?.postalCode ?? undefined}
+                      required
+                      className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-white dark:bg-neutral-900 px-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition"
+                    />
+                  </label>
+
+                  <label className="flex items-center gap-4 min-w-0">
+                    <span className="w-32 text-base font-medium text-indigo-300">
+                      Country
+                    </span>
+                    <input
+                      id="country"
+                      name="country"
+                      type="text"
+                      placeholder="Country"
+                      defaultValue={dbAddress?.country ?? undefined}
+                      required
+                      className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-white dark:bg-white px-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 items-center">
+                <label className="flex items-center gap-4 sm:col-span-2 min-w-0">
+                  <span className="w-32 text-base font-medium text-indigo-300">
+                    Payment
+                  </span>
+                  <input
+                    id="paymentToken"
+                    name="paymentToken"
+                    type="text"
+                    placeholder="Card token"
+                    required
+                    className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-white dark:bg-neutral-900 px-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-neutral-100 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition"
+                  />
+                </label>
+
+                <div className="sm:col-span-1 flex items-center justify-end">
+                  <button
+                    id="checkout-submit"
+                    type="submit"
+                    disabled
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold shadow-xl hover:from-indigo-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    Complete Purchase
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <div className="mt-6 text-sm text-neutral-300">
+              <span className="font-medium">Note:</span> Payments are simulated
+              for demo purposes. Your card details are never stored.
             </div>
-          </div>
+          </Card>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
-            <label className="flex items-center gap-4 sm:col-span-2 min-w-0">
-              <span className="w-28 text-sm font-medium text-gray-300">
-                Payment
-              </span>
-              <input
-                id="paymentToken"
-                name="paymentToken"
-                type="text"
-                placeholder="card token"
-                required
-                 className="flex-1 min-w-0 rounded-lg border border-gray-700 bg-gray-900 px-4 py-2 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-              />
-            </label>
-
-            <div className="sm:col-span-1 flex items-center justify-end">
-              <button
-                id="checkout-submit"
-                type="submit"
-                disabled
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-medium shadow hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
-              >
-                Complete purchase
-              </button>
-            </div>
-          </div>
-          <div className="mt-2 flex items-center gap-4">
-            <div className="w-28" />
-            <label className="flex items-center gap-2 text-sm text-gray-300">
-              <input
-                type="checkbox"
-                name="saveAddress"
-                value="1"
-                className="rounded"
-              />
-              Save this address to my profile
-            </label>
-          </div>
-        </form>
-
-        <div className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-          Payments are simulated for demo purposes. Your card details are not
-          stored.
+          {/* Client controller enables submit when form is valid */}
+          <CheckoutFormController
+            formId="checkout-form"
+            submitId="checkout-submit"
+          />
+          <AddressSelectorClient formId="checkout-form" />
         </div>
-
-        {/* Client controller enables submit when form is valid */}
-        <CheckoutFormController
-          formId="checkout-form"
-          submitId="checkout-submit"
-        />
-        <AddressSelectorClient formId="checkout-form" />
       </div>
-    </div>
+    </PageWrapper>
   );
 }

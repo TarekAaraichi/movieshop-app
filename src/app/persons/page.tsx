@@ -1,10 +1,11 @@
-import { prisma } from "@/lib/prisma";
-import Link from "next/link";
-import Image from "next/image";
-import { PersonSearch } from "@/components/PersonSearch";
 import { AutoSubmitSelect } from "@/components";
 import PaginationControls from "@/components/PaginationControls";
+import { PersonSearch } from "@/components/PersonSearch";
 import { PageWrapper } from "@/components/PageThemeContext";
+import { prisma } from "@/lib/prisma";
+import Image from "next/image";
+import Link from "next/link";
+import { PersonRole } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 
 interface PersonsPageProps {
@@ -31,11 +32,17 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
       mode: "insensitive",
     };
   }
-  if (role) {
+  const validRoles = Object.values(PersonRole) as Array<PersonRole>;
+  const roleFilter =
+    role && validRoles.includes(role as PersonRole)
+      ? (role as PersonRole)
+      : undefined;
+
+  if (roleFilter) {
     where.movies = {
       some: {
         role: {
-          equals: role as any,
+          equals: roleFilter,
         },
       },
     };
