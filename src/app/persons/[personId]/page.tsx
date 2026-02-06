@@ -74,7 +74,13 @@ export default async function PersonPage({
               href="/persons"
               className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
             >
-              Back to Persons
+              Persons Catalog
+            </Link>
+            <Link
+              href="/movies"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
+            >
+              Movies Catalog
             </Link>
           </div>
         </aside>
@@ -107,7 +113,7 @@ export default async function PersonPage({
                   No movies found for this person.
                 </p>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mt-3 p-3">
                   {movies.map((mp) => (
                     <MovieCard key={mp.movie.id} movie={mp.movie} />
                   ))}
