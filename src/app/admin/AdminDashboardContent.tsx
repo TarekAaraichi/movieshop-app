@@ -44,6 +44,130 @@ type GenreOption = {
   name: string;
 };
 
+const MOVIES_PAGE_SIZE = 12;
+const PERSONS_PAGE_SIZE = 8;
+const USERS_PAGE_SIZE = 8;
+
+interface AdminPaginationProps {
+  currentPage: number;
+  totalItems: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
+}
+
+function AdminPagination({
+  currentPage,
+  totalItems,
+  pageSize,
+  onPageChange,
+}: AdminPaginationProps) {
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  const firstItem = (currentPage - 1) * pageSize + 1;
+  const lastItem = Math.min(firstItem + pageSize - 1, totalItems);
+
+  const pages: Array<number | string> = [];
+  const maxVisible = 5;
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+  if (endPage - startPage + 1 < maxVisible) {
+    startPage = Math.max(1, endPage - maxVisible + 1);
+  }
+
+  if (startPage > 1) {
+    pages.push(1);
+    if (startPage > 2) {
+      pages.push("ellipsis-start");
+    }
+  }
+
+  for (let page = startPage; page <= endPage; page++) {
+    pages.push(page);
+  }
+
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) {
+      pages.push("ellipsis-end");
+    }
+    pages.push(totalPages);
+  }
+
+  const buttonBase =
+    "min-w-[2.5rem] px-3 py-2 rounded-lg border text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-indigo-200/60 dark:focus:ring-indigo-400/40";
+  const inactiveClasses =
+    "border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:text-indigo-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 dark:hover:border-indigo-400 dark:hover:text-white";
+  const activeClasses =
+    "border-indigo-300 bg-indigo-50 text-indigo-700 shadow-sm dark:border-indigo-400 dark:bg-indigo-500/20 dark:text-indigo-100";
+  const disabledClasses = "opacity-40 cursor-not-allowed";
+
+  return (
+    <div className="mt-6 flex flex-col items-center gap-3">
+      <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+        {totalItems === 0
+          ? "Showing 0 results"
+          : `Showing ${firstItem}-${lastItem} of ${totalItems}`}
+      </p>
+      <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          disabled={currentPage === 1}
+          className={`${buttonBase} ${inactiveClasses} ${
+            currentPage === 1 ? disabledClasses : ""
+          }`}
+          aria-label="Previous page"
+        >
+          Prev
+        </button>
+        {pages.map((page, index) => {
+          if (typeof page === "string") {
+            return (
+              <span
+                key={`${page}-${index}`}
+                className="px-2 text-sm text-gray-400 dark:text-gray-500"
+              >
+                …
+              </span>
+            );
+          }
+
+          const isActive = page === currentPage;
+
+          return (
+            <button
+              key={page}
+              type="button"
+              onClick={() => onPageChange(page)}
+              className={`${buttonBase} ${
+                isActive ? activeClasses : inactiveClasses
+              }`}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {page}
+            </button>
+          );
+        })}
+        <button
+          type="button"
+          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+          disabled={currentPage === totalPages}
+          className={`${buttonBase} ${inactiveClasses} ${
+            currentPage === totalPages ? disabledClasses : ""
+          }`}
+          aria-label="Next page"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
+
 interface AdminDashboardContentProps {
   initialTab: AdminTab;
   initialSearch: string;
@@ -82,6 +206,9 @@ export default function AdminDashboardContent({
   const [selectedUserRole, setSelectedUserRole] = React.useState(
     initialUserRole ?? "",
   );
+  const [moviePage, setMoviePage] = React.useState(1);
+  const [personPage, setPersonPage] = React.useState(1);
+  const [userPage, setUserPage] = React.useState(1);
 
   React.useEffect(() => {
     setActiveTab(initialTab);
@@ -102,6 +229,24 @@ export default function AdminDashboardContent({
   React.useEffect(() => {
     setSelectedUserRole(initialUserRole ?? "");
   }, [initialUserRole]);
+
+  React.useEffect(() => {
+    setMoviePage(1);
+    setPersonPage(1);
+    setUserPage(1);
+  }, [searchTerm]);
+
+  React.useEffect(() => {
+    setMoviePage(1);
+  }, [selectedGenre]);
+
+  React.useEffect(() => {
+    setPersonPage(1);
+  }, [selectedPersonRole]);
+
+  React.useEffect(() => {
+    setUserPage(1);
+  }, [selectedUserRole]);
 
   React.useEffect(() => {
     if (typeof window === "undefined") {
@@ -191,15 +336,59 @@ export default function AdminDashboardContent({
     });
   }, [users, searchTerm, selectedUserRole]);
 
+  const totalMoviePages = Math.max(
+    1,
+    Math.ceil(filteredMovies.length / MOVIES_PAGE_SIZE),
+  );
+  const totalPersonPages = Math.max(
+    1,
+    Math.ceil(filteredPersons.length / PERSONS_PAGE_SIZE),
+  );
+  const totalUserPages = Math.max(
+    1,
+    Math.ceil(filteredUsers.length / USERS_PAGE_SIZE),
+  );
+
+  React.useEffect(() => {
+    setMoviePage((previous) => Math.min(previous, totalMoviePages));
+  }, [totalMoviePages]);
+
+  React.useEffect(() => {
+    setPersonPage((previous) => Math.min(previous, totalPersonPages));
+  }, [totalPersonPages]);
+
+  React.useEffect(() => {
+    setUserPage((previous) => Math.min(previous, totalUserPages));
+  }, [totalUserPages]);
+
+  const paginatedMovies = React.useMemo(() => {
+    const start = (moviePage - 1) * MOVIES_PAGE_SIZE;
+    return filteredMovies.slice(start, start + MOVIES_PAGE_SIZE);
+  }, [filteredMovies, moviePage]);
+
+  const paginatedPersons = React.useMemo(() => {
+    const start = (personPage - 1) * PERSONS_PAGE_SIZE;
+    return filteredPersons.slice(start, start + PERSONS_PAGE_SIZE);
+  }, [filteredPersons, personPage]);
+
+  const paginatedUsers = React.useMemo(() => {
+    const start = (userPage - 1) * USERS_PAGE_SIZE;
+    return filteredUsers.slice(start, start + USERS_PAGE_SIZE);
+  }, [filteredUsers, userPage]);
+
+  const showMoviePagination = filteredMovies.length > MOVIES_PAGE_SIZE;
+  const showPersonPagination = filteredPersons.length > PERSONS_PAGE_SIZE;
+  const showUserPagination = filteredUsers.length > USERS_PAGE_SIZE;
+
   return (
-    <div className="max-w-7xl mx-auto rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-900/70 dark:bg-gray-950/70 dark:backdrop-blur">
+    <div className="max-w-7xl mx-auto rounded-3xl border border-gray-200 bg-zinc-900/80 shadow-sm dark:border-gray-900/70  dark:backdrop-blur">
       <div className="p-4 border-b border-gray-200 dark:border-gray-800/70">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <AdminTabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />
 
           <div
             role="search"
-            className="flex flex-col gap-2 rounded-2xl border border-gray-200 bg-gray-50 p-3 md:flex-row md:items-center md:gap-3 md:p-2 dark:border-gray-800/70 dark:bg-gray-900/50"
+            className="flex flex-col gap-2 rounded-2xl  md:flex-row md:items-center md:gap-3"
           >
             <AdminSearchInput
               placeholder={
@@ -220,7 +409,7 @@ export default function AdminDashboardContent({
                 aria-label="Filter by genre"
                 value={selectedGenre}
                 onChange={(event) => setSelectedGenre(event.target.value)}
-                className="min-w-[160px] rounded-lg border border-gray-300 bg-white p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-100"
+                className="min-w-[160px] rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
               >
                 <option value="">All genres</option>
                 {genres.map((genre) => (
@@ -236,7 +425,7 @@ export default function AdminDashboardContent({
                 aria-label="Filter by person role"
                 value={selectedPersonRole}
                 onChange={(event) => setSelectedPersonRole(event.target.value)}
-                className="min-w-[160px] rounded-lg border border-gray-300 bg-white p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-100"
+                className="min-w-[160px] rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
               >
                 <option value="">All roles</option>
                 {personRoles.map((role) => (
@@ -252,7 +441,7 @@ export default function AdminDashboardContent({
                 aria-label="Filter by user role"
                 value={selectedUserRole}
                 onChange={(event) => setSelectedUserRole(event.target.value)}
-                className="min-w-[160px] rounded-lg border border-gray-300 bg-white p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700 dark:bg-gray-900/70 dark:text-gray-100"
+                className="min-w-[160px] rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
               >
                 <option value="">All roles</option>
                 {userRoles.map((role) => (
@@ -295,269 +484,309 @@ export default function AdminDashboardContent({
         </div>
 
         {activeTab === "movies" && (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredMovies.map((movie) => {
-              const genreNames =
-                movie.genres
-                  .map((association) => association.name)
-                  .join(", ") || "—";
-              const releaseLabel = movie.releaseYear ?? "—";
-              const disableDelete = (orderCounts[movie.id] ?? 0) > 0;
-              return (
-                <div
-                  key={movie.id}
-                  className="flex flex-col justify-between gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-indigo-500/40 hover:shadow-lg dark:border-gray-900/70 dark:bg-gray-950/70"
-                >
-                  <div>
-                    <div className="flex items-start justify-between gap-3">
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        {movie.title}
-                      </h3>
-                      {movie.isArchived && (
-                        <span className="whitespace-nowrap rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
-                          Archived
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {paginatedMovies.map((movie) => {
+                const genreNames =
+                  movie.genres
+                    .map((association) => association.name)
+                    .join(", ") || "—";
+                const releaseLabel = movie.releaseYear ?? "—";
+                const disableDelete = (orderCounts[movie.id] ?? 0) > 0;
+                return (
+                  <div
+                    key={movie.id}
+                    className="flex flex-col justify-between gap-4 rounded-2xl border  border-gray-200 bg-gray-800 p-5 shadow-sm transition hover:-translate-y-1 hover:border-indigo-500/40 hover:shadow-lg"
+                  >
+                    <div>
+                      <div className="flex items-start justify-between gap-3">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          {movie.title}
+                        </h3>
+                        {movie.isArchived && (
+                          <span className="whitespace-nowrap rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
+                            Archived
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                        {releaseLabel} &middot; {genreNames}
+                      </p>
+                      <div className="mt-4 flex items-center gap-3 text-sm">
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-300">
+                          {movie.price != null ? `SEK ${movie.price}` : "—"}
                         </span>
-                      )}
+                        <span className="text-gray-400 dark:text-gray-600">
+                          |
+                        </span>
+                        <span className="text-gray-600 dark:text-gray-400">
+                          Stock {movie.stock ?? "—"}
+                        </span>
+                      </div>
                     </div>
-                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                      {releaseLabel} &middot; {genreNames}
-                    </p>
-                    <div className="mt-4 flex items-center gap-3 text-sm">
-                      <span className="font-semibold text-emerald-600 dark:text-emerald-300">
-                        {movie.price != null ? `SEK ${movie.price}` : "—"}
-                      </span>
-                      <span className="text-gray-400 dark:text-gray-600">
-                        |
-                      </span>
-                      <span className="text-gray-600 dark:text-gray-400">
-                        Stock {movie.stock ?? "—"}
-                      </span>
+
+                    <div className="mt-2 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-800/70">
+                      <Link
+                        href={`/admin/movies/${movie.id}/edit`}
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-white"
+                      >
+                        Edit
+                      </Link>
+
+                      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide">
+                        {!movie.isArchived ? (
+                          <form action={archiveMovie}>
+                            <input
+                              type="hidden"
+                              name="movieId"
+                              value={movie.id}
+                            />
+                            <button
+                              type="submit"
+                              className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-amber-700 transition hover:bg-amber-100 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-300 dark:hover:bg-amber-400/10"
+                            >
+                              Archive
+                            </button>
+                          </form>
+                        ) : (
+                          <form action={unarchiveMovie}>
+                            <input
+                              type="hidden"
+                              name="movieId"
+                              value={movie.id}
+                            />
+                            <button
+                              type="submit"
+                              className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/10"
+                            >
+                              Unarchive
+                            </button>
+                          </form>
+                        )}
+
+                        <form action={deleteMovie}>
+                          <input
+                            type="hidden"
+                            name="movieId"
+                            value={movie.id}
+                          />
+                          <button
+                            type="submit"
+                            disabled={disableDelete}
+                            className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-400 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10 dark:disabled:border-gray-700 dark:disabled:bg-transparent dark:disabled:text-gray-500"
+                            title={
+                              disableDelete
+                                ? "Cannot delete: movie has associated orders"
+                                : "Permanently delete movie"
+                            }
+                          >
+                            Delete
+                          </button>
+                        </form>
+                      </div>
                     </div>
                   </div>
+                );
+              })}
 
-                  <div className="mt-2 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-800/70">
-                    <Link
-                      href={`/admin/movies/${movie.id}/edit`}
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-white"
-                    >
-                      Edit
-                    </Link>
+              {filteredMovies.length === 0 && (
+                <div className="col-span-full rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
+                  No movies match the current filters.
+                </div>
+              )}
+            </div>
+            {showMoviePagination && (
+              <AdminPagination
+                currentPage={moviePage}
+                totalItems={filteredMovies.length}
+                pageSize={MOVIES_PAGE_SIZE}
+                onPageChange={setMoviePage}
+              />
+            )}
+          </div>
+        )}
 
-                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide">
-                      {!movie.isArchived ? (
-                        <form action={archiveMovie}>
-                          <input
-                            type="hidden"
-                            name="movieId"
-                            value={movie.id}
-                          />
-                          <button
-                            type="submit"
-                            className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-amber-700 transition hover:bg-amber-100 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-300 dark:hover:bg-amber-400/10"
-                          >
-                            Archive
-                          </button>
-                        </form>
+        {activeTab === "persons" && (
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 gap-4">
+              {paginatedPersons.map((person) => {
+                const roleSummary =
+                  Array.from(
+                    new Set(
+                      person.movies.map((association) => association.role),
+                    ),
+                  ).join(", ") || "Not assigned";
+
+                return (
+                  <div
+                    key={person.id}
+                    className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-gray-800 p-4 shadow-sm transition hover:border-indigo-500/40 hover:shadow-lg sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div className="flex items-center gap-4">
+                      {person.imageUrl ? (
+                        <Image
+                          src={person.imageUrl}
+                          alt={person.fullName}
+                          width={48}
+                          height={48}
+                          className="h-12 w-12 rounded-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
                       ) : (
-                        <form action={unarchiveMovie}>
-                          <input
-                            type="hidden"
-                            name="movieId"
-                            value={movie.id}
-                          />
-                          <button
-                            type="submit"
-                            className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/10"
-                          >
-                            Unarchive
-                          </button>
-                        </form>
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-indigo-200 bg-indigo-50 text-sm font-semibold uppercase text-indigo-700 dark:border-indigo-400/40 dark:bg-indigo-400/10 dark:text-indigo-200">
+                          {person.fullName
+                            .split(" ")
+                            .map((segment) => segment[0])
+                            .slice(0, 2)
+                            .join("")}
+                        </div>
                       )}
+                      <div>
+                        <div className="text-base font-semibold text-gray-900 dark:text-white">
+                          {person.fullName}
+                        </div>
+                        <div className="mt-1 text-xs uppercase tracking-wide text-gray-600 dark:text-gray-500">
+                          {roleSummary}
+                        </div>
+                      </div>
+                    </div>
 
-                      <form action={deleteMovie}>
-                        <input type="hidden" name="movieId" value={movie.id} />
+                    <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
+                      <Link
+                        href={`/admin/persons/${person.id}/edit`}
+                        className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-indigo-700 transition hover:bg-indigo-100 dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-200 dark:hover:bg-indigo-400/10"
+                      >
+                        Edit
+                      </Link>
+                      <form action={deletePerson}>
+                        <input
+                          type="hidden"
+                          name="personId"
+                          value={person.id}
+                        />
                         <button
                           type="submit"
-                          disabled={disableDelete}
-                          className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-400 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10 dark:disabled:border-gray-700 dark:disabled:bg-transparent dark:disabled:text-gray-500"
-                          title={
-                            disableDelete
-                              ? "Cannot delete: movie has associated orders"
-                              : "Permanently delete movie"
-                          }
+                          className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10"
                         >
                           Delete
                         </button>
                       </form>
                     </div>
                   </div>
+                );
+              })}
+
+              {filteredPersons.length === 0 && (
+                <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
+                  No people match the current filters.
                 </div>
-              );
-            })}
-
-            {filteredMovies.length === 0 && (
-              <div className="col-span-full rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
-                No movies match the current filters.
-              </div>
-            )}
-          </div>
-        )}
-
-        {activeTab === "persons" && (
-          <div className="grid grid-cols-1 gap-4">
-            {filteredPersons.map((person) => {
-              const roleSummary =
-                Array.from(
-                  new Set(person.movies.map((association) => association.role)),
-                ).join(", ") || "Not assigned";
-
-              return (
-                <div
-                  key={person.id}
-                  className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-indigo-500/40 hover:shadow-lg sm:flex-row sm:items-center sm:justify-between dark:border-gray-900/70 dark:bg-gray-950/70"
-                >
-                  <div className="flex items-center gap-4">
-                    {person.imageUrl ? (
-                      <Image
-                        src={person.imageUrl}
-                        alt={person.fullName}
-                        width={48}
-                        height={48}
-                        className="h-12 w-12 rounded-full object-cover"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-indigo-200 bg-indigo-50 text-sm font-semibold uppercase text-indigo-700 dark:border-indigo-400/40 dark:bg-indigo-400/10 dark:text-indigo-200">
-                        {person.fullName
-                          .split(" ")
-                          .map((segment) => segment[0])
-                          .slice(0, 2)
-                          .join("")}
-                      </div>
-                    )}
-                    <div>
-                      <div className="text-base font-semibold text-gray-900 dark:text-white">
-                        {person.fullName}
-                      </div>
-                      <div className="mt-1 text-xs uppercase tracking-wide text-gray-600 dark:text-gray-500">
-                        {roleSummary}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
-                    <Link
-                      href={`/admin/persons/${person.id}/edit`}
-                      className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-indigo-700 transition hover:bg-indigo-100 dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-200 dark:hover:bg-indigo-400/10"
-                    >
-                      Edit
-                    </Link>
-                    <form action={deletePerson}>
-                      <input type="hidden" name="personId" value={person.id} />
-                      <button
-                        type="submit"
-                        className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10"
-                      >
-                        Delete
-                      </button>
-                    </form>
-                  </div>
-                </div>
-              );
-            })}
-
-            {filteredPersons.length === 0 && (
-              <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
-                No people match the current filters.
-              </div>
+              )}
+            </div>
+            {showPersonPagination && (
+              <AdminPagination
+                currentPage={personPage}
+                totalItems={filteredPersons.length}
+                pageSize={PERSONS_PAGE_SIZE}
+                onPageChange={setPersonPage}
+              />
             )}
           </div>
         )}
 
         {activeTab === "users" && (
-          <div className="grid grid-cols-1 gap-4">
-            {filteredUsers.map((user) => {
-              const initials = (user.name ?? user.email)
-                .split(" ")
-                .map((segment) => segment[0])
-                .join("")
-                .slice(0, 2)
-                .toUpperCase();
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 gap-4">
+              {paginatedUsers.map((user) => {
+                const initials = (user.name ?? user.email)
+                  .split(" ")
+                  .map((segment) => segment[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase();
 
-              const resolvedRole = user.role ?? "user";
+                const resolvedRole = user.role ?? "user";
 
-              return (
-                <div
-                  key={user.id}
-                  className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-indigo-500/40 hover:shadow-lg md:flex-row md:items-center md:justify-between dark:border-gray-900/70 dark:bg-gray-950/70"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-sm font-semibold uppercase text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-200">
-                      {initials}
-                    </div>
-                    <div>
-                      <div className="text-base font-semibold text-gray-900 dark:text-white">
-                        {user.name ?? "—"}
+                return (
+                  <div
+                    key={user.id}
+                    className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-gray-800 p-4 shadow-sm transition hover:border-indigo-500/40 hover:shadow-lg md:flex-row md:items-center md:justify-between"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-sm font-semibold uppercase text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-200">
+                        {initials}
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {user.email}
+                      <div>
+                        <div className="text-base font-semibold text-gray-900 dark:text-white">
+                          {user.name ?? "—"}
+                        </div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                          {user.email}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
-                    <span
-                      className={`rounded-full border px-3 py-1 ${
-                        resolvedRole === "admin"
-                          ? "border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-200"
-                          : "border-gray-200 bg-gray-100 text-gray-700 dark:border-gray-600/40 dark:bg-gray-700/40 dark:text-gray-300"
-                      }`}
-                    >
-                      {resolvedRole}
-                    </span>
-
-                    <form action={setUserRole} className="inline-flex">
-                      <input type="hidden" name="userId" value={user.id} />
-                      <input
-                        type="hidden"
-                        name="role"
-                        value={resolvedRole === "admin" ? "user" : "admin"}
-                      />
-                      <button
-                        type="submit"
-                        className={`rounded-full border px-3 py-1 transition ${
+                    <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
+                      <span
+                        className={`rounded-full border px-3 py-1 ${
                           resolvedRole === "admin"
-                            ? "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-300 dark:hover:bg-amber-400/10"
-                            : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/10"
+                            ? "border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-200"
+                            : "border-gray-200 bg-gray-100 text-gray-700 dark:border-gray-600/40 dark:bg-gray-700/40 dark:text-gray-300"
                         }`}
-                        title={
-                          resolvedRole === "admin"
-                            ? "Revoke admin"
-                            : "Grant admin"
-                        }
                       >
-                        {resolvedRole === "admin" ? "Revoke" : "Grant"}
-                      </button>
-                    </form>
+                        {resolvedRole}
+                      </span>
 
-                    <form action={deleteUser}>
-                      <input type="hidden" name="userId" value={user.id} />
-                      <button
-                        type="submit"
-                        className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10"
-                      >
-                        Delete
-                      </button>
-                    </form>
+                      <form action={setUserRole} className="inline-flex">
+                        <input type="hidden" name="userId" value={user.id} />
+                        <input
+                          type="hidden"
+                          name="role"
+                          value={resolvedRole === "admin" ? "user" : "admin"}
+                        />
+                        <button
+                          type="submit"
+                          className={`rounded-full border px-3 py-1 transition ${
+                            resolvedRole === "admin"
+                              ? "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-300 dark:hover:bg-amber-400/10"
+                              : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/10"
+                          }`}
+                          title={
+                            resolvedRole === "admin"
+                              ? "Revoke admin"
+                              : "Grant admin"
+                          }
+                        >
+                          {resolvedRole === "admin" ? "Revoke" : "Grant"}
+                        </button>
+                      </form>
+
+                      <form action={deleteUser}>
+                        <input type="hidden" name="userId" value={user.id} />
+                        <button
+                          type="submit"
+                          className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
 
-            {filteredUsers.length === 0 && (
-              <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
-                No users match the current filters.
-              </div>
+              {filteredUsers.length === 0 && (
+                <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-900/60 dark:text-gray-400">
+                  No users match the current filters.
+                </div>
+              )}
+            </div>
+            {showUserPagination && (
+              <AdminPagination
+                currentPage={userPage}
+                totalItems={filteredUsers.length}
+                pageSize={USERS_PAGE_SIZE}
+                onPageChange={setUserPage}
+              />
             )}
           </div>
         )}
