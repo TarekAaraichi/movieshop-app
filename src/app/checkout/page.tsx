@@ -73,10 +73,10 @@ export default async function CheckoutPage({
     <PageWrapper>
       <div>
         <div className="w-full m-auto max-w-3xl">
-          <Card className="p-8 bg-linear-to-br from-neutral-900 via-neutral-800 to-indigo-950 border border-indigo-300 shadow-2xl">
+          <Card className="p-8 bg-linear-to-br from-gray-900 via-gray-700 to-gray-500 border border-neutral-600 shadow-2xl">
             <div className="flex items-start justify-between gap-4 mb-8">
               <div>
-                <h1 className="text-3xl font-extrabold text-indigo-400 tracking-tight">
+                <h1 className="text-2xl sm:text-3xl font-semibold text-gray-100">
                   Checkout
                 </h1>
                 <p className="text-base text-neutral-200 mt-2">
@@ -107,20 +107,20 @@ export default async function CheckoutPage({
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div className="flex items-center gap-4 min-w-0">
-                  <span className="w-32 text-base font-medium text-indigo-300">
+                  <span className="w-32 text-base font-medium text-slate-200">
                     Full name
                   </span>
-                  <span className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-neutral-900 px-4 py-2 text-neutral-100">
+                  <span className="w-full min-w-0 rounded-lg py-2 text-neutral-100">
                     {dbUser?.name || (
                       <span className="italic text-neutral-500">No name</span>
                     )}
                   </span>
                 </div>
                 <div className="flex items-center gap-4 min-w-0">
-                  <span className="w-32 text-base font-medium text-indigo-300">
+                  <span className="w-32 text-base font-medium text-slate-200">
                     Email
                   </span>
-                  <span className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-neutral-900 px-4 py-2 text-neutral-100">
+                  <span className="w-full min-w-0 rounded-lg py-2 text-neutral-100">
                     {dbUser?.email || (
                       <span className="italic text-neutral-500">No email</span>
                     )}
@@ -131,7 +131,7 @@ export default async function CheckoutPage({
               <div className="grid grid-cols-1 gap-4">
                 {dbAddress ? (
                   <div className="flex items-start gap-4">
-                    <div className="w-32 text-base font-medium text-indigo-300">
+                    <div className="w-32 text-base font-medium text-slate-200">
                       Address
                     </div>
                     <div className="flex-1">
@@ -154,7 +154,7 @@ export default async function CheckoutPage({
                         type="checkbox"
                         name="useNewAddress"
                         value="1"
-                        className="rounded border-indigo-300 text-indigo-600 focus:ring-2 focus:ring-indigo-100 focus:border-white transition"
+                        className="rounded border-indigo-300 text-slate-600 focus:ring-2 focus:ring-slate-100 focus:border-white transition"
                         data-toggle-save-address
                       />
                       <span>Deliver to another address</span>
@@ -162,10 +162,10 @@ export default async function CheckoutPage({
                   </div>
                 ) : (
                   <div className="flex items-start gap-4">
-                    <div className="w-32 text-base font-medium text-indigo-300">
+                    <div className="w-32 text-base font-medium text-slate-200">
                       Street
                     </div>
-                    <div className="text-base text-indigo-400">
+                    <div className="text-base text-slate-200">
                       Please enter your delivery address below.
                     </div>
                   </div>
@@ -176,7 +176,7 @@ export default async function CheckoutPage({
                   className="grid grid-cols-1 sm:grid-cols-2 gap-5"
                 >
                   <label className="flex items-center gap-4 sm:col-span-2 min-w-0">
-                    <span className="w-32 text-base font-medium text-indigo-300">
+                    <span className="w-32 text-base font-medium text-slate-200">
                       Street
                     </span>
                     <input
@@ -186,12 +186,12 @@ export default async function CheckoutPage({
                       placeholder="Street address"
                       defaultValue={dbAddress?.line1 ?? undefined}
                       required
-                      className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-white dark:bg-neutral-900 px-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition"
+                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 !bg-white"
                     />
                   </label>
 
                   <label className="flex items-center gap-4 min-w-0">
-                    <span className="w-32 text-base font-medium text-indigo-300">
+                    <span className="w-32 text-base font-medium text-slate-200">
                       City
                     </span>
                     <input
@@ -201,12 +201,12 @@ export default async function CheckoutPage({
                       placeholder="City"
                       defaultValue={dbAddress?.city ?? undefined}
                       required
-                      className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-white dark:bg-neutral-900 px-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition"
+                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 !bg-white"
                     />
                   </label>
 
                   <label className="flex items-center gap-4 min-w-0">
-                    <span className="w-32 text-base font-medium text-indigo-300">
+                    <span className="w-32 text-base font-medium text-slate-200">
                       Postal
                     </span>
                     <input
@@ -216,12 +216,12 @@ export default async function CheckoutPage({
                       placeholder="ZIP"
                       defaultValue={dbAddress?.postalCode ?? undefined}
                       required
-                      className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-white dark:bg-neutral-900 px-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition"
+                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 !bg-white"
                     />
                   </label>
 
                   <label className="flex items-center gap-4 min-w-0">
-                    <span className="w-32 text-base font-medium text-indigo-300">
+                    <span className="w-32 text-base font-medium text-slate-200">
                       Country
                     </span>
                     <input
@@ -231,7 +231,7 @@ export default async function CheckoutPage({
                       placeholder="Country"
                       defaultValue={dbAddress?.country ?? undefined}
                       required
-                      className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-white dark:bg-white px-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition"
+                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 !bg-white"
                     />
                   </label>
                 </div>
@@ -239,7 +239,7 @@ export default async function CheckoutPage({
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 items-center">
                 <label className="flex items-center gap-4 sm:col-span-2 min-w-0">
-                  <span className="w-32 text-base font-medium text-indigo-300">
+                  <span className="w-32 text-base font-medium text-slate-200">
                     Payment
                   </span>
                   <input
@@ -248,7 +248,7 @@ export default async function CheckoutPage({
                     type="text"
                     placeholder="Card token"
                     required
-                    className="flex-1 min-w-0 rounded-lg border border-indigo-300 bg-white dark:bg-neutral-900 px-4 py-2 text-neutral-900 dark:text-neutral-100 placeholder-neutral-100 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition"
+                    className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 !bg-white"
                   />
                 </label>
 

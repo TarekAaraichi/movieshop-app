@@ -1,24 +1,24 @@
-/**
- * Top-rated collection page
- * Lists top-rated movies.
- */
-
-import { MovieCard, MoviesGridSkeleton } from "@/components";
-import PaginationControls from "@/components/PaginationControls";
+import {
+  MovieCard,
+  MoviesGridSkeleton,
+  PaginationControls,
+} from "@/components";
 import { PageWrapper } from "@/components/PageThemeContext";
 import prisma from "@/lib/prisma";
 import { Suspense } from "react";
 
-const PAGE_SIZE = 30;
+const PAGE_SIZE = 50;
 
-async function TopRatedGrid({ currentPage }: { currentPage: number }) {
+async function LastYearGrid({ currentPage }: { currentPage: number }) {
+  const now = new Date();
+  const lastMonth = new Date(now);
+  lastMonth.setMonth(now.getMonth() - 1);
+  const lastYear = new Date(now);
+  lastYear.setFullYear(now.getFullYear() - 1);
+
   const movies = await prisma.movie.findMany({
-    where: { rating: { not: 0 } },
-    orderBy: [
-      { rating: "desc" },
-      { voteCount: "desc" },
-      { releaseDate: "desc" },
-    ],
+    where: { releaseDate: { gte: lastYear, lt: lastMonth } },
+    orderBy: { releaseDate: "desc" },
     skip: (currentPage - 1) * PAGE_SIZE,
     take: PAGE_SIZE,
   });
@@ -26,13 +26,13 @@ async function TopRatedGrid({ currentPage }: { currentPage: number }) {
   if (movies.length === 0) {
     return (
       <div className="text-center text-neutral-500 dark:text-neutral-400 py-12">
-        No top-rated movies found.
+        No releases in the last year.
       </div>
     );
   }
 
   return (
-    <div className="min-h-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
       {movies.map((m) => (
         <MovieCard key={m.id} movie={m} />
       ))}
@@ -41,8 +41,14 @@ async function TopRatedGrid({ currentPage }: { currentPage: number }) {
 }
 
 async function PaginationWrapper({ currentPage }: { currentPage: number }) {
+  const now = new Date();
+  const lastMonth = new Date(now);
+  lastMonth.setMonth(now.getMonth() - 1);
+  const lastYear = new Date(now);
+  lastYear.setFullYear(now.getFullYear() - 1);
+
   const totalCount = await prisma.movie.count({
-    where: { rating: { not: 0 } },
+    where: { releaseDate: { gte: lastYear, lt: lastMonth } },
   });
   const hasNextPage = currentPage * PAGE_SIZE < totalCount;
   const hasPrevPage = currentPage > 1;
@@ -53,12 +59,12 @@ async function PaginationWrapper({ currentPage }: { currentPage: number }) {
       hasPrevPage={hasPrevPage}
       totalCount={totalCount}
       pageSize={PAGE_SIZE}
-      basePath="/collections/top-rated"
+      basePath="/collections/new/last-year"
     />
   );
 }
 
-export default function TopRatedPage({
+export default function LastYearPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -70,15 +76,12 @@ export default function TopRatedPage({
     <PageWrapper>
       <div className="w-full max-w-6xl mx-auto">
         <header className="mb-8 text-center relative">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-yellow-400 to-pink-400">
-            Top Rated
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-sky-400 to-pink-400">
+            New Releases: Last Year
           </h1>
-          <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
-            Discover the highest-rated movies as voted by our community.
-          </p>
         </header>
         <Suspense fallback={<MoviesGridSkeleton count={PAGE_SIZE} />}>
-          <TopRatedGrid currentPage={currentPage} />
+          <LastYearGrid currentPage={currentPage} />
         </Suspense>
         <Suspense>
           <PaginationWrapper currentPage={currentPage} />

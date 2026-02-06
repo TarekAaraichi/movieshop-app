@@ -11,7 +11,7 @@ export default function ContactPage() {
     <PageWrapper>
     <div>
       <div className="m-auto max-w-4xl w-full">
-        <Card className="p-6 sm:p-8 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50">
+        <Card className="p-6 sm:p-8 bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50">
           <header className="mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl font-semibold text-gray-100">
               Contact
@@ -43,7 +43,7 @@ export default function ContactPage() {
                     className="flex items-center gap-4 bg-gray-800/40 rounded-lg p-3 sm:p-4 hover:bg-gray-800/50 transition-colors"
                   >
                     <div
-                      className={`flex items-center justify-center h-10 w-10 rounded-full text-white ${p.color} flex-shrink-0`}
+                      className={`flex items-center justify-center h-10 w-10 rounded-full text-white ${p.color} shrink-0`}
                       aria-hidden="true"
                     >
                       {p.name

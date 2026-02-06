@@ -61,7 +61,7 @@ export function MovieCarousel({
             <div
               key={movie.id}
               role="listitem"
-              className="flex-shrink-0 w-[160px] sm:w-[200px] snap-start"
+              className="shrink-0 w-40 sm:w-50 snap-start"
             >
               <MovieCard movie={movie} />
             </div>

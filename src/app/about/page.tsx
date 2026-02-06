@@ -10,22 +10,22 @@ export default function AboutPage() {
   return (
     <PageWrapper>
       <div className="m-auto max-w-4xl w-full">
-        <Card className="p-6 sm:p-8 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50">
+        <Card className="p-6 sm:p-8 bg-linear-to-br from-neutral-100/80 via-neutral-50/60 to-neutral-200/50 dark:from-neutral-900/80 dark:via-neutral-800/60 dark:to-slate-700/50">
           <header className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-linear-to-r from-white to-zinc-300 pb-2">
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-pink-400 pb-2">
               About MovieShop
             </h1>
-            <p className="mt-3 text-lg text-zinc-400">
+            <p className="mt-3 text-lg text-zinc-700 dark:text-zinc-400">
               A feature-rich, full-stack e-commerce platform for movies, built
               with modern web technologies.
             </p>
           </header>
 
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-white mb-4 border-l-4 border-indigo-500 pl-4">
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-4 pl-2">
               Project Vision
             </h2>
-            <div className="prose prose-invert max-w-none text-zinc-300 leading-relaxed space-y-4">
+            <div className="prose max-w-none dark:prose-invert text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-4">
               <p>
                 MovieShop was developed as a portfolio project to demonstrate a
                 comprehensive understanding of full-stack web development using
@@ -45,7 +45,7 @@ export default function AboutPage() {
           </section>
 
           <section className="mb-12">
-            <h2 className="text-2xl font-bold text-white mb-6 border-l-4 border-indigo-500 pl-4">
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 pl-2">
               Core Features
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -77,7 +77,7 @@ export default function AboutPage() {
           </section>
 
           <section>
-            <h2 className="text-2xl font-bold text-white mb-6 border-l-4 border-indigo-500 pl-4">
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 pl-2">
               Technology Stack
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-center">
@@ -100,7 +100,7 @@ export default function AboutPage() {
               href="https://github.com/TarekAaraichi/movieshop-app"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md border border-zinc-700 bg-zinc-800/50 text-sm text-zinc-200 px-6 py-3 hover:bg-zinc-800/80 transition-colors duration-300 font-semibold"
+              className="inline-flex items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-700 bg-gray-700 text-sm text-zinc-900 dark:text-zinc-200 px-6 py-3 hover:bg-gray-100 dark:hover:bg-zinc-800/80 transition-colors duration-300 font-semibold"
             >
               View Source Code on GitHub
             </a>
@@ -118,15 +118,17 @@ const FeatureCard = ({
   title: string;
   description: string;
 }) => (
-  <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-6">
-    <h3 className="font-bold text-white text-lg mb-2">{title}</h3>
-    <p className="text-zinc-400 text-sm">{description}</p>
+  <div className="bg-gray-700 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
+    <h3 className="font-bold text-zinc-900 dark:text-white text-lg mb-2">
+      {title}
+    </h3>
+    <p className="text-zinc-600 dark:text-zinc-400 text-sm">{description}</p>
   </div>
 );
 
 const TechItem = ({ name, category }: { name: string; category: string }) => (
-  <div className="bg-zinc-900/50 border border-zinc-800 rounded-lg p-4 flex flex-col justify-center items-center">
-    <p className="font-bold text-white">{name}</p>
-    <p className="text-xs text-zinc-400">{category}</p>
+  <div className="bg-gray-700  border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 flex flex-col justify-center items-center">
+    <p className="font-bold text-zinc-900 dark:text-white">{name}</p>
+    <p className="text-xs text-zinc-600 dark:text-zinc-400">{category}</p>
   </div>
 );

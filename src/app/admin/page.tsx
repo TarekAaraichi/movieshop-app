@@ -138,7 +138,7 @@ export default async function AdminPage({
       <div className="rounded-3xl bg-transparent">
         <div className="min-h-screen space-y-8 text-zinc-100 p-4 sm:p-6 lg:p-8">
           <header className="max-w-7xl mx-auto">
-            <div className="overflow-hidden rounded-3xl border border-zinc-800 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.25),rgba(15,23,42,0.92)_65%)] p-6 sm:p-8 shadow-xl backdrop-blur">
+            <div className="rounded-3xl border border-zinc-800 bg-linear-to-br from-gray-900 via-gray-700 to-gray-500 p-6 sm:p-8 shadow-xl">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
                 <div>
                   <span className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-indigo-200">

@@ -72,13 +72,13 @@ export default async function PersonPage({
           <div className="mt-4 w-64 min-w-66">
             <Link
               href="/persons"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
             >
               Persons Catalog
             </Link>
             <Link
               href="/movies"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
             >
               Movies Catalog
             </Link>
