@@ -1,54 +1,83 @@
 import prisma from "@/lib/prisma";
-import { MovieCard, MoviesGridSkeleton } from "@/components";
+import {
+  MovieCard,
+  MoviesGridSkeleton,
+  PaginationControls,
+} from "@/components";
 import { PageWrapper } from "@/components/PageThemeContext";
 import { Suspense } from "react";
 
-type Props = { params: { genre: string } };
+const PAGE_SIZE = 20;
 
-async function getMoviesForGenre(name: string) {
-  const g = await prisma.genre.findUnique({
-    where: { name },
-    include: {
-      movies: {
-        include: {
-          movie: {
-            include: {
-              genres: { include: { genre: true } },
-              people: { include: { person: true } },
-            },
-          },
-        },
-      },
+type Props = {
+  params: { genre: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
+async function GenreGrid({
+  genre,
+  currentPage,
+}: {
+  genre: string;
+  currentPage: number;
+}) {
+  const movies = await prisma.movie.findMany({
+    where: {
+      genres: { some: { genre: { name: genre } } },
+      isArchived: false,
     },
+    orderBy: { releaseDate: "desc" },
+    skip: (currentPage - 1) * PAGE_SIZE,
+    take: PAGE_SIZE,
   });
-  return g?.movies.map((m) => m.movie) ?? [];
-}
 
-/**
- * Genre page (ensured)
- * Server page that lists movies for a specific genre.
- */
-
-export default function GenrePage({ params }: Props) {
-  const { genre } = params;
-
-  async function GenreGrid() {
-    const movies = await getMoviesForGenre(genre);
-    if (movies.length === 0) {
-      return (
-        <div className="text-center text-neutral-500 dark:text-neutral-400 py-12">
-          No movies found for this genre.
-        </div>
-      );
-    }
+  if (movies.length === 0) {
     return (
-      <div className="min-h-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
-        {movies.map((m) => (
-          <MovieCard key={m.id} movie={m} />
-        ))}
+      <div className="text-center text-neutral-500 dark:text-neutral-400 py-12">
+        No movies found for this genre.
       </div>
     );
   }
+  return (
+    <div className="min-h-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+      {movies.map((m) => (
+        <MovieCard key={m.id} movie={m} />
+      ))}
+    </div>
+  );
+}
+
+async function PaginationWrapper({
+  genre,
+  currentPage,
+}: {
+  genre: string;
+  currentPage: number;
+}) {
+  const totalCount = await prisma.movie.count({
+    where: {
+      genres: { some: { genre: { name: genre } } },
+      isArchived: false,
+    },
+  });
+  const hasNextPage = currentPage * PAGE_SIZE < totalCount;
+  const hasPrevPage = currentPage > 1;
+
+  return (
+    <PaginationControls
+      hasNextPage={hasNextPage}
+      hasPrevPage={hasPrevPage}
+      totalCount={totalCount}
+      pageSize={PAGE_SIZE}
+      basePath={`/collections/genres/${genre}`}
+    />
+  );
+}
+
+export default function GenrePage({ params, searchParams }: Props) {
+  const { genre } = params;
+  const page = searchParams["page"] ?? "1";
+  const currentPage = Number(page);
 
   return (
     <PageWrapper>
@@ -58,8 +87,11 @@ export default function GenrePage({ params }: Props) {
             {genre.charAt(0).toUpperCase() + genre.slice(1)} Movies
           </h1>
         </header>
-        <Suspense fallback={<MoviesGridSkeleton count={10} />}>
-          <GenreGrid />
+        <Suspense fallback={<MoviesGridSkeleton count={PAGE_SIZE} />}>
+          <GenreGrid genre={genre} currentPage={currentPage} />
+        </Suspense>
+        <Suspense>
+          <PaginationWrapper genre={genre} currentPage={currentPage} />
         </Suspense>
       </div>
     </PageWrapper>

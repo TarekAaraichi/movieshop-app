@@ -44,3 +44,5 @@ export { MovieCard } from "./MovieCard";
 export { MoviesGrid } from "./MoviesGrid";
 export { MoviesGridSkeleton, MovieCardSkeleton } from "./MoviesGridSkeleton";
 export { MovieCarousel } from "./MovieCarousel";
+export { default as PaginationControls } from "./PaginationControls";
+export { PaginationControlsSkeleton } from "./PaginationControlsSkeleton";

@@ -85,7 +85,7 @@ export default async function RootLayout({
       lang="en"
       className={`dark ${geistSans.variable} ${geistMono.variable}`}
     >
-      <body className="font-sans min-h-screen flex flex-col bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 text-gray-100">
+      <body className="font-sans min-h-screen flex flex-col bg-linear-to-b from-gray-950 via-gray-900 to-gray-950 text-gray-100">
         <ClientShell serverSession={session}>
           <PageThemeProvider>
             <Toaster />
@@ -93,7 +93,7 @@ export default async function RootLayout({
             <header className="sticky top-0 z-50 backdrop-blur-sm bg-black/40 border-b border-gray-800">
               <div className="max-w-7xl mx-auto flex items-center gap-4 px-4 py-3">
                 <Link href="/" className="flex items-center gap-3">
-                  <span className="tracking-tight font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-400">
+                  <span className="tracking-tight font-semibold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-pink-400">
                     MovieShop
                   </span>
                 </Link>
@@ -105,13 +105,13 @@ export default async function RootLayout({
                 >
                   <Link
                     href="/movies"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
                     Movies
                   </Link>
                   <Link
                     href="/persons"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
                     People
                   </Link>
@@ -121,7 +121,7 @@ export default async function RootLayout({
                     <DetailsMenu
                       className="group"
                       summary={
-                        <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400">
                           <span>Collections</span>
                           <svg
                             className="w-3 h-3 opacity-80 transition-transform duration-150 group-open:rotate-180"
@@ -164,7 +164,7 @@ export default async function RootLayout({
                   </div>
                   <Link
                     href="/about"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
                     About
                   </Link>
@@ -174,7 +174,7 @@ export default async function RootLayout({
                   <PageThemeSwitcher />
                   <a
                     href="/cart"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
                     {/* <span className="hidden sm:inline">Cart</span> */}
                     <svg
@@ -203,8 +203,8 @@ export default async function RootLayout({
                       <DetailsMenu
                         className="group"
                         summary={
-                          <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400 list-none">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-xs font-medium text-black overflow-hidden">
+                          <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400 list-none">
+                            <div className="w-8 h-8 rounded-full bg-linear-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-xs font-medium text-black overflow-hidden">
                               {session.user?.image ? (
                                 <Image
                                   src={session.user.image}
@@ -219,7 +219,7 @@ export default async function RootLayout({
                                 </span>
                               )}
                             </div>
-                            <span className="hidden sm:inline truncate max-w-[8rem] text-gray-200">
+                            <span className="hidden sm:inline truncate max-w-32 text-gray-200">
                               {session.user?.name ?? "Account"}
                             </span>
 
@@ -280,7 +280,7 @@ export default async function RootLayout({
               <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4 text-sm text-gray-400">
                 <div className="flex items-center gap-2">
                   <span>© {new Date().getFullYear()}</span>
-                  <span className="font-semibold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-pink-400">
+                  <span className="font-semibold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-pink-400">
                     MovieShop
                   </span>
                   <span className="hidden sm:inline">— Tarek Aarachi</span>
@@ -291,13 +291,13 @@ export default async function RootLayout({
                 <nav className="flex items-center gap-3">
                   <Link
                     href="/privacy"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
                     Privacy
                   </Link>
                   <Link
                     href="/contact"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-gradient-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                   >
                     Contact
                   </Link>

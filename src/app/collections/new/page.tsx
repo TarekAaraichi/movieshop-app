@@ -3,9 +3,10 @@
  * Lists recently added movies.
  */
 
-import prisma from "@/lib/prisma";
-import { MovieCard, MoviesGridSkeleton } from "@/components";
+import { MovieCarousel, MoviesGridSkeleton } from "@/components";
 import { PageWrapper } from "@/components/PageThemeContext";
+import prisma from "@/lib/prisma";
+import { Suspense } from "react";
 
 async function getRecentMovies() {
   const now = new Date();
@@ -27,43 +28,21 @@ async function getRecentMovies() {
   return { recent, year };
 }
 
-import { Suspense } from "react";
-
-async function NewReleasesGrid() {
+async function NewReleasesCarousels() {
   const { recent, year } = await getRecentMovies();
   return (
-    <>
-      <section className="mb-10">
-        <h2 className="text-lg font-semibold mb-4 text-center">Last Month</h2>
-        {recent.length === 0 ? (
-          <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">
-            No releases in the last month.
-          </div>
-        ) : (
-          <div className="min-h-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
-            {recent.map((m) => (
-              <MovieCard key={m.id} movie={m} />
-            ))}
-          </div>
-        )}
-      </section>
-      <section>
-        <h2 className="text-lg font-semibold mb-4 text-center text-black dark:text-white">
-          Last Year
-        </h2>
-        {year.length === 0 ? (
-          <div className="text-center text-neutral-500 dark:text-neutral-400 py-8">
-            No releases in the last year.
-          </div>
-        ) : (
-          <div className="min-h-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
-            {year.map((m) => (
-              <MovieCard key={m.id} movie={m} />
-            ))}
-          </div>
-        )}
-      </section>
-    </>
+    <div className="space-y-12">
+      <MovieCarousel
+        title="Last Month"
+        movies={recent}
+        viewMoreHref="/collections/new/last-month"
+      />
+      <MovieCarousel
+        title="Last Year"
+        movies={year}
+        viewMoreHref="/collections/new/last-year"
+      />
+    </div>
   );
 }
 
@@ -77,7 +56,7 @@ export default function NewReleasesPage() {
           </h1>
         </header>
         <Suspense fallback={<MoviesGridSkeleton count={10} />}>
-          <NewReleasesGrid />
+          <NewReleasesCarousels />
         </Suspense>
       </div>
     </PageWrapper>

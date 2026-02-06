@@ -34,8 +34,6 @@ This project is more than just a demo; it's a fully-realized application with a 
 
 - **Automated Code Quality**: Pre-commit and pre-push hooks powered by **Husky** automatically run linting and build checks to ensure code quality and prevent errors.
 
-### Technical & Quality Assurance
-
 - **Server Actions**: Modern data mutation patterns using Next.js Server Actions for type-safe and secure interactions between client and server.
 
 ## 🛠️ Tech Stack & Architecture
@@ -109,6 +107,7 @@ Follow these steps to get the project running locally.
    ```
 
 6. **Start the development server:**
+
    ```bash
    npm run dev
    ```
