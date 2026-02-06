@@ -266,7 +266,7 @@ export default async function CartPage() {
   return (
     <PageWrapper>
       <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-8 items-start">
-        <main className="flex-1 bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-2xl shadow-sm p-6 md:p-8 border border-gray-800">
+        <main className="flex-1 bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-2xl shadow-sm p-6 md:p-8 border border-gray-800">
           <div className="flex items-start justify-between mb-6 gap-4">
             <div>
               <h1 className="text-lg md:text-2xl font-semibold text-slate-100">
@@ -304,7 +304,7 @@ export default async function CartPage() {
         </main>
 
         <aside className="w-full md:w-96 sticky top-6 self-start">
-          <div className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-2xl shadow-sm p-0 border border-gray-800 flex flex-col gap-4 overflow-hidden">
+          <div className="bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-2xl shadow-sm p-0 border border-gray-800 flex flex-col gap-4 overflow-hidden">
             {/* Order summary card with no extra padding, only inside content */}
             <div className="p-6">
               <OrderSummaryClient items={items} />
@@ -315,7 +315,7 @@ export default async function CartPage() {
 
               <Link
                 href="/movies"
-                className="w-full text-center block mt-3 px-4 py-2 rounded-md text-sm text-sky-100 bg-gradient-to-r from-sky-800 via-sky-700 to-sky-600 hover:from-sky-700 hover:to-sky-500 transition-shadow shadow-sm hover:shadow-md"
+                className="w-full text-center block mt-3 px-4 py-2 rounded-md text-sm text-sky-100 bg-linear-to-r from-sky-800 via-sky-700 to-sky-600 hover:from-sky-700 hover:to-sky-500 transition-shadow"
               >
                 Continue shopping
               </Link>

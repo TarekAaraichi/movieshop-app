@@ -52,7 +52,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
     >
       <CardHeader className="p-0">
         <Link href={`/movies/${movie.id}`} className="block">
-          <div className="relative w-full aspect-[2/3] rounded-t-xl overflow-hidden shadow-xl bg-slate-900 border border-[rgba(255,255,255,0.04)] border-b-0">
+          <div className="relative w-full aspect-2/3 rounded-t-xl overflow-hidden shadow-xl bg-slate-900 border border-[rgba(255,255,255,0.04)] border-b-0">
             <Image
               src={img}
               alt={movie.title}
@@ -66,11 +66,11 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             />
 
             {/* subtle overlay for contrast */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
 
             {/* price badge */}
             <div className="absolute top-3 right-3 z-10">
-              <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-blue-500 text-white text-sm font-semibold shadow-sm">
+              <span className="inline-flex items-center px-3 py-1 rounded-full bg-linear-to-r from-emerald-500 to-blue-500 text-white text-sm font-semibold shadow-sm">
                 SEK{price}
               </span>
             </div>
@@ -96,9 +96,9 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
         </Link>
       </CardHeader>
 
-      <CardContent className={compact ? "p-3" : "p-4 flex-grow"}>
+      <CardContent className={compact ? "p-3" : "p-4 grow"}>
         <Link href={`/movies/${movie.id}`}>
-          <CardTitle className="text-base sm:text-lg font-semibold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-blue-500 line-clamp-2 truncate">
+          <CardTitle className="text-base sm:text-lg font-semibold leading-tight bg-clip-text text-transparent bg-linear-to-r from-emerald-500 to-blue-500 line-clamp-2 truncate">
             {movie.title}
           </CardTitle>
         </Link>
@@ -110,7 +110,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             {movie.genres.slice(0, 3).map((g, i) => (
               <span
                 key={i}
-                className="inline-flex items-center rounded-md backdrop-blur-sm bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10 px-2 py-0.5 text-xs font-medium"
+                className="inline-flex items-center rounded-md backdrop-blur-sm bg-linear-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10 px-2 py-0.5 text-xs font-medium"
               >
                 {g.genre.name}
               </span>

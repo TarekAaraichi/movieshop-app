@@ -40,7 +40,7 @@ async function NewReleasesGrid() {
             No releases in the last month.
           </div>
         ) : (
-          <div className="min-h-[120px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="min-h-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {recent.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}
@@ -56,7 +56,7 @@ async function NewReleasesGrid() {
             No releases in the last year.
           </div>
         ) : (
-          <div className="min-h-[120px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+          <div className="min-h-30 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
             {year.map((m) => (
               <MovieCard key={m.id} movie={m} />
             ))}
@@ -72,7 +72,7 @@ export default function NewReleasesPage() {
     <PageWrapper>
       <div className="w-full max-w-6xl mx-auto">
         <header className="mb-8 text-center relative">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-pink-400">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-sky-400 to-pink-400">
             New Releases
           </h1>
         </header>

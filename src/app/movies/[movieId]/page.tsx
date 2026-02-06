@@ -161,8 +161,8 @@ export default async function MoviePage({ params }: Props) {
   return (
     <PageWrapper>
       <div className="w-full  mx-auto flex items-start gap-2 p-1 rounded-2xl">
-        <aside className="flex-shrink-0 p-2">
-          <div className="w-64 min-w-[264px] h-[376px] rounded-xl overflow-hidden shadow-xl relative bg-neutral-900">
+        <aside className="shrink-0 p-2">
+          <div className="w-64 min-w-66 h-94 rounded-xl overflow-hidden shadow-xl relative bg-neutral-900">
             {poster ? (
               <Image
                 src={poster}
@@ -174,7 +174,7 @@ export default async function MoviePage({ params }: Props) {
                 unoptimized
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-neutral-900 to-neutral-800 text-neutral-500">
+              <div className="flex h-full w-full items-center justify-center bg-linear-to-br from-neutral-900 to-neutral-800 text-neutral-500">
                 <span className="text-sm">No poster available</span>
               </div>
             )}
@@ -188,7 +188,7 @@ export default async function MoviePage({ params }: Props) {
           </div>
 
           {/* Buttons placed under the poster in the next row */}
-          <div className="mt-4 w-64 min-w-[264px]">
+          <div className="mt-4 w-64 min-w-66">
             <div className="w-full">
               <AddToCartClientButton
                 movieId={movieId}
@@ -200,16 +200,16 @@ export default async function MoviePage({ params }: Props) {
 
             <Link
               href="/movies"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-neutral-300 border border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-neutral-700 active:scale-95 transition-all duration-150"
             >
               Back to Movies
             </Link>
           </div>
         </aside>
-        <main className="w-full  mx-auto flex-grow p-2">
-          <section className="flex flex-row gap-6 items-start p-5 rounded-[14px] bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 border border-neutral-800 shadow-2xl backdrop-blur-md">
+        <main className="w-full  mx-auto grow p-2">
+          <section className="flex flex-row gap-6 items-start p-5 rounded-[14px] bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 border border-neutral-800 shadow-2xl backdrop-blur-md">
             <div className="flex-1 min-w-0">
-              <h1 className="text-[32px] font-extrabold m-0 flex items-center gap-3 bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-blue-400">
+              <h1 className="text-[32px] font-extrabold m-0 flex items-center gap-3 bg-clip-text text-transparent bg-linear-to-r from-emerald-400 to-blue-400">
                 {title}
               </h1>
               {tagline && (
@@ -222,7 +222,7 @@ export default async function MoviePage({ params }: Props) {
                 {genres.map((g, i) => (
                   <span
                     key={i}
-                    className="inline-flex items-center rounded-full bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-neutral-700 px-3 py-1 text-xs font-medium"
+                    className="inline-flex items-center rounded-full bg-linear-to-r from-white/40 to-slate-300/30 text-white/80 border border-neutral-700 px-3 py-1 text-xs font-medium"
                   >
                     {g}
                   </span>
@@ -317,14 +317,14 @@ export default async function MoviePage({ params }: Props) {
               {actors.length > 0 && (
                 <div className="mt-6">
                   <h3 className="text-sm text-neutral-400 mb-3">Cast</h3>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-3 p-2">
                     {actors.map((a) => (
                       <Link
                         key={a.id}
                         href={`/persons/${a.id}`}
-                        className="flex items-center gap-3 p-2 rounded-lg bg-gradient-to-r from-white/40 to-slate-300/30 text-white/80 border border-neutral-800 hover:bg-neutral-700/70 transition-colors"
+                        className="flex items-center gap-3 p-2 rounded-lg bg-linear-to-r from-white/40 to-slate-300/30 text-white/80 border border-neutral-800 hover:bg-neutral-700/70 transition-colors hover:scale-105 hover:shadow-2xl"
                       >
-                        <div className="w-12 h-12 rounded-full overflow-hidden bg-neutral-900 flex-shrink-0">
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-neutral-900 shrink-0">
                           {a.imageUrl ? (
                             <Image
                               src={a.imageUrl}

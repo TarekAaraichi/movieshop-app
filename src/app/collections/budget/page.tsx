@@ -39,7 +39,7 @@ async function BudgetGrid({
   const hasPrevPage = skip > 0;
   return (
     <>
-      <div className="min-h-[240px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
+      <div className="min-h-60 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
         {movies.map((movie) => (
           <MovieCard key={movie.id} movie={movie as Movie} />
         ))}
@@ -70,7 +70,7 @@ export default function BudgetPage({ searchParams }: Props) {
     <PageWrapper>
       <div className="w-full max-w-6xl mx-auto">
         <header className="mb-8 text-center relative">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-lime-400">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-green-400 to-lime-400">
             Budget Friendly
           </h1>
           <p className="mt-2 text-sm text-neutral-400">

@@ -1,124 +1,125 @@
-# 🎬 MovieShop Technical Overview & Contributor Guide
+# 🎬 MovieShop: A Full-Stack Next.js 15 Showcase
 
-This document provides a comprehensive overview of the MovieShop application, including its architecture, features, and technical implementation. It serves as a guide for developers and contributors.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-blue?logo=prisma)](https://www.prisma.io/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 
-## 1. Project Overview
+**Live Demo**: [https://movieshop.vercel.app](https://movieshop.vercel.app) (coming soon)
 
-MovieShop is a modern, full-stack e-commerce application built for browsing and purchasing movies. It features a clean, responsive user interface, a robust backend, and a complete set of features for both customers and administrators. The application is built with a focus on performance, developer experience, and modern web standards.
+MovieShop is a feature-rich, full-stack e-commerce application built to demonstrate a mastery of modern web development practices using Next.js 15, Prisma, and the latest in the React ecosystem. It serves as a comprehensive portfolio project showcasing everything from database architecture to a polished, performant, and secure user experience.
 
-## 2. Tech Stack
+![MovieShop Homepage](public/images/movieshop-screenshot.png) <!--- Placeholder for a future screenshot -->
 
-The project leverages a modern, type-safe technology stack:
+## ✨ Core Features
 
-- **Framework**: [Next.js](https://nextjs.org/) 15 (with App Router)
-- **Database ORM**: [Prisma](https://www.prisma.io/)
-- **Database**: [PostgreSQL](https://www.postgresql.org/)
-- **Authentication**: [Better Auth](https://better-auth.dev/)
-- **UI Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **UI Components**: [shadcn/ui](https://ui.shadcn.com/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Testing**: [Vitest](https://vitest.dev/)
+This project is more than just a demo; it's a fully-realized application with a wide array of features.
 
-## 3. Core Features
+### Customer-Facing
 
-### Customer-Facing Features
+- **Full E-commerce Flow**: Browse, search, and filter movies. Add them to a persistent cart and complete a simulated checkout process.
+- **Robust Authentication**: Secure user sign-up, sign-in, and session management with both credential and OAuth (e.g., Google, GitHub) providers via **Better Auth**.
+- **Dynamic Movie Collections**: Explore curated collections like "New Releases," "Top Rated," and browse by genre, budget, and more.
+- **Persistent Shopping Cart**: Advanced cart logic that persists for anonymous users and merges with their account cart upon login.
+- **User Profiles & Order History**: Registered users can manage their profile and view a history of their past orders.
+- **Consistent Loading UI**: A seamless user experience with animated loading skeletons for all data-heavy pages, powered by Next.js Suspense.
+- **Responsive Design**: A beautiful, mobile-first interface that looks great on all devices.
 
-- **Authentication**: Secure user sign-up, sign-in, and session management.
-- **Movie Browsing**: View a paginated list of all movies, with search and filtering capabilities.
-- **Movie Details**: Dedicated pages for each movie with detailed information, including cast and crew.
-- **Collections**: Curated movie collections such as "New Releases," "Top Rated," and genre-specific pages.
-- **Shopping Cart**: A persistent, client-side shopping cart with optimistic UI updates for a smooth user experience.
-- **Checkout**: A simulated checkout process to "purchase" movies.
-- **User Profile**: A dedicated page for users to view their order history and manage their account details.
-- **Theme Switching**: A light/dark mode theme switcher for improved user experience.
+### Administrative
 
-### Administrative Features
+- **Secure Admin Dashboard**: A role-protected area accessible only to administrators.
+- **Full CRUD Operations**: Administrators can Create, Read, Update, and Delete movies, persons (actors/directors), and manage users.
 
-- **Admin Dashboard**: A protected area for managing application data.
-- **Movie Management**: CRUD (Create, Read, Update, Delete) operations for movies.
-- **Person Management**: CRUD operations for actors and directors.
-- **User Management**: View and manage user accounts.
+### Technical & Quality Assurance
 
-## 4. Project Structure
+- **Automated Code Quality**: Pre-commit and pre-push hooks powered by **Husky** automatically run linting and build checks to ensure code quality and prevent errors.
 
-The codebase is organized into a `src` directory, following modern Next.js conventions.
+### Technical & Quality Assurance
 
-```text
-/
-├── prisma/               # Prisma schema, database migrations, and seed scripts
-├── public/               # Static assets (images, fonts)
-├── src/
-│   ├── app/              # Next.js App Router: pages, layouts, and API routes
-│   │   ├── admin/        # Admin dashboard pages
-│   │   ├── api/          # API routes (auth, cart)
-│   │   ├── (customer)/   # Customer-facing pages (movies, cart, profile)
-│   │   ├── layout.tsx    # Root layout
-│   │   └── page.tsx      # Home page
-│   │
-│   ├── components/       # Reusable React components (UI elements, forms)
-│   │   └── ui/           # Core UI components from shadcn/ui
-│   │
-│   ├── hooks/            # Custom React hooks (e.g., useCart)
-│   │
-│   ├── lib/              # Core libraries, helper functions, and client instances
-│   │   ├── auth.ts       # Authentication configuration
-│   │   └── prisma.ts     # Prisma client singleton
-│   │
-│   ├── server/           # Server-side logic
-│   │   ├── actions/      # Next.js Server Actions for mutations
-│   │   └── services/     # Server-side business logic
-│   │
-│   └── types/            # TypeScript type definitions
-│
-├── package.json          # Project dependencies and scripts
-└── tsconfig.json         # TypeScript configuration
-```
+- **Server Actions**: Modern data mutation patterns using Next.js Server Actions for type-safe and secure interactions between client and server.
 
-### Key Architectural Concepts
+## 🛠️ Tech Stack & Architecture
 
-- **Server Components & Client Components**: The app extensively uses the React Server Components (RSC) model introduced in Next.js. Server-side fetching and rendering are the default, with client-side interactivity opted into via the `"use client"` directive.
-- **Server Actions**: Data mutations (e.g., adding to cart, creating a movie) are handled by Next.js Server Actions, allowing for direct, secure function calls from client components to the server without manually creating API endpoints.
-- **Prisma Singleton**: The `src/lib/prisma.ts` file implements a singleton pattern to ensure only one instance of the Prisma client is used throughout the application, which is crucial for performance and avoiding connection issues in a serverless environment.
-- **Styling**: The UI is built with Tailwind CSS for utility-first styling, and `shadcn/ui` provides a set of accessible and composable base components.
+MovieShop is built with a modern, type-safe, and scalable technology stack.
 
-## 5. Getting Started
+- **Framework**: **Next.js 15** (with App Router, React Server Components)
+- **Database ORM**: **Prisma**
+- **Database**: **PostgreSQL**
+- **Authentication**: **Better Auth**
+- **UI Styling**: **Tailwind CSS**
+- **UI Components**: **shadcn/ui**
+- **Language**: **TypeScript**
+- **Testing**: **Vitest**
+- **Code Quality**: **ESLint**, **Prettier**, **Husky**
+- **Deployment**: **Vercel**
+
+### Architectural Highlights
+
+- **Next.js App Router**: The application is structured around the App Router, leveraging Server Components for data fetching and server-side rendering by default, while using Client Components for interactivity.
+- **Prisma Singleton**: A singleton pattern for the Prisma client (`src/lib/prisma.ts`) ensures efficient database connection management in a serverless environment.
+- **Clear Server/Client Boundaries**: A strong separation of concerns between server-side logic (in `server/` and `lib/`) and client-side components.
+- **Type Safety End-to-End**: TypeScript is used throughout the entire stack, from database models to API routes and UI components, ensuring robust and maintainable code.
+
+## 🚀 Getting Started
 
 Follow these steps to get the project running locally.
 
-### 1. Install Dependencies
+### 1. Prerequisites
 
-```bash
-npm install
-```
+- Node.js (v18 or later)
+- npm
+- A PostgreSQL database
 
-### 2. Set Up Environment Variables
+### 2. Installation & Setup
 
-Create a `.env` file in the project root and add your PostgreSQL database connection string:
+1. **Clone the repository:**
 
-```bash
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
-```
+   ```bash
+   git clone https://github.com/TarekAaraichi/movieshop-app.git
+   cd movieshop-app
+   ```
 
-### 3. Run Database Migrations
+2. **Install dependencies:**
 
-This command will apply all pending database migrations. The first time you run it, it will create all the tables defined in the Prisma schema.
+   ```bash
+   npm install
+   ```
 
-```bash
-npx prisma migrate dev
-```
+3. **Set up environment variables:**
+   Create a `.env` file in the project root by copying the example file:
 
-### 4. (Optional) Seed the Database
+   ```bash
+   cp .env.example .env
+   ```
 
-To populate the database with initial demo data (movies, genres, etc.), run the seed script:
+   Update the `DATABASE_URL` in your new `.env` file with your PostgreSQL connection string.
 
-```bash
-npm run seed
-```
+4. **Run database migrations:**
+   This command applies the schema to your database.
 
-### 5. Start the Development Server
+   ```bash
+   npx prisma migrate dev
+   ```
 
-```bash
-npm run dev
-```
+5. **Seed the database (Optional):**
+   To populate the database with initial demo data, run the seed script:
+
+   ```bash
+   npm run seed
+   ```
+
+6. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
 
 The application will be available at `http://localhost:3000`.
+
+## Available Scripts
+
+- `npm run dev`: Starts the development server.
+- `npm run build`: Creates a production build of the application.
+- `npm run start`: Starts the production server.
+- `npm run lint`: Lints the codebase using ESLint.
+- `npm run seed`: Seeds the database with initial data.
+- `npm test`: Runs unit tests with Vitest.

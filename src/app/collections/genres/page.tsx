@@ -32,7 +32,7 @@ export default async function GenresPage() {
     <PageWrapper>
       <div className="container mx-auto px-4 py-8 rounded-2xl">
         <header className="mb-8 text-center relative">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-sky-400">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-sky-400">
             Browse by Genre
           </h1>
         </header>

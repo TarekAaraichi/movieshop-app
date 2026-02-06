@@ -74,7 +74,7 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
     <PageWrapper>
       <div className="w-full max-w-6xl mx-auto">
         <header className="mb-8 text-center relative">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-sky-400">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-sky-400">
             People
           </h1>
           <p className="mt-2 text-sm text-neutral-400">
@@ -99,7 +99,7 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
           {persons.map((person) => (
             <Link href={`/persons/${person.id}`} key={person.id}>
               <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden group transform transition-transform hover:scale-105 hover:shadow-2xl">
-                <div className="relative w-full aspect-[2/3]">
+                <div className="relative w-full aspect-2/3">
                   {person.imageUrl ? (
                     <Image
                       src={person.imageUrl}
@@ -115,7 +115,7 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
                       </span>
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent" />
                 </div>
                 <div className="p-3">
                   <h3 className="text-base sm:text-lg font-semibold leading-tight bg-clip-text text-transparent bg-cyan-50 line-clamp-2 truncate">

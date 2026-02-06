@@ -73,7 +73,7 @@ export default async function CheckoutPage({
     <PageWrapper>
       <div>
         <div className="w-full m-auto max-w-3xl">
-          <Card className="p-8 bg-gradient-to-br from-neutral-900 via-neutral-800 to-indigo-950 border border-indigo-300 shadow-2xl">
+          <Card className="p-8 bg-linear-to-br from-neutral-900 via-neutral-800 to-indigo-950 border border-indigo-300 shadow-2xl">
             <div className="flex items-start justify-between gap-4 mb-8">
               <div>
                 <h1 className="text-3xl font-extrabold text-indigo-400 tracking-tight">
@@ -257,7 +257,7 @@ export default async function CheckoutPage({
                     id="checkout-submit"
                     type="submit"
                     disabled
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-semibold shadow-xl hover:from-indigo-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 bg-linear-to-r from-indigo-600 to-blue-600 text-white font-semibold shadow-xl hover:from-indigo-500 hover:to-blue-500 transition-all"
                   >
                     Complete Purchase
                   </button>
