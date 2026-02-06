@@ -44,7 +44,6 @@ export default function MovieCreateClientValidator({
     if (!form) return;
 
     function handleSubmit(e: Event) {
-      const submitEvent = e as SubmitEvent;
       const fd = new FormData(form);
       const raw = Object.fromEntries(fd.entries());
       const result = movieCreateClientSchema.safeParse(raw);
@@ -59,7 +58,6 @@ export default function MovieCreateClientValidator({
         // show first message as toast and log full
         toast.error(msgs[0] ?? "Validation error");
         // also optionally show all messages in console for debugging
-        // eslint-disable-next-line no-console
         console.warn("Movie create validation failed:", msgs);
       }
     }

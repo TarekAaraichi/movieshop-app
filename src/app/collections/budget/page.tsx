@@ -3,7 +3,7 @@
  * Lists movies ordered by price ascending
  */
 
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import type { Prisma, Movie } from "@prisma/client";
 import { MovieCard, MoviesGridSkeleton } from "@/components";
 import PaginationControls from "@/components/PaginationControls";

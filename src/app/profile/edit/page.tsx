@@ -9,7 +9,7 @@
 //   server action to persist changes.
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { SaveButton } from "@/components";

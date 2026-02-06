@@ -37,7 +37,6 @@ export default function PersonCreateClientValidator({
           msgs.push(`${path}: ${issue.message}`);
         }
         toast.error(msgs[0] ?? "Validation error");
-        // eslint-disable-next-line no-console
         console.warn("Person create validation failed:", msgs);
       }
     }

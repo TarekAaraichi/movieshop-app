@@ -3,7 +3,7 @@
  * Lists movies ordered by total purchases (orderItems count)
  */
 
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import type { Prisma, Movie } from "@prisma/client";
 import { MovieCard, MoviesGridSkeleton } from "@/components";
 import PaginationControls from "@/components/PaginationControls";
@@ -15,7 +15,13 @@ interface Props {
 
 import { Suspense } from "react";
 
-async function TopSellingGrid({ page, perPage }: { page: number; perPage: number }) {
+async function TopSellingGrid({
+  page,
+  perPage,
+}: {
+  page: number;
+  perPage: number;
+}) {
   const skip = (page - 1) * perPage;
   const where: Prisma.MovieWhereInput = { isArchived: false };
   const totalCount = await prisma.movie.count({ where });
@@ -39,7 +45,9 @@ async function TopSellingGrid({ page, perPage }: { page: number; perPage: number
         ))}
         {movies.length === 0 && (
           <div className="col-span-full text-center py-12">
-            <p className="text-neutral-500 dark:text-neutral-400">No top selling movies found.</p>
+            <p className="text-neutral-500 dark:text-neutral-400">
+              No top selling movies found.
+            </p>
           </div>
         )}
       </div>
@@ -65,7 +73,9 @@ export default function TopSellingPage({ searchParams }: Props) {
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-500">
             Top Selling
           </h1>
-          <p className="mt-2 text-sm text-neutral-400">Our most purchased titles.</p>
+          <p className="mt-2 text-sm text-neutral-400">
+            Our most purchased titles.
+          </p>
         </header>
         <Suspense fallback={<MoviesGridSkeleton count={10} />}>
           <TopSellingGrid page={page} perPage={perPage} />

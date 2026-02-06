@@ -4,7 +4,7 @@
  */
 
 import { MovieCarousel } from "@/components";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { PageWrapper } from "@/components/PageThemeContext";
 
 async function getGenresWithMovies() {
