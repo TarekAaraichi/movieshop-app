@@ -74,7 +74,7 @@ export default async function PersonPage({
               href="/persons"
               className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-white dark:bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-gray-800 dark:text-neutral-300 border border-gray-200 dark:border-neutral-700 px-4 py-3 text-sm font-medium shadow-lg hover:bg-gray-50 dark:hover:bg-linear-to-br dark:hover:from-neutral-800 dark:hover:to-slate-600 active:scale-95 transition-all duration-150"
             >
-              Check People Catalog
+              Go to People
             </Link>
             <Link
               href="/movies"
