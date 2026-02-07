@@ -1,4 +1,5 @@
 import { PageWrapper } from "@/components/PageThemeContext";
+import { PaginationControlsSkeleton } from "@/components/PaginationControlsSkeleton";
 
 const OrderItemSkeleton = () => (
   <div className="bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden shadow-md animate-pulse">
@@ -51,11 +52,7 @@ export default function ProfileOrdersLoading() {
         </div>
 
         {/* Pagination controls skeleton */}
-        <div className="flex justify-center items-center gap-2 mt-8">
-          <div className="h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
-          <div className="h-6 w-24 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
-          <div className="h-8 w-20 bg-gray-200 dark:bg-gray-700 rounded-md animate-pulse"></div>
-        </div>
+        <PaginationControlsSkeleton />
       </div>
     </PageWrapper>
   );
