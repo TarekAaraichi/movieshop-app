@@ -103,17 +103,17 @@ export default async function ProfilePage() {
     <PageWrapper>
       <div className="max-w-4xl mx-auto">
         <header className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
             My Profile
           </h1>
-          <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="mt-2 text-sm text-gray-600 dark:text-neutral-400">
             View your account details and order history.
           </p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="md:col-span-1">
-            <div className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg shadow-md p-6 text-center">
+            <div className="bg-white dark:bg-neutral-800/50 rounded-lg shadow-md p-6 text-center border border-neutral-200 dark:border-neutral-800">
               <div className="relative w-32 h-32 mx-auto mb-4">
                 <Image
                   src={
@@ -122,61 +122,68 @@ export default async function ProfilePage() {
                     user.image.length > 0
                       ? user.image
                       : user.id
-                        ? `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(user.id)}`
+                        ? `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(
+                            user.id,
+                          )}`
                         : "/placeholder.png"
                   }
                   alt="User avatar"
                   width={128}
                   height={128}
-                  className="rounded-full object-cover border-1 border-neutral-200 dark:border-neutral-700"
+                  className="rounded-full object-cover border-2 border-neutral-200 dark:border-neutral-700"
                   unoptimized
                 />
               </div>
-              <h2 className="text-xl font-bold text-neutral-800 dark:text-white">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                 {user.name}
               </h2>
-              <p className="text-sm text-neutral-500 dark:text-neutral-600">
+              <p className="text-sm text-gray-500 dark:text-neutral-400">
                 {user.email}
               </p>
-              <Link
-                href="/profile/edit"
-                className="mt-4 inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors"
-              >
-                Edit Profile
-              </Link>
-              <Link
-                href="/profile/orders"
-                className="mt-4 ml-2 inline-block bg-emerald-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-emerald-700 transition-colors"
-              >
-                My Orders
-              </Link>
+              <div className="mt-4 flex flex-col sm:flex-row sm:justify-center gap-2">
+                <Link
+                  href="/profile/edit"
+                  className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+                >
+                  Edit Profile
+                </Link>
+                <Link
+                  href="/profile/orders"
+                  className="inline-block bg-emerald-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-emerald-700 transition-colors"
+                >
+                  My Orders
+                </Link>
+              </div>
             </div>
           </div>
 
           <div className="md:col-span-2">
             <section className="mb-8">
-              <h3 className="text-xl font-bold mb-4 text-black dark:text-white">
+              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
                 Shipping Addresses
               </h3>
               <div className="space-y-4">
                 {uniqueAddresses.length > 0 ? (
                   uniqueAddresses.map((addr) => (
-                    <div key={addr.id} className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg p-4">
-                      <p className="font-semibold text-neutral-700 dark:text-neutral-300">
+                    <div
+                      key={addr.id}
+                      className="bg-white dark:bg-neutral-800/50 rounded-lg p-4 border border-neutral-200 dark:border-neutral-800"
+                    >
+                      <p className="font-semibold text-gray-800 dark:text-neutral-200">
                         {addr.line1}
                       </p>
                       {addr.line2 && (
-                        <p className="text-neutral-600 dark:text-neutral-400">
+                        <p className="text-gray-600 dark:text-neutral-400">
                           {addr.line2}
                         </p>
                       )}
-                      <p className="text-neutral-600 dark:text-neutral-400">
+                      <p className="text-gray-600 dark:text-neutral-400">
                         {addr.city}, {addr.postalCode}, {addr.country}
                       </p>
                     </div>
                   ))
                 ) : (
-                  <p className="text-neutral-500 dark:text-neutral-400">
+                  <p className="text-gray-500 dark:text-neutral-400">
                     No addresses found.
                   </p>
                 )}
