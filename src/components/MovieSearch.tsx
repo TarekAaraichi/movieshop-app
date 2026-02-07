@@ -71,11 +71,11 @@ export default function MovieSearch({
         placeholder="Search by title, actor, or director..."
         value={value}
         onChange={(e) => setValue(e.target.value)}
-        className="w-full pl-10 pr-4 py-2 text-sm rounded-lg bg-neutral-800 border border-neutral-700 text-white placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
+        className="w-full pl-10 pr-4 py-2 text-sm rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:placeholder-neutral-400 dark:focus:ring-gray-500"
       />
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
         <svg
-          className="h-5 w-5 text-neutral-400"
+          className="h-5 w-5 text-gray-400 dark:text-neutral-400"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
