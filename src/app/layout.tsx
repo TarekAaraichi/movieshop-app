@@ -268,7 +268,7 @@ export default async function RootLayout({
               </div>
             </header>
 
-            <main className="flex-1 w-full max-w-7xl mx-auto px-4 py-8">
+            <main className="flex-1 w-full max-w-7xl mx-auto p-4 bg-linear-to-b from-gray-900 via-gray-800 to-gray-900 shadow-inner">
               {children}
             </main>
 

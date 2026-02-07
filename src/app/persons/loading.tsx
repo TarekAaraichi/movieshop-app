@@ -1,31 +1,24 @@
 "use client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { usePageTheme } from "@/components/PageThemeContext";
 import React from "react";
 
 function PersonCardSkeleton() {
-  const { theme } = usePageTheme();
-  const skeletonBg = theme === "dark" ? "bg-neutral-800" : "bg-neutral-200";
   return (
-    <div className="flex flex-col items-center space-y-3">
-      <Skeleton className={`h-32 w-32 rounded-full ${skeletonBg}`} />
-      <div className="space-y-2 w-full">
-        <Skeleton className={`h-4 w-3/4 mx-auto ${skeletonBg}`} />
-        <Skeleton className={`h-4 w-1/2 mx-auto ${skeletonBg}`} />
+    <div className="space-y-2">
+      <Skeleton className="h-62.5 w-full rounded-lg bg-neutral-200 dark:bg-neutral-800" />
+      <div className="p-2 space-y-2">
+        <Skeleton className="h-4 w-4/5 rounded bg-neutral-200 dark:bg-neutral-800" />
       </div>
     </div>
   );
 }
 
 export default function Loading() {
-  // Ensure theme context is available
   return (
-    <React.Suspense fallback={null}>
-      <div className="min-h-[240px] grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-6">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <PersonCardSkeleton key={i} />
-        ))}
-      </div>
-    </React.Suspense>
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+      {Array.from({ length: 12 }).map((_, i) => (
+        <PersonCardSkeleton key={i} />
+      ))}
+    </div>
   );
 }

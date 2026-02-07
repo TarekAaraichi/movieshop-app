@@ -73,7 +73,7 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
     <PageWrapper>
       <div className="w-full max-w-6xl mx-auto">
         <header className="mb-8 text-center relative">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-sky-600 dark:from-emerald-400 dark:to-sky-400">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-500 to-sky-600 dark:from-emerald-400 dark:to-sky-400">
             People
           </h1>
           <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
