@@ -66,11 +66,11 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             />
 
             {/* subtle overlay for contrast */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
 
             {/* price badge */}
             <div className="absolute top-3 right-3 z-10">
-              <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-blue-500 text-white text-sm font-semibold shadow-sm">
+              <span className="inline-flex items-center px-3 py-1 rounded-full bg-linear-to-r from-emerald-500 to-blue-500 text-white text-sm font-semibold shadow-sm">
                 SEK{price}
               </span>
             </div>
@@ -98,7 +98,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
 
       <CardContent className={compact ? "p-3" : "p-4 grow"}>
         <Link href={`/movies/${movie.id}`}>
-          <CardTitle className="text-base sm:text-lg font-semibold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-500 dark:to-blue-500 line-clamp-2 truncate">
+          <CardTitle className="text-base sm:text-lg font-semibold leading-tight bg-clip-text text-transparent bg-linear-to-r from-emerald-600 to-blue-600 dark:from-emerald-500 dark:to-blue-500 line-clamp-2 truncate">
             {movie.title}
           </CardTitle>
         </Link>

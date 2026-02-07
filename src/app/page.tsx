@@ -68,9 +68,9 @@ export default async function HomePage() {
         {/* Hero Section */}
         <section className="relative overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat p-8 sm:p-16 text-center mb-12 border dark:border-primary/30 shadow-lg dark:shadow-2xl dark:shadow-primary/15 bg-[url('/images/Hero.jpeg')]">
           <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/75" />
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/25 via-transparent to-secondary/25 opacity-40" />
+          <div className="absolute inset-0 bg-linear-to-br from-primary/25 via-transparent to-secondary/25 opacity-40" />
           <div className="relative z-10">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-gradient-to-br from-amber-500 via-orange-600 to-red-700 dark:from-amber-400 dark:via-orange-500 dark:to-red-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-linear-to-br from-amber-500 via-orange-600 to-red-700 dark:from-amber-400 dark:via-orange-500 dark:to-red-600 bg-clip-text text-transparent">
               Welcome to MovieShop
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-800 dark:text-gray-300 max-w-2xl mx-auto">
