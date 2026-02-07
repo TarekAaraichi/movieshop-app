@@ -12,7 +12,7 @@ import { PageWrapper } from "@/components/PageThemeContext";
 export default async function HomePage() {
   // Fetch all movie lists in parallel for better performance
   const [topPurchased, recentMovies, oldestMovies, cheapMovies] =
-    await Promise.all([
+    (await Promise.all([
       prisma.movie.findMany({
         where: { isArchived: false, orderItems: { some: {} } },
         orderBy: { orderItems: { _count: "desc" } },
@@ -49,7 +49,18 @@ export default async function HomePage() {
           people: { include: { person: true } },
         },
       }),
-    ]);
+    ])) as [any, any, any, any];
+
+  const serializeMovies = (movies: any[]) =>
+    movies.map((movie) => ({
+      ...movie,
+      price: Number(movie.price),
+    }));
+
+  const serializedTopPurchased = serializeMovies(topPurchased);
+  const serializedRecentMovies = serializeMovies(recentMovies);
+  const serializedOldestMovies = serializeMovies(oldestMovies);
+  const serializedCheapMovies = serializeMovies(cheapMovies);
 
   return (
     <PageWrapper>
@@ -90,22 +101,22 @@ export default async function HomePage() {
         <div className="space-y-12">
           <MovieCarousel
             title="Top Selling"
-            movies={topPurchased}
+            movies={serializedTopPurchased}
             viewMoreHref="/collections/top-selling"
           />
           <MovieCarousel
             title="New Releases"
-            movies={recentMovies}
+            movies={serializedRecentMovies}
             viewMoreHref="/collections/new"
           />
           <MovieCarousel
             title="All-Time Classics"
-            movies={oldestMovies}
+            movies={serializedOldestMovies}
             viewMoreHref="/collections/classics"
           />
           <MovieCarousel
             title="Budget Friendly"
-            movies={cheapMovies}
+            movies={serializedCheapMovies}
             viewMoreHref="/collections/budget"
           />
         </div>
