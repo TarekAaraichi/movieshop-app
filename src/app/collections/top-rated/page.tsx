@@ -73,7 +73,7 @@ export default function TopRatedPage({
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-yellow-400 to-pink-400">
             Top Rated
           </h1>
-          <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
             Discover the highest-rated movies as voted by our community.
           </p>
         </header>

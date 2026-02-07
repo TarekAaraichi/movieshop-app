@@ -73,7 +73,7 @@ export default function TopSellingPage({ searchParams }: Props) {
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-orange-400 to-pink-500">
             Top Selling
           </h1>
-          <p className="mt-2 text-sm text-neutral-400">
+          <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
             Our most purchased titles.
           </p>
         </header>

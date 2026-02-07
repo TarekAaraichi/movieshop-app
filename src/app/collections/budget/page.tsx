@@ -73,7 +73,7 @@ export default function BudgetPage({ searchParams }: Props) {
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-green-400 to-lime-400">
             Budget Friendly
           </h1>
-          <p className="mt-2 text-sm text-neutral-400">
+          <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
             Great movies that will not break the bank.
           </p>
         </header>
