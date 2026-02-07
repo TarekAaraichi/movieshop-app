@@ -81,10 +81,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html
-      lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable}`}
-    >
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="font-sans min-h-screen flex flex-col bg-linear-to-b from-gray-950 via-gray-900 to-gray-950 text-gray-100">
         <ClientShell serverSession={session}>
           <PageThemeProvider>
