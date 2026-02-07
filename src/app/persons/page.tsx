@@ -1,10 +1,9 @@
 import { AutoSubmitSelect } from "@/components";
 import PaginationControls from "@/components/PaginationControls";
 import { PersonSearch } from "@/components/PersonSearch";
+import PersonCard from "@/components/PersonCard";
 import { PageWrapper } from "@/components/PageThemeContext";
 import prisma from "@/lib/prisma";
-import Image from "next/image";
-import Link from "next/link";
 import { PersonRole } from "@prisma/client";
 import type { Prisma } from "@prisma/client";
 
@@ -97,33 +96,7 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {persons.map((person) => (
-            <Link href={`/persons/${person.id}`} key={person.id}>
-              <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow-lg overflow-hidden group transform transition-transform hover:scale-105 hover:shadow-2xl">
-                <div className="relative w-full aspect-2/3">
-                  {person.imageUrl ? (
-                    <Image
-                      src={person.imageUrl}
-                      alt={person.fullName}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-neutral-200 dark:bg-neutral-700 flex items-center justify-center">
-                      <span className="text-neutral-500 dark:text-neutral-400 text-xs text-center">
-                        No Image
-                      </span>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent" />
-                </div>
-                <div className="p-3">
-                  <h3 className="text-base sm:text-lg font-semibold leading-tight bg-clip-text text-transparent bg-cyan-50 line-clamp-2 truncate">
-                    {person.fullName}
-                  </h3>
-                </div>
-              </div>
-            </Link>
+            <PersonCard key={person.id} person={person} />
           ))}
           {persons.length === 0 && (
             <div className="col-span-full text-center py-12">
