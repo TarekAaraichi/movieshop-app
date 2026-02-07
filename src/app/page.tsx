@@ -66,14 +66,14 @@ export default async function HomePage() {
     <PageWrapper>
       <div className="container mx-auto px-4 py-8 rounded-2xl">
         {/* Hero Section */}
-        <section className="relative overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat p-8 sm:p-16 text-center mb-12 border border-primary/30 shadow-2xl shadow-primary/15 bg-[url('/images/Hero.jpeg')]">
-          <div className="absolute inset-0 bg-gray-900/75" />
-          <div className="absolute inset-0 bg-linear-to-br from-primary/25 via-transparent to-secondary/25 opacity-40" />
+        <section className="relative overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat p-8 sm:p-16 text-center mb-12 border dark:border-primary/30 shadow-lg dark:shadow-2xl dark:shadow-primary/15 bg-[url('/images/Hero.jpeg')]">
+          <div className="absolute inset-0 bg-white/50 dark:bg-gray-900/75" />
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/25 via-transparent to-secondary/25 opacity-40" />
           <div className="relative z-10">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-linear-to-br from-amber-400 via-orange-500 to-red-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-gradient-to-br from-amber-500 via-orange-600 to-red-700 dark:from-amber-400 dark:via-orange-500 dark:to-red-600 bg-clip-text text-transparent">
               Welcome to MovieShop
             </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-200 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="mt-6 text-lg leading-8 text-gray-800 dark:text-gray-300 max-w-2xl mx-auto">
               Your one-stop shop for the greatest movies ever made. Discover new
               releases, timeless classics, and hidden gems.
             </p>
@@ -81,7 +81,7 @@ export default async function HomePage() {
               <Button
                 asChild
                 size="lg"
-                className="bg-amber-600 hover:bg-amber-700 text-white"
+                className="bg-amber-500 hover:bg-amber-600 text-white dark:bg-amber-600 dark:hover:bg-amber-700"
               >
                 <Link href="/movies">Browse All Movies</Link>
               </Button>
@@ -89,7 +89,7 @@ export default async function HomePage() {
                 asChild
                 variant="secondary"
                 size="lg"
-                className="bg-gray-700/50 hover:bg-gray-600/50 text-white"
+                className="bg-gray-100/50 hover:bg-gray-200/50 text-gray-800 dark:bg-gray-700/50 dark:hover:bg-gray-600/50 dark:text-white"
               >
                 <Link href="/collections/top-rated">Top Rated</Link>
               </Button>

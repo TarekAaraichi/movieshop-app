@@ -180,18 +180,14 @@ export default function CarouselControls({ containerId }: Props) {
 
   // autoplay removed — carousel is manual only (chevrons/dots)
   return (
-    <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity">
-      <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
+    <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300">
+      <div className="absolute left-0 sm:-left-3 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
         <button
           aria-label={`Previous — ${currentIndex + 1} of ${totalCount}`}
           title={`Previous — ${currentIndex + 1} of ${totalCount}`}
           onClick={() => scroll(-1)}
           disabled={!canLeft}
-          className={`rounded-full text-white p-2 sm:p-3 shadow-lg transition-all disabled:opacity-40 disabled:filter grayscale ${
-            canLeft
-              ? "bg-gradient-to-br from-black/70 to-black/50 hover:scale-105"
-              : "bg-white/6"
-          } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400`}
+          className={`rounded-full p-2 sm:p-3 shadow-lg transition-all disabled:opacity-20 disabled:filter disabled:grayscale bg-white/80 text-gray-800 hover:bg-white dark:bg-black/60 dark:text-white dark:hover:bg-black/80 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -202,7 +198,7 @@ export default function CarouselControls({ containerId }: Props) {
           >
             <path
               d="M15 18l-6-6 6-6"
-              strokeWidth="1.5"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -210,17 +206,13 @@ export default function CarouselControls({ containerId }: Props) {
         </button>
       </div>
 
-      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
+      <div className="absolute right-0 sm:-right-3 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
         <button
           aria-label={`Next — ${currentIndex + 1} of ${totalCount}`}
           title={`Next — ${currentIndex + 1} of ${totalCount}`}
           onClick={() => scroll(1)}
           disabled={!canRight}
-          className={`rounded-full text-white p-2 sm:p-3 shadow-lg transition-all disabled:opacity-40 disabled:filter grayscale ${
-            canRight
-              ? "bg-gradient-to-br from-black/70 to-black/50 hover:scale-105"
-              : "bg-white/6"
-          } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400`}
+          className={`rounded-full p-2 sm:p-3 shadow-lg transition-all disabled:opacity-20 disabled:filter disabled:grayscale bg-white/80 text-gray-800 hover:bg-white dark:bg-black/60 dark:text-white dark:hover:bg-black/80 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -231,7 +223,7 @@ export default function CarouselControls({ containerId }: Props) {
           >
             <path
               d="M9 6l6 6-6 6"
-              strokeWidth="1.5"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -253,10 +245,10 @@ export default function CarouselControls({ containerId }: Props) {
               onClick={() => goToPage(i)}
               aria-label={`Show page ${i + 1} of ${totalPages}`}
               title={`Show page ${i + 1} of ${totalPages}`}
-              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-transform focus:outline-none ${
+              className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-transform focus:outline-none ${
                 i === currentPage
-                  ? "bg-gray-400 scale-110"
-                  : "bg-white/8 hover:bg-white/16"
+                  ? "bg-gray-800 dark:bg-white scale-110"
+                  : "bg-gray-400/70 hover:bg-gray-500 dark:bg-white/40 dark:hover:bg-white/60"
               }`}
             />
           ))}
