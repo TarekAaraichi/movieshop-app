@@ -47,12 +47,12 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
   return (
     <Card
       className={
-        "group relative overflow-hidden flex flex-col h-full w-full min-w-0 transition duration-200 ease-in-out hover:scale-105 hover:shadow-2xl rounded-xl pt-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] border border-[rgba(255,255,255,0.04)] shadow-[0_6px_30px_rgba(2,6,23,0.6)] backdrop-blur-sm"
+        "group relative overflow-hidden flex flex-col h-full w-full min-w-0 transition duration-200 ease-in-out hover:scale-105 hover:shadow-2xl rounded-xl pt-0 bg-white dark:bg-[linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01))] border border-gray-200 dark:border-[rgba(255,255,255,0.04)] shadow-md dark:shadow-[0_6px_30px_rgba(2,6,23,0.6)] dark:backdrop-blur-sm"
       }
     >
       <CardHeader className="p-0">
         <Link href={`/movies/${movie.id}`} className="block">
-          <div className="relative w-full aspect-2/3 rounded-t-xl overflow-hidden shadow-xl bg-slate-900 border border-[rgba(255,255,255,0.04)] border-b-0">
+          <div className="relative w-full aspect-2/3 rounded-t-xl overflow-hidden shadow-inner bg-gray-100 dark:bg-slate-900 border-b border-gray-200 dark:border-[rgba(255,255,255,0.04)]">
             <Image
               src={img}
               alt={movie.title}
@@ -66,11 +66,11 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             />
 
             {/* subtle overlay for contrast */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
 
             {/* price badge */}
             <div className="absolute top-3 right-3 z-10">
-              <span className="inline-flex items-center px-3 py-1 rounded-full bg-linear-to-r from-emerald-500 to-blue-500 text-white text-sm font-semibold shadow-sm">
+              <span className="inline-flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-emerald-500 to-blue-500 text-white text-sm font-semibold shadow-sm">
                 SEK{price}
               </span>
             </div>
@@ -98,19 +98,23 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
 
       <CardContent className={compact ? "p-3" : "p-4 grow"}>
         <Link href={`/movies/${movie.id}`}>
-          <CardTitle className="text-base sm:text-lg font-semibold leading-tight bg-clip-text text-transparent bg-linear-to-r from-emerald-500 to-blue-500 line-clamp-2 truncate">
+          <CardTitle className="text-base sm:text-lg font-semibold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-emerald-600 to-blue-600 dark:from-emerald-500 dark:to-blue-500 line-clamp-2 truncate">
             {movie.title}
           </CardTitle>
         </Link>
 
-        {year && <div className="mt-1 text-sm text-slate-400">{year}</div>}
+        {year && (
+          <div className="mt-1 text-sm text-gray-500 dark:text-slate-400">
+            {year}
+          </div>
+        )}
 
         {movie.genres && (
           <div className="mt-2 flex flex-wrap gap-2">
             {movie.genres.slice(0, 3).map((g, i) => (
               <span
                 key={i}
-                className="inline-flex items-center rounded-md backdrop-blur-sm bg-linear-to-r from-white/40 to-slate-300/30 text-white/80 border border-white/10 px-2 py-0.5 text-xs font-medium"
+                className="inline-flex items-center rounded-md bg-gray-100 dark:backdrop-blur-sm dark:bg-linear-to-r from-white/40 to-slate-300/30 text-gray-700 dark:text-gray/80 border border-gray-200 dark:border-white/10 px-2 py-0.5 text-xs font-medium"
               >
                 {g.genre.name}
               </span>
@@ -119,25 +123,29 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
         )}
 
         {/* Director + main cast */}
-        <div className="mt-3 text-sm text-slate-300">
-          <div className="text-xs text-slate-400">Director</div>
+        <div className="mt-3 text-sm text-gray-600 dark:text-slate-300">
+          <div className="text-xs text-gray-500 dark:text-slate-400">
+            Director
+          </div>
           <div className="mt-1">
             {director ? (
               <Link
                 href={`/persons/${director.id}`}
-                className="font-medium text-slate-100 hover:underline"
+                className="font-medium text-gray-800 dark:text-slate-100 hover:underline"
               >
                 {director.fullName}
               </Link>
             ) : (
-              <span className="text-slate-400">Unknown</span>
+              <span className="text-gray-500 dark:text-slate-400">Unknown</span>
             )}
           </div>
 
           {actors.length > 0 && (
             <div className="mt-2">
-              <div className="text-xs text-slate-400">Starring</div>
-              <div className="mt-1 text-sm text-slate-200">
+              <div className="text-xs text-gray-500 dark:text-slate-400">
+                Starring
+              </div>
+              <div className="mt-1 text-sm text-gray-700 dark:text-slate-200">
                 {actors.slice(0, 2).map((a, i) => (
                   <span key={a.id}>
                     {i > 0 && ", "}
@@ -147,7 +155,9 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
                   </span>
                 ))}
                 {actors.length > 2 && (
-                  <span className="text-slate-400">{` +${actors.length - 2}`}</span>
+                  <span className="text-gray-500 dark:text-slate-400">{` +${
+                    actors.length - 2
+                  }`}</span>
                 )}
               </div>
             </div>
@@ -162,7 +172,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
       >
         <div>
           {stock === 0 ? (
-            <span className="text-sm font-semibold text-destructive">
+            <span className="text-sm font-semibold text-red-600 dark:text-destructive">
               Sold out
             </span>
           ) : (
