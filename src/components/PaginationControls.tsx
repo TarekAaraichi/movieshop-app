@@ -47,8 +47,8 @@ export default function PaginationControls({
             href={getPageLink(i)}
             className={`px-4 py-2 rounded-md ${
               currentPage === i
-                ? "bg-blue-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                ? "bg-blue-500 text-white dark:bg-blue-600"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
             }`}
           >
             {i}
@@ -62,8 +62,8 @@ export default function PaginationControls({
           href={getPageLink(1)}
           className={`px-4 py-2 rounded-md ${
             currentPage === 1
-              ? "bg-blue-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              ? "bg-blue-500 text-white dark:bg-blue-600"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           }`}
         >
           1
@@ -84,8 +84,8 @@ export default function PaginationControls({
             href={getPageLink(i)}
             className={`px-4 py-2 rounded-md ${
               currentPage === i
-                ? "bg-blue-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                ? "bg-blue-500 text-white dark:bg-blue-600"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
             }`}
           >
             {i}
@@ -103,8 +103,8 @@ export default function PaginationControls({
           href={getPageLink(pageCount)}
           className={`px-4 py-2 rounded-md ${
             currentPage === pageCount
-              ? "bg-blue-600 text-white"
-              : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+              ? "bg-blue-500 text-white dark:bg-blue-600"
+              : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           }`}
         >
           {pageCount}
@@ -116,13 +116,13 @@ export default function PaginationControls({
   };
 
   return (
-    <div className="flex items-center justify-center gap-4 mt-8 text-white">
+    <div className="flex items-center justify-center gap-4 mt-8 text-gray-800 dark:text-white">
       <Link
         href={getPageLink(currentPage - 1)}
         className={`px-4 py-2 rounded-md ${
           !hasPrevPage
-            ? "bg-gray-800 text-gray-500 cursor-not-allowed"
-            : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500"
+            : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
         }`}
         aria-disabled={!hasPrevPage}
       >
@@ -135,8 +135,8 @@ export default function PaginationControls({
         href={getPageLink(currentPage + 1)}
         className={`px-4 py-2 rounded-md ${
           !hasNextPage
-            ? "bg-gray-800 text-gray-500 cursor-not-allowed"
-            : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+            ? "bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:text-gray-500"
+            : "bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
         }`}
         aria-disabled={!hasNextPage}
       >
