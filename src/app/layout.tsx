@@ -151,6 +151,24 @@ export default async function RootLayout({
                           Top Rated
                         </Link>
                         <Link
+                          href="/collections/top-selling"
+                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                        >
+                          Top Selling
+                        </Link>
+                        <Link
+                          href="/collections/classics"
+                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                        >
+                          All-Time Classics
+                        </Link>
+                        <Link
+                          href="/collections/budget"
+                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                        >
+                          Budget Friendly
+                        </Link>
+                        <Link
                           href="/collections/genres"
                           className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
                         >

@@ -91,7 +91,7 @@ export default async function HomePage() {
                 size="lg"
                 className="bg-gray-700/50 hover:bg-gray-600/50 text-white"
               >
-                <Link href="/collections/top-rated">Top Rated</Link>
+                <Link href="/collections">Browse Collections</Link>
               </Button>
             </div>
           </div>
