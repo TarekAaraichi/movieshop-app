@@ -51,27 +51,43 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FeatureCard
                 title="Full E-commerce Flow"
-                description="From browsing and searching to adding items to a persistent cart and completing a simulated checkout."
-              />
-              <FeatureCard
-                title="Advanced Admin Dashboard"
-                description="A secure, role-protected area for administrators to perform CRUD operations on movies, people, and users."
+                description="Browse, search, and filter movies. Add them to a persistent cart and complete a simulated checkout process."
               />
               <FeatureCard
                 title="Robust Authentication"
-                description="Secure user registration, login, and session management powered by Better Auth, with credential and OAuth providers."
+                description="Secure user sign-up, sign-in, and session management with both credential and OAuth providers via Better Auth."
               />
               <FeatureCard
                 title="Dynamic Movie Collections"
                 description="Explore curated collections like 'New Releases', 'Top Rated', and browse by genre, budget, and more."
               />
               <FeatureCard
-                title="Optimistic UI & Skeletons"
-                description="A seamless user experience with optimistic updates for actions like adding to cart, and consistent loading skeletons across all pages."
+                title="Persistent Shopping Cart"
+                description="Advanced cart logic that persists for anonymous users and merges with their account cart upon login."
               />
               <FeatureCard
-                title="Code Quality Assurance"
-                description="Integrated Husky Git hooks to enforce linting and build checks, ensuring high-quality, error-free code commits."
+                title="User Profiles & Order History"
+                description="Registered users can manage their profile and view a history of their past orders."
+              />
+              <FeatureCard
+                title="Consistent Loading UI"
+                description="A seamless user experience with animated loading skeletons for all data-heavy pages, powered by Next.js Suspense."
+              />
+              <FeatureCard
+                title="Theming"
+                description="Switch between light and dark modes for a personalized viewing experience."
+              />
+              <FeatureCard
+                title="Secure Admin Dashboard"
+                description="A role-protected area accessible only to administrators with full CRUD operations for movies, people, and users."
+              />
+              <FeatureCard
+                title="Automated Code Quality"
+                description="Pre-commit and pre-push hooks powered by Husky automatically run linting and build checks to ensure code quality."
+              />
+              <FeatureCard
+                title="Server Actions"
+                description="Modern data mutation patterns using Next.js Server Actions for type-safe and secure interactions."
               />
             </div>
           </section>
@@ -100,7 +116,7 @@ export default function AboutPage() {
               href="https://github.com/TarekAaraichi/movieshop-app"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md border border-zinc-200 dark:border-zinc-700 bg-gray-700 text-sm text-zinc-900 dark:text-zinc-200 px-6 py-3 hover:bg-gray-100 dark:hover:bg-zinc-800/80 transition-colors duration-300 font-semibold"
+              className="inline-flex items-center justify-center rounded-md border border-neutral-300 bg-neutral-700 text-sm text-white dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 px-6 py-3 hover:bg-neutral-600 dark:hover:bg-neutral-700 transition-colors duration-300 font-semibold"
             >
               View Source Code on GitHub
             </a>
@@ -118,17 +134,19 @@ const FeatureCard = ({
   title: string;
   description: string;
 }) => (
-  <div className="bg-gray-700 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6">
-    <h3 className="font-bold text-zinc-900 dark:text-white text-lg mb-2">
+  <div className="bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+    <h3 className="font-bold text-neutral-900 dark:text-white text-lg mb-2">
       {title}
     </h3>
-    <p className="text-zinc-600 dark:text-zinc-400 text-sm">{description}</p>
+    <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+      {description}
+    </p>
   </div>
 );
 
 const TechItem = ({ name, category }: { name: string; category: string }) => (
-  <div className="bg-gray-700  border border-zinc-200 dark:border-zinc-800 rounded-lg p-4 flex flex-col justify-center items-center">
-    <p className="font-bold text-zinc-900 dark:text-white">{name}</p>
-    <p className="text-xs text-zinc-600 dark:text-zinc-400">{category}</p>
+  <div className="bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-lg p-4 flex flex-col justify-center items-center shadow-sm hover:shadow-md transition-shadow">
+    <p className="font-bold text-neutral-900 dark:text-white">{name}</p>
+    <p className="text-xs text-neutral-600 dark:text-neutral-400">{category}</p>
   </div>
 );

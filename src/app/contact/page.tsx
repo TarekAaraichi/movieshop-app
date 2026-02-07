@@ -9,14 +9,13 @@ import { PageWrapper } from "@/components/PageThemeContext";
 export default function ContactPage() {
   return (
     <PageWrapper>
-    <div>
       <div className="m-auto max-w-4xl w-full">
-        <Card className="p-6 sm:p-8 bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50">
+        <Card className="p-6 sm:p-8 bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800">
           <header className="mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-100">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-gray-100">
               Contact
             </h1>
-            <p className="mt-2 text-sm text-gray-300 max-w-2xl">
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 max-w-2xl">
               We&apos;d love to hear from you. For questions about the demo,
               contributions, or feature requests, reach out to the team. Quick
               links and people below.
@@ -25,9 +24,11 @@ export default function ContactPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <section className="space-y-4">
-              <h2 className="text-sm font-medium text-gray-200">Team</h2>
+              <h2 className="text-sm font-medium text-gray-800 dark:text-gray-200">
+                Team
+              </h2>
 
-              <ul className="space-y-3 rounded-lg bg-gray-700">
+              <ul className="space-y-3 rounded-lg bg-gray-100 dark:bg-neutral-800/50 p-3">
                 {[
                   {
                     name: "Tarek Aaraichi",
@@ -40,7 +41,7 @@ export default function ContactPage() {
                 ].map((p) => (
                   <li
                     key={p.email}
-                    className="flex items-center gap-4 bg-gray-800/40 rounded-lg p-3 sm:p-4 hover:bg-gray-800/50 transition-colors"
+                    className="flex items-center gap-4 bg-white dark:bg-neutral-900/60 rounded-lg p-3 sm:p-4 hover:bg-gray-50 dark:hover:bg-neutral-800/80 transition-colors border border-neutral-200 dark:border-neutral-800"
                   >
                     <div
                       className={`flex items-center justify-center h-10 w-10 rounded-full text-white ${p.color} shrink-0`}
@@ -56,10 +57,10 @@ export default function ContactPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-3">
                         <div className="truncate">
-                          <div className="text-sm font-medium text-gray-100 truncate">
+                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                             {p.name}
                           </div>
-                          <div className="text-xs text-gray-300 mt-0.5 truncate">
+                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
                             {p.role}
                           </div>
                         </div>
@@ -70,7 +71,7 @@ export default function ContactPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`${p.name} on LinkedIn`}
-                            className="p-2 rounded-md bg-gray-800/40 hover:bg-gray-800/50 transition-colors text-blue-300"
+                            className="p-2 rounded-md bg-gray-100 dark:bg-neutral-800/40 hover:bg-gray-200 dark:hover:bg-neutral-700/60 transition-colors text-blue-500 dark:text-blue-300"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -88,7 +89,7 @@ export default function ContactPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`${p.name} on GitHub`}
-                            className="p-2 rounded-md bg-gray-800/40 hover:bg-gray-800/50 transition-colors text-gray-100"
+                            className="p-2 rounded-md bg-gray-100 dark:bg-neutral-800/40 hover:bg-gray-200 dark:hover:bg-neutral-700/60 transition-colors text-gray-800 dark:text-gray-100"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +105,7 @@ export default function ContactPage() {
                           <a
                             href={`mailto:${p.email}`}
                             aria-label={`Email ${p.name}`}
-                            className="p-2 rounded-md bg-gray-800/40 hover:bg-gray-800/50 transition-colors text-rose-300"
+                            className="p-2 rounded-md bg-gray-100 dark:bg-neutral-800/40 hover:bg-gray-200 dark:hover:bg-neutral-700/60 transition-colors text-rose-500 dark:text-rose-300"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -125,29 +126,33 @@ export default function ContactPage() {
               </ul>
             </section>
 
-            <section className="bg-gray-700 rounded-xl p-5 sm:p-6">
-              <h2 className="text-sm font-medium text-gray-200">
+            <section className="bg-gray-100 dark:bg-neutral-800/50 rounded-xl p-5 sm:p-6 border border-neutral-200 dark:border-neutral-800">
+              <h2 className="text-sm font-medium text-gray-800 dark:text-gray-200">
                 Get in touch
               </h2>
-              <div className="mt-3 text-sm text-gray-300 space-y-3">
+              <div className="mt-3 text-sm text-gray-600 dark:text-gray-300 space-y-3">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <div className="text-xs text-gray-300">General</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      General
+                    </div>
                     <a
                       href="mailto:hello@movieshop.example"
-                      className="text-teal-300 font-medium hover:underline text-sm"
+                      className="text-teal-600 dark:text-teal-300 font-medium hover:underline text-sm"
                     >
                       hello@movieshop.example
                     </a>
                   </div>
 
                   <div className="text-right">
-                    <div className="text-xs text-gray-400">Open source</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                      Open source
+                    </div>
                     <a
-                      href="https://github.com/Gr-25-13/movieshop-delta"
+                      href="https://github.com/TarekAaraichi/movieshop-app"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium  px-3 py-1 rounded-md bg-gray-800/40 hover:bg-gray-800/50 transition-colors text-gray-100"
+                      className="inline-flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-md bg-white dark:bg-neutral-900/60 hover:bg-gray-50 dark:hover:bg-neutral-800/80 transition-colors text-gray-800 dark:text-gray-100 border border-neutral-200 dark:border-neutral-700"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -164,7 +169,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-white/6 text-sm text-gray-400">
+                <div className="pt-3 border-t border-neutral-200 dark:border-neutral-700 text-sm text-gray-500 dark:text-gray-400">
                   Want faster support or to contribute? Open an issue or pull
                   request on GitHub and tag the team — we usually respond within
                   a few business days.
@@ -174,7 +179,6 @@ export default function ContactPage() {
           </div>
         </Card>
       </div>
-    </div>
     </PageWrapper>
   );
 }
