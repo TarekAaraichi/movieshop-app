@@ -23,6 +23,7 @@ This project is more than just a demo; it's a fully-realized application with a 
 - **Persistent Shopping Cart**: Advanced cart logic that persists for anonymous users and merges with their account cart upon login.
 - **User Profiles & Order History**: Registered users can manage their profile and view a history of their past orders.
 - **Consistent Loading UI**: A seamless user experience with animated loading skeletons for all data-heavy pages, powered by Next.js Suspense.
+- **Theming**: Switch between light and dark modes for a personalized viewing experience.
 - **Responsive Design**: A beautiful, mobile-first interface that looks great on all devices.
 
 ### Administrative
