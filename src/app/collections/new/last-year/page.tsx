@@ -79,6 +79,9 @@ export default function LastYearPage({
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-sky-400 to-pink-400">
             New Releases: Last Year
           </h1>
+          <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+            Movies released in the past year.
+          </p>
         </header>
         <Suspense fallback={<MoviesGridSkeleton count={PAGE_SIZE} />}>
           <LastYearGrid currentPage={currentPage} />

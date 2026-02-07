@@ -32,16 +32,20 @@ async function getRecentMovies() {
 
 async function NewReleasesCarousels() {
   const { recent, year } = await getRecentMovies();
+
   return (
     <div className="space-y-12">
       <MovieCarousel
         title="Last Month"
-        movies={recent}
+        movies={recent.map((movie) => ({
+          ...movie,
+          price: Number(movie.price),
+        }))}
         viewMoreHref="/collections/new/last-month"
       />
       <MovieCarousel
         title="Last Year"
-        movies={year}
+        movies={year.map((movie) => ({ ...movie, price: Number(movie.price) }))}
         viewMoreHref="/collections/new/last-year"
       />
     </div>
@@ -56,6 +60,9 @@ export default function NewReleasesPage() {
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-sky-400 to-pink-400">
             New Releases
           </h1>
+          <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+            The latest and greatest movies, just for you.
+          </p>
         </header>
         <Suspense fallback={<MoviesGridSkeleton count={10} />}>
           <NewReleasesCarousels />

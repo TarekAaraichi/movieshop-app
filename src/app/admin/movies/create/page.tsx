@@ -225,7 +225,7 @@ export default async function CreateMoviePage() {
 
               <div className="space-y-2">
                 <label htmlFor="description" className={fieldLabelClasses}>
-                  Description
+                  Description *
                 </label>
                 <textarea
                   id="description"

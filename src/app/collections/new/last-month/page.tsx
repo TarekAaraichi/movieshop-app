@@ -75,6 +75,9 @@ export default function LastMonthPage({
           <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-sky-400 to-pink-400">
             New Releases: Last Month
           </h1>
+          <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+            All movies released in the past 30 days.
+          </p>
         </header>
         <Suspense fallback={<MoviesGridSkeleton count={PAGE_SIZE} />}>
           <LastMonthGrid currentPage={currentPage} />
