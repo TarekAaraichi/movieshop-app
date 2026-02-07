@@ -53,25 +53,25 @@ export default async function OrderPage({ params }: Props) {
       <div className="mb-8 flex gap-4 items-center">
         <a
           href="/profile/orders"
-          className="inline-block text-emerald-600 hover:underline text-sm font-semibold"
+          className="inline-block text-emerald-600 dark:text-emerald-500 hover:underline text-sm font-semibold"
         >
           &larr; Back to My Orders
         </a>
         <a
           href="/profile"
-          className="inline-block text-blue-600 hover:underline text-sm"
+          className="inline-block text-blue-600 dark:text-blue-400 hover:underline text-sm"
         >
           Profile
         </a>
       </div>
 
-      <div className="bg-gray-900 rounded-lg shadow-md p-6 mb-8">
+      <div className="bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-md p-6 mb-8">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
           <div>
-            <h2 className="text-2xl font-bold text-white mb-1">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
               Order #{order.id.substring(0, 8)}
             </h2>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Placed on {new Date(order.orderDate).toLocaleDateString()}
             </p>
           </div>
@@ -79,23 +79,23 @@ export default async function OrderPage({ params }: Props) {
             <span
               className={`px-3 py-1 text-sm font-semibold rounded-full ${
                 order.status === "PAID"
-                  ? "bg-green-900/70 text-green-300"
-                  : "bg-yellow-900/70 text-yellow-300"
+                  ? "bg-green-100 text-green-800 dark:bg-green-900/70 dark:text-green-300"
+                  : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/70 dark:text-yellow-300"
               }`}
             >
               {order.status}
             </span>
-            <div className="text-lg font-bold text-white mt-2">
+            <div className="text-lg font-bold text-gray-900 dark:text-white mt-2">
               ${order.totalAmount.toFixed(2)}
             </div>
           </div>
         </div>
 
         <div className="mb-4">
-          <h3 className="text-lg font-semibold mb-2 text-white">
+          <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
             Shipping Address
           </h3>
-          <div className="text-gray-300">
+          <div className="text-gray-700 dark:text-gray-300">
             {order.address ? (
               <>
                 <p>{order.address.line1}</p>
@@ -112,8 +112,10 @@ export default async function OrderPage({ params }: Props) {
         </div>
 
         <div>
-          <h3 className="text-lg font-semibold mb-2 text-white">Items</h3>
-          <ul className="divide-y divide-gray-800">
+          <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+            Items
+          </h3>
+          <ul className="divide-y divide-neutral-200 dark:divide-gray-800">
             {order.items.map((item) => (
               <li key={item.movieId} className="flex items-center py-4 gap-4">
                 <Image
@@ -124,10 +126,10 @@ export default async function OrderPage({ params }: Props) {
                   className="rounded-md object-cover"
                 />
                 <div className="flex-1">
-                  <p className="font-semibold text-gray-200">
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">
                     {item.movie.title}
                   </p>
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Quantity: {item.quantity}
                   </p>
                   <OrderMovieRatingClient
@@ -138,10 +140,10 @@ export default async function OrderPage({ params }: Props) {
                   />
                 </div>
                 <div className="text-right">
-                  <p className="font-semibold text-gray-200">
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">
                     ${Number(item.priceAtPurchase).toFixed(2)}
                   </p>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
                     Total: $
                     {(Number(item.priceAtPurchase) * item.quantity).toFixed(2)}
                   </p>
