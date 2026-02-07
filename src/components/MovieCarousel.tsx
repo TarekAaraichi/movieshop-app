@@ -1,6 +1,5 @@
 "use client";
 
-import { usePageTheme } from "./PageThemeContext";
 import { MovieCard } from "./MovieCard";
 import Link from "next/link";
 import CarouselControls from "./CarouselControls";
@@ -23,8 +22,6 @@ export function MovieCarousel({
   movies,
   viewMoreHref,
 }: MovieCarouselProps) {
-  const { theme } = usePageTheme();
-
   if (movies.length === 0) {
     return null;
   }
@@ -34,10 +31,7 @@ export function MovieCarousel({
   return (
     <section className="py-8">
       <div className="flex items-center justify-between mb-6">
-        <h2
-          className="text-3xl font-bold"
-          style={{ color: theme === "dark" ? "white" : "black" }}
-        >
+        <h2 className="text-3xl font-bold text-black dark:text-white">
           {title}
         </h2>
         {viewMoreHref ? (

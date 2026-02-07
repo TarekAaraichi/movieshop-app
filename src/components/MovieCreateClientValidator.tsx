@@ -44,6 +44,7 @@ export default function MovieCreateClientValidator({
     if (!form) return;
 
     function handleSubmit(e: Event) {
+      if (!form) return;
       const fd = new FormData(form);
       const raw = Object.fromEntries(fd.entries());
       const result = movieCreateClientSchema.safeParse(raw);

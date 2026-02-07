@@ -19,11 +19,13 @@ async function getRecentMovies() {
     where: { releaseDate: { gte: lastMonth } },
     orderBy: { releaseDate: "desc" },
     take: 20,
+    include: { genres: { include: { genre: true } } },
   });
   const year = await prisma.movie.findMany({
     where: { releaseDate: { gte: lastYear, lt: lastMonth } },
     orderBy: { releaseDate: "desc" },
     take: 50,
+    include: { genres: { include: { genre: true } } },
   });
   return { recent, year };
 }

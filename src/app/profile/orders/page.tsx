@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Prisma } from "@prisma/client";
+import { YearFilter } from "@/components";
 
 // Pagination constants
 const PAGE_SIZE = 5;
@@ -82,7 +83,7 @@ export default async function ProfileOrdersPage({
     <PageWrapper>
       <div className="max-w-4xl mx-auto">
         <header className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-blue-400">
             My Orders
           </h1>
           <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
@@ -90,34 +91,14 @@ export default async function ProfileOrdersPage({
           </p>
         </header>
         {/* Year filter dropdown */}
-        <form method="get" className="mb-6 flex items-center gap-2">
-          <label htmlFor="year" className="text-sm text-gray-500">
-            Filter by year:
-          </label>
-          <select
-            id="year"
-            name="year"
-            className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 text-white rounded px-3 py-1 text-sm border border-gray-700 focus:ring-2 focus:ring-blue-500"
-            defaultValue={filterYear ?? ""}
-            onChange="this.form.submit()"
-          >
-            <option value="">All years</option>
-            {years.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
-          {/* Keep page param if present */}
-          {page > 1 && <input type="hidden" name="page" value={page} />}
-        </form>
+        <YearFilter years={years} currentYear={filterYear} />
 
         <div className="space-y-6">
           {orders.length > 0 ? (
             orders.map((order) => (
               <div
                 key={order.id}
-                className="bg-gradient-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg overflow-hidden shadow-md"
+                className="bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg overflow-hidden shadow-md"
               >
                 <div className="p-4 border-b border-gray-800 flex justify-between items-center">
                   <div>
@@ -163,9 +144,9 @@ export default async function ProfileOrdersPage({
                         </div>
                         <p className="font-semibold text-neutral-200">
                           $
-                          {Number(item.priceAtPurchase * item.quantity).toFixed(
-                            2,
-                          )}
+                          {Number(
+                            Number(item.priceAtPurchase) * item.quantity,
+                          ).toFixed(2)}
                         </p>
                         <Link
                           href={`/orders/${order.id}`}

@@ -16,10 +16,12 @@ type Props = {
  * Server-rendered order details for a given order id.
  */
 
+type Session = { user?: { id?: string } } | null;
+
 export default async function OrderPage({ params }: Props) {
   const { orderId } = params;
-  const session = await getServerSession();
-  const userId = session?.user?.id as string | undefined;
+  const session = (await getServerSession()) as Session;
+  const userId = session?.user?.id;
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: {

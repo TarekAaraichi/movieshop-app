@@ -169,7 +169,6 @@ export async function createOrder(formData: FormData): Promise<void> {
       typeof findOrCreateUser,
     );
     const guest = await findOrCreateUser(
-      prisma,
       parsed.data.email,
       parsed.data.fullName,
     );

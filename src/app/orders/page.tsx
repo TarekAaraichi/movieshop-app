@@ -35,7 +35,7 @@ export default async function OrdersPage() {
       },
     },
     orderBy: {
-      createdAt: "desc",
+      orderDate: "desc",
     },
   });
 
@@ -59,12 +59,12 @@ export default async function OrdersPage() {
                   Order #{order.id.substring(0, 8)}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {new Date(order.createdAt).toLocaleDateString()}
+                  {new Date(order.orderDate).toLocaleDateString()}
                 </p>
               </div>
               <div className="text-right">
                 <p className="text-lg font-semibold">
-                  Total: ${order.total.toFixed(2)}
+                  Total: ${order.totalAmount.toFixed(2)}
                 </p>
                 <Link
                   href={`/orders/${order.id}`}
@@ -77,12 +77,12 @@ export default async function OrdersPage() {
             <div>
               {order.items.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.movieId}
                   className="flex items-center py-2 border-b last:border-b-0 border-gray-700"
                 >
                   <div className="relative w-16 h-24 bg-gray-800 rounded-md overflow-hidden mr-4">
                     <Image
-                      src={item.movie.posterUrl ?? "/placeholder.png"}
+                      src={item.movie.imageUrl ?? "/placeholder.png"}
                       alt={item.movie.title}
                       fill
                       sizes="64px"
@@ -98,7 +98,7 @@ export default async function OrdersPage() {
                     </p>
                   </div>
                   <p className="ml-auto font-semibold text-gray-100">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ${(Number(item.priceAtPurchase) * item.quantity).toFixed(2)}
                   </p>
                 </div>
               ))}

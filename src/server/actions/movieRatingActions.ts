@@ -8,7 +8,7 @@ export async function rateMovie({
   movieId: string;
   rating: number;
 }) {
-  const session = await getServerSession();
+  const session = (await getServerSession()) as { user?: { id?: string } };
   const userId = session?.user?.id;
   if (!userId) throw new Error("Not authenticated");
   if (rating < 1 || rating > 5) throw new Error("Rating must be 1-5");

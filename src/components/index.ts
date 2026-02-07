@@ -46,3 +46,4 @@ export { MoviesGridSkeleton, MovieCardSkeleton } from "./MoviesGridSkeleton";
 export { MovieCarousel } from "./MovieCarousel";
 export { default as PaginationControls } from "./PaginationControls";
 export { PaginationControlsSkeleton } from "./PaginationControlsSkeleton";
+export { YearFilter } from "./YearFilter";

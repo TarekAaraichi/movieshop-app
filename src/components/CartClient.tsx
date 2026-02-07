@@ -160,7 +160,8 @@ export default function CartClient({
                 onClick={() => onInc(movie.id, movie.stock ?? null)}
                 className="px-2 bg-blue-100 hover:bg-blue-300 transition-colors duration-150 text-blue-700 font-bold text-lg flex items-center justify-center w-8 h-8 rounded"
                 disabled={
-                  isPending || (movie.stock !== null && quantity >= movie.stock)
+                  isPending ||
+                  (typeof movie.stock === "number" && quantity >= movie.stock)
                 }
               >
                 +

@@ -186,7 +186,7 @@ export default async function CheckoutPage({
                       placeholder="Street address"
                       defaultValue={dbAddress?.line1 ?? undefined}
                       required
-                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 !bg-white"
+                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 bg-white!"
                     />
                   </label>
 
@@ -201,7 +201,7 @@ export default async function CheckoutPage({
                       placeholder="City"
                       defaultValue={dbAddress?.city ?? undefined}
                       required
-                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 !bg-white"
+                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 bg-white!"
                     />
                   </label>
 
@@ -216,7 +216,7 @@ export default async function CheckoutPage({
                       placeholder="ZIP"
                       defaultValue={dbAddress?.postalCode ?? undefined}
                       required
-                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 !bg-white"
+                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 bg-white!"
                     />
                   </label>
 
@@ -231,7 +231,7 @@ export default async function CheckoutPage({
                       placeholder="Country"
                       defaultValue={dbAddress?.country ?? undefined}
                       required
-                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 !bg-white"
+                      className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 bg-white!"
                     />
                   </label>
                 </div>
@@ -248,7 +248,7 @@ export default async function CheckoutPage({
                     type="text"
                     placeholder="Card token"
                     required
-                    className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 !bg-white"
+                    className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-slate-500 bg-white!"
                   />
                 </label>
 

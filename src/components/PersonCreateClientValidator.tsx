@@ -6,9 +6,7 @@ import toast from "react-hot-toast";
 
 const personCreateClientSchema = z.object({
   fullName: z.string().min(1, "Full name is required"),
-  role: z.enum(["DIRECTOR", "ACTOR"], {
-    errorMap: () => ({ message: "Select a role" }),
-  }),
+  role: z.string().pipe(z.enum(["DIRECTOR", "ACTOR"])),
   bio: z.string().optional().nullable(),
   imageUrl: z.preprocess(
     (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
@@ -26,6 +24,7 @@ export default function PersonCreateClientValidator({
     if (!form) return;
 
     function handleSubmit(e: Event) {
+      if (!form) return;
       const fd = new FormData(form);
       const raw = Object.fromEntries(fd.entries());
       const result = personCreateClientSchema.safeParse(raw);
