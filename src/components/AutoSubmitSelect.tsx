@@ -14,12 +14,16 @@ export default function AutoSubmitSelect({
   options,
   className = "",
   ariaLabel,
+  id,
+  placeholder,
 }: {
   name: string;
   value?: string;
   options: { value: string; label: string }[];
   className?: string;
   ariaLabel?: string;
+  id?: string;
+  placeholder?: string;
 }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -33,18 +37,21 @@ export default function AutoSubmitSelect({
     } else {
       params.delete(name);
     }
+    // Reset page to 1 when filter changes
+    params.set("page", "1");
     replace(`${pathname}?${params.toString()}`);
   };
 
   return (
     <select
+      id={id}
       aria-label={ariaLabel}
       name={name}
       defaultValue={value}
       onChange={handleChange}
-      className={`p-2 rounded-lg border border-gray-300 bg-white text-gray-800 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:border-gray-700 dark:bg-neutral-800 dark:text-gray-100 ${className}`}
+      className={`p-2 rounded-lg border bg-white text-gray-800 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-neutral-500 border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-100 ${className}`}
     >
-      <option value="">All</option>
+      {placeholder && <option value="">{placeholder}</option>}
       {options.map((o) => (
         <option key={o.value} value={o.value}>
           {o.label}

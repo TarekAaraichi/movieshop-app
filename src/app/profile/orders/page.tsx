@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Prisma } from "@prisma/client";
-import { YearFilter } from "@/components";
+import { PaginationControls, YearFilter } from "@/components";
 
 // Pagination constants
 const PAGE_SIZE = 5;
@@ -83,7 +83,7 @@ export default async function ProfileOrdersPage({
     <PageWrapper>
       <div className="max-w-4xl mx-auto">
         <header className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-400 to-blue-400">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
             My Orders
           </h1>
           <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
@@ -98,23 +98,27 @@ export default async function ProfileOrdersPage({
             orders.map((order) => (
               <div
                 key={order.id}
-                className="bg-linear-to-br from-neutral-900/80 via-neutral-800/60 to-slate-700/50 rounded-lg overflow-hidden shadow-md"
+                className="bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden shadow-md"
               >
-                <div className="p-4 border-b border-gray-800 flex justify-between items-center">
+                <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center">
                   <div>
-                    <p className="font-bold text-lg text-white">
+                    <p className="font-bold text-lg text-gray-900 dark:text-white">
                       Order #{order.id.substring(0, 8)}
                     </p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       {new Date(order.orderDate).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-lg text-white">
+                    <p className="font-bold text-lg text-gray-900 dark:text-white">
                       ${order.totalAmount.toFixed(2)}
                     </p>
                     <span
-                      className={`px-2 py-1 text-xs font-semibold rounded-full ${order.status === "PAID" ? "bg-green-900/70 text-green-300" : "bg-yellow-900/70 text-yellow-300"}`}
+                      className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        order.status === "PAID"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900/70 dark:text-green-300"
+                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/70 dark:text-yellow-300"
+                      }`}
                     >
                       {order.status}
                     </span>
@@ -135,14 +139,14 @@ export default async function ProfileOrdersPage({
                           className="rounded-md object-cover"
                         />
                         <div className="flex-1">
-                          <p className="font-semibold text-neutral-200">
+                          <p className="font-semibold text-gray-800 dark:text-neutral-200">
                             {item.movie.title}
                           </p>
-                          <p className="text-sm text-gray-400">
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
                             Quantity: {item.quantity}
                           </p>
                         </div>
-                        <p className="font-semibold text-neutral-200">
+                        <p className="font-semibold text-gray-800 dark:text-neutral-200">
                           $
                           {Number(
                             Number(item.priceAtPurchase) * item.quantity,
@@ -150,7 +154,7 @@ export default async function ProfileOrdersPage({
                         </p>
                         <Link
                           href={`/orders/${order.id}`}
-                          className="ml-2 text-blue-400 hover:underline text-sm"
+                          className="ml-2 text-blue-600 dark:text-blue-400 hover:underline text-sm"
                         >
                           View
                         </Link>
@@ -168,29 +172,13 @@ export default async function ProfileOrdersPage({
         </div>
 
         {/* Pagination controls */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-8">
-            <Link
-              href={`?${filterYear ? `year=${filterYear}&` : ""}page=${page - 1}`}
-              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${page === 1 ? "bg-gray-700 text-gray-500 cursor-not-allowed" : "bg-gray-700 hover:bg-gray-600 text-white"}`}
-              aria-disabled={page === 1}
-              tabIndex={page === 1 ? -1 : 0}
-            >
-              Previous
-            </Link>
-            <span className="px-2 text-gray-500">
-              Page {page} of {totalPages}
-            </span>
-            <Link
-              href={`?${filterYear ? `year=${filterYear}&` : ""}page=${page + 1}`}
-              className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${page === totalPages ? "bg-gray-800 text-gray-500 cursor-not-allowed" : "bg-gray-700 hover:bg-gray-600 text-white"}`}
-              aria-disabled={page === totalPages}
-              tabIndex={page === totalPages ? -1 : 0}
-            >
-              Next
-            </Link>
-          </div>
-        )}
+        <PaginationControls
+          totalCount={totalOrders}
+          pageSize={PAGE_SIZE}
+          basePath="/profile/orders"
+          hasNextPage={page * PAGE_SIZE < totalOrders}
+          hasPrevPage={page > 1}
+        />
       </div>
     </PageWrapper>
   );
