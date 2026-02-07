@@ -8,7 +8,7 @@ function MovieCardSkeleton() {
     <div className="flex flex-col space-y-3">
       <Skeleton
         className={
-          "h-[330px] w-full rounded-xl bg-gray-200 dark:bg-neutral-800"
+          "h-82.5 w-full rounded-xl bg-gray-200 dark:bg-neutral-800"
         }
       />
       <div className="space-y-2">
@@ -39,7 +39,7 @@ export default function Loading() {
         <div className="mb-8 flex flex-col md:flex-row gap-4 items-center">
           <Skeleton
             className={
-              "h-12 flex-grow bg-gray-300 dark:bg-neutral-700 rounded-lg"
+              "h-12 grow bg-gray-300 dark:bg-neutral-700 rounded-lg"
             }
           />
           <Skeleton

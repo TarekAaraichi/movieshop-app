@@ -65,7 +65,7 @@ export default function CollectionsIndex() {
               className="block p-6 rounded-lg transition-transform transform hover:scale-105 bg-white dark:bg-neutral-800/50 shadow-md hover:shadow-xl border border-transparent dark:hover:border-neutral-700"
             >
               <h2
-                className={`text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${col.bgClass}`}
+                className={`text-2xl font-bold text-transparent bg-clip-text bg-linear-to-r ${col.bgClass}`}
               >
                 {col.title}
               </h2>
