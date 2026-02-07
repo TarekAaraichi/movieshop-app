@@ -248,7 +248,7 @@ export default async function RootLayout({
                               href="/admin"
                               className="block px-4 py-2 text-sm text-emerald-300 hover:bg-gray-700 transition-colors duration-150 font-semibold"
                             >
-                              Admin
+                              Admin Panel
                             </Link>
                           )}
 
