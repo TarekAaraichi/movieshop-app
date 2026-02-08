@@ -87,21 +87,20 @@ export default function OrderSummaryClient({ items }: Props) {
     }).format(n);
 
   return (
-    <div
-      className="flex flex-col gap-6 rounded-xl bg-gray-700 p-6 shadow-lg"
-      aria-live="polite"
-    >
+    <div className="flex flex-col gap-4" aria-live="polite">
       <div>
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-gray-400">
           Order Summary
         </h2>
-        <p className="mt-3 text-3xl font-bold text-white">{fmt(total)}</p>
+        <p className="mt-3 text-3xl font-bold text-gray-900 dark:text-white">
+          {fmt(total)}
+        </p>
       </div>
       <div className="text-sm space-y-2">
         {hasFreeShipping ? (
-          <div className="flex items-center gap-2 text-emerald-400 font-semibold">
+          <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-semibold">
             <svg
-              className="w-5 h-5 text-emerald-300"
+              className="w-5 h-5 text-emerald-500 dark:text-emerald-300"
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
@@ -117,27 +116,27 @@ export default function OrderSummaryClient({ items }: Props) {
             <span className="underline underline-offset-2">FREE shipping</span>!
           </div>
         ) : subtotal > 0 ? (
-          <div className="text-gray-300">
+          <div className="text-neutral-600 dark:text-gray-300">
             Add{" "}
-            <span className="font-semibold text-indigo-300">
+            <span className="font-semibold text-indigo-600 dark:text-indigo-300">
               {fmt(remainingForFreeShipping)}
             </span>{" "}
             more for{" "}
-            <span className="font-semibold text-emerald-300">
+            <span className="font-semibold text-emerald-600 dark:text-emerald-300">
               FREE shipping
             </span>
           </div>
         ) : (
-          <div className="text-gray-400">
+          <div className="text-neutral-500 dark:text-gray-400">
             Spend{" "}
-            <span className="font-semibold text-indigo-300">
+            <span className="font-semibold text-indigo-600 dark:text-indigo-300">
               {fmt(freeShippingThreshold)}
             </span>{" "}
             to unlock free shipping.
           </div>
         )}
         <div
-          className="h-2 w-full rounded bg-gray-800 overflow-hidden mt-2"
+          className="h-2 w-full rounded bg-gray-200 dark:bg-gray-800 overflow-hidden mt-2"
           aria-label="Progress toward free shipping"
         >
           {(() => {
@@ -178,25 +177,33 @@ export default function OrderSummaryClient({ items }: Props) {
                 className={`h-full ${
                   widthClass[closest] || "w-0"
                 } transition-all duration-300 ${
-                  hasFreeShipping ? "bg-emerald-400" : "bg-indigo-400"
+                  hasFreeShipping
+                    ? "bg-emerald-500 dark:bg-emerald-400"
+                    : "bg-indigo-500 dark:bg-indigo-400"
                 }`}
               />
             );
           })()}
         </div>
       </div>
-      <div className="pt-4 border-t border-gray-800 space-y-2 text-sm">
+      <div className="pt-4 border-t border-neutral-200 dark:border-gray-800 space-y-2 text-sm">
         <div className="flex justify-between">
-          <span className="text-gray-400">Subtotal</span>
-          <span className="text-gray-100">{fmt(subtotal)}</span>
+          <span className="text-neutral-600 dark:text-gray-400">Subtotal</span>
+          <span className="text-gray-800 dark:text-gray-100">
+            {fmt(subtotal)}
+          </span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-400">Estimated tax (8%)</span>
-          <span className="text-gray-100">{fmt(tax)}</span>
+          <span className="text-neutral-600 dark:text-gray-400">
+            Estimated tax (8%)
+          </span>
+          <span className="text-gray-800 dark:text-gray-100">{fmt(tax)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-gray-400">Shipping</span>
-          <span className="text-gray-100">{fmt(shipping)}</span>
+          <span className="text-neutral-600 dark:text-gray-400">Shipping</span>
+          <span className="text-gray-800 dark:text-gray-100">
+            {fmt(shipping)}
+          </span>
         </div>
       </div>
     </div>

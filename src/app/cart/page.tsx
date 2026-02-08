@@ -266,13 +266,13 @@ export default async function CartPage() {
   return (
     <PageWrapper>
       <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-8 items-start">
-        <main className="flex-1 bg-linear-to-br from-neutral-900 via-neutral-800 to-slate-700 rounded-2xl shadow-sm p-6 md:p-8 border border-gray-800">
+        <main className="flex-1 bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-sm p-6 md:p-8">
           <div className="flex items-start justify-between mb-6 gap-4">
             <div>
-              <h1 className="text-lg md:text-2xl font-semibold text-slate-100">
+              <h1 className="text-lg md:text-2xl font-semibold text-gray-900 dark:text-slate-100">
                 Shopping Cart
               </h1>
-              <p className="text-sm text-slate-400 mt-1">
+              <p className="text-sm text-neutral-500 dark:text-slate-400 mt-1">
                 Manage items inline — update quantities, save for later, or
                 remove products
               </p>
@@ -285,18 +285,17 @@ export default async function CartPage() {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-center justify-between text-sm text-slate-400 border-b border-slate-700 pb-3">
+              <div className="flex items-center justify-between text-sm text-neutral-500 dark:text-slate-400 border-b border-neutral-200 dark:border-slate-700 pb-3">
                 <div className="flex items-center gap-2">
-                  <span className="font-medium text-slate-200">Cart items</span>
-                  {/* <span className="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full">
-                    {items.length}
-                  </span> */}
+                  <span className="font-medium text-gray-800 dark:text-slate-200">
+                    Cart items
+                  </span>
                 </div>
                 <div className="ml-auto text-xs">Prices shown in SEK</div>
               </div>
 
               {/* Client-driven interactive cart; keeps controls inline and modern */}
-              <div className="rounded-lg border border-slate-700 overflow-hidden">
+              <div className="rounded-lg border border-neutral-200 dark:border-slate-700 overflow-hidden">
                 <CartClient initialItems={items} />
               </div>
             </div>
@@ -304,24 +303,24 @@ export default async function CartPage() {
         </main>
 
         <aside className="w-full md:w-96 sticky top-6 self-start">
-          <div className="bg-linear-to-br from-neutral-900 via-neutral-800 to-slate-700 rounded-2xl shadow-sm p-0 border border-gray-800 flex flex-col gap-4 overflow-hidden">
+          <div className="bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-sm p-0 flex flex-col gap-4 overflow-hidden">
             {/* Order summary card with no extra padding, only inside content */}
             <div className="p-6">
               <OrderSummaryClient items={items} />
             </div>
 
-            <div className="pt-3 border-t border-slate-700 px-6">
+            <div className="pt-3 border-t border-neutral-200 dark:border-slate-700 px-6">
               <CheckoutSecureButton initialItems={items} />
 
               <Link
                 href="/movies"
-                className="w-full text-center block mt-3 px-4 py-2 rounded-md text-sm text-sky-100 bg-linear-to-r from-sky-800 via-sky-700 to-sky-600 hover:from-sky-700 hover:to-sky-500 transition-shadow"
+                className="w-full text-center block mt-3 px-4 py-2 rounded-md text-sm text-white bg-sky-600 hover:bg-sky-700 transition-colors"
               >
                 Continue shopping
               </Link>
             </div>
 
-            <div className="text-xs text-slate-500 pt-2 px-6 pb-4">
+            <div className="text-xs text-neutral-500 dark:text-slate-500 pt-2 px-6 pb-4">
               By checking out you agree to our terms. Payments are processed
               securely.
             </div>

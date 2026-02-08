@@ -1,75 +1,60 @@
 import { PageWrapper } from "@/components/PageThemeContext";
 
-export default function CartLoading() {
+const CartLoading = () => {
   return (
-    <PageWrapper>
-      <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-8 items-start">
-        <main className="flex-1 bg-neutral-900/80 rounded-2xl shadow-sm p-6 md:p-8 border border-gray-800">
-          <div className="flex items-start justify-between mb-6 gap-4">
-            <div>
-              <div className="h-8 w-48 rounded-lg bg-neutral-700 animate-pulse"></div>
-              <div className="h-5 w-64 mt-2 rounded-lg bg-neutral-700 animate-pulse"></div>
-            </div>
+    <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-8 items-start animate-pulse">
+      {/* Main Content Skeleton */}
+      <main className="flex-1 bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-sm p-6 md:p-8">
+        <div className="flex items-start justify-between mb-6 gap-4">
+          <div>
+            <div className="h-8 w-48 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+            <div className="h-5 w-80 bg-neutral-200 dark:bg-neutral-700 rounded-md mt-2" />
           </div>
-
-          <div className="space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-700 pb-3">
-              <div className="h-6 w-24 rounded-lg bg-neutral-700 animate-pulse"></div>
-              <div className="h-4 w-32 ml-auto rounded-lg bg-neutral-700 animate-pulse"></div>
-            </div>
-
-            <div className="rounded-lg border border-slate-700 overflow-hidden">
-              {/* Skeleton for a few cart items */}
-              {[...Array(3)].map((_, i) => (
-                <div
-                  key={i}
-                  className="flex items-center gap-4 p-4 border-b border-slate-800 last:border-b-0"
-                >
-                  <div className="w-24 h-36 rounded-md bg-neutral-800 animate-pulse"></div>
-                  <div className="flex-1 space-y-3">
-                    <div className="h-6 w-3/4 rounded-lg bg-neutral-700 animate-pulse"></div>
-                    <div className="h-4 w-1/4 rounded-lg bg-neutral-700 animate-pulse"></div>
-                  </div>
-                  <div className="h-10 w-24 rounded-lg bg-neutral-800 animate-pulse"></div>
-                  <div className="h-6 w-16 rounded-lg bg-neutral-700 animate-pulse"></div>
-                </div>
-              ))}
-            </div>
+        </div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between border-b border-neutral-200 dark:border-slate-700 pb-3">
+            <div className="h-5 w-24 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+            <div className="h-4 w-32 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
           </div>
-        </main>
-
-        <aside className="w-full md:w-96 sticky top-6 self-start">
-          <div className="bg-neutral-900/80 rounded-2xl shadow-sm p-0 border border-gray-800 flex flex-col gap-4 overflow-hidden">
-            <div className="p-6 space-y-4">
-              <div className="h-7 w-32 rounded-lg bg-neutral-700 animate-pulse"></div>
-              <div className="space-y-2">
-                <div className="flex justify-between">
-                  <div className="h-5 w-20 rounded-lg bg-neutral-700 animate-pulse"></div>
-                  <div className="h-5 w-16 rounded-lg bg-neutral-700 animate-pulse"></div>
+          <div className="rounded-lg border border-neutral-200 dark:border-slate-700 overflow-hidden">
+            {/* Cart Item Skeleton */}
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-4 p-4 border-b border-neutral-200 dark:border-slate-700 last:border-b-0"
+              >
+                <div className="w-16 h-24 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-5 w-3/4 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+                  <div className="h-4 w-1/4 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
                 </div>
-                <div className="flex justify-between">
-                  <div className="h-5 w-24 rounded-lg bg-neutral-700 animate-pulse"></div>
-                  <div className="h-5 w-12 rounded-lg bg-neutral-700 animate-pulse"></div>
-                </div>
+                <div className="w-24 h-8 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+                <div className="h-6 w-20 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+                <div className="h-8 w-8 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
               </div>
-              <div className="border-t border-slate-700 pt-4 flex justify-between">
-                <div className="h-6 w-28 rounded-lg bg-neutral-700 animate-pulse"></div>
-                <div className="h-6 w-20 rounded-lg bg-neutral-700 animate-pulse"></div>
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-slate-700 px-6">
-              <div className="h-12 w-full rounded-md bg-neutral-800 animate-pulse"></div>
-              <div className="h-10 w-full mt-3 rounded-md bg-neutral-800 animate-pulse"></div>
-            </div>
-
-            <div className="text-xs text-slate-500 pt-2 px-6 pb-4">
-              <div className="h-3 w-full rounded-lg bg-neutral-700 animate-pulse"></div>
-              <div className="h-3 w-1/2 mt-2 rounded-lg bg-neutral-700 animate-pulse"></div>
-            </div>
+            ))}
           </div>
-        </aside>
-      </div>
-    </PageWrapper>
+        </div>
+      </main>
+
+      {/* Aside Skeleton */}
+      <aside className="w-full md:w-96 sticky top-6 self-start">
+        <div className="bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-2xl shadow-sm p-0 flex flex-col gap-4 overflow-hidden">
+          <div className="p-6 space-y-4">
+            <div className="h-6 w-32 bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+            <div className="h-4 w-full bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+            <div className="h-4 w-full bg-neutral-200 dark:bg-neutral-700 rounded-md" />
+            <div className="h-6 w-1/2 ml-auto bg-neutral-200 dark:bg-neutral-700 rounded-md mt-2" />
+          </div>
+          <div className="pt-3 border-t border-neutral-200 dark:border-slate-700 px-6 pb-4">
+            <div className="h-10 w-full bg-neutral-300 dark:bg-neutral-700 rounded-md" />
+            <div className="h-10 w-full bg-neutral-300 dark:bg-neutral-700 rounded-md mt-3" />
+            <div className="h-3 w-full bg-neutral-200 dark:bg-neutral-700 rounded-md mt-4" />
+          </div>
+        </div>
+      </aside>
+    </div>
   );
-}
+};
+
+export default CartLoading;
