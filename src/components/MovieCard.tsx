@@ -8,15 +8,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { AddToCartClientButton } from "@/components";
-import type { Movie } from "@prisma/client";
 import type { Decimal } from "@prisma/client/runtime/library";
 
-// Movie shape expected by card: includes genres and optional stock/price
-type MovieWithGenres = Movie & {
-  genres?: { genre: { name: string } }[];
-  stock?: number | null;
+// Lightweight movie shape expected by card: not strictly tied to Prisma Movie type
+type MovieWithGenres = {
+  id: string;
+  title: string;
+  releaseDate?: string | Date | null;
+  createdAt?: Date;
+  updatedAt?: Date;
+  rating?: number | null;
+  description?: string | null;
   price?: number | string | Decimal | null;
+  stock?: number | null;
+  runtime?: number | null;
   imageUrl?: string | null;
+  genres?: { genre: { name: string } }[];
   people?:
     | {
         person: { id: string; fullName: string; imageUrl?: string | null };

@@ -11,9 +11,13 @@ type MovieWithIncludes = Prisma.MovieGetPayload<{
   };
 }>;
 
+type MovieForCarousel = Omit<MovieWithIncludes, "price"> & {
+  price: string | Prisma.Decimal;
+};
+
 interface MovieCarouselProps {
   title: string;
-  movies: MovieWithIncludes[];
+  movies: MovieForCarousel[];
   viewMoreHref?: string;
   headerClassName?: string;
 }
@@ -48,6 +52,7 @@ export function MovieCarousel({
               viewBox="0 0 20 20"
               fill="currentColor"
               className="w-4 h-4"
+              aria-hidden="true"
             >
               <path
                 fillRule="evenodd"

@@ -2,14 +2,14 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageWrapper } from "@/components/PageThemeContext";
 import React from "react";
+import { MoviesGridSkeleton } from "@/components/MoviesGridSkeleton";
+import { PaginationControlsSkeleton } from "@/components/PaginationControlsSkeleton";
 
 function MovieCardSkeleton() {
   return (
     <div className="flex flex-col space-y-3">
       <Skeleton
-        className={
-          "h-82.5 w-full rounded-xl bg-gray-200 dark:bg-neutral-800"
-        }
+        className={"h-82.5 w-full rounded-xl bg-gray-200 dark:bg-neutral-800"}
       />
       <div className="space-y-2">
         <Skeleton className={"h-4 w-full bg-gray-200 dark:bg-neutral-800"} />
@@ -38,9 +38,7 @@ export default function Loading() {
 
         <div className="mb-8 flex flex-col md:flex-row gap-4 items-center">
           <Skeleton
-            className={
-              "h-12 grow bg-gray-300 dark:bg-neutral-700 rounded-lg"
-            }
+            className={"h-12 grow bg-gray-300 dark:bg-neutral-700 rounded-lg"}
           />
           <Skeleton
             className={
@@ -55,6 +53,13 @@ export default function Loading() {
           ))}
         </div>
       </div>
+      <div className="flex justify-between items-center mb-8">
+        <div className="h-10 w-48 bg-gray-300 dark:bg-gray-700 animate-pulse rounded" />
+        <div className="h-10 w-64 bg-gray-300 dark:bg-gray-700 animate-pulse rounded" />
+      </div>
+      <PaginationControlsSkeleton />
+      <MoviesGridSkeleton count={20} />
+      <PaginationControlsSkeleton />
     </PageWrapper>
   );
 }

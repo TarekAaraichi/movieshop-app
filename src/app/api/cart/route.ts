@@ -21,7 +21,7 @@ async function toDto(cart: {
 }): Promise<CartDto> {
   // cartService.toDto expects a shape compatible with the DB cart; cast via unknown to avoid `any` lint
   return await cartService.toDto(
-    cart as unknown as Parameters<typeof cartService.toDto>[0]
+    cart as unknown as Parameters<typeof cartService.toDto>[0],
   );
 }
 
@@ -36,8 +36,9 @@ export async function GET() {
       });
     } catch {}
     if (session?.user?.id) {
+      const userId = session.user.id;
       const userCart = await prisma.cart.findUnique({
-        where: { userId: session.user.id },
+        where: { userId },
         include: { items: true },
       });
       try {
@@ -45,7 +46,7 @@ export async function GET() {
           "[api/cart] GET using userCart for userId",
           session.user.id,
           "items:",
-          userCart?.items?.length ?? 0
+          userCart?.items?.length ?? 0,
         );
       } catch {}
       if (userCart) return NextResponse.json(await toDto(userCart));
@@ -73,7 +74,7 @@ export async function GET() {
       "[api/cart] GET resolved cart id:",
       maybe?.id ?? null,
       "items:",
-      itemCount
+      itemCount,
     );
   } catch {}
   if (!cart) return NextResponse.json({ items: [] });
@@ -92,7 +93,7 @@ export async function POST(req: Request) {
   if (!movieId && action !== "clear")
     return NextResponse.json(
       { ok: false, message: "missing_movieId" },
-      { status: 400 }
+      { status: 400 },
     );
   // Prefer the authenticated user's cart when available so client-side
   // mutations (add/update/remove) affect the user's canonical cart.
@@ -103,17 +104,18 @@ export async function POST(req: Request) {
     try {
       console.log(
         "[api/cart][POST] session userId:",
-        session?.user?.id ?? null
+        session?.user?.id ?? null,
       );
     } catch {}
     if (session?.user?.id) {
+      const userId = session.user.id;
       // find or create a cart for this user
       let userCart = await prisma.cart.findUnique({
-        where: { userId: session.user.id },
+        where: { userId },
       });
       if (!userCart) {
         userCart = await prisma.cart.create({
-          data: { userId: session.user.id },
+          data: { userId },
         });
       }
       cart = { id: userCart.id };
@@ -135,7 +137,7 @@ export async function POST(req: Request) {
       "[api/cart][POST] resolved cartId:",
       cart.id,
       "cookieCartId:",
-      cookieVal ?? null
+      cookieVal ?? null,
     );
   } catch {}
 
@@ -147,7 +149,7 @@ export async function POST(req: Request) {
     if (typeof quantity !== "number")
       return NextResponse.json(
         { ok: false, message: "missing_quantity" },
-        { status: 400 }
+        { status: 400 },
       );
     const mId = movieId as string;
     await cartService.updateItemInCart(cart.id, mId, quantity);
@@ -159,9 +161,10 @@ export async function POST(req: Request) {
       // If user cart, clear all items for user's carts; otherwise delete anonymous cart
       const session = await auth.api.getSession({ headers: await headers() });
       if (session?.user?.id) {
+        const userId = session.user.id;
         // remove items from all carts owned by this user
         const userCarts = await prisma.cart.findMany({
-          where: { userId: session.user.id },
+          where: { userId },
           select: { id: true },
         });
         const ids = userCarts.map((c) => c.id);
@@ -198,7 +201,7 @@ export async function POST(req: Request) {
   } else {
     return NextResponse.json(
       { ok: false, message: "unknown_action" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

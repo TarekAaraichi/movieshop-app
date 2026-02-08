@@ -9,7 +9,7 @@ import { PageWrapper } from "@/components/PageThemeContext";
 export default function AboutPage() {
   return (
     <PageWrapper>
-      <div className="flex-grow flex items-center justify-center">
+      <div className="grow flex items-center justify-center">
         <div className="max-w-4xl w-full p-4">
           <Card className="p-6 sm:p-8 bg-linear-to-br from-neutral-100/80 via-neutral-50/60 to-neutral-200/50 dark:from-neutral-900/80 dark:via-neutral-800/60 dark:to-slate-700/50">
             <header className="text-center mb-12">

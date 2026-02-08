@@ -10,14 +10,12 @@ import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/PageThemeContext";
 import { Prisma } from "@prisma/client";
 
-export type MovieWithRelations = Prisma.MovieGetPayload<
-  Prisma.MovieDefaultArgs & {
-    include: {
-      genres: { include: { genre: true } };
-      people: { include: { person: true } };
-    };
-  }
->;
+export type MovieWithRelations = Prisma.MovieGetPayload<{
+  include: {
+    genres: { include: { genre: true } };
+    people: { include: { person: true } };
+  };
+}>;
 
 export default async function HomePage() {
   // Fetch all movie lists in parallel for better performance
@@ -61,7 +59,9 @@ export default async function HomePage() {
       }),
     ]);
 
-  const serializeMovies = (movies: MovieWithRelations[]) => {
+  type SerializedMovie = Omit<MovieWithRelations, "price"> & { price: string };
+
+  const serializeMovies = (movies: MovieWithRelations[]): SerializedMovie[] => {
     return movies.map((movie) => ({
       ...movie,
       price: movie.price.toString(),

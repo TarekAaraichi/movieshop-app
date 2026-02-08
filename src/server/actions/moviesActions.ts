@@ -7,7 +7,7 @@
 
 import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
-import { PersonRole } from "@prisma/client";
+import { PersonRole, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 const prisma = (await import("@/lib/prisma")).default;
@@ -151,42 +151,48 @@ export async function updateMovie(formData: FormData) {
     ),
   );
 
-  await prisma.movie.update({
-    where: { id: movieId },
-    data: {
-      title,
-      description,
-      releaseDate: new Date(releaseDate),
-      imageUrl,
-      runtime,
-      price: price.toFixed(2),
-      stock,
-      people: {
-        deleteMany: {},
-        create: [
-          { personId: director.id, role: PersonRole.DIRECTOR },
-          ...actors.map((actor) => ({
-            personId: actor.id,
-            role: PersonRole.ACTOR,
-          })),
-        ],
-      },
-      genres: {
-        deleteMany: {},
-        create: genreRecords.map((g) => ({ genreId: g.id })),
-      },
+  const updateData: Prisma.MovieUpdateInput = {
+    title,
+    description,
+    imageUrl,
+    runtime,
+    price: price.toFixed(2),
+    stock,
+    people: {
+      deleteMany: {},
+      create: [
+        { personId: director.id, role: PersonRole.DIRECTOR },
+        ...actors.map((actor) => ({
+          personId: actor.id,
+          role: PersonRole.ACTOR,
+        })),
+      ],
     },
-  });
+    genres: {
+      deleteMany: {},
+      create: genreRecords.map((g) => ({ genreId: g.id })),
+    },
+  };
+  if (releaseDate) updateData.releaseDate = new Date(releaseDate);
+
+  await prisma.movie.update({ where: { id: movieId }, data: updateData });
 
   revalidatePath("/admin");
-  redirect("/admin");
+  // Redirect with a query param so the admin UI can show a success toast
+  redirect(`/admin?created=1&title=${encodeURIComponent(title)}`);
 }
 
 const movieCreateSchema = z.object({
   title: z.string().min(1),
   releaseDate: z
     .string()
-    .refine((s) => !Number.isNaN(Date.parse(s)), { message: "Invalid date" }),
+    .optional()
+    .refine(
+      (s) => s === "" || s === undefined || !Number.isNaN(Date.parse(s)),
+      {
+        message: "Invalid date",
+      },
+    ),
   description: z.string().min(1),
   director: z.string().min(1),
   actors: z.string().optional().nullable(),
@@ -258,29 +264,29 @@ export async function createMovie(formData: FormData) {
     ),
   );
 
-  await prisma.movie.create({
-    data: {
-      title,
-      description,
-      releaseDate: new Date(releaseDate),
-      imageUrl,
-      runtime,
-      price: price.toFixed(2),
-      stock,
-      people: {
-        create: [
-          { personId: director.id, role: PersonRole.DIRECTOR },
-          ...actors.map((actor) => ({
-            personId: actor.id,
-            role: PersonRole.ACTOR,
-          })),
-        ],
-      },
-      genres: {
-        create: genreRecords.map((g) => ({ genreId: g.id })),
-      },
+  const createData: Partial<Prisma.MovieCreateInput> = {
+    title,
+    description,
+    imageUrl,
+    runtime,
+    price: price.toFixed(2),
+    stock,
+    people: {
+      create: [
+        { personId: director.id, role: PersonRole.DIRECTOR },
+        ...actors.map((actor) => ({
+          personId: actor.id,
+          role: PersonRole.ACTOR,
+        })),
+      ],
     },
-  });
+    genres: {
+      create: genreRecords.map((g) => ({ genreId: g.id })),
+    },
+  };
+  if (releaseDate) createData.releaseDate = new Date(releaseDate);
+
+  await prisma.movie.create({ data: createData as Prisma.MovieCreateInput });
 
   revalidatePath("/admin");
   // Redirect with a query param so the admin UI can show a success toast
@@ -291,29 +297,47 @@ export async function archiveMovie(formData: FormData) {
   await requireAdmin();
   const id = formData.get("movieId") as string;
   if (!id) throw new Error("Missing movie ID");
-  await prisma.movie.update({ where: { id }, data: { isArchived: true } });
+  const movie = await prisma.movie.update({
+    where: { id },
+    data: { isArchived: true },
+  });
   revalidatePath("/admin");
+  redirect(`/admin?archived=1&title=${encodeURIComponent(movie.title)}`);
 }
 
 export async function unarchiveMovie(formData: FormData) {
   await requireAdmin();
   const id = formData.get("movieId") as string;
   if (!id) throw new Error("Missing movie ID");
-  await prisma.movie.update({ where: { id }, data: { isArchived: false } });
+  const movie = await prisma.movie.update({
+    where: { id },
+    data: { isArchived: false },
+  });
   revalidatePath("/admin");
+  redirect(`/admin?unarchived=1&title=${encodeURIComponent(movie.title)}`);
 }
 
 export async function deleteMovie(formData: FormData) {
   await requireAdmin();
   const id = formData.get("movieId") as string;
   if (!id) throw new Error("Missing movie ID");
+
+  const movie = await prisma.movie.findUnique({ where: { id } });
+  if (!movie) {
+    redirect(`/admin?error=notfound`);
+    return;
+  }
+
   const orderRefs = await prisma.orderItem.count({ where: { movieId: id } });
   if (orderRefs > 0) {
-    throw new Error(
-      "Cannot delete movie: it has associated orders. Remove related orders or keep the movie for order history.",
+    redirect(
+      `/admin?error=delete_failed&title=${encodeURIComponent(movie.title)}`,
     );
+    return;
   }
+
   await prisma.cartItem.deleteMany({ where: { movieId: id } });
   await prisma.movie.delete({ where: { id } });
   revalidatePath("/admin");
+  redirect(`/admin?deleted=1&title=${encodeURIComponent(movie.title)}`);
 }

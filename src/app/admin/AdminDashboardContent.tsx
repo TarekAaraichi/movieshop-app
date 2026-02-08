@@ -214,32 +214,69 @@ export default function AdminDashboardContent({
     setActiveTab(initialTab);
   }, [initialTab]);
 
-  // Show a one-time toast when arriving after creating an item or on error
+  // Show a one-time toast when arriving after an action
   React.useEffect(() => {
     if (typeof window === "undefined") return;
     const params = new URLSearchParams(window.location.search);
+
     const created = params.get("created");
-    const title = params.get("title") || params.get("name");
+    const updated = params.get("updated");
+    const deleted = params.get("deleted");
+    const archived = params.get("archived");
+    const unarchived = params.get("unarchived");
+    const granted = params.get("granted");
+    const revoked = params.get("revoked");
     const error = params.get("error");
 
-    if (created) {
-      const msg = title ? `Added "${title}"` : "Item added";
-      toast.success(`${msg}!`);
-      params.delete("created");
-      params.delete("title");
-    }
+    const title = params.get("title") || params.get("name");
 
-    if (error) {
+    if (created) {
+      const msg = title ? `Successfully created "${title}"` : "Item created";
+      toast.success(msg);
+    } else if (updated) {
+      const msg = title ? `Successfully updated "${title}"` : "Item updated";
+      toast.success(msg);
+    } else if (deleted) {
+      const msg = title ? `Successfully deleted "${title}"` : "Item deleted";
+      toast.success(msg);
+    } else if (archived) {
+      const msg = title ? `Successfully archived "${title}"` : "Item archived";
+      toast.success(msg);
+    } else if (unarchived) {
+      const msg = title
+        ? `Successfully unarchived "${title}"`
+        : "Item unarchived";
+      toast.success(msg);
+    } else if (granted) {
+      const msg = title ? `Granted admin to "${title}"` : "Admin role granted";
+      toast.success(msg);
+    } else if (revoked) {
+      const msg = title
+        ? `Revoked admin from "${title}"`
+        : "Admin role revoked";
+      toast.success(msg);
+    } else if (error) {
       if (error === "exists") {
         const msg = title ? `"${title}" already exists` : "Item already exists";
         toast.error(msg);
       } else {
-        toast.error("An error occurred");
+        toast.error(error);
       }
-      params.delete("error");
-      params.delete("name");
-      params.delete("title");
     }
+
+    // Clean up URL params
+    [
+      "created",
+      "updated",
+      "deleted",
+      "archived",
+      "unarchived",
+      "granted",
+      "revoked",
+      "error",
+      "title",
+      "name",
+    ].forEach((p) => params.delete(p));
 
     const next = params.toString()
       ? `${window.location.pathname}?${params.toString()}`
@@ -414,14 +451,14 @@ export default function AdminDashboardContent({
   const showUserPagination = filteredUsers.length > USERS_PAGE_SIZE;
 
   return (
-    <div className="max-w-7xl mx-auto rounded-3xl border border-gray-200 bg-zinc-900/80 shadow-sm dark:border-gray-900/70  dark:backdrop-blur">
-      <div className="p-4 border-b border-gray-200 dark:border-gray-800/70">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div className="mx-auto max-w-7xl rounded-3xl border border-slate-200/10 bg-gray-800/50 p-4 shadow-2xl backdrop-blur-lg sm:p-6 lg:p-8">
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
           <AdminTabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />
 
           <div
             role="search"
-            className="flex flex-col gap-2 rounded-2xl  md:flex-row md:items-center md:gap-3"
+            className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center"
           >
             <AdminSearchInput
               placeholder={
@@ -442,7 +479,7 @@ export default function AdminDashboardContent({
                 aria-label="Filter by genre"
                 value={selectedGenre}
                 onChange={(event) => setSelectedGenre(event.target.value)}
-                className="min-w-40 rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
+                className="min-w-40 rounded-lg border border-slate-300 bg-white/10 px-4 py-2.5 text-sm font-medium text-slate-200 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 dark:border-slate-700"
               >
                 <option value="">All genres</option>
                 {genres.map((genre) => (
@@ -458,7 +495,7 @@ export default function AdminDashboardContent({
                 aria-label="Filter by person role"
                 value={selectedPersonRole}
                 onChange={(event) => setSelectedPersonRole(event.target.value)}
-                className="min-w-40 rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
+                className="min-w-40 rounded-lg border border-slate-300 bg-white/10 px-4 py-2.5 text-sm font-medium text-slate-200 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 dark:border-slate-700"
               >
                 <option value="">All roles</option>
                 {personRoles.map((role) => (
@@ -474,7 +511,7 @@ export default function AdminDashboardContent({
                 aria-label="Filter by user role"
                 value={selectedUserRole}
                 onChange={(event) => setSelectedUserRole(event.target.value)}
-                className="min-w-40 rounded-lg border border-gray-300 bg-zinc-900/80 p-2 text-sm text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400/70 dark:border-gray-700  dark:text-gray-100"
+                className="min-w-40 rounded-lg border border-slate-300 bg-white/10 px-4 py-2.5 text-sm font-medium text-slate-200 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 dark:border-slate-700"
               >
                 <option value="">All roles</option>
                 {userRoles.map((role) => (
@@ -486,14 +523,12 @@ export default function AdminDashboardContent({
             )}
           </div>
         </div>
-      </div>
 
-      <div className="p-4">
         <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
           {activeTab === "movies" && (
             <Link
               href="/admin/movies/create"
-              className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-indigo-200 dark:border-indigo-400/40 dark:bg-indigo-400/20 dark:text-indigo-50 dark:hover:bg-indigo-400/30 dark:focus:ring-indigo-300/60"
+              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
               + New Movie
             </Link>
@@ -513,39 +548,37 @@ export default function AdminDashboardContent({
                 return (
                   <div
                     key={movie.id}
-                    className="flex flex-col justify-between gap-4 rounded-2xl border  border-gray-200 bg-gray-800 p-5 shadow-sm transition hover:-translate-y-1 hover:border-indigo-500/40 hover:shadow-lg"
+                    className="group relative flex flex-col justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-800/40 p-5 shadow-lg transition-all duration-300 hover:border-indigo-500/50 hover:bg-slate-800/80 hover:shadow-indigo-500/10"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 className="text-lg font-bold text-slate-100">
                           {movie.title}
                         </h3>
                         {movie.isArchived && (
-                          <span className="whitespace-nowrap rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
+                          <span className="whitespace-nowrap rounded-full border border-amber-400/40 bg-amber-400/10 px-2.5 py-1 text-xs font-semibold text-amber-300">
                             Archived
                           </span>
                         )}
                       </div>
-                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                      <p className="mt-2 text-sm text-slate-400">
                         {releaseLabel} &middot; {genreNames}
                       </p>
                       <div className="mt-4 flex items-center gap-3 text-sm">
-                        <span className="font-semibold text-emerald-600 dark:text-emerald-300">
+                        <span className="font-semibold text-emerald-400">
                           {movie.price != null ? `SEK ${movie.price}` : "—"}
                         </span>
-                        <span className="text-gray-400 dark:text-gray-600">
-                          |
-                        </span>
-                        <span className="text-gray-600 dark:text-gray-400">
+                        <span className="text-slate-600">|</span>
+                        <span className="text-slate-400">
                           Stock {movie.stock ?? "—"}
                         </span>
                       </div>
                     </div>
 
-                    <div className="mt-2 flex items-center justify-between border-t border-gray-200 pt-4 dark:border-gray-800/70">
+                    <div className="mt-4 flex items-center justify-between border-t border-slate-800 pt-4">
                       <Link
                         href={`/admin/movies/${movie.id}/edit`}
-                        className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-white"
+                        className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-400 transition hover:text-indigo-300"
                       >
                         Edit
                       </Link>
@@ -560,7 +593,7 @@ export default function AdminDashboardContent({
                             />
                             <button
                               type="submit"
-                              className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-amber-700 transition hover:bg-amber-100 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-300 dark:hover:bg-amber-400/10"
+                              className="rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-amber-300 transition hover:bg-amber-400/20"
                             >
                               Archive
                             </button>
@@ -574,7 +607,7 @@ export default function AdminDashboardContent({
                             />
                             <button
                               type="submit"
-                              className="rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/10"
+                              className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-emerald-300 transition hover:bg-emerald-400/20"
                             >
                               Unarchive
                             </button>
@@ -590,7 +623,7 @@ export default function AdminDashboardContent({
                           <button
                             type="submit"
                             disabled={disableDelete}
-                            className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 disabled:cursor-not-allowed disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-400 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10 dark:disabled:border-gray-700 dark:disabled:bg-transparent dark:disabled:text-gray-500"
+                            className="rounded-full border border-red-400/30 bg-red-400/10 px-3 py-1 text-red-400 transition hover:bg-red-400/20 disabled:cursor-not-allowed disabled:border-slate-700 disabled:bg-transparent disabled:text-slate-500"
                             title={
                               disableDelete
                                 ? "Cannot delete: movie has associated orders"
@@ -607,7 +640,7 @@ export default function AdminDashboardContent({
               })}
 
               {filteredMovies.length === 0 && (
-                <div className="col-span-full rounded-2xl p-6 text-center text-sm text-gray-500  dark:text-gray-400">
+                <div className="col-span-full rounded-2xl p-6 text-center text-sm text-slate-400">
                   No movies match the current filters.
                 </div>
               )}
@@ -637,7 +670,7 @@ export default function AdminDashboardContent({
                 return (
                   <div
                     key={person.id}
-                    className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-gray-800 p-4 shadow-sm transition hover:border-indigo-500/40 hover:shadow-lg sm:flex-row sm:items-center sm:justify-between"
+                    className="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-800/40 p-4 shadow-lg transition-all duration-300 hover:border-indigo-500/50 hover:bg-slate-800/80 sm:flex-row sm:items-center sm:justify-between"
                   >
                     <div className="flex items-center gap-4">
                       {person.imageUrl ? (
@@ -650,7 +683,7 @@ export default function AdminDashboardContent({
                           referrerPolicy="no-referrer"
                         />
                       ) : (
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-indigo-200 bg-indigo-50 text-sm font-semibold uppercase text-indigo-700 dark:border-indigo-400/40 dark:bg-indigo-400/10 dark:text-indigo-200">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-indigo-400/40 bg-indigo-400/10 text-sm font-semibold uppercase text-indigo-200">
                           {person.fullName
                             .split(" ")
                             .map((segment) => segment[0])
@@ -659,10 +692,10 @@ export default function AdminDashboardContent({
                         </div>
                       )}
                       <div>
-                        <div className="text-base font-semibold text-gray-900 dark:text-white">
+                        <div className="text-base font-semibold text-slate-100">
                           {person.fullName}
                         </div>
-                        <div className="mt-1 text-xs uppercase tracking-wide text-gray-600 dark:text-gray-500">
+                        <div className="mt-1 text-xs uppercase tracking-wide text-slate-500">
                           {roleSummary}
                         </div>
                       </div>
@@ -671,33 +704,17 @@ export default function AdminDashboardContent({
                     <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
                       <Link
                         href={`/admin/persons/${person.id}/edit`}
-                        className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+                        className="font-semibold text-indigo-400 transition hover:text-indigo-300"
                       >
                         Edit
                       </Link>
-                      {/* <button
-                        type="button"
-                        onClick={async () => {
-                          if (
-                            !window.confirm(
-                              `Delete "${person.fullName}"? This is permanent.`,
-                            )
-                          )
-                            return;
-                          await deletePerson(person.id);
-                          toast.success(`Deleted "${person.fullName}"`);
-                        }}
-                        className="font-semibold text-red-600 hover:text-red-500 dark:text-red-500 dark:hover:text-red-400"
-                      >
-                        Delete
-                      </button> */}
                     </div>
                   </div>
                 );
               })}
 
               {filteredPersons.length === 0 && (
-                <div className="rounded-2xl p-6 text-center text-sm text-gray-500 dark:text-gray-400">
+                <div className="rounded-2xl p-6 text-center text-sm text-slate-400">
                   No people match the current filters.
                 </div>
               )}
@@ -729,17 +746,17 @@ export default function AdminDashboardContent({
                 return (
                   <div
                     key={user.id}
-                    className="flex flex-col gap-4 rounded-2xl border border-gray-200 bg-gray-800 p-4 shadow-sm transition hover:border-indigo-500/40 hover:shadow-lg md:flex-row md:items-center md:justify-between"
+                    className="flex flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-800/40 p-4 shadow-lg transition-all duration-300 hover:border-indigo-500/50 hover:bg-slate-800/80 md:flex-row md:items-center md:justify-between"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 text-sm font-semibold uppercase text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-200">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full border border-emerald-400/40 bg-emerald-400/10 text-sm font-semibold uppercase text-emerald-200">
                         {initials}
                       </div>
                       <div>
-                        <div className="text-base font-semibold text-gray-900 dark:text-white">
+                        <div className="text-base font-semibold text-slate-100">
                           {user.name ?? "—"}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm text-slate-400">
                           {user.email}
                         </div>
                       </div>
@@ -749,8 +766,8 @@ export default function AdminDashboardContent({
                       <span
                         className={`rounded-full border px-3 py-1 ${
                           resolvedRole === "admin"
-                            ? "border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-400/30 dark:bg-indigo-400/10 dark:text-indigo-200"
-                            : "border-gray-200 bg-gray-100 text-gray-700 dark:border-gray-600/40 dark:bg-gray-700/40 dark:text-gray-300"
+                            ? "border-indigo-400/30 bg-indigo-400/10 text-indigo-200"
+                            : "border-slate-600/40 bg-slate-700/40 text-slate-300"
                         }`}
                       >
                         {resolvedRole}
@@ -767,8 +784,8 @@ export default function AdminDashboardContent({
                           type="submit"
                           className={`rounded-full border px-3 py-1 transition ${
                             resolvedRole === "admin"
-                              ? "border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-300 dark:hover:bg-amber-400/10"
-                              : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-400/30 dark:bg-emerald-400/10 dark:text-emerald-300 dark:hover:bg-emerald-400/10"
+                              ? "border-amber-400/30 bg-amber-400/10 text-amber-300 hover:bg-amber-400/20"
+                              : "border-emerald-400/30 bg-emerald-400/10 text-emerald-300 hover:bg-emerald-400/20"
                           }`}
                           title={
                             resolvedRole === "admin"
@@ -784,7 +801,7 @@ export default function AdminDashboardContent({
                         <input type="hidden" name="userId" value={user.id} />
                         <button
                           type="submit"
-                          className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-red-700 transition hover:bg-red-100 dark:border-red-400/30 dark:bg-red-400/10 dark:text-red-400 dark:hover:bg-red-400/10"
+                          className="rounded-full border border-red-400/30 bg-red-400/10 px-3 py-1 text-red-400 transition hover:bg-red-400/20"
                         >
                           Delete
                         </button>
@@ -795,7 +812,7 @@ export default function AdminDashboardContent({
               })}
 
               {filteredUsers.length === 0 && (
-                <div className="rounded-2xl  p-6 text-center text-sm text-gray-500   dark:text-gray-400">
+                <div className="rounded-2xl p-6 text-center text-sm text-slate-400">
                   No users match the current filters.
                 </div>
               )}

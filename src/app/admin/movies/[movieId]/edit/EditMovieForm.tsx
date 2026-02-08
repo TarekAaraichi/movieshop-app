@@ -7,29 +7,25 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 import {
-  AddButton,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
+  SaveButton,
 } from "@/components";
 import { PageWrapper } from "@/components/PageThemeContext";
 import { Card, Input } from "@/components/ui";
-import { createMovie } from "@/server/actions/moviesActions";
+import { updateMovie } from "@/server/actions/moviesActions";
+import { Movie, Person, Genre } from "@prisma/client";
 
 const formSchema = z.object({
+  movieId: z.string().min(1),
   title: z.string().min(1, "Title is required"),
   releaseDate: z
     .string()
-    .optional()
-    .refine(
-      (s) => s === "" || s === undefined || !Number.isNaN(Date.parse(s)),
-      {
-        message: "Invalid date",
-      },
-    ),
+    .refine((s) => !Number.isNaN(Date.parse(s)), { message: "Invalid date" }),
   description: z.string().min(1, "Description is required"),
   director: z.string().min(1, "Director is required"),
   actors: z.string().optional().nullable(),
@@ -57,48 +53,57 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function CreateMoviePage() {
+type EditMoviePageProps = {
+  movie: Movie & {
+    people: { person: Person; role: string }[];
+    genres: { genre: Genre }[];
+  };
+};
+
+export default function EditMoviePage({ movie }: EditMoviePageProps) {
   const router = useRouter();
+
+  const directorName =
+    movie.people.find((p) => p.role === "DIRECTOR")?.person.fullName ?? "";
+  const actorNames = movie.people
+    .filter((p) => p.role === "ACTOR")
+    .map((p) => p.person.fullName)
+    .join(", ");
+  const genreNamesDefault = movie.genres.map((mg) => mg.genre.name).join(", ");
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as unknown as Resolver<FormValues>,
     mode: "onTouched",
     defaultValues: {
-      title: "",
-      releaseDate: "",
-      description: "",
-      director: "",
-      actors: "",
-      imageUrl: "",
-      runtime: 0,
-      price: 0,
-      stock: 0,
-      genres: "",
+      movieId: movie.id,
+      title: movie.title,
+      releaseDate: movie.releaseDate.toISOString().split("T")[0],
+      description: movie.description,
+      director: directorName,
+      actors: actorNames,
+      imageUrl: movie.imageUrl ?? "",
+      runtime: movie.runtime ?? 0,
+      price: movie.price ? parseFloat(String(movie.price)) : 0,
+      stock: movie.stock,
+      genres: genreNamesDefault,
     },
   });
 
   async function onSubmit(values: FormValues) {
     const formData = new FormData();
-    // build formData object
-    Object.keys(values).forEach((key) => {
-      const value = values[key as keyof FormValues];
-      if (value != null) {
-        formData.append(key, String(value));
-      }
-    });
+    const record = values as unknown as Record<string, unknown>;
+    for (const key in record) {
+      const value = record[key];
+      if (value != null) formData.append(key, String(value));
+    }
 
     try {
-      await createMovie(formData);
-      // The server action will redirect on success, so we might not even see this.
-      // But it's good practice to have client-side feedback.
-      toast.success("Movie created successfully! Redirecting...");
-      // Manually redirect as a fallback.
-      router.push("/admin?tab=movies");
-      router.refresh(); // Ensures the movie list is updated
-    } catch (error) {
-      // Server actions throw errors on failure.
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create movie.",
-      );
+      await updateMovie(formData);
+      toast.success("Movie updated successfully!");
+      router.push("/admin/movies");
+      router.refresh();
+    } catch {
+      toast.error("Failed to update movie.");
     }
   }
 
@@ -114,11 +119,10 @@ export default function CreateMoviePage() {
         <div className="mx-auto max-w-4xl space-y-10">
           <div className="rounded-3xl border border-slate-200/10 bg-gray-600 p-6 sm:p-8 shadow-2xl">
             <h1 className="text-3xl font-bold text-white sm:text-4xl">
-              Create Movie
+              Edit Movie
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-indigo-100/90">
-              Provide production details, pricing, and metadata to publish a new
-              movie in the catalog. Fields marked with * are required.
+              Update movie details inline. Changes are applied after saving.
             </p>
           </div>
 
@@ -371,11 +375,7 @@ export default function CreateMoviePage() {
                 />
 
                 <div className="flex justify-end pt-6">
-                  <AddButton
-                    buttonText="Create Movie"
-                    type="submit"
-                    disabled={form.formState.isSubmitting}
-                  />
+                  <SaveButton />
                 </div>
               </form>
             </Form>

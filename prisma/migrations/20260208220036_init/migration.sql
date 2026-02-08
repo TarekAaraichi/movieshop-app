@@ -1,11 +1,23 @@
 -- CreateEnum
-CREATE TYPE "public"."PersonRole" AS ENUM ('DIRECTOR', 'ACTOR');
+CREATE TYPE "PersonRole" AS ENUM ('DIRECTOR', 'ACTOR');
 
 -- CreateEnum
-CREATE TYPE "public"."OrderStatus" AS ENUM ('PENDING', 'PAID', 'CANCELLED');
+CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PAID', 'CANCELLED');
 
 -- CreateTable
-CREATE TABLE "public"."Movie" (
+CREATE TABLE "MovieRating" (
+    "id" TEXT NOT NULL,
+    "movieId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "rating" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "MovieRating_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Movie" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
@@ -14,6 +26,8 @@ CREATE TABLE "public"."Movie" (
     "imageUrl" TEXT,
     "stock" INTEGER NOT NULL DEFAULT 0,
     "runtime" INTEGER,
+    "rating" DOUBLE PRECISION DEFAULT 0,
+    "voteCount" INTEGER DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "isArchived" BOOLEAN NOT NULL DEFAULT false,
@@ -22,7 +36,7 @@ CREATE TABLE "public"."Movie" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Genre" (
+CREATE TABLE "Genre" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
 
@@ -30,7 +44,7 @@ CREATE TABLE "public"."Genre" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."MovieGenre" (
+CREATE TABLE "MovieGenre" (
     "movieId" TEXT NOT NULL,
     "genreId" TEXT NOT NULL,
 
@@ -38,30 +52,31 @@ CREATE TABLE "public"."MovieGenre" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Person" (
+CREATE TABLE "Person" (
     "id" TEXT NOT NULL,
     "fullName" TEXT NOT NULL,
     "bio" TEXT,
     "imageUrl" TEXT,
+    "primaryRole" "PersonRole",
 
     CONSTRAINT "Person_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."MoviePerson" (
+CREATE TABLE "MoviePerson" (
     "movieId" TEXT NOT NULL,
     "personId" TEXT NOT NULL,
-    "role" "public"."PersonRole" NOT NULL,
+    "role" "PersonRole" NOT NULL,
 
     CONSTRAINT "MoviePerson_pkey" PRIMARY KEY ("movieId","personId","role")
 );
 
 -- CreateTable
-CREATE TABLE "public"."Order" (
+CREATE TABLE "Order" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "totalAmount" DECIMAL(10,2) NOT NULL,
-    "status" "public"."OrderStatus" NOT NULL DEFAULT 'PENDING',
+    "status" "OrderStatus" NOT NULL DEFAULT 'PENDING',
     "orderDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "addressId" TEXT,
 
@@ -69,7 +84,7 @@ CREATE TABLE "public"."Order" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."OrderItem" (
+CREATE TABLE "OrderItem" (
     "orderId" TEXT NOT NULL,
     "movieId" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL,
@@ -79,7 +94,7 @@ CREATE TABLE "public"."OrderItem" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Address" (
+CREATE TABLE "Address" (
     "id" TEXT NOT NULL,
     "line1" TEXT NOT NULL,
     "line2" TEXT,
@@ -92,7 +107,7 @@ CREATE TABLE "public"."Address" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."Cart" (
+CREATE TABLE "Cart" (
     "id" TEXT NOT NULL,
     "userId" TEXT,
 
@@ -100,7 +115,7 @@ CREATE TABLE "public"."Cart" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."CartItem" (
+CREATE TABLE "CartItem" (
     "cartId" TEXT NOT NULL,
     "movieId" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 1,
@@ -109,7 +124,7 @@ CREATE TABLE "public"."CartItem" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."user" (
+CREATE TABLE "user" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -123,7 +138,7 @@ CREATE TABLE "public"."user" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."session" (
+CREATE TABLE "session" (
     "id" TEXT NOT NULL,
     "expiresAt" TIMESTAMP(3) NOT NULL,
     "token" TEXT NOT NULL,
@@ -137,7 +152,7 @@ CREATE TABLE "public"."session" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."account" (
+CREATE TABLE "account" (
     "id" TEXT NOT NULL,
     "accountId" TEXT NOT NULL,
     "providerId" TEXT NOT NULL,
@@ -156,7 +171,7 @@ CREATE TABLE "public"."account" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."verification" (
+CREATE TABLE "verification" (
     "id" TEXT NOT NULL,
     "identifier" TEXT NOT NULL,
     "value" TEXT NOT NULL,
@@ -168,55 +183,64 @@ CREATE TABLE "public"."verification" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Genre_name_key" ON "public"."Genre"("name");
+CREATE UNIQUE INDEX "MovieRating_movieId_userId_key" ON "MovieRating"("movieId", "userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Person_fullName_key" ON "public"."Person"("fullName");
+CREATE UNIQUE INDEX "Genre_name_key" ON "Genre"("name");
 
 -- CreateIndex
-CREATE INDEX "Order_userId_idx" ON "public"."Order"("userId");
+CREATE UNIQUE INDEX "Person_fullName_key" ON "Person"("fullName");
 
 -- CreateIndex
-CREATE INDEX "Address_userId_idx" ON "public"."Address"("userId");
+CREATE INDEX "Order_userId_idx" ON "Order"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Cart_userId_key" ON "public"."Cart"("userId");
+CREATE INDEX "Address_userId_idx" ON "Address"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "public"."user"("email");
+CREATE UNIQUE INDEX "Cart_userId_key" ON "Cart"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "session_token_key" ON "public"."session"("token");
+CREATE UNIQUE INDEX "User_email_key" ON "user"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "session_token_key" ON "session"("token");
 
 -- AddForeignKey
-ALTER TABLE "public"."MovieGenre" ADD CONSTRAINT "MovieGenre_genreId_fkey" FOREIGN KEY ("genreId") REFERENCES "public"."Genre"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "MovieRating" ADD CONSTRAINT "MovieRating_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "Movie"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."MovieGenre" ADD CONSTRAINT "MovieGenre_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "public"."Movie"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "MovieRating" ADD CONSTRAINT "MovieRating_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."MoviePerson" ADD CONSTRAINT "MoviePerson_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "public"."Movie"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "MovieGenre" ADD CONSTRAINT "MovieGenre_genreId_fkey" FOREIGN KEY ("genreId") REFERENCES "Genre"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."MoviePerson" ADD CONSTRAINT "MoviePerson_personId_fkey" FOREIGN KEY ("personId") REFERENCES "public"."Person"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "MovieGenre" ADD CONSTRAINT "MovieGenre_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "Movie"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."Order" ADD CONSTRAINT "Order_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "public"."Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "MoviePerson" ADD CONSTRAINT "MoviePerson_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "Movie"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."OrderItem" ADD CONSTRAINT "OrderItem_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "public"."Movie"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "MoviePerson" ADD CONSTRAINT "MoviePerson_personId_fkey" FOREIGN KEY ("personId") REFERENCES "Person"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "public"."Order"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Order" ADD CONSTRAINT "Order_addressId_fkey" FOREIGN KEY ("addressId") REFERENCES "Address"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."CartItem" ADD CONSTRAINT "CartItem_cartId_fkey" FOREIGN KEY ("cartId") REFERENCES "public"."Cart"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "Movie"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."CartItem" ADD CONSTRAINT "CartItem_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "public"."Movie"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "CartItem" ADD CONSTRAINT "CartItem_cartId_fkey" FOREIGN KEY ("cartId") REFERENCES "Cart"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "CartItem" ADD CONSTRAINT "CartItem_movieId_fkey" FOREIGN KEY ("movieId") REFERENCES "Movie"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "account" ADD CONSTRAINT "account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;

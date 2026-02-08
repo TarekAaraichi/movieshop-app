@@ -14,8 +14,18 @@ export async function deleteUser(formData: FormData) {
   await requireAdmin("/admin?tab=users");
   const id = formData.get("userId") as string;
   if (!id) throw new Error("Missing user ID");
+
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) {
+    redirect(`/admin?tab=users&error=${encodeURIComponent("User not found")}`);
+    return;
+  }
+
   await prisma.user.delete({ where: { id } });
   revalidatePath("/admin");
+  redirect(
+    `/admin?tab=users&deleted=1&name=${encodeURIComponent(user.name ?? user.email)}`,
+  );
 }
 
 export async function updateUser(formData: FormData) {
@@ -72,7 +82,9 @@ export async function updateUser(formData: FormData) {
   // After updating a user in the admin UI, redirect back to the users tab.
   // Use server-side redirect (supported in App Router server actions) so the
   // admin UI returns to the users list after save.
-  redirect("/admin?tab=users");
+  redirect(
+    `/admin?tab=users&updated=1&name=${encodeURIComponent(name ?? "User")}`,
+  );
 }
 
 export async function setUserRole(formData: FormData) {
@@ -80,8 +92,20 @@ export async function setUserRole(formData: FormData) {
   const id = formData.get("userId") as string;
   const role = (formData.get("role") as string) ?? "user";
   if (!id) throw new Error("Missing user ID");
+
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) {
+    redirect(`/admin?tab=users&error=${encodeURIComponent("User not found")}`);
+    return;
+  }
+
   await prisma.user.update({ where: { id }, data: { role } });
   revalidatePath("/admin");
+
+  const queryParam = role === "admin" ? "granted=1" : "revoked=1";
+  redirect(
+    `/admin?tab=users&${queryParam}&name=${encodeURIComponent(user.name ?? user.email)}`,
+  );
 }
 
 // Allow the signed-in user to update their own profile. This action does not
@@ -145,5 +169,5 @@ export async function updateProfile(formData: FormData) {
   revalidatePath(`/profile/edit`);
   // After a successful profile update, redirect the user back to their
   // public profile so the UI shows the refreshed data.
-  redirect("/profile");
+  redirect("/profile?updated=1");
 }

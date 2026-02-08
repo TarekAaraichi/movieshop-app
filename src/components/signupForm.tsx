@@ -50,6 +50,7 @@ type FormValues = z.infer<typeof formSchema>;
 export default function SignUpForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    mode: "onTouched",
     defaultValues: {
       name: "",
       email: "",
@@ -140,7 +141,7 @@ export default function SignUpForm() {
   }
 
   return (
-    <Card className="max-w-md mx-auto bg-gradient-to-r from-white to-indigo-50 dark:from-gray-800 dark:to-gray-900">
+    <Card className="max-w-md mx-auto bg-linear-to-r from-white to-indigo-50 dark:from-gray-800 dark:to-gray-900">
       <div className="py-3 px-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

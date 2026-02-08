@@ -1,24 +1,16 @@
-"use client";
-import { Skeleton } from "@/components/ui/skeleton";
-import React from "react";
-
-function PersonCardSkeleton() {
-  return (
-    <div className="space-y-2">
-      <Skeleton className="h-62.5 w-full rounded-lg bg-neutral-200 dark:bg-neutral-800" />
-      <div className="p-2 space-y-2">
-        <Skeleton className="h-4 w-4/5 rounded bg-neutral-200 dark:bg-neutral-800" />
-      </div>
-    </div>
-  );
-}
+import { PersonsGridSkeleton } from "@/components/PersonsGridSkeleton";
+import { PaginationControlsSkeleton } from "@/components/PaginationControlsSkeleton";
 
 export default function Loading() {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-      {Array.from({ length: 12 }).map((_, i) => (
-        <PersonCardSkeleton key={i} />
-      ))}
+    <div>
+      <div className="flex justify-between items-center mb-8">
+        <div className="h-10 w-48 bg-gray-300 dark:bg-gray-700 animate-pulse rounded" />
+        <div className="h-10 w-64 bg-gray-300 dark:bg-gray-700 animate-pulse rounded" />
+      </div>
+      <PaginationControlsSkeleton />
+      <PersonsGridSkeleton count={20} />
+      <PaginationControlsSkeleton />
     </div>
   );
 }

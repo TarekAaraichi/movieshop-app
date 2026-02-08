@@ -8,8 +8,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClientShell } from "@/components";
-import { headers } from "next/headers";
-import { auth } from "@/lib/auth";
 import Link from "next/link";
 import Image from "next/image";
 import SignOutButton from "@/components/SignOutButton";
@@ -20,7 +18,9 @@ import {
   PageThemeSwitcher,
 } from "@/components/PageThemeContext";
 import { Toaster } from "react-hot-toast";
-import prisma from "@/lib/prisma";
+import { getServerSession } from "@/lib/getServerSession";
+import { MobileNav } from "@/components/MobileNav";
+import type { Session } from "better-auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,51 +41,39 @@ export const metadata: Metadata = {
 // avoid calling client-only APIs from server components. See
 // `src/components/SignOutButton.tsx` for the implementation.
 
-// Patch: Extend session user type to include 'role' for admin menu logic
-type SessionUserWithRole = {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  email: string;
-  emailVerified: boolean;
-  name: string;
-  image?: string | null;
-  role?: string;
-};
+// session user role typing is provided by better-auth augmentation
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const rawHeaders = await headers();
-  // Some TypeScript lib targets don't expose entries() on ReadonlyHeaders; declare a small interface
-  interface ReadonlyHeadersWithEntries {
-    entries?: () => IterableIterator<[string, string]>;
-    forEach?: (cb: (value: string, key: string) => void) => void;
-  }
-  const typedHeaders = rawHeaders as unknown as ReadonlyHeadersWithEntries;
-  const headerObj = Object.fromEntries(typedHeaders.entries?.() ?? []);
-  const session = await auth.api.getSession({
-    headers: headerObj as unknown as Headers,
-  });
+  const session = (await getServerSession()) as Session | null;
 
-  const sessionUser = session?.user as SessionUserWithRole | undefined;
-  let isAdmin = sessionUser?.role === "admin";
-  if (!isAdmin && sessionUser?.id) {
-    const dbUser = await prisma.user.findUnique({
-      where: { id: sessionUser.id },
-      select: { role: true },
-    });
-    isAdmin = dbUser?.role === "admin";
-  }
+  const isAdmin = session?.user?.role === "admin";
+
+  const navLinks = [
+    { href: "/movies", label: "Movies" },
+    { href: "/persons", label: "People" },
+    {
+      label: "Collections",
+      children: [
+        { href: "/collections/new", label: "New Releases" },
+        { href: "/collections/top-rated", label: "Top Rated" },
+        { href: "/collections/top-selling", label: "Top Selling" },
+        { href: "/collections/classics", label: "All-Time Classics" },
+        { href: "/collections/budget", label: "Budget Friendly" },
+        { href: "/collections/genres", label: "By Genre" },
+      ],
+    },
+  ];
 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body className="font-sans bg-linear-to-b from-gray-950 via-gray-900 to-gray-950 text-gray-100">
+        <Toaster position="top-center" reverseOrder={false} />
         <ClientShell serverSession={session}>
           <PageThemeProvider>
-            <Toaster />
             <div className="flex flex-col min-h-screen">
               <header className="sticky top-0 z-50 backdrop-blur-sm bg-black/40 border-b border-gray-800">
                 <div className="max-w-7xl mx-auto flex items-center gap-4 px-4 py-3">
@@ -96,197 +84,117 @@ export default async function RootLayout({
                   </Link>
 
                   <nav
-                    className="hidden sm:flex items-center gap-4 ml-6 text-sm"
+                    className="hidden md:flex items-center gap-4 ml-6 text-sm"
                     role="navigation"
                     aria-label="Main navigation"
                   >
-                    <Link
-                      href="/movies"
-                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    >
-                      Movies
-                    </Link>
-                    <Link
-                      href="/persons"
-                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    >
-                      People
-                    </Link>
-
-                    <div className="relative">
-                      {/* Use a small client DetailsMenu to auto-close on pointer leave and on option click */}
-                      <DetailsMenu
-                        className="group"
-                        summary={
-                          <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400">
-                            <span>Collections</span>
-                            <svg
-                              className="w-3 h-3 opacity-80 transition-transform duration-150 group-open:rotate-180"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                            >
-                              <path
-                                d="M6 9l6 6 6-6"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                              />
-                            </svg>
-                          </summary>
-                        }
-                      >
-                        <div className="absolute top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1">
-                          <Link
-                            href="/collections/new"
-                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                          >
-                            New Releases
-                          </Link>
-                          <Link
-                            href="/collections/top-rated"
-                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                          >
-                            Top Rated
-                          </Link>
-                          <Link
-                            href="/collections/top-selling"
-                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                          >
-                            Top Selling
-                          </Link>
-                          <Link
-                            href="/collections/classics"
-                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                          >
-                            All-Time Classics
-                          </Link>
-                          <Link
-                            href="/collections/budget"
-                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                          >
-                            Budget Friendly
-                          </Link>
-                          <Link
-                            href="/collections/genres"
-                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                          >
-                            By Genre
-                          </Link>
-                        </div>
-                      </DetailsMenu>
-                    </div>
-                    <Link
-                      href="/about"
-                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    >
-                      About
-                    </Link>
-                  </nav>
-
-                  <div className="ml-auto flex items-center gap-3">
-                    <PageThemeSwitcher />
-                    <a
-                      href="/cart"
-                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    >
-                      {/* <span className="hidden sm:inline">Cart</span> */}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        className="w-5 h-5"
-                        aria-hidden="true"
-                      >
-                        <path
-                          d="M3 3h2l.4 2M7 13h10l3-8H6.4"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <circle cx="10" cy="20" r="1" />
-                        <circle cx="18" cy="20" r="1" />
-                      </svg>
-
-                      <CartCountBadge />
-                    </a>
-
-                    {session ? (
-                      <div className="relative">
+                    {navLinks.map((link) =>
+                      link.children ? (
                         <DetailsMenu
-                          className="group"
+                          key={link.label}
+                          className="group relative"
                           summary={
-                            <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400 list-none">
-                              <div className="w-8 h-8 rounded-full bg-linear-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-xs font-medium text-black overflow-hidden">
-                                {session.user?.image ? (
-                                  <Image
-                                    src={session.user.image}
-                                    alt="avatar"
-                                    width={32}
-                                    height={32}
-                                    className="w-8 h-8 rounded-full object-cover"
-                                  />
-                                ) : (
-                                  <span>
-                                    {(session.user?.name || "U").charAt(0)}
-                                  </span>
-                                )}
-                              </div>
-                              <span className="hidden sm:inline truncate max-w-32 text-gray-200">
-                                {session.user?.name ?? "Account"}
-                              </span>
-
+                            <summary className="cursor-pointer list-none flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400">
+                              <span>{link.label}</span>
                               <svg
                                 className="w-3 h-3 opacity-80 transition-transform duration-150 group-open:rotate-180"
-                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
                                 fill="none"
                                 stroke="currentColor"
                               >
                                 <path
-                                  strokeWidth="1.5"
+                                  d="M6 9l6 6 6-6"
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                  d="M6 8l4 4 4-4"
+                                  strokeWidth="2"
                                 />
                               </svg>
                             </summary>
                           }
                         >
-                          <div className="absolute right-0 mt-2 w-48 bg-gray-900/95 border border-gray-800 rounded-lg shadow-lg py-1 z-50 ring-1 ring-black/20">
-                            <Link
-                              href="/profile"
-                              className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 transition-colors duration-150"
-                            >
-                              View profile
-                            </Link>
-                            {isAdmin && (
+                          <div className="absolute top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1 z-10">
+                            {link.children.map((child) => (
                               <Link
-                                href="/admin"
-                                className="block px-4 py-2 text-sm text-emerald-300 hover:bg-gray-700 transition-colors duration-150 font-semibold"
+                                key={child.href}
+                                href={child.href}
+                                className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
                               >
-                                Admin Panel
+                                {child.label}
                               </Link>
-                            )}
-
-                            <SignOutButton />
+                            ))}
                           </div>
                         </DetailsMenu>
-                      </div>
+                      ) : (
+                        <Link
+                          key={link.href}
+                          href={link.href!}
+                          className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        >
+                          {link.label}
+                        </Link>
+                      ),
+                    )}
+                  </nav>
+
+                  <div className="grow" />
+
+                  <div className="hidden md:flex items-center gap-4">
+                    {session ? (
+                      <>
+                        {isAdmin && (
+                          <Link
+                            href="/admin"
+                            className="px-3 py-1 rounded-md text-sm font-semibold bg-red-600/80 text-white hover:bg-red-500"
+                          >
+                            Admin
+                          </Link>
+                        )}
+                        <Link
+                          href="/profile"
+                          className="flex items-center gap-2"
+                        >
+                          <Image
+                            src={
+                              session.user?.image ||
+                              "/images/default-avatar.png"
+                            }
+                            alt="User avatar"
+                            width={32}
+                            height={32}
+                            className="rounded-full"
+                          />
+                          <span className="text-sm font-medium">
+                            {session.user?.name}
+                          </span>
+                        </Link>
+                        <SignOutButton />
+                      </>
                     ) : (
-                      <a
-                        href="/sign-in"
-                        className="text-sm px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white"
-                      >
-                        Sign in
-                      </a>
+                      <>
+                        <Link
+                          href="/sign-in"
+                          className="px-4 py-2 rounded-md text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-500"
+                        >
+                          Sign In
+                        </Link>
+                        <Link
+                          href="/sign-up"
+                          className="px-4 py-2 rounded-md text-sm font-semibold bg-gray-700 text-white hover:bg-gray-600"
+                        >
+                          Sign Up
+                        </Link>
+                      </>
                     )}
                   </div>
+
+                  <CartCountBadge />
+                  <PageThemeSwitcher />
+                  <MobileNav session={session} navLinks={navLinks} />
                 </div>
               </header>
 
-              <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <main className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {children}
               </main>
 

@@ -41,7 +41,7 @@ export async function POST() {
           "[api/cart/convert-legacy] merging into user cart",
           userId,
           "incomingItems:",
-          items.length
+          items.length,
         );
       } catch {}
 
@@ -64,7 +64,7 @@ export async function POST() {
             "[api/cart/convert-legacy] cookie raw:",
             rawCookie ?? null,
             "decoded:",
-            cookieVal ?? null
+            cookieVal ?? null,
           );
         } catch {}
 
@@ -81,7 +81,7 @@ export async function POST() {
           } catch (e) {
             console.error(
               "[api/cart/convert-legacy] mergeCartIntoUser failed:",
-              e
+              e,
             );
           }
         } else if (looksLikeJson && items.length > 0) {
@@ -99,7 +99,7 @@ export async function POST() {
           } catch (e) {
             console.error(
               "[api/cart/convert-legacy] mergeLegacyIntoUser failed:",
-              e
+              e,
             );
           }
         } else {
@@ -108,14 +108,14 @@ export async function POST() {
               "[api/cart/convert-legacy] nothing to merge: cookieVal present?",
               !!cookieVal,
               "items.length:",
-              items.length
+              items.length,
             );
           } catch {}
         }
       } catch (cookieErr) {
         console.error(
           "[api/cart/convert-legacy] cookie merge attempt failed:",
-          cookieErr
+          cookieErr,
         );
       }
 
@@ -129,7 +129,7 @@ export async function POST() {
           userCart as unknown as {
             id: string;
             items?: { movieId: string; quantity: number }[];
-          }
+          },
         );
         return NextResponse.json(dto);
       }

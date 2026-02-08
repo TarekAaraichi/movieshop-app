@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default async function OrdersPage() {
   const session = await auth.api.getSession();
-  const userId = session?.user.id;
+  const userId = session?.user?.id;
 
   if (!userId) {
     return (

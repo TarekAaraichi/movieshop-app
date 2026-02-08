@@ -10,6 +10,7 @@ import { auth } from "@/lib/auth";
 import Link from "next/link";
 import Image from "next/image";
 import { PageWrapper } from "@/components/PageThemeContext";
+import ProfileClient from "@/components/ProfileClient";
 
 export default async function ProfilePage() {
   // require sign-in
@@ -20,7 +21,9 @@ export default async function ProfilePage() {
 
   // prefer id when available; fall back to email
   const userId = session?.user?.id as string | undefined;
-  const userEmail = session?.user?.email as string | undefined;
+  const userEmail = (session?.user as { email?: string })?.email as
+    | string
+    | undefined;
 
   const baseUser = await prisma.user.findFirst({
     where: userId ? { id: userId } : { email: userEmail ?? undefined },
@@ -49,7 +52,13 @@ export default async function ProfilePage() {
   if (!user) {
     // If session exists but user record is missing, sign them out then redirect to sign-in
     try {
-      await auth.api.signOut({ headers: await headers() });
+      type ApiWithSignOut = {
+        signOut?: (opts?: { headers?: Headers }) => Promise<unknown>;
+      };
+      const api = auth.api as unknown as ApiWithSignOut;
+      if (typeof api.signOut === "function") {
+        await api.signOut({ headers: await headers() });
+      }
     } catch {
       // swallow any signOut errors and continue to redirect
     }
@@ -100,99 +109,101 @@ export default async function ProfilePage() {
   }));
 
   return (
-    <PageWrapper>
-      <div className="max-w-4xl mx-auto">
-        <header className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
-            My Profile
-          </h1>
-          <p className="mt-2 text-sm text-gray-600 dark:text-neutral-400">
-            View your account details and order history.
-          </p>
-        </header>
+    <ProfileClient>
+      <PageWrapper>
+        <div className="max-w-4xl mx-auto">
+          <header className="mb-8">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
+              My Profile
+            </h1>
+            <p className="mt-2 text-sm text-gray-600 dark:text-neutral-400">
+              View your account details and order history.
+            </p>
+          </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-1">
-            <div className="bg-white dark:bg-neutral-800/50 rounded-lg shadow-md p-6 text-center border border-neutral-200 dark:border-neutral-800">
-              <div className="relative w-32 h-32 mx-auto mb-4">
-                <Image
-                  src={
-                    user.image &&
-                    typeof user.image === "string" &&
-                    user.image.length > 0
-                      ? user.image
-                      : user.id
-                        ? `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(
-                            user.id,
-                          )}`
-                        : "/placeholder.png"
-                  }
-                  alt="User avatar"
-                  width={128}
-                  height={128}
-                  className="rounded-full object-cover border-2 border-neutral-200 dark:border-neutral-700"
-                  unoptimized
-                />
-              </div>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-                {user.name}
-              </h2>
-              <p className="text-sm text-gray-500 dark:text-neutral-400">
-                {user.email}
-              </p>
-              <div className="mt-4 flex flex-col sm:flex-row sm:justify-center gap-2">
-                <Link
-                  href="/profile/edit"
-                  className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
-                >
-                  Edit Profile
-                </Link>
-                <Link
-                  href="/profile/orders"
-                  className="inline-block bg-emerald-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-emerald-700 transition-colors"
-                >
-                  My Orders
-                </Link>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="md:col-span-1">
+              <div className="bg-white dark:bg-neutral-800/50 rounded-lg shadow-md p-6 text-center border border-neutral-200 dark:border-neutral-800">
+                <div className="relative w-32 h-32 mx-auto mb-4">
+                  <Image
+                    src={
+                      user.image &&
+                      typeof user.image === "string" &&
+                      user.image.length > 0
+                        ? user.image
+                        : user.id
+                          ? `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(
+                              user.id,
+                            )}`
+                          : "/placeholder.png"
+                    }
+                    alt="User avatar"
+                    width={128}
+                    height={128}
+                    className="rounded-full object-cover border-2 border-neutral-200 dark:border-neutral-700"
+                    unoptimized
+                  />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                  {user.name}
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-neutral-400">
+                  {user.email}
+                </p>
+                <div className="mt-4 flex flex-col sm:flex-row sm:justify-center gap-2">
+                  <Link
+                    href="/profile/edit"
+                    className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+                  >
+                    Edit Profile
+                  </Link>
+                  <Link
+                    href="/profile/orders"
+                    className="inline-block bg-emerald-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-emerald-700 transition-colors"
+                  >
+                    My Orders
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="md:col-span-2">
-            <section className="mb-8">
-              <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
-                Shipping Addresses
-              </h3>
-              <div className="space-y-4">
-                {uniqueAddresses.length > 0 ? (
-                  uniqueAddresses.map((addr) => (
-                    <div
-                      key={addr.id}
-                      className="bg-white dark:bg-neutral-800/50 rounded-lg p-4 border border-neutral-200 dark:border-neutral-800"
-                    >
-                      <p className="font-semibold text-gray-800 dark:text-neutral-200">
-                        {addr.line1}
-                      </p>
-                      {addr.line2 && (
-                        <p className="text-gray-600 dark:text-neutral-400">
-                          {addr.line2}
+            <div className="md:col-span-2">
+              <section className="mb-8">
+                <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                  Shipping Addresses
+                </h3>
+                <div className="space-y-4">
+                  {uniqueAddresses.length > 0 ? (
+                    uniqueAddresses.map((addr) => (
+                      <div
+                        key={addr.id}
+                        className="bg-white dark:bg-neutral-800/50 rounded-lg p-4 border border-neutral-200 dark:border-neutral-800"
+                      >
+                        <p className="font-semibold text-gray-800 dark:text-neutral-200">
+                          {addr.line1}
                         </p>
-                      )}
-                      <p className="text-gray-600 dark:text-neutral-400">
-                        {addr.city}, {addr.postalCode}, {addr.country}
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-500 dark:text-neutral-400">
-                    No addresses found.
-                  </p>
-                )}
-              </div>
-            </section>
-            {/* Order history moved to /profile/orders */}
+                        {addr.line2 && (
+                          <p className="text-gray-600 dark:text-neutral-400">
+                            {addr.line2}
+                          </p>
+                        )}
+                        <p className="text-gray-600 dark:text-neutral-400">
+                          {addr.city}, {addr.postalCode}, {addr.country}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-500 dark:text-neutral-400">
+                      No addresses found.
+                    </p>
+                  )}
+                </div>
+              </section>
+              {/* Order history moved to /profile/orders */}
+            </div>
           </div>
         </div>
-      </div>
-    </PageWrapper>
+      </PageWrapper>
+    </ProfileClient>
   );
 }
