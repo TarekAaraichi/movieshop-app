@@ -66,7 +66,6 @@ export default async function ProfileOrdersPage({
 
   // Get total count for pagination (with filter)
   const totalOrders = await prisma.order.count({ where });
-  const totalPages = Math.ceil(totalOrders / PAGE_SIZE);
 
   // Fetch paginated orders (with filter)
   const orders = await prisma.order.findMany({

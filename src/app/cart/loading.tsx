@@ -1,5 +1,3 @@
-import { PageWrapper } from "@/components/PageThemeContext";
-
 const CartLoading = () => {
   return (
     <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-8 items-start animate-pulse">

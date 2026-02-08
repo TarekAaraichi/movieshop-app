@@ -1,2 +1,3 @@
 -- Add primaryRole to Person
-ALTER TABLE "public"."Person" ADD COLUMN "primaryRole" "PersonRole";
+-- AlterTable
+ALTER TABLE "Person" ADD COLUMN     "primaryRole" "PersonRole" NOT NULL DEFAULT 'ACTOR';

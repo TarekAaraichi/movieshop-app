@@ -41,10 +41,7 @@ export default async function GenresPage() {
             <MovieCarousel
               key={genre.id}
               title={genre.name}
-              movies={genre.movies.map((gm) => ({
-                ...gm.movie,
-                price: Number(gm.movie.price),
-              }))}
+              movies={genre.movies.map((gm) => gm.movie)}
               viewMoreHref={`/collections/genres/${encodeURIComponent(
                 genre.name,
               )}`}

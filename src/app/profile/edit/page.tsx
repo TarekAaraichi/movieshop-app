@@ -140,6 +140,7 @@ export default async function Page() {
                   readOnly
                   className="bg-transparent text-center text-sm outline-none border-none focus:ring-0 text-neutral-500 dark:text-neutral-400"
                   form="profile-edit-form"
+                  aria-label="Email"
                 />
               </p>
             </div>

@@ -37,15 +37,12 @@ async function NewReleasesCarousels() {
     <div className="space-y-12">
       <MovieCarousel
         title="Last Month"
-        movies={recent.map((movie) => ({
-          ...movie,
-          price: Number(movie.price),
-        }))}
+        movies={recent}
         viewMoreHref="/collections/new/last-month"
       />
       <MovieCarousel
         title="Last Year"
-        movies={year.map((movie) => ({ ...movie, price: Number(movie.price) }))}
+        movies={year}
         viewMoreHref="/collections/new/last-year"
       />
     </div>

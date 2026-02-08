@@ -8,11 +8,23 @@ import Link from "next/link";
 import { MovieCarousel } from "@/components/MovieCarousel";
 import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/PageThemeContext";
+import { Prisma } from "@prisma/client";
+
+const movieWithRelations = Prisma.validator<Prisma.MovieDefaultArgs>()({
+  include: {
+    genres: { include: { genre: true } },
+    people: { include: { person: true } },
+  },
+});
+
+export type MovieWithRelations = Prisma.MovieGetPayload<
+  typeof movieWithRelations
+>;
 
 export default async function HomePage() {
   // Fetch all movie lists in parallel for better performance
   const [topPurchased, recentMovies, oldestMovies, cheapMovies] =
-    (await Promise.all([
+    await Promise.all([
       prisma.movie.findMany({
         where: { isArchived: false, orderItems: { some: {} } },
         orderBy: { orderItems: { _count: "desc" } },
@@ -49,18 +61,12 @@ export default async function HomePage() {
           people: { include: { person: true } },
         },
       }),
-    ])) as [any, any, any, any];
+    ]);
 
-  const serializeMovies = (movies: any[]) =>
-    movies.map((movie) => ({
-      ...movie,
-      price: Number(movie.price),
-    }));
-
-  const serializedTopPurchased = serializeMovies(topPurchased);
-  const serializedRecentMovies = serializeMovies(recentMovies);
-  const serializedOldestMovies = serializeMovies(oldestMovies);
-  const serializedCheapMovies = serializeMovies(cheapMovies);
+  const serializedTopPurchased = topPurchased;
+  const serializedRecentMovies = recentMovies;
+  const serializedOldestMovies = oldestMovies;
+  const serializedCheapMovies = cheapMovies;
 
   return (
     <PageWrapper>
