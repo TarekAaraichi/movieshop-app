@@ -64,7 +64,7 @@ export function MovieCarousel({
             tabIndex={0}
             aria-label={`${title} carousel`}
             role="list"
-            className="flex gap-4 md:gap-6 overflow-x-auto px-4 py-5 snap-x snap-mandatory focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg hide-scrollbar bg-gray-100/50 dark:bg-transparent"
+            className="flex gap-4 md:gap-6 overflow-x-auto px-4 py-5 snap-x snap-mandatory scroll-pl-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg hide-scrollbar bg-gray-600 dark:bg-transparent"
           >
             {movies.map((movie) => (
               <div

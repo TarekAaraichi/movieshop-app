@@ -61,10 +61,17 @@ export default async function HomePage() {
       }),
     ]);
 
-  const serializedTopPurchased = topPurchased;
-  const serializedRecentMovies = recentMovies;
-  const serializedOldestMovies = oldestMovies;
-  const serializedCheapMovies = cheapMovies;
+  const serializeMovies = (movies: MovieWithRelations[]) => {
+    return movies.map((movie) => ({
+      ...movie,
+      price: movie.price.toString(),
+    }));
+  };
+
+  const serializedTopPurchased = serializeMovies(topPurchased);
+  const serializedRecentMovies = serializeMovies(recentMovies);
+  const serializedOldestMovies = serializeMovies(oldestMovies);
+  const serializedCheapMovies = serializeMovies(cheapMovies);
 
   return (
     <PageWrapper>
