@@ -1,5 +1,6 @@
 import { PageWrapper } from "@/components/PageThemeContext";
 import Link from "next/link";
+import { Card } from "@/components/ui/card";
 
 /**
  * Collections index
@@ -48,33 +49,35 @@ const collections = [
 export default function CollectionsIndex() {
   return (
     <PageWrapper>
-      <div className="w-full max-w-6xl mx-auto">
-        <header className="mb-12 text-center">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 dark:text-white">
-            Movie Collections
-          </h1>
-          <p className="mt-3 text-lg text-gray-600 dark:text-gray-400">
-            Explore our curated selections of movies.
-          </p>
-        </header>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {collections.map((col) => (
-            <Link
-              key={col.href}
-              href={col.href}
-              className="block p-6 rounded-lg transition-transform transform hover:scale-105 bg-white dark:bg-neutral-800/50 shadow-md hover:shadow-xl border border-transparent dark:hover:border-neutral-700"
-            >
-              <h2
-                className={`text-2xl font-bold text-transparent bg-clip-text bg-linear-to-r ${col.bgClass}`}
+      <div className="flex flex-col flex-grow items-center justify-center p-4">
+        <div className="w-full max-w-6xl mx-auto p-6 sm:p-8 bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm rounded-2xl">
+          <header className="mb-12 text-center">
+            <h1 className="text-4xl sm:text-5xl font-extrabold text-gray-900 dark:text-white">
+              Movie Collections
+            </h1>
+            <p className="mt-3 text-lg text-gray-600 dark:text-gray-400">
+              Explore our curated selections of movies.
+            </p>
+          </header>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {collections.map((col) => (
+              <Link
+                key={col.href}
+                href={col.href}
+                className="block p-6 rounded-lg transition-transform transform hover:scale-105 bg-white dark:bg-neutral-800/50 shadow-md hover:shadow-xl border border-transparent dark:hover:border-neutral-700"
               >
-                {col.title}
-              </h2>
-              <p className="mt-2 text-gray-600 dark:text-gray-400">
-                {col.description}
-              </p>
-            </Link>
-          ))}
-        </div>
+                <h2
+                  className={`text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r ${col.bgClass}`}
+                >
+                  {col.title}
+                </h2>
+                <p className="mt-2 text-gray-600 dark:text-gray-400">
+                  {col.description}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </Card>
       </div>
     </PageWrapper>
   );

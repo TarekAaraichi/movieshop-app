@@ -82,243 +82,239 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="font-sans min-h-screen flex flex-col bg-linear-to-b from-gray-950 via-gray-900 to-gray-950 text-gray-100">
+      <body className="font-sans bg-linear-to-b from-gray-950 via-gray-900 to-gray-950 text-gray-100">
         <ClientShell serverSession={session}>
           <PageThemeProvider>
             <Toaster />
-            {/* Top navigation - compact, inline, modern */}
-            <header className="sticky top-0 z-50 backdrop-blur-sm bg-black/40 border-b border-gray-800">
-              <div className="max-w-7xl mx-auto flex items-center gap-4 px-4 py-3">
-                <Link href="/" className="flex items-center gap-3">
-                  <span className="tracking-tight font-semibold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-pink-400">
-                    MovieShop
-                  </span>
-                </Link>
-
-                <nav
-                  className="hidden sm:flex items-center gap-4 ml-6 text-sm"
-                  role="navigation"
-                  aria-label="Main navigation"
-                >
-                  <Link
-                    href="/movies"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  >
-                    Movies
-                  </Link>
-                  <Link
-                    href="/persons"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  >
-                    People
+            <div className="flex flex-col min-h-screen">
+              <header className="sticky top-0 z-50 backdrop-blur-sm bg-black/40 border-b border-gray-800">
+                <div className="max-w-7xl mx-auto flex items-center gap-4 px-4 py-3">
+                  <Link href="/" className="flex items-center gap-3">
+                    <span className="tracking-tight font-semibold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-pink-400">
+                      MovieShop
+                    </span>
                   </Link>
 
-                  <div className="relative">
-                    {/* Use a small client DetailsMenu to auto-close on pointer leave and on option click */}
-                    <DetailsMenu
-                      className="group"
-                      summary={
-                        <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400">
-                          <span>Collections</span>
-                          <svg
-                            className="w-3 h-3 opacity-80 transition-transform duration-150 group-open:rotate-180"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                          >
-                            <path
-                              d="M6 9l6 6 6-6"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                            />
-                          </svg>
-                        </summary>
-                      }
+                  <nav
+                    className="hidden sm:flex items-center gap-4 ml-6 text-sm"
+                    role="navigation"
+                    aria-label="Main navigation"
+                  >
+                    <Link
+                      href="/movies"
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
-                      <div className="absolute top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1">
-                        <Link
-                          href="/collections/new"
-                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                        >
-                          New Releases
-                        </Link>
-                        <Link
-                          href="/collections/top-rated"
-                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                        >
-                          Top Rated
-                        </Link>
-                        <Link
-                          href="/collections/top-selling"
-                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                        >
-                          Top Selling
-                        </Link>
-                        <Link
-                          href="/collections/classics"
-                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                        >
-                          All-Time Classics
-                        </Link>
-                        <Link
-                          href="/collections/budget"
-                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                        >
-                          Budget Friendly
-                        </Link>
-                        <Link
-                          href="/collections/genres"
-                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
-                        >
-                          By Genre
-                        </Link>
-                      </div>
-                    </DetailsMenu>
-                  </div>
-                  <Link
-                    href="/about"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  >
-                    About
-                  </Link>
-                </nav>
-
-                <div className="ml-auto flex items-center gap-3">
-                  <PageThemeSwitcher />
-                  <a
-                    href="/cart"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  >
-                    {/* <span className="hidden sm:inline">Cart</span> */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      className="w-5 h-5"
-                      aria-hidden="true"
+                      Movies
+                    </Link>
+                    <Link
+                      href="/persons"
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
-                      <path
-                        d="M3 3h2l.4 2M7 13h10l3-8H6.4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <circle cx="10" cy="20" r="1" />
-                      <circle cx="18" cy="20" r="1" />
-                    </svg>
+                      People
+                    </Link>
 
-                    <CartCountBadge />
-                  </a>
-
-                  {session ? (
                     <div className="relative">
+                      {/* Use a small client DetailsMenu to auto-close on pointer leave and on option click */}
                       <DetailsMenu
                         className="group"
                         summary={
-                          <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400 list-none">
-                            <div className="w-8 h-8 rounded-full bg-linear-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-xs font-medium text-black overflow-hidden">
-                              {session.user?.image ? (
-                                <Image
-                                  src={session.user.image}
-                                  alt="avatar"
-                                  width={32}
-                                  height={32}
-                                  className="w-8 h-8 rounded-full object-cover"
-                                />
-                              ) : (
-                                <span>
-                                  {(session.user?.name || "U").charAt(0)}
-                                </span>
-                              )}
-                            </div>
-                            <span className="hidden sm:inline truncate max-w-32 text-gray-200">
-                              {session.user?.name ?? "Account"}
-                            </span>
-
+                          <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <span>Collections</span>
                             <svg
                               className="w-3 h-3 opacity-80 transition-transform duration-150 group-open:rotate-180"
-                              viewBox="0 0 20 20"
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
                               fill="none"
                               stroke="currentColor"
                             >
                               <path
-                                strokeWidth="1.5"
+                                d="M6 9l6 6 6-6"
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                d="M6 8l4 4 4-4"
+                                strokeWidth="2"
                               />
                             </svg>
                           </summary>
                         }
                       >
-                        <div className="absolute right-0 mt-2 w-48 bg-gray-900/95 border border-gray-800 rounded-lg shadow-lg py-1 z-50 ring-1 ring-black/20">
+                        <div className="absolute top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1">
                           <Link
-                            href="/profile"
-                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 transition-colors duration-150"
+                            href="/collections/new"
+                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
                           >
-                            View profile
+                            New Releases
                           </Link>
-                          {isAdmin && (
-                            <Link
-                              href="/admin"
-                              className="block px-4 py-2 text-sm text-emerald-300 hover:bg-gray-700 transition-colors duration-150 font-semibold"
-                            >
-                              Admin Panel
-                            </Link>
-                          )}
-
-                          <SignOutButton />
+                          <Link
+                            href="/collections/top-rated"
+                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                          >
+                            Top Rated
+                          </Link>
+                          <Link
+                            href="/collections/top-selling"
+                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                          >
+                            Top Selling
+                          </Link>
+                          <Link
+                            href="/collections/classics"
+                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                          >
+                            All-Time Classics
+                          </Link>
+                          <Link
+                            href="/collections/budget"
+                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                          >
+                            Budget Friendly
+                          </Link>
+                          <Link
+                            href="/collections/genres"
+                            className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                          >
+                            By Genre
+                          </Link>
                         </div>
                       </DetailsMenu>
                     </div>
-                  ) : (
-                    <a
-                      href="/sign-in"
-                      className="text-sm px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white"
+                    <Link
+                      href="/about"
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
-                      Sign in
+                      About
+                    </Link>
+                  </nav>
+
+                  <div className="ml-auto flex items-center gap-3">
+                    <PageThemeSwitcher />
+                    <a
+                      href="/cart"
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                      {/* <span className="hidden sm:inline">Cart</span> */}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        className="w-5 h-5"
+                        aria-hidden="true"
+                      >
+                        <path
+                          d="M3 3h2l.4 2M7 13h10l3-8H6.4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <circle cx="10" cy="20" r="1" />
+                        <circle cx="18" cy="20" r="1" />
+                      </svg>
+
+                      <CartCountBadge />
                     </a>
-                  )}
-                </div>
-              </div>
-            </header>
 
-            <main className="flex-1 w-full max-w-7xl mx-auto p-4 bg-linear-to-b from-gray-900 via-gray-800 to-gray-900 shadow-inner">
-              {children}
-            </main>
+                    {session ? (
+                      <div className="relative">
+                        <DetailsMenu
+                          className="group"
+                          summary={
+                            <summary className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400 list-none">
+                              <div className="w-8 h-8 rounded-full bg-linear-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-xs font-medium text-black overflow-hidden">
+                                {session.user?.image ? (
+                                  <Image
+                                    src={session.user.image}
+                                    alt="avatar"
+                                    width={32}
+                                    height={32}
+                                    className="w-8 h-8 rounded-full object-cover"
+                                  />
+                                ) : (
+                                  <span>
+                                    {(session.user?.name || "U").charAt(0)}
+                                  </span>
+                                )}
+                              </div>
+                              <span className="hidden sm:inline truncate max-w-32 text-gray-200">
+                                {session.user?.name ?? "Account"}
+                              </span>
 
-            {/* Compact inline footer */}
-            <footer className="w-full border-t border-gray-800 bg-black/40 backdrop-blur-sm">
-              <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4 text-sm text-gray-400">
-                <div className="flex items-center gap-2">
-                  <span>© {new Date().getFullYear()}</span>
-                  <span className="font-semibold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-pink-400">
-                    MovieShop
-                  </span>
-                  <span className="hidden sm:inline">— Tarek Aarachi</span>
+                              <svg
+                                className="w-3 h-3 opacity-80 transition-transform duration-150 group-open:rotate-180"
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M6 8l4 4 4-4"
+                                />
+                              </svg>
+                            </summary>
+                          }
+                        >
+                          <div className="absolute right-0 mt-2 w-48 bg-gray-900/95 border border-gray-800 rounded-lg shadow-lg py-1 z-50 ring-1 ring-black/20">
+                            <Link
+                              href="/profile"
+                              className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 transition-colors duration-150"
+                            >
+                              View profile
+                            </Link>
+                            {isAdmin && (
+                              <Link
+                                href="/admin"
+                                className="block px-4 py-2 text-sm text-emerald-300 hover:bg-gray-700 transition-colors duration-150 font-semibold"
+                              >
+                                Admin Panel
+                              </Link>
+                            )}
+
+                            <SignOutButton />
+                          </div>
+                        </DetailsMenu>
+                      </div>
+                    ) : (
+                      <a
+                        href="/sign-in"
+                        className="text-sm px-3 py-1 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white"
+                      >
+                        Sign in
+                      </a>
+                    )}
+                  </div>
                 </div>
-                <div className="flex-1 text-center hidden md:block">
-                  A demo storefront using Next.js, Prisma, and Better Auth.
+              </header>
+
+              <main className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {children}
+              </main>
+
+              <footer className="bg-gray-900/60 backdrop-blur-sm border-t border-gray-800 py-4 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-gray-400">
+                  <p>
+                    &copy; {new Date().getFullYear()} MovieShop — Tarek Aarachi
+                  </p>
+                  <div className="flex-1 text-center hidden md:block">
+                    A demo storefront using Next.js, Prisma, and Better Auth.
+                  </div>
+                  <nav className="flex items-center gap-3">
+                    <Link
+                      href="/privacy"
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                      Privacy
+                    </Link>
+                    <Link
+                      href="/contact"
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                      Contact
+                    </Link>
+                  </nav>
                 </div>
-                <nav className="flex items-center gap-3">
-                  <Link
-                    href="/privacy"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  >
-                    Privacy
-                  </Link>
-                  <Link
-                    href="/contact"
-                    className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  >
-                    Contact
-                  </Link>
-                </nav>
-              </div>
-            </footer>
+              </footer>
+            </div>
           </PageThemeProvider>
         </ClientShell>
       </body>

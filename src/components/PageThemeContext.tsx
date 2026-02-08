@@ -65,8 +65,8 @@ export const PageThemeSwitcher = () => {
 export const PageWrapper = ({ children }: { children: ReactNode }) => {
   const { theme } = usePageTheme();
   return (
-    <div className={theme}>
-      <div className="bg-linear-to-br from-blue-50 via-purple-50 to-purple-100 dark:from-slate-950 dark:via-blue-950 dark:to-purple-950 text-black dark:text-white rounded-lg p-4 sm:p-6 transition-colors">
+    <div className={`${theme} flex flex-col flex-grow`}>
+      <div className="flex-grow rounded-lg">
         {children}
       </div>
     </div>

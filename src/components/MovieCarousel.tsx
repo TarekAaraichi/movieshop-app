@@ -32,7 +32,7 @@ export function MovieCarousel({
         <h2
           className={`text-3xl font-bold ${
             headerClassName ||
-            "bg-clip-text text-transparent bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-200"
+            "bg-clip-text text-transparent bg-linear-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-200"
           }`}
         >
           {title}
