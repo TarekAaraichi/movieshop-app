@@ -247,8 +247,8 @@ export default function CarouselControls({ containerId }: Props) {
               title={`Show page ${i + 1} of ${totalPages}`}
               className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-transform focus:outline-none ${
                 i === currentPage
-                  ? "bg-gray-800 dark:bg-white scale-110"
-                  : "bg-gray-400/70 hover:bg-gray-500 dark:bg-white/40 dark:hover:bg-white/60"
+                  ? "bg-gray-800 dark:bg-neutral-200 scale-110"
+                  : "bg-gray-400/70 hover:bg-gray-500 dark:bg-neutral-600 dark:hover:bg-neutral-400"
               }`}
             />
           ))}
