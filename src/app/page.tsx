@@ -10,15 +10,13 @@ import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/PageThemeContext";
 import { Prisma } from "@prisma/client";
 
-const movieWithRelations = Prisma.validator<Prisma.MovieDefaultArgs>()({
-  include: {
-    genres: { include: { genre: true } },
-    people: { include: { person: true } },
-  },
-});
-
 export type MovieWithRelations = Prisma.MovieGetPayload<
-  typeof movieWithRelations
+  Prisma.MovieDefaultArgs & {
+    include: {
+      genres: { include: { genre: true } };
+      people: { include: { person: true } };
+    };
+  }
 >;
 
 export default async function HomePage() {
