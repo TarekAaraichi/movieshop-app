@@ -15,19 +15,26 @@ interface MovieCarouselProps {
   title: string;
   movies: MovieWithIncludes[];
   viewMoreHref?: string;
+  headerClassName?: string;
 }
 
 export function MovieCarousel({
   title,
   movies,
   viewMoreHref,
+  headerClassName,
 }: MovieCarouselProps) {
   const id = `carousel-${title.replace(/\s+/g, "-").toLowerCase()}`;
 
   return (
     <section className="py-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-linear-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-200">
+        <h2
+          className={`text-3xl font-bold ${
+            headerClassName ||
+            "bg-clip-text text-transparent bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-200"
+          }`}
+        >
           {title}
         </h2>
         {viewMoreHref && movies.length > 0 ? (

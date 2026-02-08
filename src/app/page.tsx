@@ -73,6 +73,16 @@ export default async function HomePage() {
   const serializedOldestMovies = serializeMovies(oldestMovies);
   const serializedCheapMovies = serializeMovies(cheapMovies);
 
+  const headerColorClasses = {
+    new: "bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-pink-400",
+    popular:
+      "bg-clip-text text-transparent bg-gradient-to-r from-orange-400 to-pink-500",
+    classics:
+      "bg-clip-text text-transparent bg-gradient-to-r from-yellow-400 to-orange-500",
+    cheap:
+      "bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-lime-400",
+  };
+
   return (
     <PageWrapper>
       <div className="container mx-auto px-4 py-8 rounded-2xl">
@@ -111,24 +121,28 @@ export default async function HomePage() {
         {/* Movie Carousels */}
         <div className="space-y-12">
           <MovieCarousel
-            title="Top Selling"
+            title="Top Purchased"
             movies={serializedTopPurchased}
-            viewMoreHref="/collections/top-selling"
+            viewMoreHref="/collections/popular"
+            headerClassName={headerColorClasses.popular}
           />
           <MovieCarousel
-            title="New Releases"
+            title="Recent Releases"
             movies={serializedRecentMovies}
             viewMoreHref="/collections/new"
+            headerClassName={headerColorClasses.new}
           />
           <MovieCarousel
-            title="All-Time Classics"
+            title="Oldest Classics"
             movies={serializedOldestMovies}
             viewMoreHref="/collections/classics"
+            headerClassName={headerColorClasses.classics}
           />
           <MovieCarousel
-            title="Budget Friendly"
+            title="Cheap Thrills"
             movies={serializedCheapMovies}
-            viewMoreHref="/collections/budget"
+            viewMoreHref="/collections/cheap"
+            headerClassName={headerColorClasses.cheap}
           />
         </div>
       </div>
