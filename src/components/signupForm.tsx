@@ -152,7 +152,10 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} className="bg-gray-900 text-gray-100" />
+                    <Input
+                      {...field}
+                      className="dark:bg-gray-900 dark:text-gray-100"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

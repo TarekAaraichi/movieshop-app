@@ -31,10 +31,39 @@ export const PageThemeProvider = ({ children }: { children: ReactNode }) => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // determine initial theme: localStorage -> prefers-color-scheme -> default dark
+    const stored =
+      typeof window !== "undefined" ? localStorage.getItem("theme") : null;
+    let initial: Theme = "dark";
+    if (stored === "light" || stored === "dark") {
+      initial = stored as Theme;
+    } else if (typeof window !== "undefined" && window.matchMedia) {
+      initial = window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
+    }
+    setTheme(initial);
+    // apply to body
+    try {
+      if (typeof document !== "undefined") {
+        document.body.classList.remove("light", "dark");
+        document.body.classList.add(initial === "dark" ? "dark" : "light");
+      }
+    } catch {}
     setMounted(true);
   }, []);
 
   const value = { theme, setTheme };
+  // Keep body class in sync when theme changes
+  useEffect(() => {
+    try {
+      if (typeof document !== "undefined") {
+        document.body.classList.remove("light", "dark");
+        document.body.classList.add(theme === "dark" ? "dark" : "light");
+      }
+      localStorage.setItem("theme", theme);
+    } catch {}
+  }, [theme]);
 
   // Prevent hydration mismatch on server by rendering nothing until mounted
   if (!mounted) {
@@ -63,9 +92,8 @@ export const PageThemeSwitcher = () => {
 };
 
 export const PageWrapper = ({ children }: { children: ReactNode }) => {
-  const { theme } = usePageTheme();
   return (
-    <div className={`${theme} flex flex-col grow`}>
+    <div className="flex flex-col grow">
       <div className="grow rounded-lg">{children}</div>
     </div>
   );

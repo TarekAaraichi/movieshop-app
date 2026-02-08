@@ -70,15 +70,17 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body className="font-sans bg-linear-to-b from-gray-950 via-gray-900 to-gray-950 text-gray-100">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
+      >
         <Toaster position="top-center" reverseOrder={false} />
         <ClientShell serverSession={session}>
           <PageThemeProvider>
             <div className="flex flex-col min-h-screen">
-              <header className="sticky top-0 z-50 backdrop-blur-sm bg-black/40 border-b border-gray-800">
+              <header className="sticky top-0 z-50 backdrop-blur-md bg-white/60 dark:bg-black/40 border-b border-gray-200 dark:border-gray-800 shadow-sm">
                 <div className="max-w-7xl mx-auto flex items-center gap-4 px-4 py-3">
                   <Link href="/" className="flex items-center gap-3">
-                    <span className="tracking-tight font-semibold bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-pink-400">
+                    <span className="tracking-tight font-extrabold text-lg md:text-2xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-400">
                       MovieShop
                     </span>
                   </Link>
@@ -94,7 +96,7 @@ export default async function RootLayout({
                           key={link.label}
                           className="group relative"
                           summary={
-                            <summary className="cursor-pointer list-none flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <summary className="cursor-pointer list-none flex items-center gap-2 px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition focus:outline-none focus:ring-2 focus:ring-indigo-300/40">
                               <span>{link.label}</span>
                               <svg
                                 className="w-3 h-3 opacity-80 transition-transform duration-150 group-open:rotate-180"
@@ -113,12 +115,12 @@ export default async function RootLayout({
                             </summary>
                           }
                         >
-                          <div className="absolute top-full mt-2 w-48 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1 z-10">
+                          <div className="absolute top-full mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-10 dark:bg-gray-800 dark:border-gray-700">
                             {link.children.map((child) => (
                               <Link
                                 key={child.href}
                                 href={child.href}
-                                className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
                               >
                                 {child.label}
                               </Link>
@@ -129,7 +131,7 @@ export default async function RootLayout({
                         <Link
                           key={link.href}
                           href={link.href!}
-                          className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                          className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:text-indigo-600 dark:text-gray-200 dark:hover:text-indigo-400 transition focus:outline-none focus:ring-2 focus:ring-indigo-300/40"
                         >
                           {link.label}
                         </Link>
@@ -174,13 +176,13 @@ export default async function RootLayout({
                       <>
                         <Link
                           href="/sign-in"
-                          className="px-4 py-2 rounded-md text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-500"
+                          className="px-4 py-2 rounded-md text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-500 shadow-md"
                         >
                           Sign In
                         </Link>
                         <Link
                           href="/sign-up"
-                          className="px-4 py-2 rounded-md text-sm font-semibold bg-gray-700 text-white hover:bg-gray-600"
+                          className="px-4 py-2 rounded-md text-sm font-semibold bg-white/90 text-gray-800 hover:bg-white shadow-sm border border-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-700"
                         >
                           Sign Up
                         </Link>
@@ -195,11 +197,13 @@ export default async function RootLayout({
               </header>
 
               <main className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {children}
+                <div className="bg-white/90 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl shadow-lg p-6 md:p-10">
+                  {children}
+                </div>
               </main>
 
-              <footer className="bg-gray-900/60 backdrop-blur-sm border-t border-gray-800 py-4 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-gray-400">
+              <footer className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800 py-4 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400">
                   <p>
                     &copy; {new Date().getFullYear()} MovieShop — Tarek Aarachi
                   </p>
