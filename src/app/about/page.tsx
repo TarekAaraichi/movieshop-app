@@ -28,19 +28,19 @@ export default function AboutPage() {
               </h2>
               <div className="prose max-w-none dark:prose-invert text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-4">
                 <p>
-                  MovieShop was developed as a portfolio project to demonstrate a
-                  comprehensive understanding of full-stack web development using
-                  the Next.js 15 App Router. The goal was to create a
-                  production-quality, feature-complete e-commerce application that
-                  not only looks great but also incorporates best practices in
-                  architecture, performance, and user experience.
+                  MovieShop was developed as a portfolio project to demonstrate
+                  a comprehensive understanding of full-stack web development
+                  using the Next.js 15 App Router. The goal was to create a
+                  production-quality, feature-complete e-commerce application
+                  that not only looks great but also incorporates best practices
+                  in architecture, performance, and user experience.
                 </p>
                 <p>
                   This project showcases everything from database design and
                   server-side data fetching to secure authentication, complex
-                  state management, and a polished, responsive user interface. It
-                  serves as a testament to the skills required to build and deploy
-                  a modern, scalable web application from the ground up.
+                  state management, and a polished, responsive user interface.
+                  It serves as a testament to the skills required to build and
+                  deploy a modern, scalable web application from the ground up.
                 </p>
               </div>
             </section>

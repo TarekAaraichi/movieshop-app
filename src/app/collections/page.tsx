@@ -77,7 +77,7 @@ export default function CollectionsIndex() {
               </Link>
             ))}
           </div>
-        </Card>
+        </div>
       </div>
     </PageWrapper>
   );

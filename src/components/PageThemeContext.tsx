@@ -66,9 +66,7 @@ export const PageWrapper = ({ children }: { children: ReactNode }) => {
   const { theme } = usePageTheme();
   return (
     <div className={`${theme} flex flex-col flex-grow`}>
-      <div className="flex-grow rounded-lg">
-        {children}
-      </div>
+      <div className="flex-grow rounded-lg">{children}</div>
     </div>
   );
 };
