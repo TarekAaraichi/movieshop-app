@@ -33,7 +33,7 @@ export function MovieCarousel({
         {viewMoreHref && movies.length > 0 ? (
           <Link
             href={viewMoreHref}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 transition-colors"
           >
             View more
             <svg
@@ -64,7 +64,7 @@ export function MovieCarousel({
             tabIndex={0}
             aria-label={`${title} carousel`}
             role="list"
-            className="flex gap-4 md:gap-6 overflow-x-auto px-4 py-5 snap-x snap-mandatory scroll-pl-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg hide-scrollbar bg-gray-600 dark:bg-transparent"
+            className="flex gap-4 md:gap-6 overflow-x-auto px-4 py-5 snap-x snap-mandatory scroll-pl-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg hide-scrollbar bg-neutral-200 dark:bg-neutral-900/50"
           >
             {movies.map((movie) => (
               <div
