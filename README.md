@@ -128,10 +128,10 @@ The application will be available at `http://localhost:3000`.
 
 - Added an **Orders** stat card to the admin dashboard header.
 - Admin dashboard now includes an **Orders** tab with:
-   - Search (order ID, user name, or email)
-   - Status filter (Pending / Paid / Cancelled)
-   - Paginated list and quick View links
-   - Cancel action (admin-only) which marks an order CANCELLED and restocks affected movies
+  - Search (order ID, user name, or email)
+  - Status filter (Pending / Paid / Cancelled)
+  - Paginated list and quick View links
+  - Cancel action (admin-only) which marks an order CANCELLED and restocks affected movies
 
 These features use Next.js Server Actions and server-side Prisma queries; see `src/server/actions/ordersActions.ts` for the cancel logic.
 
@@ -164,4 +164,3 @@ npm run seed
 - Centralized theme tokens and removed many hard-coded Tailwind color classes across admin components.
 - Introduced a `Button` primitive and migrated many admin buttons/components to use it for consistent variants and accessibility.
 - Added admin Orders tab, search, filters, and a cancel server action. See the commit message that closed issues #39 and #40 for full context.
-
