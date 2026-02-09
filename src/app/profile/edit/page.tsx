@@ -13,6 +13,7 @@ import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { SaveButton } from "@/components";
+import { Button } from "@/components/ui";
 import { updateProfile } from "@/server/actions/usersActions";
 
 type ProfileView = {
@@ -161,7 +162,9 @@ export default async function Page() {
                   </span>
                   <input
                     name="phone"
-                    defaultValue={""}
+                    defaultValue={
+                      (address as any)?.phone ?? (profile as any)?.phone ?? ""
+                    }
                     placeholder="Phone number"
                     inputMode="tel"
                     className="mt-1 px-4 py-2 rounded-lg border border-border bg-card focus:ring-2 focus:ring-sky-500 focus:border-transparent text-foreground transition duration-150"
@@ -187,7 +190,7 @@ export default async function Page() {
                 <span className="mt-2 text-sm text-muted">Bio</span>
                 <textarea
                   name="bio"
-                  defaultValue={""}
+                  defaultValue={(profile as any)?.bio ?? ""}
                   placeholder="A short bio (optional)"
                   rows={3}
                   className="mt-1 px-4 py-3 rounded-lg border border-border focus:ring-2 focus:ring-sky-500 focus:border-transparent text-foreground transition-shadow duration-150 bg-card"
@@ -241,14 +244,19 @@ export default async function Page() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <a
-                    href="/profile"
-                    aria-label="Cancel and return to profile"
-                    className="inline-flex items-center gap-2 text-sm rounded-md px-3 py-2 border border-border bg-card text-foreground hover:bg-card/60 hover:text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 transition-colors duration-150"
+                  <Button
+                    asChild
+                    size="sm"
+                    className="inline-flex items-center gap-2 text-sm rounded-md px-3 py-2 border border-border bg-destructive/10 text-destructive hover:bg-destructive/20 hover:text-destructive focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2 transition-colors duration-150"
                   >
-                    <span className="text-xs">✕</span>
-                    <span>Cancel</span>
-                  </a>
+                    <a
+                      href="/profile"
+                      aria-label="Cancel and return to profile"
+                    >
+                      <span className="text-xs">✕</span>
+                      <span>Cancel</span>
+                    </a>
+                  </Button>
                   <div className="flex items-center">
                     <div className="rounded-md shadow-sm hover:shadow-md transition-shadow duration-150">
                       <SaveButton label="Save" />

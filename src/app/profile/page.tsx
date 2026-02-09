@@ -151,7 +151,7 @@ export default async function ProfilePage() {
                 <div className="mt-4 flex flex-col sm:flex-row sm:justify-center gap-2">
                   <Link
                     href="/profile/edit"
-                    className="inline-block btn-primary"
+                    className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors"
                   >
                     Edit Profile
                   </Link>
