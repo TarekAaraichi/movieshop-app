@@ -119,7 +119,7 @@ export default async function RootLayout({
                           key={link.label}
                           className="group relative"
                           summary={
-                            <summary className="cursor-pointer list-none flex items-center gap-2 px-3 py-1 rounded-md text-sm text-muted hover:text-indigo-600 transition focus:outline-none focus:ring-2 focus:ring-indigo-300/40">
+                            <summary className="cursor-pointer list-none flex items-center gap-2 px-3 py-1 rounded-md text-sm main-nav-link transition focus:outline-none focus:ring-2 focus:ring-blue-300/40">
                               <span>{link.label}</span>
                               <svg
                                 className="w-3 h-3 opacity-80 transition-transform duration-150 group-open:rotate-180"
@@ -143,7 +143,7 @@ export default async function RootLayout({
                               <Link
                                 key={child.href}
                                 href={child.href}
-                                className="block px-4 py-2 text-sm text-muted hover:bg-card/60"
+                                className="block px-4 py-2 text-sm text-muted hover:bg-slate-100 dark:hover:bg-popover hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
                               >
                                 {child.label}
                               </Link>
@@ -154,7 +154,7 @@ export default async function RootLayout({
                         <Link
                           key={link.href}
                           href={link.href!}
-                          className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm text-muted hover:text-indigo-600 transition focus:outline-none focus:ring-2 focus:ring-indigo-300/40"
+                          className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm main-nav-link transition focus:outline-none focus:ring-2 focus:ring-blue-300/40"
                         >
                           {link.label}
                         </Link>

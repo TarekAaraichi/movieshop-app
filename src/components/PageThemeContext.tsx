@@ -84,7 +84,7 @@ export const PageThemeSwitcher = () => {
       size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       aria-label="Toggle page theme"
-      className="p-2 rounded-full hover:bg-popover"
+      className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-popover"
     >
       {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
     </Button>

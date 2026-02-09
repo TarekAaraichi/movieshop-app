@@ -209,4 +209,19 @@
   .btn-primary:hover {
     filter: brightness(0.92);
   }
+  /* Scoped nav link utility: higher-specificity selector to reliably set hover */
+  nav[aria-label="Main navigation"] .main-nav-link {
+    color: var(--primary);
+    transition:
+      color 160ms ease,
+      background-color 120ms ease;
+  }
+  nav[aria-label="Main navigation"] .main-nav-link:hover {
+    color: #2563eb; /* blue-600 */
+    background-color: #f1f5f9; /* slate-100 */
+  }
+  .dark nav[aria-label="Main navigation"] .main-nav-link:hover {
+    color: #93c5fd; /* blue-300 */
+    background-color: var(--popover);
+  }
 }
