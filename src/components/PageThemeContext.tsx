@@ -79,7 +79,7 @@ export const PageThemeSwitcher = () => {
 
   return (
     <button
-      className="p-2 rounded-full hover:bg-popover focus:outline-none focus:ring-2 focus:ring-offset-2"
+      className=" cursor-pointer p-2 rounded-full hover:bg-popover focus:outline-none focus:ring-2 focus:ring-offset-2"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       aria-label="Toggle page theme"
     >
