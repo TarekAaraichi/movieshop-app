@@ -39,8 +39,9 @@ export default function SignOutButton() {
   return (
     <button
       type="button"
-      className="w-full text-left px-4 py-2 text-sm bg-transparent text-muted hover:bg-card/60 transition-colors duration-150"
+      className="w-full px-4 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500/50 active:bg-red-800 transition-colors duration-200"
       onClick={handleSignOut}
+      aria-label="Sign out of your account"
     >
       Sign out
     </button>
