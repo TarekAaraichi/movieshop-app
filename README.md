@@ -135,9 +135,9 @@ These features use Next.js Server Actions and server-side Prisma queries; see `s
 ## Accessibility Improvements
 
 - Added a server-rendered skip target so the "Skip to content" link always
-   points to a valid anchor even when main content is client-rendered.
+  points to a valid anchor even when main content is client-rendered.
 - Fixed ARIA attribute values (e.g., `aria-selected`) and updated the NavBar
-   menu to use native `a`/`button` elements with proper `aria-controls`/`id`.
+  menu to use native `a`/`button` elements with proper `aria-controls`/`id`.
 - Run an automated accessibility scan locally with Pa11y:
 
 ```bash
@@ -177,6 +177,5 @@ npm run seed
 - Centralized theme tokens and removed many hard-coded Tailwind color classes across admin components.
 - Introduced a `Button` primitive and migrated many admin buttons/components to use it for consistent variants and accessibility.
 - Added admin Orders tab, search, filters, and a cancel server action. See the commit message that closed issues #39 and #40 for full context.
-
 
 [Back to top](#-movieshop-a-full-stack-nextjs-15-showcase)
