@@ -14,7 +14,7 @@ export default function AboutPage() {
         <div className="max-w-4xl w-full p-4">
           <Card className="p-6 sm:p-8 bg-card">
             <header className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground pb-2">
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-linear-to-r from-indigo-600 to-pink-500 pb-2">
                 About MovieShop
               </h1>
               <p className="mt-3 text-lg text-muted">
