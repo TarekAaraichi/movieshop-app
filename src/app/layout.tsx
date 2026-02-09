@@ -66,7 +66,7 @@ export default async function RootLayout({
         { href: "/collections/genres", label: "By Genre" },
       ],
     },
-    { href: "/about", label: "About" },
+    // About link moved to footer
   ];
 
   return (
@@ -245,6 +245,12 @@ export default async function RootLayout({
                       className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
                     >
                       Contact
+                    </Link>
+                    <Link
+                      href="/about"
+                      className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-sm bg-linear-to-r from-sky-700/10 via-blue-600/8 to-indigo-700/10 hover:from-sky-500/40 hover:via-blue-500/30 hover:to-indigo-500/40 active:scale-95 active:from-sky-400/60 transition transform duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    >
+                      About
                     </Link>
                   </nav>
                 </div>
