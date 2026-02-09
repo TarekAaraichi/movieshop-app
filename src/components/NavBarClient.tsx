@@ -101,6 +101,7 @@ export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
             <Button
               type="button"
               aria-haspopup="true"
+              aria-controls="user-menu"
               aria-expanded={menuOpen}
               aria-label="User menu"
               onClick={() => setMenuOpen((s) => !s)}
@@ -122,27 +123,26 @@ export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
 
             {menuOpen && (
               <div
+                id="user-menu"
                 role="menu"
                 aria-label="User menu"
                 className="absolute right-4 mt-14 w-44 bg-popover text-foreground border border-border rounded-md shadow-lg py-1 z-50"
               >
-                <Link
+                <a
                   href="/profile"
                   role="menuitem"
                   className="block px-3 py-2 text-sm text-foreground hover:bg-slate-100 dark:hover:bg-popover hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
                   onClick={() => setMenuOpen(false)}
                 >
                   Profile
-                </Link>
-                <Button
+                </a>
+                <button
                   role="menuitem"
-                  variant="ghost"
-                  size="default"
                   onClick={handleSignOut}
                   className="w-full text-left px-3 py-2 text-sm text-foreground hover:bg-slate-100 dark:hover:bg-popover hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
                 >
                   Sign Out
-                </Button>
+                </button>
               </div>
             )}
           </div>
@@ -185,6 +185,7 @@ export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
             <Button
               type="button"
               aria-haspopup="true"
+              aria-controls="user-menu"
               aria-expanded={menuOpen}
               aria-label="User menu"
               onClick={() => setMenuOpen((s) => !s)}
@@ -204,27 +205,26 @@ export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
             </Button>
             {menuOpen && (
               <div
+                id="user-menu"
                 role="menu"
                 aria-label="User menu"
                 className="absolute right-4 mt-14 w-44 bg-popover text-foreground border border-border rounded-md shadow-lg py-1 z-50"
               >
-                <Link
+                <a
                   href="/profile"
                   role="menuitem"
                   className="block px-3 py-2 text-sm text-foreground hover:bg-slate-100 dark:hover:bg-popover hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
                   onClick={() => setMenuOpen(false)}
                 >
                   Profile
-                </Link>
-                <Button
+                </a>
+                <button
                   role="menuitem"
-                  variant="ghost"
-                  size="default"
                   onClick={handleSignOut}
                   className="w-full text-left px-3 py-2 text-sm text-foreground hover:bg-slate-100 dark:hover:bg-popover hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
                 >
                   Sign Out
-                </Button>
+                </button>
               </div>
             )}
           </div>

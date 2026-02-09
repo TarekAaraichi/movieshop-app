@@ -58,15 +58,16 @@ export default function AdminTabSwitcher({
       {tabs.map((tab) => {
         const isActive = tab.id === (activeTab as AdminTab);
         return (
-          <Button
-            key={tab.id}
-            type="button"
-            role="tab"
-            aria-selected={isActive}
-            className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
-            onClick={() => handleTabClick(tab.id)}
-          >
-            {tab.label}
+          <Button key={tab.id} asChild>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={isActive ? "true" : "false"}
+              className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
+              onClick={() => handleTabClick(tab.id)}
+            >
+              {tab.label}
+            </button>
           </Button>
         );
       })}
