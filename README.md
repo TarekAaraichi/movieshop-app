@@ -123,3 +123,45 @@ The application will be available at `http://localhost:3000`.
 - `npm run lint`: Lints the codebase using ESLint.
 - `npm run seed`: Seeds the database with initial data.
 - `npm test`: Runs unit tests with Vitest.
+
+## Admin Features (recent)
+
+- Added an **Orders** stat card to the admin dashboard header.
+- Admin dashboard now includes an **Orders** tab with:
+   - Search (order ID, user name, or email)
+   - Status filter (Pending / Paid / Cancelled)
+   - Paginated list and quick View links
+   - Cancel action (admin-only) which marks an order CANCELLED and restocks affected movies
+
+These features use Next.js Server Actions and server-side Prisma queries; see `src/server/actions/ordersActions.ts` for the cancel logic.
+
+## Theming & Tokens
+
+- The app centralizes visual tokens in `src/app/globals.css` and provides utility classes (e.g., `bg-card`, `bg-popover`, `text-foreground`) to avoid ad-hoc Tailwind color classes.
+- A small pre-hydration script in the root layout ensures theme state is read from `localStorage` before React hydrates, reducing FOUC.
+
+## Developer Notes & Gotchas
+
+- When running the seed script you may see a Node warning about module type (seed file uses ES module syntax). This is harmless; to remove the warning add `"type": "module"` to `package.json` or run the seed via `node --input-type=module` as needed.
+- The project uses Next.js 15 with Turbopack by default for dev and build. Production builds may run type/lint checks during `npm run build`.
+- If you hit linting errors during CI or build, run the linter locally and address the reported issues:
+
+```bash
+npm run lint
+```
+
+- To reset and reseed the database during development:
+
+```bash
+npx prisma migrate reset --force
+npm run seed
+```
+
+- Admin access: during UI iteration, server-side role enforcement was temporarily relaxed in `src/lib/requireAdmin.ts` so authenticated sessions can render admin UI—reintroduce strict role checks before deploying to production.
+
+## Recent Changes Summary
+
+- Centralized theme tokens and removed many hard-coded Tailwind color classes across admin components.
+- Introduced a `Button` primitive and migrated many admin buttons/components to use it for consistent variants and accessibility.
+- Added admin Orders tab, search, filters, and a cancel server action. See the commit message that closed issues #39 and #40 for full context.
+
