@@ -4,7 +4,7 @@
 [![Prisma](https://img.shields.io/badge/Prisma-blue?logo=prisma)](https://www.prisma.io/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
 
-**Live Demo**: [https://movieshop.vercel.app](https://movieshop.vercel.app) (coming soon)
+**Live Demo**: coming soon...
 
 MovieShop is a feature-rich, full-stack e-commerce application built to demonstrate a mastery of modern web development practices using Next.js 15, Prisma, and the latest in the React ecosystem. It serves as a comprehensive portfolio project showcasing everything from database architecture to a polished, performant, and secure user experience.
 
