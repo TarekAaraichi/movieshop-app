@@ -201,7 +201,7 @@ export default async function RootLayout({
                         </Link>
                         <Link
                           href="/sign-up"
-                          className="px-4 py-2 rounded-md text-sm font-semibold bg-card text-gray-800 shadow-sm border border-border dark:bg-gray-700 dark:text-white dark:border-gray-700"
+                          className="px-4 py-2 rounded-md text-sm font-semibold bg-linear-to-r from-emerald-500 to-emerald-600 text-white shadow-md hover:brightness-95 transition focus:outline-none focus:ring-2 focus:ring-emerald-300/40"
                         >
                           Sign Up
                         </Link>

@@ -55,7 +55,7 @@ export default async function SignUpPage({
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
-                    className="inline-flex items-center justify-center gap-2 rounded-md border bg-card border-border px-3 py-2 text-sm text-foreground shadow-sm hover:shadow-md transition"
+                    className="inline-flex items-center justify-center gap-2 rounded-md border bg-card border-border px-3 py-2 text-sm text-foreground shadow-sm hover:shadow-md transition cursor-pointer"
                     aria-label="Continue with Google"
                   >
                     <svg
@@ -85,7 +85,7 @@ export default async function SignUpPage({
 
                   <button
                     type="button"
-                    className="inline-flex items-center justify-center gap-2 rounded-md border bg-card border-border px-3 py-2 text-sm text-foreground shadow-sm hover:shadow-md transition"
+                    className="inline-flex items-center justify-center gap-2 rounded-md border bg-card border-border px-3 py-2 text-sm text-foreground shadow-sm hover:shadow-md transition cursor-pointer"
                     aria-label="Continue with GitHub"
                   >
                     <svg

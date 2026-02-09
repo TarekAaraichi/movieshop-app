@@ -1,11 +1,6 @@
 "use client";
 
-/**
- * SignupForm
- * Client component that renders and validates the user signup form.
- * Integrates with react-hook-form and zod for validation and submission.
- */
-
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +16,7 @@ import { Input } from "@/components";
 import { Card } from "@/components";
 import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 const formSchema = z
   .object({
@@ -64,10 +60,11 @@ export default function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = (searchParams?.get("callbackUrl") as string) || "";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function onSubmit(values: FormValues) {
-    // Handle form submission
-    // Snapshot the anonymous cart so the server-side migration can merge it
+    setIsSubmitting(true);
+
     try {
       const pre = await fetch("/api/cart");
       if (pre.ok) {
@@ -92,52 +89,58 @@ export default function SignUpForm() {
               }
             }
             if (shouldWrite) {
-              document.cookie = `cart=${encodeURIComponent(
-                JSON.stringify(pj.items),
-              )}; path=/; max-age=${60 * 60 * 24 * 30}`;
+              document.cookie = `cart=${encodeURIComponent(JSON.stringify(pj.items))}; path=/; max-age=${60 * 60 * 24 * 30}`;
             }
           } catch {}
         }
       }
     } catch {}
 
-    const { error } = await authClient.signUp.email({
-      name: values.name,
-      email: values.email,
-      password: values.password,
-    });
+    let error: any = null;
+    try {
+      const res = await authClient.signUp.email({
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      });
+      error = (res as any)?.error ?? null;
+    } catch (e) {
+      error = e;
+    }
 
     if (error) {
-      // sign-up didn't return a token — show a generic error
-      alert("Sign up failed. Please check your input and try again.");
-    } else {
-      // Signed up successfully — you can use result.user or result.token as needed
-      alert("Signed up successfully.");
-      try {
-        const cb = callbackUrl || "/profile";
-        if (typeof window !== "undefined") {
-          window.location.assign(
-            `/api/cart/migrate-and-continue?callback=${encodeURIComponent(cb)}`,
-          );
-        } else {
-          try {
-            router.replace(cb);
-          } catch {
-            router.push(cb);
-          }
-        }
-      } catch (e) {
-        console.error("migrate-cart call failed", e);
-      }
-      const target = callbackUrl || "/profile";
-      try {
-        router.replace(target);
-      } catch {
-        router.push(target);
-      }
-      router.refresh();
-      // signup succeeded
+      toast.error("Sign up failed. Please check your input and try again.");
+      setIsSubmitting(false);
+      return;
     }
+
+    toast.success("Signed up successfully.");
+
+    try {
+      const cb = callbackUrl || "/profile";
+      if (typeof window !== "undefined") {
+        window.location.assign(
+          `/api/cart/migrate-and-continue?callback=${encodeURIComponent(cb)}`,
+        );
+      } else {
+        try {
+          router.replace(cb);
+        } catch {
+          router.push(cb);
+        }
+      }
+    } catch (e) {
+      console.error("migrate-cart call failed", e);
+    }
+
+    const target = callbackUrl || "/profile";
+    try {
+      router.replace(target);
+    } catch {
+      router.push(target);
+    }
+    router.refresh();
+    setIsSubmitting(false);
   }
 
   return (
@@ -226,9 +229,40 @@ export default function SignUpForm() {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition shadow-md"
+              disabled={isSubmitting}
+              className={`w-full flex items-center justify-center gap-2 ${
+                isSubmitting
+                  ? "opacity-80 cursor-wait bg-emerald-600 text-white py-2 px-4 rounded-md shadow-md"
+                  : "bg-linear-to-r from-emerald-500 to-emerald-600 text-white py-2 px-4 rounded-md hover:brightness-95 transition shadow-md cursor-pointer"
+              }`}
             >
-              Sign up
+              {isSubmitting ? (
+                <>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <span>Signing up…</span>
+                </>
+              ) : (
+                <span>Sign up</span>
+              )}
             </button>
           </form>
         </Form>
