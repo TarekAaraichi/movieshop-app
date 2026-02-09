@@ -1,6 +1,5 @@
 # 🎬 MovieShop: A Full-Stack Next.js 15 Showcase
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
 [![Prisma](https://img.shields.io/badge/Prisma-blue?logo=prisma)](https://www.prisma.io/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
@@ -8,8 +7,6 @@
 **Live Demo**: [https://movieshop.vercel.app](https://movieshop.vercel.app) (coming soon)
 
 MovieShop is a feature-rich, full-stack e-commerce application built to demonstrate a mastery of modern web development practices using Next.js 15, Prisma, and the latest in the React ecosystem. It serves as a comprehensive portfolio project showcasing everything from database architecture to a polished, performant, and secure user experience.
-
-![MovieShop Homepage](public/images/movieshop-screenshot.png) <!--- Placeholder for a future screenshot -->
 
 ## ✨ Core Features
 
@@ -164,3 +161,5 @@ npm run seed
 - Centralized theme tokens and removed many hard-coded Tailwind color classes across admin components.
 - Introduced a `Button` primitive and migrated many admin buttons/components to use it for consistent variants and accessibility.
 - Added admin Orders tab, search, filters, and a cancel server action. See the commit message that closed issues #39 and #40 for full context.
+
+[Back to top](#-movieshop-a-full-stack-nextjs-15-showcase)
