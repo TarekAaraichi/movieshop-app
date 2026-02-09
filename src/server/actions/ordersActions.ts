@@ -11,6 +11,8 @@ import { z } from "zod";
 const prisma = (await import("@/lib/prisma")).default;
 import { getServerSession } from "@/lib/getServerSession";
 import { findOrCreateUser } from "./orderHelpersActions";
+import { revalidatePath } from "next/cache";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 const checkoutSchema = z.object({
   fullName: z.string().min(2),
@@ -438,4 +440,42 @@ export async function createOrder(formData: FormData): Promise<void> {
 
   redirect(`/orders/${result.id}`);
   return;
+}
+
+export async function cancelOrder(formData: FormData): Promise<void> {
+  await requireAdmin();
+  const id = formData.get("orderId") as string;
+  if (!id) throw new Error("Missing order ID");
+
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: { items: true },
+  });
+  if (!order) {
+    redirect(`/admin?error=notfound`);
+    return;
+  }
+
+  if (order.status === "CANCELLED") {
+    redirect(
+      `/admin?error=already_cancelled&title=${encodeURIComponent(order.id)}`,
+    );
+    return;
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.order.update({ where: { id }, data: { status: "CANCELLED" } });
+    for (const item of order.items || []) {
+      await tx.movie.update({
+        where: { id: item.movieId },
+        data: { stock: { increment: item.quantity } },
+      });
+    }
+  });
+
+  try {
+    revalidatePath("/admin");
+  } catch {}
+
+  redirect(`/admin?updated=1&title=${encodeURIComponent(order.id)}`);
 }

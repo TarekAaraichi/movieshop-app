@@ -35,7 +35,9 @@ export default async function AdminPage({
   const q = searchParams.q ?? "";
   const tabParam = searchParams.tab;
   const tab =
-    tabParam === "persons" || tabParam === "users" ? tabParam : "movies";
+    tabParam === "persons" || tabParam === "users" || tabParam === "orders"
+      ? tabParam
+      : "movies";
 
   const initialPersonRoleParam =
     (searchParams.personRole as string | undefined) ??
@@ -67,6 +69,11 @@ export default async function AdminPage({
 
   const ordersCountPromise = prisma.order.count();
 
+  // fetch recent orders for the admin orders tab
+  const ordersPromise = prisma.order.findMany({
+    orderBy: { orderDate: "desc" },
+  });
+
   // fetch actual filter options from DB
   const genresPromise = prisma.genre.findMany({ orderBy: { name: "asc" } });
   // person roles are enum values referenced on MoviePerson.role; gather distinct ones
@@ -88,6 +95,7 @@ export default async function AdminPage({
     personRolesRaw,
     userRolesRaw,
     totalOrdersCount,
+    ordersRaw,
   ] = await Promise.all([
     moviesPromise,
     personsPromiseTyped,
@@ -96,6 +104,7 @@ export default async function AdminPage({
     personRolesPromise,
     userRolesPromise,
     ordersCountPromise,
+    ordersPromise,
   ]);
 
   const personRoles = Array.from(
@@ -196,14 +205,13 @@ export default async function AdminPage({
                       total
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-muted">{stat.sublabel}</p>
                 </div>
               ))}
             </div>
           </section>
 
           <AdminDashboardContent
-            initialTab={tab as "movies" | "persons" | "users"}
+            initialTab={tab as "movies" | "persons" | "users" | "orders"}
             initialSearch={q}
             initialGenre={searchParams.genre as string | undefined}
             initialPersonRole={initialPersonRoleParam}
@@ -244,6 +252,15 @@ export default async function AdminPage({
             personRoles={personRoles}
             userRoles={userRoles}
             orderCounts={Object.fromEntries(orderCounts.entries())}
+            orders={ordersRaw.map((o) => ({
+              id: o.id,
+              userId: o.userId,
+              totalAmount: o.totalAmount.toString(),
+              status: o.status,
+              orderDate: o.orderDate.toISOString(),
+              userName: users.find((u) => u.id === o.userId)?.name ?? null,
+              userEmail: users.find((u) => u.id === o.userId)?.email ?? null,
+            }))}
           />
         </div>
       </div>

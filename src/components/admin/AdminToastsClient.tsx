@@ -30,7 +30,7 @@ export default function AdminToastsClient() {
         url.search = "";
         window.history.replaceState({}, document.title, url.toString());
       }
-    } catch (e) {
+    } catch {
       // ignore
     }
   }, []);

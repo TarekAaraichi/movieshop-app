@@ -3,12 +3,13 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-type AdminTab = "movies" | "persons" | "users";
+type AdminTab = "movies" | "persons" | "users" | "orders";
 
 const tabs: Array<{ id: AdminTab; label: string }> = [
   { id: "movies", label: "Movies" },
   { id: "persons", label: "Persons" },
   { id: "users", label: "Users" },
+  { id: "orders", label: "Orders" },
 ];
 
 export default function AdminTabSwitcher({

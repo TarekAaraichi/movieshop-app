@@ -97,16 +97,16 @@ export default function SignUpForm() {
       }
     } catch {}
 
-    let error: any = null;
+    let error: unknown = null;
     try {
       const res = await authClient.signUp.email({
         name: values.name,
         email: values.email,
         password: values.password,
       });
-      error = (res as any)?.error ?? null;
+      error = (res as unknown as { error?: unknown })?.error ?? null;
     } catch (e) {
-      error = e;
+      error = e as unknown;
     }
 
     if (error) {

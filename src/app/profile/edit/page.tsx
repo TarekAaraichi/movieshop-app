@@ -163,7 +163,9 @@ export default async function Page() {
                   <input
                     name="phone"
                     defaultValue={
-                      (address as any)?.phone ?? (profile as any)?.phone ?? ""
+                      (address as { phone?: string } | null)?.phone ??
+                      (profile as { phone?: string } | null)?.phone ??
+                      ""
                     }
                     placeholder="Phone number"
                     inputMode="tel"
@@ -190,7 +192,7 @@ export default async function Page() {
                 <span className="mt-2 text-sm text-muted">Bio</span>
                 <textarea
                   name="bio"
-                  defaultValue={(profile as any)?.bio ?? ""}
+                  defaultValue={(profile as { bio?: string } | null)?.bio ?? ""}
                   placeholder="A short bio (optional)"
                   rows={3}
                   className="mt-1 px-4 py-3 rounded-lg border border-border focus:ring-2 focus:ring-sky-500 focus:border-transparent text-foreground transition-shadow duration-150 bg-card"

@@ -87,15 +87,15 @@ export function SignInForm() {
       }
     } catch {}
 
-    let error: any = null;
+    let error: unknown = null;
     try {
       const res = await authClient.signIn.email({
         email: values.email,
         password: values.password,
       });
-      error = (res as any)?.error ?? null;
+      error = (res as unknown as { error?: unknown })?.error ?? null;
     } catch (e) {
-      error = e;
+      error = e as unknown;
     }
 
     if (error) {

@@ -230,9 +230,7 @@ export default function AdminDashboardContent({
   const [personPage, setPersonPage] = React.useState(1);
   const [userPage, setUserPage] = React.useState(1);
   const [orderPage, setOrderPage] = React.useState(1);
-  const [selectedOrderStatus, setSelectedOrderStatus] = React.useState(
-    "",
-  );
+  const [selectedOrderStatus, setSelectedOrderStatus] = React.useState("");
 
   React.useEffect(() => {
     setActiveTab(initialTab);
@@ -349,7 +347,15 @@ export default function AdminDashboardContent({
     }
 
     const params = new URLSearchParams(window.location.search);
-    ["tab", "q", "genre", "role", "personRole", "userRole", "orderStatus"].forEach((key) => {
+    [
+      "tab",
+      "q",
+      "genre",
+      "role",
+      "personRole",
+      "userRole",
+      "orderStatus",
+    ].forEach((key) => {
       params.delete(key);
     });
 
@@ -393,7 +399,6 @@ export default function AdminDashboardContent({
   ]);
 
   // keep selectedOrderStatus initialised to empty
-
 
   const filteredMovies = React.useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -944,7 +949,11 @@ export default function AdminDashboardContent({
                       </Link>
                       {order.status !== "CANCELLED" && (
                         <form action={cancelOrder} className="inline-block">
-                          <input type="hidden" name="orderId" value={order.id} />
+                          <input
+                            type="hidden"
+                            name="orderId"
+                            value={order.id}
+                          />
                           <Button
                             type="submit"
                             className="ml-2 rounded-full"
