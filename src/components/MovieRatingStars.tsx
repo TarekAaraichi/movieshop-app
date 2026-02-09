@@ -17,7 +17,7 @@ export function MovieRatingStars({
         <button
           key={star}
           type="button"
-          className={`text-xl ${star <= rating ? "text-yellow-400" : "text-gray-400"}`}
+          className={`text-xl ${star <= rating ? "text-yellow-400" : "text-muted"}`}
           onClick={() => onRate && onRate(star)}
           disabled={disabled}
           aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}

@@ -34,7 +34,7 @@ export default function ProfileEditor({
   return (
     <form action={updateProfile} className="grid grid-cols-1 gap-4">
       <div className="flex items-center gap-4">
-        <div className="w-20 h-20 rounded-full overflow-hidden bg-slate-100">
+        <div className="w-20 h-20 rounded-full overflow-hidden bg-popover">
           {preview ? (
             // Use unoptimized to allow external urls during development
             <Image
@@ -52,7 +52,7 @@ export default function ProfileEditor({
           )}
         </div>
         <div className="flex-1">
-          <label className="block text-sm font-medium text-slate-700">
+          <label className="block text-sm font-medium text-foreground">
             Name
           </label>
           <input
@@ -60,13 +60,13 @@ export default function ProfileEditor({
             placeholder="Full name"
             defaultValue={user.name ?? ""}
             name="name"
-            className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md"
+            className="w-full mt-1 px-3 py-2 border border-border rounded-md"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-slate-700">
+        <label className="block text-sm font-medium text-foreground">
           Image URL
         </label>
         <input
@@ -75,42 +75,42 @@ export default function ProfileEditor({
           name="image"
           defaultValue={user.image ?? ""}
           onChange={(e) => setPreview(e.target.value)}
-          className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md"
+          className="w-full mt-1 px-3 py-2 border border-border rounded-md"
         />
       </div>
 
-      <fieldset className="border-t border-gray-700 pt-4">
-        <legend className="text-sm font-medium text-slate-700">Address</legend>
+      <fieldset className="border-t border-border pt-4">
+        <legend className="text-sm font-medium text-foreground">Address</legend>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
           <input
             name="addressLine1"
             defaultValue={address?.line1 ?? ""}
             placeholder="Address line 1"
-            className="px-3 py-2 border border-gray-300 rounded-md"
+            className="px-3 py-2 border border-border rounded-md"
           />
           <input
             name="addressLine2"
             defaultValue={address?.line2 ?? ""}
             placeholder="Address line 2"
-            className="px-3 py-2 border border-gray-300 rounded-md"
+            className="px-3 py-2 border border-border rounded-md"
           />
           <input
             name="city"
             defaultValue={address?.city ?? ""}
             placeholder="City"
-            className="px-3 py-2 border border-gray-300 rounded-md"
+            className="px-3 py-2 border border-border rounded-md"
           />
           <input
             name="postalCode"
             defaultValue={address?.postalCode ?? ""}
             placeholder="Postal code"
-            className="px-3 py-2 border border-gray-300 rounded-md"
+            className="px-3 py-2 border border-border rounded-md"
           />
           <input
             name="country"
             defaultValue={address?.country ?? ""}
             placeholder="Country"
-            className="px-3 py-2 border border-gray-300 rounded-md"
+            className="px-3 py-2 border border-border rounded-md"
           />
         </div>
       </fieldset>

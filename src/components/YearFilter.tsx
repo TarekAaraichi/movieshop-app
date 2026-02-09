@@ -15,10 +15,7 @@ export function YearFilter({ years, currentYear }: YearFilterProps) {
 
   return (
     <div className="mb-6 flex justify-end items-center gap-2">
-      <label
-        htmlFor="year-filter"
-        className="text-sm text-neutral-600 dark:text-neutral-400"
-      >
+      <label htmlFor="year-filter" className="text-sm text-muted">
         Filter by year:
       </label>
       <AutoSubmitSelect

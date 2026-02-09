@@ -5,12 +5,12 @@ const Shimmer = () => (
 );
 
 const SkeletonCard = () => (
-  <Card className="relative h-full overflow-hidden rounded-lg bg-white/5 p-4 shadow-sm">
+  <Card className="relative h-full overflow-hidden rounded-lg bg-card p-4 shadow-sm">
     <div className="space-y-3">
-      <div className="h-32 rounded-md bg-white/5" />
+      <div className="h-32 rounded-md bg-card" />
       <div className="space-y-2">
-        <div className="h-4 w-3/4 rounded-md bg-white/5" />
-        <div className="h-4 w-1/2 rounded-md bg-white/5" />
+        <div className="h-4 w-3/4 rounded-md bg-card" />
+        <div className="h-4 w-1/2 rounded-md bg-card" />
       </div>
     </div>
     <Shimmer />

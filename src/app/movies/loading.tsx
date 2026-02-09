@@ -8,12 +8,10 @@ import { PaginationControlsSkeleton } from "@/components/PaginationControlsSkele
 function MovieCardSkeleton() {
   return (
     <div className="flex flex-col space-y-3">
-      <Skeleton
-        className={"h-82.5 w-full rounded-xl bg-gray-200 dark:bg-neutral-800"}
-      />
+      <Skeleton className={"h-82.5 w-full rounded-xl bg-popover"} />
       <div className="space-y-2">
-        <Skeleton className={"h-4 w-full bg-gray-200 dark:bg-neutral-800"} />
-        <Skeleton className={"h-4 w-2/3 bg-gray-200 dark:bg-neutral-800"} />
+        <Skeleton className={"h-4 w-full bg-popover"} />
+        <Skeleton className={"h-4 w-2/3 bg-popover"} />
       </div>
     </div>
   );
@@ -54,8 +52,8 @@ export default function Loading() {
         </div>
       </div>
       <div className="flex justify-between items-center mb-8">
-        <div className="h-10 w-48 bg-gray-300 dark:bg-gray-700 animate-pulse rounded" />
-        <div className="h-10 w-64 bg-gray-300 dark:bg-gray-700 animate-pulse rounded" />
+        <div className="h-10 w-48 bg-popover animate-pulse rounded" />
+        <div className="h-10 w-64 bg-popover animate-pulse rounded" />
       </div>
       <PaginationControlsSkeleton />
       <MoviesGridSkeleton count={20} />

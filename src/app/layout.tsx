@@ -73,14 +73,42 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
+        {/* Inline theme sync: apply stored theme class immediately so
+            server-rendered skeletons match the user's chosen theme before
+            React hydrates. Do NOT fall back to OS preference; only apply
+            when an explicit `theme` value exists in localStorage. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{(function(){
+          var t = null;
+          try{ t = localStorage.getItem('theme'); }catch(e){}
+          if(t === 'light' || t === 'dark'){
+            try{ document.documentElement.classList.remove('light','dark'); document.documentElement.classList.add(t === 'dark' ? 'dark' : 'light'); }catch(e){}
+          }
+        })()}catch(e){} `,
+          }}
+        />
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-white/90 focus:dark:bg-gray-900/80 focus:text-indigo-600 focus:px-3 focus:py-2 rounded"
+        >
+          Skip to content
+        </a>
         <Toaster position="top-center" reverseOrder={false} />
         <ClientShell serverSession={session}>
           <PageThemeProvider>
             <div className="flex flex-col min-h-screen">
-              <header className="sticky top-0 z-50 backdrop-blur-md bg-white/60 dark:bg-black/40 border-b border-gray-200 dark:border-gray-800 shadow-sm">
-                <div className="max-w-7xl mx-auto flex items-center gap-4 px-4 py-3">
-                  <Link href="/" className="flex items-center gap-3">
-                    <span className="tracking-tight font-extrabold text-lg md:text-2xl bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-400">
+              <header
+                role="banner"
+                className="sticky top-0 z-50 backdrop-blur-md bg-card border-b border-border dark:bg-black/40 dark:border-gray-800 shadow-sm"
+              >
+                <div className="max-w-7xl mx-auto flex flex-wrap items-center gap-3 px-4 py-3">
+                  <Link
+                    href="/"
+                    aria-label="MovieShop home"
+                    className="flex items-center gap-3"
+                  >
+                    <span className="tracking-tight font-extrabold text-base md:text-lg lg:text-2xl bg-clip-text text-transparent bg-linear-to-r from-indigo-600 via-purple-500 to-pink-400">
                       MovieShop
                     </span>
                   </Link>
@@ -96,7 +124,7 @@ export default async function RootLayout({
                           key={link.label}
                           className="group relative"
                           summary={
-                            <summary className="cursor-pointer list-none flex items-center gap-2 px-3 py-1 rounded-md text-sm text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 transition focus:outline-none focus:ring-2 focus:ring-indigo-300/40">
+                            <summary className="cursor-pointer list-none flex items-center gap-2 px-3 py-1 rounded-md text-sm text-muted hover:text-indigo-600 transition focus:outline-none focus:ring-2 focus:ring-indigo-300/40">
                               <span>{link.label}</span>
                               <svg
                                 className="w-3 h-3 opacity-80 transition-transform duration-150 group-open:rotate-180"
@@ -115,12 +143,12 @@ export default async function RootLayout({
                             </summary>
                           }
                         >
-                          <div className="absolute top-full mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg py-1 z-10 dark:bg-gray-800 dark:border-gray-700">
+                          <div className="absolute top-full mt-2 w-48 bg-card border border-border rounded-md shadow-lg py-1 z-10">
                             {link.children.map((child) => (
                               <Link
                                 key={child.href}
                                 href={child.href}
-                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
+                                className="block px-4 py-2 text-sm text-muted hover:bg-card/60"
                               >
                                 {child.label}
                               </Link>
@@ -131,7 +159,7 @@ export default async function RootLayout({
                         <Link
                           key={link.href}
                           href={link.href!}
-                          className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm text-gray-700 hover:text-indigo-600 dark:text-gray-200 dark:hover:text-indigo-400 transition focus:outline-none focus:ring-2 focus:ring-indigo-300/40"
+                          className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm text-muted hover:text-indigo-600 transition focus:outline-none focus:ring-2 focus:ring-indigo-300/40"
                         >
                           {link.label}
                         </Link>
@@ -152,24 +180,20 @@ export default async function RootLayout({
                             Admin
                           </Link>
                         )}
-                        <Link
-                          href="/profile"
-                          className="flex items-center gap-2"
-                        >
-                          <Image
-                            src={
-                              session.user?.image ||
-                              "/images/default-avatar.png"
-                            }
-                            alt="User avatar"
-                            width={32}
-                            height={32}
-                            className="rounded-full"
-                          />
-                          <span className="text-sm font-medium">
-                            {session.user?.name}
-                          </span>
-                        </Link>
+
+                        <Image
+                          src={
+                            session.user?.image || "/images/default-avatar.png"
+                          }
+                          alt="User avatar"
+                          width={32}
+                          height={32}
+                          className="rounded-full"
+                        />
+                        <span className="text-sm font-medium">
+                          {session.user?.name}
+                        </span>
+
                         <SignOutButton />
                       </>
                     ) : (
@@ -182,7 +206,7 @@ export default async function RootLayout({
                         </Link>
                         <Link
                           href="/sign-up"
-                          className="px-4 py-2 rounded-md text-sm font-semibold bg-white/90 text-gray-800 hover:bg-white shadow-sm border border-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-700"
+                          className="px-4 py-2 rounded-md text-sm font-semibold bg-card text-gray-800 shadow-sm border border-border dark:bg-gray-700 dark:text-white dark:border-gray-700"
                         >
                           Sign Up
                         </Link>
@@ -196,14 +220,18 @@ export default async function RootLayout({
                 </div>
               </header>
 
-              <main className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="bg-white/90 dark:bg-gray-900/80 backdrop-blur-sm rounded-xl shadow-lg p-6 md:p-10">
+              <main
+                id="main-content"
+                tabIndex={-1}
+                className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-6"
+              >
+                <div className="bg-card dark:bg-gray-900/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 md:p-10">
                   {children}
                 </div>
               </main>
 
-              <footer className="bg-white/60 dark:bg-gray-900/60 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800 py-4 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+              <footer className="bg-card backdrop-blur-sm border-t border-border dark:bg-gray-900/60 dark:border-gray-800 py-4 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-muted">
                   <p>
                     &copy; {new Date().getFullYear()} MovieShop — Tarek Aarachi
                   </p>

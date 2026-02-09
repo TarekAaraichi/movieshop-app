@@ -39,7 +39,7 @@ export default function ClientShell({
             `src/app/layout.tsx` is the only visible navigation bar.
             To restore the component-based navbar, uncomment the block below. */}
         {/*
-        <header className="bg-gray-800 shadow-lg">
+        <header className="bg-card shadow-lg">
           <NavBarClient isAuthenticated={false} isAdmin={false} />
         </header>
         */}

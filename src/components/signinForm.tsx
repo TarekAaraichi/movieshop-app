@@ -15,7 +15,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components";
 import { Input } from "@/components";
 import { Card } from "@/components";
@@ -113,8 +112,8 @@ export function SignInForm() {
   }
 
   return (
-    <Card className="max-w-md mx-auto bg-linear-to-r from-white to-indigo-50 dark:from-gray-800 dark:to-gray-900">
-      <div className="py-3 px-6">
+    <Card className="max-w-md mx-auto">
+      <div className="py-4 px-6 md:py-6 md:px-8">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -124,9 +123,13 @@ export function SignInForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" {...field} />
+                    <Input
+                      type="email"
+                      {...field}
+                      autoComplete="email"
+                      required
+                    />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -137,16 +140,20 @@ export function SignInForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input
+                      type="password"
+                      {...field}
+                      autoComplete="current-password"
+                      required
+                    />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
 
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
+              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition shadow-md"
             >
               Sign in
             </button>

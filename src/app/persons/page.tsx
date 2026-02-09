@@ -73,10 +73,10 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
     <PageWrapper>
       <div className="w-full max-w-6xl mx-auto">
         <header className="mb-8 text-center relative">
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-500 to-sky-600 dark:from-emerald-400 dark:to-sky-400">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-emerald-500 to-sky-600">
             People
           </h1>
-          <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+          <p className="mt-2 text-sm text-muted">
             Showing {persons.length} of {totalCount} people.
           </p>
         </header>
@@ -100,7 +100,7 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
           ))}
           {persons.length === 0 && (
             <div className="col-span-full text-center py-12">
-              <p className="text-neutral-500 dark:text-neutral-400">
+              <p className="text-muted">
                 No people found matching your criteria.
               </p>
             </div>

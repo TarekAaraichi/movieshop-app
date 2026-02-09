@@ -49,7 +49,7 @@ export default function AutoSubmitSelect({
       name={name}
       defaultValue={value}
       onChange={handleChange}
-      className={`p-2 rounded-lg border bg-white text-gray-800 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-neutral-500 border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800 dark:text-gray-100 ${className}`}
+      className={`p-2 rounded-lg border bg-card text-foreground shadow-sm transition focus:outline-none focus:ring-2 focus:ring-neutral-500 border-border ${className}`}
     >
       {placeholder && <option value="">{placeholder}</option>}
       {options.map((o) => (

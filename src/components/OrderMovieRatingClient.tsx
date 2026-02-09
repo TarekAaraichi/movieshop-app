@@ -32,7 +32,7 @@ export function OrderMovieRatingClient({
         onRate={handleRate}
         disabled={disabled || loading}
       />
-      {loading && <span className="ml-2 text-xs text-gray-400">Saving...</span>}
+      {loading && <span className="ml-2 text-xs text-muted">Saving...</span>}
     </div>
   );
 }

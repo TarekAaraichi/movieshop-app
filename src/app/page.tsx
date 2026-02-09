@@ -5,7 +5,8 @@
 
 import prisma from "@/lib/prisma";
 import Link from "next/link";
-import { MovieCarousel } from "@/components/MovieCarousel";
+import Image from "next/image";
+import ClientMovieCarousels from "@/components/ClientMovieCarousels";
 import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/PageThemeContext";
 import { Prisma } from "@prisma/client";
@@ -83,18 +84,29 @@ export default async function HomePage() {
       "bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-lime-400",
   };
 
+  // Client-loaded carousels (moved to a client component to keep server bundle small)
+
   return (
     <PageWrapper>
       <div className="container mx-auto px-4 py-8 rounded-2xl">
         {/* Hero Section */}
-        <section className="relative overflow-hidden rounded-lg bg-cover bg-center bg-no-repeat p-8 sm:p-16 text-center mb-12 border dark:border-primary/30 shadow-lg dark:shadow-2xl dark:shadow-primary/15 bg-[url('/images/Hero.jpeg')]">
-          <div className="absolute inset-0 bg-gray-900/75" />
+        <section className="relative overflow-hidden rounded-lg p-8 sm:p-16 text-center mb-12 border border-border shadow-lg">
+          {/* Decorative background image optimized with next/image for better LCP */}
+          <Image
+            src="/images/Hero.jpeg"
+            alt="Movie theater scene"
+            fill
+            priority
+            sizes="(max-width: 640px) 640px, 1200px"
+            className="object-cover object-center absolute inset-0 -z-10 rounded-lg"
+          />
+          <div className="absolute inset-0 bg-card/80" />
           <div className="absolute inset-0 bg-linear-to-br from-primary/25 via-transparent to-secondary/25 opacity-40" />
           <div className="relative z-10">
             <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-linear-to-br from-amber-400 via-orange-500 to-red-600 bg-clip-text text-transparent">
               Welcome to MovieShop
             </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-300 max-w-2xl mx-auto">
+            <p className="mt-6 text-lg leading-8 text-muted max-w-2xl mx-auto">
               Your one-stop shop for the greatest movies ever made. Discover new
               releases, timeless classics, and hidden gems.
             </p>
@@ -110,7 +122,7 @@ export default async function HomePage() {
                 asChild
                 variant="secondary"
                 size="lg"
-                className="bg-gray-700/50 hover:bg-gray-600/50 text-white"
+                className="bg-card text-foreground border border-border hover:brightness-95"
               >
                 <Link href="/collections">Browse Collections</Link>
               </Button>
@@ -118,33 +130,14 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Movie Carousels */}
-        <div className="space-y-12">
-          <MovieCarousel
-            title="Top Purchased"
-            movies={serializedTopPurchased}
-            viewMoreHref="/collections/popular"
-            headerClassName={headerColorClasses.popular}
-          />
-          <MovieCarousel
-            title="Recent Releases"
-            movies={serializedRecentMovies}
-            viewMoreHref="/collections/new"
-            headerClassName={headerColorClasses.new}
-          />
-          <MovieCarousel
-            title="Oldest Classics"
-            movies={serializedOldestMovies}
-            viewMoreHref="/collections/classics"
-            headerClassName={headerColorClasses.classics}
-          />
-          <MovieCarousel
-            title="Cheap Thrills"
-            movies={serializedCheapMovies}
-            viewMoreHref="/collections/cheap"
-            headerClassName={headerColorClasses.cheap}
-          />
-        </div>
+        {/* Movie Carousels (client-loaded) */}
+        <ClientMovieCarousels
+          top={serializedTopPurchased}
+          recent={serializedRecentMovies}
+          oldest={serializedOldestMovies}
+          cheap={serializedCheapMovies}
+          headerColorClasses={headerColorClasses}
+        />
       </div>
     </PageWrapper>
   );

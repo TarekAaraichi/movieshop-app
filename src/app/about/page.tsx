@@ -11,19 +11,19 @@ export default function AboutPage() {
     <PageWrapper>
       <div className="grow flex items-center justify-center">
         <div className="max-w-4xl w-full p-4">
-          <Card className="p-6 sm:p-8 bg-linear-to-br from-neutral-100/80 via-neutral-50/60 to-neutral-200/50 dark:from-neutral-900/80 dark:via-neutral-800/60 dark:to-slate-700/50">
+          <Card className="p-6 sm:p-8 bg-card">
             <header className="text-center mb-12">
               <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-pink-400 pb-2">
                 About MovieShop
               </h1>
-              <p className="mt-3 text-lg text-zinc-700 dark:text-zinc-400">
+              <p className="mt-3 text-lg text-muted">
                 A feature-rich, full-stack e-commerce platform for movies, built
                 with modern web technologies.
               </p>
             </header>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-4 pl-2">
+              <h2 className="text-2xl font-bold text-foreground mb-4 pl-2">
                 Project Vision
               </h2>
               <div className="prose max-w-none dark:prose-invert text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-4">
@@ -46,7 +46,7 @@ export default function AboutPage() {
             </section>
 
             <section className="mb-12">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 pl-2">
+              <h2 className="text-2xl font-bold text-foreground mb-6 pl-2">
                 Core Features
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -117,7 +117,7 @@ export default function AboutPage() {
                 href="https://github.com/TarekAaraichi/movieshop-app"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-md border border-neutral-300 bg-neutral-700 text-sm text-white dark:border-neutral-600 dark:bg-neutral-800 dark:text-neutral-100 px-6 py-3 hover:bg-neutral-600 dark:hover:bg-neutral-700 transition-colors duration-300 font-semibold"
+                className="inline-flex items-center justify-center rounded-md border border-border bg-card text-sm text-foreground px-6 py-3 hover:bg-card/90 transition-colors duration-300 font-semibold"
               >
                 View Source Code on GitHub
               </a>
@@ -136,19 +136,15 @@ const FeatureCard = ({
   title: string;
   description: string;
 }) => (
-  <div className="bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
-    <h3 className="font-bold text-neutral-900 dark:text-white text-lg mb-2">
-      {title}
-    </h3>
-    <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-      {description}
-    </p>
+  <div className="bg-card border border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+    <h3 className="font-bold text-foreground text-lg mb-2">{title}</h3>
+    <p className="text-muted text-sm">{description}</p>
   </div>
 );
 
 const TechItem = ({ name, category }: { name: string; category: string }) => (
-  <div className="bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-lg p-4 flex flex-col justify-center items-center shadow-sm hover:shadow-md transition-shadow">
-    <p className="font-bold text-neutral-900 dark:text-white">{name}</p>
-    <p className="text-xs text-neutral-600 dark:text-neutral-400">{category}</p>
+  <div className="bg-card border border-border rounded-lg p-4 flex flex-col justify-center items-center shadow-sm hover:shadow-md transition-shadow">
+    <p className="font-bold text-foreground">{name}</p>
+    <p className="text-xs text-muted">{category}</p>
   </div>
 );

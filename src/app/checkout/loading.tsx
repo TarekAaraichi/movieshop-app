@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 export default function CheckoutLoading() {
   return (
     <div className="w-full m-auto max-w-3xl animate-pulse">
-      <Card className="p-8 bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 shadow-2xl">
+      <Card className="p-8 bg-card dark:bg-neutral-800/50 border border-border dark:border-neutral-800 shadow-2xl">
         <div className="flex items-start justify-between gap-4 mb-8">
           <div>
             <div className="h-9 w-48 bg-neutral-200 dark:bg-neutral-700 rounded-md" />

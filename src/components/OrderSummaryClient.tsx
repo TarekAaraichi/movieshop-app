@@ -89,12 +89,10 @@ export default function OrderSummaryClient({ items }: Props) {
   return (
     <div className="flex flex-col gap-4" aria-live="polite">
       <div>
-        <h2 className="text-xs font-semibold uppercase tracking-wide text-neutral-500 dark:text-gray-400">
+        <h2 className="text-xs font-semibold uppercase tracking-wide text-muted">
           Order Summary
         </h2>
-        <p className="mt-3 text-3xl font-bold text-gray-900 dark:text-white">
-          {fmt(total)}
-        </p>
+        <p className="mt-3 text-3xl font-bold text-foreground">{fmt(total)}</p>
       </div>
       <div className="text-sm space-y-2">
         {hasFreeShipping ? (
@@ -116,7 +114,7 @@ export default function OrderSummaryClient({ items }: Props) {
             <span className="underline underline-offset-2">FREE shipping</span>!
           </div>
         ) : subtotal > 0 ? (
-          <div className="text-neutral-600 dark:text-gray-300">
+          <div className="text-muted">
             Add{" "}
             <span className="font-semibold text-indigo-600 dark:text-indigo-300">
               {fmt(remainingForFreeShipping)}
@@ -127,7 +125,7 @@ export default function OrderSummaryClient({ items }: Props) {
             </span>
           </div>
         ) : (
-          <div className="text-neutral-500 dark:text-gray-400">
+          <div className="text-muted">
             Spend{" "}
             <span className="font-semibold text-indigo-600 dark:text-indigo-300">
               {fmt(freeShippingThreshold)}
@@ -136,7 +134,7 @@ export default function OrderSummaryClient({ items }: Props) {
           </div>
         )}
         <div
-          className="h-2 w-full rounded bg-gray-200 dark:bg-gray-800 overflow-hidden mt-2"
+          className="h-2 w-full rounded bg-card/40 overflow-hidden mt-2"
           aria-label="Progress toward free shipping"
         >
           {(() => {
@@ -186,24 +184,18 @@ export default function OrderSummaryClient({ items }: Props) {
           })()}
         </div>
       </div>
-      <div className="pt-4 border-t border-neutral-200 dark:border-gray-800 space-y-2 text-sm">
+      <div className="pt-4 border-t border-border space-y-2 text-sm">
         <div className="flex justify-between">
-          <span className="text-neutral-600 dark:text-gray-400">Subtotal</span>
-          <span className="text-gray-800 dark:text-gray-100">
-            {fmt(subtotal)}
-          </span>
+          <span className="text-muted">Subtotal</span>
+          <span className="text-foreground">{fmt(subtotal)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-neutral-600 dark:text-gray-400">
-            Estimated tax (8%)
-          </span>
-          <span className="text-gray-800 dark:text-gray-100">{fmt(tax)}</span>
+          <span className="text-muted">Estimated tax (8%)</span>
+          <span className="text-foreground">{fmt(tax)}</span>
         </div>
         <div className="flex justify-between">
-          <span className="text-neutral-600 dark:text-gray-400">Shipping</span>
-          <span className="text-gray-800 dark:text-gray-100">
-            {fmt(shipping)}
-          </span>
+          <span className="text-muted">Shipping</span>
+          <span className="text-foreground">{fmt(shipping)}</span>
         </div>
       </div>
     </div>

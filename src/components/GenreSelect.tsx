@@ -34,7 +34,7 @@ export default function GenreSelect({
     <select
       name="genre"
       aria-label="Filter by genre"
-      className="p-2 rounded-lg border border-gray-500 bg-gray-700 text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400"
+      className="p-2 rounded-lg border border-border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-neutral-400"
       value={selectedGenre}
       onChange={handleChange}
     >

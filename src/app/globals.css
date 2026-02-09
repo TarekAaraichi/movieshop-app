@@ -142,7 +142,7 @@
 }
 .dark [class*="bg-white/"] {
   /* some utilities include opacity like bg-white/5 — handle them too */
-  background-color: color-mix(in srgb, var(--card) 80%, #000000 0%) !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
 }
 
 @layer base {
@@ -180,4 +180,33 @@
     rgba(6, 10, 15, 0.9),
     rgba(12, 18, 26, 0.95)
   ) !important;
+}
+
+/* Small theme utility classes to encourage token usage in components */
+@layer components {
+  .bg-card {
+    background-color: var(--card) !important;
+  }
+  .bg-popover {
+    background-color: var(--popover) !important;
+  }
+  .text-foreground {
+    color: var(--foreground) !important;
+  }
+  .text-muted {
+    color: var(--muted-foreground) !important;
+  }
+  .border-border {
+    border-color: var(--border) !important;
+  }
+  .btn-primary {
+    background-color: var(--primary) !important;
+    color: var(--primary-foreground) !important;
+    transition:
+      filter 120ms ease,
+      box-shadow 120ms ease;
+  }
+  .btn-primary:hover {
+    filter: brightness(0.92);
+  }
 }

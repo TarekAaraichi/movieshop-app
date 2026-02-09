@@ -5,13 +5,13 @@ import Link from "next/link";
 import CarouselControls from "./CarouselControls";
 import type { Prisma } from "@prisma/client";
 
-type MovieWithIncludes = Prisma.MovieGetPayload<{
+export type MovieWithIncludes = Prisma.MovieGetPayload<{
   include: {
     genres: { include: { genre: true } };
   };
 }>;
 
-type MovieForCarousel = Omit<MovieWithIncludes, "price"> & {
+export type MovieForCarousel = Omit<MovieWithIncludes, "price"> & {
   price: string | Prisma.Decimal;
 };
 
@@ -36,7 +36,7 @@ export function MovieCarousel({
         <h2
           className={`text-3xl font-bold ${
             headerClassName ||
-            "bg-clip-text text-transparent bg-linear-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-200"
+            "bg-clip-text text-transparent bg-linear-to-r from-emerald-600 to-blue-600"
           }`}
         >
           {title}
@@ -44,7 +44,7 @@ export function MovieCarousel({
         {viewMoreHref && movies.length > 0 ? (
           <Link
             href={viewMoreHref}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold bg-card text-foreground hover:brightness-95 transition-colors"
           >
             View more
             <svg
@@ -64,10 +64,8 @@ export function MovieCarousel({
         ) : null}
       </div>
       {movies.length === 0 ? (
-        <div className="flex items-center justify-center h-48 bg-gray-100/50 dark:bg-neutral-800/20 rounded-lg">
-          <p className="text-gray-500 dark:text-gray-400">
-            No new releases for this period.
-          </p>
+        <div className="flex items-center justify-center h-48 bg-card/60 rounded-lg">
+          <p className="text-muted">No new releases for this period.</p>
         </div>
       ) : (
         <div className="relative group">
@@ -76,7 +74,7 @@ export function MovieCarousel({
             tabIndex={0}
             aria-label={`${title} carousel`}
             role="list"
-            className="flex gap-4 md:gap-6 overflow-x-auto px-4 py-5 snap-x snap-mandatory scroll-pl-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg hide-scrollbar bg-neutral-200 dark:bg-neutral-900/50"
+            className="flex gap-4 md:gap-6 overflow-x-auto px-4 py-5 snap-x snap-mandatory scroll-pl-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-lg hide-scrollbar bg-card"
           >
             {movies.map((movie) => (
               <div

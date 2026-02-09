@@ -10,12 +10,12 @@ export default function ContactPage() {
   return (
     <PageWrapper>
       <div className="m-auto max-w-4xl w-full">
-        <Card className="p-6 sm:p-8 bg-white dark:bg-neutral-900/80 border border-neutral-200 dark:border-neutral-800">
+        <Card className="p-6 sm:p-8 bg-card border border-border">
           <header className="mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-900 dark:text-gray-100">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">
               Contact
             </h1>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 max-w-2xl">
+            <p className="mt-2 text-sm text-muted max-w-2xl">
               We&apos;d love to hear from you. For questions about the demo,
               contributions, or feature requests, reach out to the team. Quick
               links and people below.
@@ -24,11 +24,9 @@ export default function ContactPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <section className="space-y-4">
-              <h2 className="text-sm font-medium text-gray-800 dark:text-gray-200">
-                Team
-              </h2>
+              <h2 className="text-sm font-medium text-foreground">Team</h2>
 
-              <ul className="space-y-3 rounded-lg bg-gray-100 dark:bg-neutral-800/50 p-3">
+              <ul className="space-y-3 rounded-lg bg-card p-3">
                 {[
                   {
                     name: "Tarek Aaraichi",
@@ -41,7 +39,7 @@ export default function ContactPage() {
                 ].map((p) => (
                   <li
                     key={p.email}
-                    className="flex items-center gap-4 bg-white dark:bg-neutral-900/60 rounded-lg p-3 sm:p-4 hover:bg-gray-50 dark:hover:bg-neutral-800/80 transition-colors border border-neutral-200 dark:border-neutral-800"
+                    className="flex items-center gap-4 bg-card rounded-lg p-3 sm:p-4 hover:bg-card/90 transition-colors border border-border"
                   >
                     <div
                       className={`flex items-center justify-center h-10 w-10 rounded-full text-white ${p.color} shrink-0`}
@@ -57,10 +55,10 @@ export default function ContactPage() {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-3">
                         <div className="truncate">
-                          <div className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                          <div className="text-sm font-medium text-foreground truncate">
                             {p.name}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+                          <div className="text-xs text-muted mt-0.5 truncate">
                             {p.role}
                           </div>
                         </div>
@@ -71,7 +69,7 @@ export default function ContactPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`${p.name} on LinkedIn`}
-                            className="p-2 rounded-md bg-gray-100 dark:bg-neutral-800/40 hover:bg-gray-200 dark:hover:bg-neutral-700/60 transition-colors text-blue-500 dark:text-blue-300"
+                            className="p-2 rounded-md bg-card hover:bg-card/90 transition-colors text-blue-500"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +79,7 @@ export default function ContactPage() {
                               fill="currentColor"
                               aria-hidden="true"
                             >
-                              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+                              <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.3c-.97 0-1.5-.66-1.5-1.4 0-.77.54-1.4 1.54-1.4s1.5.63 1.5 1.4c0 .74-.53 1.4-1.54 1.4zm13.5 10.3h-3v-4.8c0-1.2-.43-2-1.5-2-.82 0-1.31.55-1.52 1.08-.08.18-.1.43-.1.68v5.02h-3s.04-8.14 0-9h3v1.3c.4-.62 1.12-1.5 2.72-1.5 1.98 0 3.46 1.3 3.46 4.1v5.1z" />
                             </svg>
                           </a>
                           <a
@@ -89,7 +87,7 @@ export default function ContactPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             aria-label={`${p.name} on GitHub`}
-                            className="p-2 rounded-md bg-gray-100 dark:bg-neutral-800/40 hover:bg-gray-200 dark:hover:bg-neutral-700/60 transition-colors text-gray-800 dark:text-gray-100"
+                            className="p-2 rounded-md bg-card hover:bg-card/90 transition-colors text-foreground"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -105,7 +103,7 @@ export default function ContactPage() {
                           <a
                             href={`mailto:${p.email}`}
                             aria-label={`Email ${p.name}`}
-                            className="p-2 rounded-md bg-gray-100 dark:bg-neutral-800/40 hover:bg-gray-200 dark:hover:bg-neutral-700/60 transition-colors text-rose-500 dark:text-rose-300"
+                            className="p-2 rounded-md bg-card hover:bg-card/90 transition-colors text-rose-500"
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -126,16 +124,14 @@ export default function ContactPage() {
               </ul>
             </section>
 
-            <section className="bg-gray-100 dark:bg-neutral-800/50 rounded-xl p-5 sm:p-6 border border-neutral-200 dark:border-neutral-800">
-              <h2 className="text-sm font-medium text-gray-800 dark:text-gray-200">
+            <section className="bg-card rounded-xl p-5 sm:p-6 border border-border">
+              <h2 className="text-sm font-medium text-foreground">
                 Get in touch
               </h2>
-              <div className="mt-3 text-sm text-gray-600 dark:text-gray-300 space-y-3">
+              <div className="mt-3 text-sm text-muted space-y-3">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
-                      General
-                    </div>
+                    <div className="text-xs text-muted">General</div>
                     <a
                       href="mailto:hello@movieshop.example"
                       className="text-teal-600 dark:text-teal-300 font-medium hover:underline text-sm"
@@ -152,7 +148,7 @@ export default function ContactPage() {
                       href="https://github.com/TarekAaraichi/movieshop-app"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-md bg-white dark:bg-neutral-900/60 hover:bg-gray-50 dark:hover:bg-neutral-800/80 transition-colors text-gray-800 dark:text-gray-100 border border-neutral-200 dark:border-neutral-700"
+                      className="inline-flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-md bg-card hover:bg-card/90 transition-colors text-foreground border border-border"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -169,7 +165,7 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-neutral-200 dark:border-neutral-700 text-sm text-gray-500 dark:text-gray-400">
+                <div className="pt-3 border-t border-border text-sm text-muted">
                   Want faster support or to contribute? Open an issue or pull
                   request on GitHub and tag the team — we usually respond within
                   a few business days.

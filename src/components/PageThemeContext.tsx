@@ -32,15 +32,12 @@ export const PageThemeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // determine initial theme: localStorage -> prefers-color-scheme -> default dark
+    // Only honor an explicit user choice stored in localStorage.
     const stored =
       typeof window !== "undefined" ? localStorage.getItem("theme") : null;
-    let initial: Theme = "dark";
+    let initial: Theme = "light"; // default to light when user hasn't chosen
     if (stored === "light" || stored === "dark") {
       initial = stored as Theme;
-    } else if (typeof window !== "undefined" && window.matchMedia) {
-      initial = window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
     }
     setTheme(initial);
     // apply to body
@@ -82,7 +79,7 @@ export const PageThemeSwitcher = () => {
 
   return (
     <button
-      className="p-2 rounded-full hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-white"
+      className="p-2 rounded-full hover:bg-popover focus:outline-none focus:ring-2 focus:ring-offset-2"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       aria-label="Toggle page theme"
     >

@@ -187,7 +187,7 @@ export default function CarouselControls({ containerId }: Props) {
           title={`Previous — ${currentIndex + 1} of ${totalCount}`}
           onClick={() => scroll(-1)}
           disabled={!canLeft}
-          className={`rounded-full p-2 sm:p-3 shadow-lg transition-all disabled:opacity-20 disabled:filter disabled:grayscale bg-white/80 text-gray-800 hover:bg-white dark:bg-black/60 dark:text-white dark:hover:bg-black/80 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500`}
+          className={`rounded-full p-2 sm:p-3 shadow-lg transition-all disabled:opacity-20 disabled:filter disabled:grayscale bg-card text-foreground dark:bg-black/60 dark:text-white hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -212,7 +212,7 @@ export default function CarouselControls({ containerId }: Props) {
           title={`Next — ${currentIndex + 1} of ${totalCount}`}
           onClick={() => scroll(1)}
           disabled={!canRight}
-          className={`rounded-full p-2 sm:p-3 shadow-lg transition-all disabled:opacity-20 disabled:filter disabled:grayscale bg-white/80 text-gray-800 hover:bg-white dark:bg-black/60 dark:text-white dark:hover:bg-black/80 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500`}
+          className={`rounded-full p-2 sm:p-3 shadow-lg transition-all disabled:opacity-20 disabled:filter disabled:grayscale bg-card text-foreground dark:bg-black/60 dark:text-white dark:hover:bg-black/80 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500`}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -247,8 +247,8 @@ export default function CarouselControls({ containerId }: Props) {
               title={`Show page ${i + 1} of ${totalPages}`}
               className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-transform focus:outline-none ${
                 i === currentPage
-                  ? "bg-gray-800 dark:bg-neutral-200 scale-110"
-                  : "bg-gray-400/70 hover:bg-gray-500 dark:bg-neutral-600 dark:hover:bg-neutral-400"
+                  ? "bg-foreground scale-110"
+                  : "bg-muted/70 hover:bg-muted/90"
               }`}
             />
           ))}

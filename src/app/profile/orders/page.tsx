@@ -82,10 +82,10 @@ export default async function ProfileOrdersPage({
     <PageWrapper>
       <div className="max-w-4xl mx-auto">
         <header className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground">
             My Orders
           </h1>
-          <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400">
+          <p className="mt-2 text-sm text-muted">
             View your order history and details.
           </p>
         </header>
@@ -97,26 +97,26 @@ export default async function ProfileOrdersPage({
             orders.map((order) => (
               <div
                 key={order.id}
-                className="bg-white dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden shadow-md"
+                className="bg-card border border-border rounded-lg overflow-hidden shadow-md"
               >
-                <div className="p-4 border-b border-neutral-200 dark:border-neutral-800 flex justify-between items-center">
+                <div className="p-4 border-b border-border flex justify-between items-center">
                   <div>
-                    <p className="font-bold text-lg text-gray-900 dark:text-white">
+                    <p className="font-bold text-lg text-foreground">
                       Order #{order.id.substring(0, 8)}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm text-muted">
                       {new Date(order.orderDate).toLocaleDateString()}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-lg text-gray-900 dark:text-white">
+                    <p className="font-bold text-lg text-foreground">
                       ${order.totalAmount.toFixed(2)}
                     </p>
                     <span
                       className={`px-2 py-1 text-xs font-semibold rounded-full ${
                         order.status === "PAID"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/70 dark:text-green-300"
-                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/70 dark:text-yellow-300"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-yellow-100 text-yellow-800"
                       }`}
                     >
                       {order.status}
@@ -138,14 +138,14 @@ export default async function ProfileOrdersPage({
                           className="rounded-md object-cover"
                         />
                         <div className="flex-1">
-                          <p className="font-semibold text-gray-800 dark:text-neutral-200">
+                          <p className="font-semibold text-foreground">
                             {item.movie.title}
                           </p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                          <p className="text-sm text-muted">
                             Quantity: {item.quantity}
                           </p>
                         </div>
-                        <p className="font-semibold text-gray-800 dark:text-neutral-200">
+                        <p className="font-semibold text-foreground">
                           $
                           {Number(
                             Number(item.priceAtPurchase) * item.quantity,
@@ -153,7 +153,7 @@ export default async function ProfileOrdersPage({
                         </p>
                         <Link
                           href={`/orders/${order.id}`}
-                          className="ml-2 text-blue-600 dark:text-blue-400 hover:underline text-sm"
+                          className="ml-2 text-blue-600 hover:underline text-sm"
                         >
                           View
                         </Link>
@@ -164,9 +164,7 @@ export default async function ProfileOrdersPage({
               </div>
             ))
           ) : (
-            <p className="text-neutral-500 dark:text-neutral-400">
-              You have not placed any orders yet.
-            </p>
+            <p className="text-muted">You have not placed any orders yet.</p>
           )}
         </div>
 

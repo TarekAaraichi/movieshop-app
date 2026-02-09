@@ -141,8 +141,8 @@ export default function SignUpForm() {
   }
 
   return (
-    <Card className="max-w-md mx-auto bg-linear-to-r from-white to-indigo-50 dark:from-gray-800 dark:to-gray-900">
-      <div className="py-3 px-6">
+    <Card className="max-w-md mx-auto">
+      <div className="py-4 px-6 md:py-6 md:px-8">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
@@ -154,7 +154,9 @@ export default function SignUpForm() {
                   <FormControl>
                     <Input
                       {...field}
-                      className="dark:bg-gray-900 dark:text-gray-100"
+                      className="bg-card"
+                      autoComplete="name"
+                      required
                     />
                   </FormControl>
                   <FormMessage />
@@ -169,7 +171,13 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" {...field} />
+                    <Input
+                      type="email"
+                      {...field}
+                      className="bg-card"
+                      autoComplete="email"
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -183,7 +191,13 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input
+                      type="password"
+                      {...field}
+                      className="bg-card"
+                      autoComplete="new-password"
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -197,7 +211,13 @@ export default function SignUpForm() {
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input type="password" {...field} />
+                    <Input
+                      type="password"
+                      {...field}
+                      className="bg-card"
+                      autoComplete="new-password"
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -206,7 +226,7 @@ export default function SignUpForm() {
 
             <button
               type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
+              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition shadow-md"
             >
               Sign up
             </button>

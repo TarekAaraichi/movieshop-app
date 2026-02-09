@@ -17,9 +17,13 @@ export default async function SignUpPage({
 }) {
   const session = await auth.api.getSession({ headers: await headers() });
 
+  // `searchParams` may be a promise in some Next.js runtimes — await it
+  // before accessing properties to avoid runtime warnings.
+  const resolvedSearchParams = await searchParams;
+
   if (session) {
-    const callback = searchParams?.callbackUrl
-      ? String(searchParams.callbackUrl)
+    const callback = resolvedSearchParams?.callbackUrl
+      ? String(resolvedSearchParams.callbackUrl)
       : "/profile";
     redirect(callback);
   }
@@ -30,28 +34,28 @@ export default async function SignUpPage({
         <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           {/* Form column (DOM first for accessibility / SSR) */}
           <Card className="w-full rounded-2xl p-1 lg:order-last">
-            <div className="backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-gray-700/60 dark:border-gray-800/60">
+            <div className="rounded-2xl p-6 sm:p-8 shadow-lg bg-card border border-border">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-100">
+                  <h1 className="text-2xl font-bold text-foreground">
                     Create your account
                   </h1>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  <p className="mt-1 text-sm text-muted">
                     Join MovieShop to save favorites and get personalized
                     recommendations.
                   </p>
                 </div>
-                <div className="hidden sm:flex items-center rounded-full px-3 py-1 text-xs bg-gray-800 text-gray-200">
+                <div className="hidden sm:flex items-center rounded-full px-3 py-1 text-xs bg-card text-muted">
                   Free Secure
                 </div>
               </div>
 
               <div className="mt-6 space-y-4">
                 {/* Social auth placeholder (visually modern, non-functional if not wired) */}
-                <div className="flex gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
-                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 shadow-sm hover:shadow-md transition"
+                    className="inline-flex items-center justify-center gap-2 rounded-md border bg-card border-border px-3 py-2 text-sm text-foreground shadow-sm hover:shadow-md transition"
                     aria-label="Continue with Google"
                   >
                     <svg
@@ -81,7 +85,7 @@ export default async function SignUpPage({
 
                   <button
                     type="button"
-                    className="flex-1 inline-flex items-center justify-center gap-2 rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-100 shadow-sm hover:shadow-md transition"
+                    className="inline-flex items-center justify-center gap-2 rounded-md border bg-card border-border px-3 py-2 text-sm text-foreground shadow-sm hover:shadow-md transition"
                     aria-label="Continue with GitHub"
                   >
                     <svg
@@ -98,8 +102,8 @@ export default async function SignUpPage({
 
                 {/* Divider */}
                 <div className="relative text-center my-2">
-                  <span className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 border-t border-gray-700" />
-                  <span className="relative inline-block bg-gray-800 px-3 text-xs text-gray-300">
+                  <span className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 border-t border-border" />
+                  <span className="relative inline-block bg-card px-3 text-xs text-muted">
                     or
                   </span>
                 </div>
@@ -109,17 +113,17 @@ export default async function SignUpPage({
                   <SignUpForm />
                 </div>
 
-                <div className="mt-4 text-center text-sm text-gray-300">
+                <div className="mt-4 text-center text-sm text-muted">
                   Already have an account?{" "}
                   <a
                     href={
-                      searchParams && searchParams.callbackUrl
+                      resolvedSearchParams && resolvedSearchParams.callbackUrl
                         ? `/sign-in?callbackUrl=${encodeURIComponent(
-                            String(searchParams.callbackUrl),
+                            String(resolvedSearchParams.callbackUrl),
                           )}`
                         : "/sign-in"
                     }
-                    className="inline-flex items-center gap-1 text-indigo-400 font-medium hover:underline"
+                    className="inline-flex items-center gap-1 text-indigo-600 font-medium hover:underline dark:text-indigo-400"
                   >
                     Sign in
                   </a>
@@ -129,7 +133,7 @@ export default async function SignUpPage({
           </Card>
 
           {/* Promo / Visual column (hidden on small screens) — visually left on large screens */}
-          <aside className="hidden lg:flex lg:order-first flex-col justify-center rounded-2xl p-8 bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 text-white shadow-2xl transform transition-all duration-500 hover:-translate-y-1">
+          <aside className="hidden lg:flex lg:order-first flex-col justify-center rounded-2xl p-8 bg-linear-to-br from-indigo-600 via-purple-600 to-pink-500 text-white">
             <div className="mb-6">
               <h2 className="text-3xl font-extrabold tracking-tight">
                 Welcome to MovieShop

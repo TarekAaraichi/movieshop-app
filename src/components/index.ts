@@ -47,3 +47,4 @@ export { MovieCarousel } from "./MovieCarousel";
 export { default as PaginationControls } from "./PaginationControls";
 export { PaginationControlsSkeleton } from "./PaginationControlsSkeleton";
 export { YearFilter } from "./YearFilter";
+// SignInSkeleton removed — exported earlier but deleted

@@ -52,7 +52,7 @@ export default function AddToCartClientButton({
         <button
           type="button"
           disabled
-          className={`w-full bg-gray-600 text-white py-2 px-4 rounded-md shadow disabled:opacity-60 flex items-center justify-center gap-2 cursor-not-allowed ${
+          className={`w-full bg-card text-muted py-2 px-4 rounded-md shadow disabled:opacity-60 flex items-center justify-center gap-2 cursor-not-allowed ${
             buttonClassName ?? ""
           }`}
         >
@@ -85,7 +85,7 @@ export default function AddToCartClientButton({
         onClick={handleAdd}
         disabled={isPending}
         className={`w-full flex items-center justify-center gap-2 ${
-          buttonClassName ?? ""
+          buttonClassName ?? "btn-primary"
         }`}
       >
         {isPending ? (

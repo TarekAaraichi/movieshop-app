@@ -76,11 +76,9 @@ export default function CartClient({
 
   // If we later reintroduce transitions, restore isPending logic
   if (isPending && items.length === 0)
-    return <p className="text-gray-600 dark:text-gray-400">Loading...</p>;
+    return <p className="text-muted">Loading...</p>;
   if (items.length === 0)
-    return (
-      <p className="text-gray-600 dark:text-gray-400">Your cart is empty.</p>
-    );
+    return <p className="text-muted">Your cart is empty.</p>;
 
   return (
     <div className="space-y-4">
@@ -97,7 +95,7 @@ export default function CartClient({
         return (
           <div
             key={movie.id}
-            className="flex items-center justify-between border-b border-neutral-200 dark:border-neutral-700 pb-4 last:border-b-0"
+            className="flex items-center justify-between border-b border-border pb-4 last:border-b-0"
           >
             <div className="flex items-center px-2 space-x-4">
               <div className="w-20 h-20 relative mt-2">
@@ -111,18 +109,18 @@ export default function CartClient({
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-lg font-semibold text-blue-600 dark:text-blue-500">
+                  <h2 className="text-lg font-semibold text-foreground">
                     {movie.title}
                   </h2>
                   {typeof movie.stock === "number" &&
                     movie.stock > 0 &&
                     movie.stock <= 5 && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-600 dark:text-white text-xs font-semibold">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold">
                         Only {movie.stock} left
                       </span>
                     )}
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-muted">
                   {genreNames.length > 0 ? genreNames.join(", ") : "—"}
                   <br />
                   {/* {year ? ` ${year}` : ""}
@@ -140,7 +138,7 @@ export default function CartClient({
             </div>
             <div className="flex items-center space-x-1">
               <div className="flex items-center gap-1">
-                <span className="text-base font-semibold text-green-600 dark:text-green-500">
+                <span className="text-base font-semibold text-green-600">
                   {Number(movie.price).toLocaleString("sv-SE", {
                     style: "currency",
                     currency: "SEK",
@@ -151,18 +149,16 @@ export default function CartClient({
               <button
                 type="button"
                 onClick={() => onDec(movie.id)}
-                className="px-2 bg-gray-200 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors duration-150 text-gray-800 dark:text-gray-200 font-bold text-lg flex items-center justify-center w-8 h-8 rounded"
+                className="px-2 bg-card hover:brightness-95 transition-colors duration-150 text-foreground font-bold text-lg flex items-center justify-center w-8 h-8 rounded"
                 disabled={isPending}
               >
                 −
               </button>
-              <span className="px-3 text-gray-800 dark:text-gray-200">
-                {quantity}
-              </span>
+              <span className="px-3 text-foreground">{quantity}</span>
               <button
                 type="button"
                 onClick={() => onInc(movie.id, movie.stock ?? null)}
-                className="px-2 bg-gray-200 hover:bg-gray-300 dark:bg-neutral-700 dark:hover:bg-neutral-600 transition-colors duration-150 text-gray-800 dark:text-gray-200 font-bold text-lg flex items-center justify-center w-8 h-8 rounded"
+                className="px-2 bg-card hover:brightness-95 transition-colors duration-150 text-foreground font-bold text-lg flex items-center justify-center w-8 h-8 rounded"
                 disabled={
                   isPending ||
                   (typeof movie.stock === "number" && quantity >= movie.stock)
@@ -171,14 +167,14 @@ export default function CartClient({
                 +
               </button>
               {typeof movie.stock === "number" && quantity >= movie.stock && (
-                <div className="text-xs text-red-600 dark:text-red-500 ml-2">
+                <div className="text-xs text-red-600 ml-2">
                   Reached max stock
                 </div>
               )}
               <button
                 type="button"
                 onClick={() => onRemove(movie.id)}
-                className="text-red-600 hover:text-red-700 dark:text-red-500 dark:hover:text-red-400 font-medium px-2"
+                className="text-red-600 hover:text-red-700 font-medium px-2"
                 disabled={isPending}
               >
                 Remove

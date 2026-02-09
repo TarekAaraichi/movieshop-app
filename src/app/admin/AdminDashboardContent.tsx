@@ -100,14 +100,14 @@ function AdminPagination({
   const buttonBase =
     "min-w-[2.5rem] px-3 py-2 rounded-lg border text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-indigo-200/60 dark:focus:ring-indigo-400/40";
   const inactiveClasses =
-    "border-gray-200 text-gray-700 hover:border-indigo-300 hover:bg-indigo-50 hover:text-indigo-700 dark:border-gray-700 bg-gray-900 dark:text-gray-200 dark:hover:border-indigo-500/60 dark:hover:bg-indigo-500/10 dark:hover:text-white";
+    "border border-border bg-card text-muted hover:brightness-95";
   const activeClasses =
     "border-indigo-300 bg-indigo-100 text-indigo-800 shadow-sm dark:border-indigo-400/60 dark:bg-indigo-500/30 dark:text-indigo-100";
   const disabledClasses = "opacity-40 cursor-not-allowed";
 
   return (
     <div className="mt-6 flex flex-col items-center gap-3">
-      <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+      <p className="text-xs uppercase tracking-wide text-muted">
         {totalItems === 0
           ? "Showing 0 results"
           : `Showing ${firstItem}-${lastItem} of ${totalItems}`}
@@ -129,7 +129,7 @@ function AdminPagination({
             return (
               <span
                 key={`${page}-${index}`}
-                className="px-2 text-sm text-gray-400 dark:text-gray-500"
+                className="px-2 text-sm text-muted"
               >
                 …
               </span>

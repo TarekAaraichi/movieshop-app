@@ -113,17 +113,17 @@ export default async function ProfilePage() {
       <PageWrapper>
         <div className="max-w-4xl mx-auto">
           <header className="mb-8">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground">
               My Profile
             </h1>
-            <p className="mt-2 text-sm text-gray-600 dark:text-neutral-400">
+            <p className="mt-2 text-sm text-muted">
               View your account details and order history.
             </p>
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="md:col-span-1">
-              <div className="bg-white dark:bg-neutral-800/50 rounded-lg shadow-md p-6 text-center border border-neutral-200 dark:border-neutral-800">
+              <div className="bg-card rounded-lg shadow-md p-6 text-center border border-border">
                 <div className="relative w-32 h-32 mx-auto mb-4">
                   <Image
                     src={
@@ -140,20 +140,18 @@ export default async function ProfilePage() {
                     alt="User avatar"
                     width={128}
                     height={128}
-                    className="rounded-full object-cover border-2 border-neutral-200 dark:border-neutral-700"
+                    className="rounded-full object-cover border-2 border-border"
                     unoptimized
                   />
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+                <h2 className="text-xl font-bold text-foreground">
                   {user.name}
                 </h2>
-                <p className="text-sm text-gray-500 dark:text-neutral-400">
-                  {user.email}
-                </p>
+                <p className="text-sm text-muted">{user.email}</p>
                 <div className="mt-4 flex flex-col sm:flex-row sm:justify-center gap-2">
                   <Link
                     href="/profile/edit"
-                    className="inline-block bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 transition-colors"
+                    className="inline-block btn-primary"
                   >
                     Edit Profile
                   </Link>
@@ -169,7 +167,7 @@ export default async function ProfilePage() {
 
             <div className="md:col-span-2">
               <section className="mb-8">
-                <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                <h3 className="text-xl font-bold mb-4 text-foreground">
                   Shipping Addresses
                 </h3>
                 <div className="space-y-4">
@@ -177,25 +175,21 @@ export default async function ProfilePage() {
                     uniqueAddresses.map((addr) => (
                       <div
                         key={addr.id}
-                        className="bg-white dark:bg-neutral-800/50 rounded-lg p-4 border border-neutral-200 dark:border-neutral-800"
+                        className="bg-card rounded-lg p-4 border border-border"
                       >
-                        <p className="font-semibold text-gray-800 dark:text-neutral-200">
+                        <p className="font-semibold text-foreground">
                           {addr.line1}
                         </p>
                         {addr.line2 && (
-                          <p className="text-gray-600 dark:text-neutral-400">
-                            {addr.line2}
-                          </p>
+                          <p className="text-muted">{addr.line2}</p>
                         )}
-                        <p className="text-gray-600 dark:text-neutral-400">
+                        <p className="text-muted">
                           {addr.city}, {addr.postalCode}, {addr.country}
                         </p>
                       </div>
                     ))
                   ) : (
-                    <p className="text-gray-500 dark:text-neutral-400">
-                      No addresses found.
-                    </p>
+                    <p className="text-muted">No addresses found.</p>
                   )}
                 </div>
               </section>

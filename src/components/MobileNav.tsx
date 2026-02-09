@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
@@ -22,48 +22,72 @@ interface MobileNavProps {
 export function MobileNav({ session, navLinks }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const openBtnRef = useRef<HTMLButtonElement | null>(null);
 
+  // Close menu when route changes
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
 
+  // Lock scroll when open and manage focus
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      // focus the close button once opened
+      setTimeout(() => closeBtnRef.current?.focus(), 0);
     } else {
       document.body.style.overflow = "auto";
+      // restore focus to open button when closed
+      setTimeout(() => openBtnRef.current?.focus(), 0);
     }
     return () => {
       document.body.style.overflow = "auto";
     };
   }, [isOpen]);
 
+  // close on Escape
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setIsOpen(false);
+    }
+    if (isOpen) document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isOpen]);
+
   return (
     <div className="md:hidden">
       <button
+        ref={openBtnRef}
         onClick={() => setIsOpen(true)}
-        className="p-2 rounded-md hover:bg-gray-800"
+        className="p-2 rounded-md hover:bg-card/60 focus:outline-none focus:ring-2 focus:ring-indigo-300/50"
         aria-label="Open navigation menu"
+        aria-expanded={isOpen}
       >
         <Menu className="h-6 w-6" />
       </button>
 
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
+          role="presentation"
         >
           <div
-            className="fixed top-0 right-0 h-full w-full max-w-xs bg-gray-950 p-6 shadow-lg"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Main navigation"
+            className="fixed top-0 right-0 h-full w-full max-w-xs bg-card p-6 shadow-lg text-foreground"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-8">
-              <Link href="/" className="font-bold text-xl">
+              <Link href="/" className="font-bold text-xl text-foreground">
                 MovieShop
               </Link>
               <button
+                ref={closeBtnRef}
                 onClick={() => setIsOpen(false)}
-                className="p-2 rounded-md hover:bg-gray-800"
+                className="p-2 rounded-md hover:bg-card/60 focus:outline-none focus:ring-2 focus:ring-indigo-300/50"
                 aria-label="Close navigation menu"
               >
                 <X className="h-6 w-6" />
@@ -74,7 +98,7 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
               {navLinks.map((link) =>
                 link.children ? (
                   <div key={link.label} className="flex flex-col gap-2">
-                    <h3 className="px-3 py-2 font-semibold text-gray-400">
+                    <h3 className="px-3 py-2 font-semibold text-muted">
                       {link.label}
                     </h3>
                     {link.children.map((child) => (
@@ -83,8 +107,8 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
                         href={child.href!}
                         className={`pl-6 pr-3 py-2 rounded-md font-medium ${
                           pathname === child.href
-                            ? "bg-gray-800 text-white"
-                            : "text-gray-300 hover:bg-gray-800/50 hover:text-white"
+                            ? "bg-card text-foreground"
+                            : "text-muted hover:bg-card/60 hover:text-foreground"
                         }`}
                       >
                         {child.label}
@@ -97,8 +121,8 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
                     href={link.href!}
                     className={`px-3 py-2 rounded-md font-medium ${
                       pathname === link.href
-                        ? "bg-gray-800 text-white"
-                        : "text-gray-300 hover:bg-gray-800/50 hover:text-white"
+                        ? "bg-card text-foreground"
+                        : "text-muted hover:bg-card/60 hover:text-foreground"
                     }`}
                   >
                     {link.label}
@@ -107,14 +131,14 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
               )}
             </nav>
 
-            <div className="border-t border-gray-800 my-6" />
+            <div className="border-t border-border my-6" />
 
             <div className="flex flex-col gap-4">
               {session?.user ? (
                 <>
                   <Link
                     href="/profile"
-                    className="flex items-center gap-3 px-3 py-2 rounded-md font-medium text-gray-300 hover:bg-gray-800/50 hover:text-white"
+                    className="flex items-center gap-3 px-3 py-2 rounded-md font-medium text-muted hover:bg-card/60 hover:text-foreground"
                   >
                     <Image
                       src={session.user.image || "/images/default-avatar.png"}
@@ -129,15 +153,12 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
                 </>
               ) : (
                 <>
-                  <Link
-                    href="/sign-in"
-                    className="px-4 py-2 text-center rounded-md font-semibold bg-indigo-600 text-white hover:bg-indigo-500"
-                  >
+                  <Link href="/sign-in" className="btn-primary">
                     Sign In
                   </Link>
                   <Link
                     href="/sign-up"
-                    className="px-4 py-2 text-center rounded-md font-semibold bg-gray-700 text-white hover:bg-gray-600"
+                    className="px-4 py-2 text-center rounded-md font-semibold bg-card text-foreground border border-border hover:brightness-95"
                   >
                     Sign Up
                   </Link>
