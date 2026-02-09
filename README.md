@@ -132,6 +132,22 @@ The application will be available at `http://localhost:3000`.
 
 These features use Next.js Server Actions and server-side Prisma queries; see `src/server/actions/ordersActions.ts` for the cancel logic.
 
+## Accessibility Improvements
+
+- Added a server-rendered skip target so the "Skip to content" link always
+   points to a valid anchor even when main content is client-rendered.
+- Fixed ARIA attribute values (e.g., `aria-selected`) and updated the NavBar
+   menu to use native `a`/`button` elements with proper `aria-controls`/`id`.
+- Run an automated accessibility scan locally with Pa11y:
+
+```bash
+npx pa11y http://localhost:3000
+```
+
+These changes were applied to improve compatibility with automated scanners
+and screen readers; see `src/app/layout.tsx`, `src/components/AdminTabSwitcher.tsx`,
+and `src/components/NavBarClient.tsx` for the implemented fixes.
+
 ## Theming & Tokens
 
 - The app centralizes visual tokens in `src/app/globals.css` and provides utility classes (e.g., `bg-card`, `bg-popover`, `text-foreground`) to avoid ad-hoc Tailwind color classes.
@@ -161,5 +177,6 @@ npm run seed
 - Centralized theme tokens and removed many hard-coded Tailwind color classes across admin components.
 - Introduced a `Button` primitive and migrated many admin buttons/components to use it for consistent variants and accessibility.
 - Added admin Orders tab, search, filters, and a cancel server action. See the commit message that closed issues #39 and #40 for full context.
+
 
 [Back to top](#-movieshop-a-full-stack-nextjs-15-showcase)
