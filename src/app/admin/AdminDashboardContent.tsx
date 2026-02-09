@@ -13,8 +13,9 @@ import {
   unarchiveMovie,
 } from "@/server/actions/moviesActions";
 import { deleteUser, setUserRole } from "@/server/actions/usersActions";
+import { cancelOrder } from "@/server/actions/ordersActions";
 
-type AdminTab = "movies" | "persons" | "users";
+type AdminTab = "movies" | "persons" | "users" | "orders";
 
 type MovieForAdmin = {
   id: string;
@@ -40,6 +41,16 @@ type UserForAdmin = {
   role: string | null;
 };
 
+type OrderForAdmin = {
+  id: string;
+  userId: string;
+  userName: string | null;
+  userEmail: string | null;
+  totalAmount: string;
+  status: string;
+  orderDate: string;
+};
+
 type GenreOption = {
   id: string;
   name: string;
@@ -48,6 +59,7 @@ type GenreOption = {
 const MOVIES_PAGE_SIZE = 12;
 const PERSONS_PAGE_SIZE = 8;
 const USERS_PAGE_SIZE = 8;
+const ORDERS_PAGE_SIZE = 10;
 
 interface AdminPaginationProps {
   currentPage: number;
@@ -187,6 +199,7 @@ interface AdminDashboardContentProps {
   personRoles: string[];
   userRoles: string[];
   orderCounts: Record<string, number>;
+  orders?: OrderForAdmin[];
 }
 
 export default function AdminDashboardContent({
@@ -202,6 +215,7 @@ export default function AdminDashboardContent({
   personRoles,
   userRoles,
   orderCounts,
+  orders,
 }: AdminDashboardContentProps) {
   const [activeTab, setActiveTab] = React.useState<AdminTab>(initialTab);
   const [searchTerm, setSearchTerm] = React.useState(initialSearch);
@@ -215,6 +229,10 @@ export default function AdminDashboardContent({
   const [moviePage, setMoviePage] = React.useState(1);
   const [personPage, setPersonPage] = React.useState(1);
   const [userPage, setUserPage] = React.useState(1);
+  const [orderPage, setOrderPage] = React.useState(1);
+  const [selectedOrderStatus, setSelectedOrderStatus] = React.useState(
+    "",
+  );
 
   React.useEffect(() => {
     setActiveTab(initialTab);
@@ -310,6 +328,7 @@ export default function AdminDashboardContent({
     setMoviePage(1);
     setPersonPage(1);
     setUserPage(1);
+    setOrderPage(1);
   }, [searchTerm]);
 
   React.useEffect(() => {
@@ -330,7 +349,7 @@ export default function AdminDashboardContent({
     }
 
     const params = new URLSearchParams(window.location.search);
-    ["tab", "q", "genre", "role", "personRole", "userRole"].forEach((key) => {
+    ["tab", "q", "genre", "role", "personRole", "userRole", "orderStatus"].forEach((key) => {
       params.delete(key);
     });
 
@@ -355,6 +374,9 @@ export default function AdminDashboardContent({
         params.set("role", selectedUserRole);
       }
     }
+    if (selectedOrderStatus) {
+      params.set("orderStatus", selectedOrderStatus);
+    }
 
     const query = params.toString();
     const nextUrl = query
@@ -367,7 +389,11 @@ export default function AdminDashboardContent({
     selectedGenre,
     selectedPersonRole,
     selectedUserRole,
+    selectedOrderStatus,
   ]);
+
+  // keep selectedOrderStatus initialised to empty
+
 
   const filteredMovies = React.useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -411,6 +437,38 @@ export default function AdminDashboardContent({
       return matchesTerm && matchesRole;
     });
   }, [users, searchTerm, selectedUserRole]);
+
+  const filteredOrders = React.useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    const allOrders = orders ?? ([] as OrderForAdmin[]);
+    return allOrders.filter((order) => {
+      const matchesTerm = term
+        ? [order.id, order.userName ?? "", order.userEmail ?? ""]
+            .filter(Boolean)
+            .some((value) => value.toLowerCase().includes(term))
+        : true;
+      const matchesStatus = selectedOrderStatus
+        ? order.status === selectedOrderStatus
+        : true;
+      return matchesTerm && matchesStatus;
+    });
+  }, [orders, searchTerm, selectedOrderStatus]);
+
+  const totalOrderPages = Math.max(
+    1,
+    Math.ceil(filteredOrders.length / ORDERS_PAGE_SIZE),
+  );
+
+  React.useEffect(() => {
+    setOrderPage((previous) => Math.min(previous, totalOrderPages));
+  }, [totalOrderPages]);
+
+  const paginatedOrders = React.useMemo(() => {
+    const start = (orderPage - 1) * ORDERS_PAGE_SIZE;
+    return filteredOrders.slice(start, start + ORDERS_PAGE_SIZE);
+  }, [filteredOrders, orderPage]);
+
+  const showOrderPagination = filteredOrders.length > ORDERS_PAGE_SIZE;
 
   const totalMoviePages = Math.max(
     1,
@@ -472,7 +530,9 @@ export default function AdminDashboardContent({
                   ? "Search movies..."
                   : activeTab === "persons"
                     ? "Search people..."
-                    : "Search users..."
+                    : activeTab === "users"
+                      ? "Search users..."
+                      : "Search orders by ID, user name or email..."
               }
               value={searchTerm}
               onValueChange={setSearchTerm}
@@ -525,6 +585,20 @@ export default function AdminDashboardContent({
                     {role}
                   </option>
                 ))}
+              </select>
+            )}
+
+            {activeTab === "orders" && (
+              <select
+                aria-label="Filter by order status"
+                value={selectedOrderStatus}
+                onChange={(event) => setSelectedOrderStatus(event.target.value)}
+                className="cursor-pointer min-w-40 rounded-lg border border-border bg-popover px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40"
+              >
+                <option value="">All statuses</option>
+                <option value="PENDING">Pending</option>
+                <option value="PAID">Paid</option>
+                <option value="CANCELLED">Cancelled</option>
               </select>
             )}
           </div>
@@ -825,6 +899,80 @@ export default function AdminDashboardContent({
                 totalItems={filteredUsers.length}
                 pageSize={USERS_PAGE_SIZE}
                 onPageChange={setUserPage}
+              />
+            )}
+          </div>
+        )}
+
+        {activeTab === "orders" && (
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-1 gap-4">
+              {paginatedOrders.map((order) => {
+                const when = new Date(order.orderDate).toLocaleString();
+                return (
+                  <div
+                    key={order.id}
+                    className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-lg transition-all duration-300 md:flex-row md:items-center md:justify-between"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div>
+                        <div className="text-base font-semibold text-foreground">
+                          Order {order.id.slice(0, 8)}
+                        </div>
+                        <div className="text-sm text-muted">
+                          {order.userName ?? order.userEmail}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <div className="text-sm font-semibold text-foreground">
+                        SEK {order.totalAmount}
+                      </div>
+
+                      <span className="rounded-full border px-3 py-1 border-border bg-popover text-muted">
+                        {order.status}
+                      </span>
+
+                      <div className="text-sm text-muted">{when}</div>
+
+                      <Link
+                        href={`/admin/orders/${order.id}`}
+                        className="font-semibold text-muted transition hover:text-foreground"
+                      >
+                        View
+                      </Link>
+                      {order.status !== "CANCELLED" && (
+                        <form action={cancelOrder} className="inline-block">
+                          <input type="hidden" name="orderId" value={order.id} />
+                          <Button
+                            type="submit"
+                            className="ml-2 rounded-full"
+                            size="sm"
+                            variant="destructive"
+                            aria-label={`Cancel order ${order.id}`}
+                          >
+                            Cancel
+                          </Button>
+                        </form>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+
+              {filteredOrders.length === 0 && (
+                <div className="rounded-2xl p-6 text-center text-sm text-muted">
+                  No orders match the current filters.
+                </div>
+              )}
+            </div>
+            {showOrderPagination && (
+              <AdminPagination
+                currentPage={orderPage}
+                totalItems={filteredOrders.length}
+                pageSize={ORDERS_PAGE_SIZE}
+                onPageChange={setOrderPage}
               />
             )}
           </div>
