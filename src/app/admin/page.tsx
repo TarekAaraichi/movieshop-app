@@ -65,6 +65,8 @@ export default async function AdminPage({
     orderBy: { email: "asc" },
   });
 
+  const ordersCountPromise = prisma.order.count();
+
   // fetch actual filter options from DB
   const genresPromise = prisma.genre.findMany({ orderBy: { name: "asc" } });
   // person roles are enum values referenced on MoviePerson.role; gather distinct ones
@@ -78,15 +80,23 @@ export default async function AdminPage({
     distinct: ["role"],
   });
 
-  const [movies, personsRaw, users, genres, personRolesRaw, userRolesRaw] =
-    await Promise.all([
-      moviesPromise,
-      personsPromiseTyped,
-      usersPromise,
-      genresPromise,
-      personRolesPromise,
-      userRolesPromise,
-    ]);
+  const [
+    movies,
+    personsRaw,
+    users,
+    genres,
+    personRolesRaw,
+    userRolesRaw,
+    totalOrdersCount,
+  ] = await Promise.all([
+    moviesPromise,
+    personsPromiseTyped,
+    usersPromise,
+    genresPromise,
+    personRolesPromise,
+    userRolesPromise,
+    ordersCountPromise,
+  ]);
 
   const personRoles = Array.from(
     new Set(personRolesRaw.map((r) => r.role)),
@@ -132,6 +142,12 @@ export default async function AdminPage({
       sublabel: "Library",
       accent: "from-amber-500 to-orange-500",
     },
+    {
+      label: "Orders",
+      value: totalOrdersCount,
+      sublabel: "Total",
+      accent: "from-rose-500 to-red-500",
+    },
   ];
 
   return (
@@ -161,7 +177,7 @@ export default async function AdminPage({
           </header>
 
           <section className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
               {stats.map((stat) => (
                 <div
                   key={stat.label}
