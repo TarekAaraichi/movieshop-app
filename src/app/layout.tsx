@@ -74,19 +74,13 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
-        {/* Inline theme sync: apply stored theme class immediately so
-            server-rendered skeletons match the user's chosen theme before
-            React hydrates. Do NOT fall back to OS preference; only apply
-            when an explicit `theme` value exists in localStorage. */}
+        {/* Inline theme sync: only add a stored theme class (do not remove
+            any server-provided classes). This avoids hydration warnings by
+            leaving the server DOM untouched when no explicit stored theme
+            exists. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{(function(){
-          var t = null;
-          try{ t = localStorage.getItem('theme'); }catch(e){}
-          if(t === 'light' || t === 'dark'){
-            try{ document.documentElement.classList.remove('light','dark'); document.documentElement.classList.add(t === 'dark' ? 'dark' : 'light'); }catch(e){}
-          }
-        })()}catch(e){} `,
+            __html: `try{(function(){var t=null;try{t=localStorage.getItem('theme')}catch(e){}if(t==='dark'){try{document.documentElement.classList.add('dark')}catch(e){} }else if(t==='light'){try{document.documentElement.classList.add('light')}catch(e){} }})()}catch(e){};`,
           }}
         />
         <a
