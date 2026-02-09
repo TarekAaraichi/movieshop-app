@@ -108,25 +108,25 @@ export default function EditMoviePage({ movie }: EditMoviePageProps) {
   }
 
   const inputClasses =
-    "w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-medium text-slate-900 shadow-sm transition focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 placeholder:text-slate-500 !bg-white";
-  const fieldLabelClasses = "text-sm font-semibold text-slate-200";
-  const fieldHintClasses = "mt-1 text-xs font-medium text-slate-400";
+    "w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40 bg-popover placeholder:text-muted";
+  const fieldLabelClasses = "text-sm font-semibold text-foreground";
+  const fieldHintClasses = "mt-1 text-xs font-medium text-muted";
   const fieldGrid = "grid gap-2 sm:grid-cols-[160px_1fr] sm:items-center";
 
   return (
     <PageWrapper>
       <div className="min-h-screen bg-transparent px-4 py-6 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl space-y-10">
-          <div className="rounded-3xl border border-slate-200/10 bg-gray-600 p-6 sm:p-8 shadow-2xl">
-            <h1 className="text-3xl font-bold text-white sm:text-4xl">
+          <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-2xl">
+            <h1 className="text-3xl font-bold text-foreground sm:text-4xl">
               Edit Movie
             </h1>
-            <p className="mt-2 max-w-2xl text-sm text-indigo-100/90">
+            <p className="mt-2 max-w-2xl text-sm text-muted">
               Update movie details inline. Changes are applied after saving.
             </p>
           </div>
 
-          <Card className="rounded-3xl border-slate-800 bg-gray-600 p-6 text-slate-100 shadow-2xl sm:p-8">
+          <Card className="rounded-3xl border-border bg-card p-6 text-foreground shadow-2xl sm:p-8">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}

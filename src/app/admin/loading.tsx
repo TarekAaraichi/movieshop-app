@@ -4,7 +4,7 @@ export default function AdminLoading() {
   return (
     <PageWrapper>
       <div className="rounded-3xl bg-transparent">
-        <div className="min-h-screen space-y-8 text-zinc-100 p-4 sm:p-6 lg:p-8">
+        <div className="min-h-screen space-y-8 text-foreground p-4 sm:p-6 lg:p-8">
           <header className="max-w-7xl mx-auto">
             <div className="overflow-hidden rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-xl">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">

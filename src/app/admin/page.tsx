@@ -7,6 +7,7 @@ import prisma from "@/lib/prisma";
 import { PageWrapper } from "@/components/PageThemeContext";
 import { requireAdmin } from "@/lib/requireAdmin";
 import AdminDashboardContent from "./AdminDashboardContent";
+import AdminToastsClient from "@/components/admin/AdminToastsClient";
 
 type PersonWithMovies = {
   id: string;
@@ -135,20 +136,21 @@ export default async function AdminPage({
 
   return (
     <PageWrapper>
+      <AdminToastsClient />
       <div className="rounded-3xl bg-transparent">
-        <div className="min-h-screen space-y-8 text-zinc-100 p-4 sm:p-6 lg:p-8">
+        <div className="min-h-screen space-y-8 text-foreground p-4 sm:p-6 lg:p-8">
           <header className="max-w-7xl mx-auto">
-            <div className="rounded-3xl border border-zinc-800 bg-linear-to-br from-gray-900 via-gray-700 to-gray-500 p-6 sm:p-8 shadow-xl">
+            <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-xl">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
                 <div>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-indigo-200">
+                  <span className="inline-flex items-center gap-2 rounded-full border border-border bg-popover px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
                     Control Center
                   </span>
-                  <h1 className="mt-3 text-3xl md:text-4xl font-bold text-white">
+                  <h1 className="mt-3 text-3xl md:text-4xl font-bold text-foreground">
                     Admin Dashboard
                   </h1>
                   {adminUser?.name && (
-                    <p className="mt-2 text-sm text-indigo-100/80">
+                    <p className="mt-2 text-sm text-muted">
                       Welcome back, {adminUser.name}. Manage content, people,
                       and users from one place.
                     </p>
@@ -163,22 +165,22 @@ export default async function AdminPage({
               {stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-5 shadow-lg transition hover:-translate-y-0.5 hover:shadow-2xl"
+                  className="rounded-3xl border border-border bg-card p-5 shadow-lg transition hover:-translate-y-0.5 hover:shadow-2xl"
                 >
                   <div
-                    className={`inline-flex items-center rounded-full bg-linear-to-r ${stat.accent} px-3 py-1 text-xs font-semibold text-white/90`}
+                    className={`inline-flex items-center rounded-full bg-linear-to-r ${stat.accent} px-3 py-1 text-xs font-semibold text-foreground opacity-90`}
                   >
                     {stat.label}
                   </div>
                   <div className="mt-4 flex items-baseline gap-2">
-                    <span className="text-3xl font-bold text-white">
+                    <span className="text-3xl font-bold text-foreground">
                       {stat.value}
                     </span>
-                    <span className="text-xs uppercase tracking-wide text-zinc-400">
+                    <span className="text-xs uppercase tracking-wide text-muted">
                       total
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-zinc-400">{stat.sublabel}</p>
+                  <p className="mt-2 text-sm text-muted">{stat.sublabel}</p>
                 </div>
               ))}
             </div>

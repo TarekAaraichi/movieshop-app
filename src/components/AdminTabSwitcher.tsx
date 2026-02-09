@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui";
+import { Button } from "@/components/ui/button";
 
 type AdminTab = "movies" | "persons" | "users";
 
@@ -43,12 +43,10 @@ export default function AdminTabSwitcher({
   };
 
   const containerClasses =
-    `flex items-center gap-1 rounded-full border border-zinc-800 bg-zinc-900/70 p-1 text-sm font-medium text-zinc-300 ${className}`.trim();
+    `flex items-center gap-1 rounded-full border border-border bg-card p-1 text-sm font-medium text-muted ${className}`.trim();
   const baseClasses = "rounded-full px-4 py-2 transition";
-  const activeClasses =
-    "bg-indigo-500/20 text-indigo-100 shadow-[0_0_0_1px_rgba(99,102,241,0.35)]";
-  const inactiveClasses =
-    "text-zinc-400 hover:bg-zinc-800/80 hover:text-zinc-100";
+  const activeClasses = "bg-popover text-foreground shadow-sm";
+  const inactiveClasses = "text-muted hover:bg-popover hover:text-foreground";
 
   return (
     <div
@@ -60,15 +58,15 @@ export default function AdminTabSwitcher({
         const isActive = tab.id === (activeTab as AdminTab);
         return (
           <Button
-              key={tab.id}
-              type="button"
-              role="tab"
-              aria-selected={isActive}
-              className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
-              onClick={() => handleTabClick(tab.id)}
-            >
-              {tab.label}
-            </Button>
+            key={tab.id}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
+            onClick={() => handleTabClick(tab.id)}
+          >
+            {tab.label}
+          </Button>
         );
       })}
     </div>
