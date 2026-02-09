@@ -15,13 +15,9 @@ import { useRouter } from "next/navigation";
 
 type NavBarProps = {
   isAuthenticated?: boolean;
-  isAdmin?: boolean;
 };
 
-export default function NavBarClient({
-  isAuthenticated = false,
-  isAdmin = false,
-}: NavBarProps) {
+export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
@@ -60,7 +56,7 @@ export default function NavBarClient({
     };
   }, []);
 
-  if (isAuthenticated && isAdmin) {
+  if (isAuthenticated) {
     return (
       <nav className="container mx-auto flex justify-between items-center p-4">
         <div className="text-2xl font-bold tracking-wide">

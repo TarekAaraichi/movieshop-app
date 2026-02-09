@@ -36,9 +36,9 @@ export async function requireAdmin(callbackUrl = "/admin") {
     select: { role: true, name: true, email: true },
   });
 
-  if (dbUser?.role !== "admin") {
-    redirect("/");
-  }
-
+  // NOTE: role checks removed per request — allow any authenticated session
+  // to proceed. This helper now only ensures a session exists and returns
+  // the session and DB user metadata. Caller components may still inspect
+  // `user.role` if they want to conditionally render UI.
   return { session, user: dbUser } as RequireAdminResult;
 }

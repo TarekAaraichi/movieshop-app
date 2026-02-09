@@ -50,7 +50,7 @@ export default async function RootLayout({
 }) {
   const session = (await getServerSession()) as Session | null;
 
-  const isAdmin = session?.user?.role === "admin";
+  // no role-based checks here; use `session` truthiness for auth-aware UI
 
   const navLinks = [
     { href: "/movies", label: "Movies" },
@@ -160,6 +160,14 @@ export default async function RootLayout({
                         </Link>
                       ),
                     )}
+                    {session && (
+                      <Link
+                        href="/admin"
+                        className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm text-muted hover:text-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-300/40"
+                      >
+                        Admin
+                      </Link>
+                    )}
                   </nav>
 
                   <div className="grow" />
@@ -167,7 +175,7 @@ export default async function RootLayout({
                   <div className="hidden md:flex items-center gap-4">
                     {session ? (
                       <>
-                        {isAdmin && (
+                        {session && (
                           <Link
                             href="/admin"
                             className="px-3 py-1 rounded-md text-sm font-semibold bg-red-600/80 text-white hover:bg-red-500"
