@@ -36,18 +36,30 @@ export default async function GenresPage() {
             Browse by Genre
           </h1>
         </header>
-        <div className="space-y-12">
-          {genres.map((genre) => (
-            <MovieCarousel
-              key={genre.id}
-              title={genre.name}
-              movies={genre.movies.map((gm) => gm.movie)}
-              viewMoreHref={`/collections/genres/${encodeURIComponent(
-                genre.name,
-              )}`}
-            />
-          ))}
-        </div>
+
+        {genres.length === 0 ? (
+          <div className="space-y-6 text-center">
+            <p className="text-2xl font-semibold">No genres found</p>
+            <p className="text-muted">
+              There are no genres in the database yet. Add some movies or seed
+              demo data to populate this page.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-12">
+            {genres.map((genre) => (
+              <MovieCarousel
+                key={genre.id}
+                title={genre.name}
+                movies={genre.movies.map((gm) => gm.movie)}
+                viewMoreHref={`/collections/genres/${encodeURIComponent(
+                  genre.name,
+                )}`}
+                emptyMessage={`No movies have been added to ${genre.name} yet.`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </PageWrapper>
   );

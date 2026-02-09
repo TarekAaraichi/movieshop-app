@@ -20,6 +20,7 @@ interface MovieCarouselProps {
   movies: MovieForCarousel[];
   viewMoreHref?: string;
   headerClassName?: string;
+  emptyMessage?: string;
 }
 
 export function MovieCarousel({
@@ -27,6 +28,7 @@ export function MovieCarousel({
   movies,
   viewMoreHref,
   headerClassName,
+  emptyMessage,
 }: MovieCarouselProps) {
   const id = `carousel-${title.replace(/\s+/g, "-").toLowerCase()}`;
 
@@ -65,7 +67,9 @@ export function MovieCarousel({
       </div>
       {movies.length === 0 ? (
         <div className="flex items-center justify-center h-48 bg-card/60 rounded-lg">
-          <p className="text-muted">No new releases for this period.</p>
+          <p className="text-muted">
+            {emptyMessage ?? "No new releases for this period."}
+          </p>
         </div>
       ) : (
         <div className="relative group">
