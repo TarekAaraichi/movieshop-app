@@ -8,6 +8,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 export default function SignOutButton() {
   const router = useRouter();
@@ -18,12 +19,18 @@ export default function SignOutButton() {
       await authClient.signOut({
         fetchOptions: {
           onResponse: () => {
+            try {
+              toast.success("Signed out successfully.");
+            } catch {}
             router.push("/");
             router.refresh();
           },
         },
       });
     } catch {
+      try {
+        toast.error("Sign out failed.");
+      } catch {}
       router.push("/");
       router.refresh();
     }
