@@ -8,6 +8,7 @@ import {
   type ReactNode,
 } from "react";
 import { Sun, Moon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type Theme = "light" | "dark";
 
@@ -78,13 +79,15 @@ export const PageThemeSwitcher = () => {
   const { theme, setTheme } = usePageTheme();
 
   return (
-    <button
-      className=" cursor-pointer p-2 rounded-full hover:bg-popover focus:outline-none focus:ring-2 focus:ring-offset-2"
+    <Button
+      variant="ghost"
+      size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       aria-label="Toggle page theme"
+      className="p-2 rounded-full hover:bg-popover"
     >
       {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-    </button>
+    </Button>
   );
 };
 

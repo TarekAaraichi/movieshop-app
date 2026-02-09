@@ -6,11 +6,12 @@
  */
 
 import { useFormStatus } from "react-dom";
+import { Button } from "@/components/ui";
 
 export default function AddToCartButton({ disabled }: { disabled?: boolean }) {
   const { pending } = useFormStatus();
   return (
-    <button
+    <Button
       type="submit"
       disabled={pending || disabled}
       className={`w-full py-2 px-4 rounded-md shadow flex items-center justify-center gap-2 ${
@@ -38,6 +39,6 @@ export default function AddToCartButton({ disabled }: { disabled?: boolean }) {
       </svg>
 
       {disabled ? "Archived" : pending ? "Adding…" : "Add to Cart"}
-    </button>
+    </Button>
   );
 }

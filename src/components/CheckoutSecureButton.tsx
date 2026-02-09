@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { Button } from "@/components/ui";
 import type { CartClientItem } from "@/types";
 
 interface Props {
@@ -29,7 +30,7 @@ export default function CheckoutSecureButton({ initialItems }: Props) {
     window.location.href = "/checkout";
   };
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
       disabled={disabled}
@@ -40,6 +41,6 @@ export default function CheckoutSecureButton({ initialItems }: Props) {
       }`}
     >
       {navigating ? "Redirecting..." : "Checkout securely"}
-    </button>
+    </Button>
   );
 }

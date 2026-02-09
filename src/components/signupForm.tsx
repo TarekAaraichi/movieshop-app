@@ -17,6 +17,7 @@ import { Card } from "@/components";
 import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui";
 
 const formSchema = z
   .object({
@@ -227,13 +228,13 @@ export default function SignUpForm() {
               )}
             />
 
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting}
               className={`w-full flex items-center justify-center gap-2 ${
                 isSubmitting
                   ? "opacity-80 cursor-wait bg-emerald-600 text-white py-2 px-4 rounded-md shadow-md"
-                  : "bg-linear-to-r from-emerald-500 to-emerald-600 text-white py-2 px-4 rounded-md hover:brightness-95 transition shadow-md cursor-pointer"
+                  : "bg-linear-to-r from-emerald-500 to-emerald-600 text-white py-2 px-4 rounded-md hover:brightness-95 transition shadow-md"
               }`}
             >
               {isSubmitting ? (
@@ -263,7 +264,7 @@ export default function SignUpForm() {
               ) : (
                 <span>Sign up</span>
               )}
-            </button>
+            </Button>
           </form>
         </Form>
       </div>

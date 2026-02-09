@@ -22,6 +22,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui";
 
 const formSchema = z.object({
   email: z.email("Invalid email").min(1, "Email is required"),
@@ -165,13 +166,13 @@ export function SignInForm() {
               )}
             />
 
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting}
               className={`w-full flex items-center justify-center gap-2 ${
                 isSubmitting
                   ? "opacity-80 cursor-wait bg-indigo-600 text-white py-2 px-4 rounded-md shadow-md"
-                  : "cursor-pointer bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition shadow-md"
+                  : "bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition shadow-md"
               }`}
             >
               {isSubmitting ? (
@@ -201,7 +202,7 @@ export function SignInForm() {
               ) : (
                 <span>Sign in</span>
               )}
-            </button>
+            </Button>
           </form>
         </Form>
       </div>

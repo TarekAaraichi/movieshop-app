@@ -118,14 +118,14 @@ export default async function HomePage() {
               >
                 <Link href="/movies">Browse All Movies</Link>
               </Button>
-              <Button
+                <Button
                 asChild
                 variant="secondary"
                 size="lg"
-                className="bg-card text-foreground border border-border hover:brightness-95"
-              >
+                className="bg-slate-700 hover:bg-slate-800 text-white transition-colors"
+                >
                 <Link href="/collections">Browse Collections</Link>
-              </Button>
+                </Button>
             </div>
           </div>
         </section>

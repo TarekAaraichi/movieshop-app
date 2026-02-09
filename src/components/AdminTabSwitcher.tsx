@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { Button } from "@/components/ui";
 
 type AdminTab = "movies" | "persons" | "users";
 
@@ -58,16 +59,16 @@ export default function AdminTabSwitcher({
       {tabs.map((tab) => {
         const isActive = tab.id === (activeTab as AdminTab);
         return (
-          <button
-            key={tab.id}
-            type="button"
-            role="tab"
-            aria-selected={isActive}
-            className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
-            onClick={() => handleTabClick(tab.id)}
-          >
-            {tab.label}
-          </button>
+          <Button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              className={`${baseClasses} ${isActive ? activeClasses : inactiveClasses}`}
+              onClick={() => handleTabClick(tab.id)}
+            >
+              {tab.label}
+            </Button>
         );
       })}
     </div>

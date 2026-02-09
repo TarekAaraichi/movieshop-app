@@ -14,6 +14,7 @@ import React, { useEffect } from "react";
 import Image from "next/image";
 import type { CartClientItem } from "@/types";
 import { useCartCount } from "@/components";
+import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks";
 
 export default function CartClient({
@@ -146,16 +147,20 @@ export default function CartClient({
                   })}
                 </span>
               </div>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 type="button"
                 onClick={() => onDec(movie.id)}
                 className="px-2 bg-card hover:brightness-95 transition-colors duration-150 text-foreground font-bold text-lg flex items-center justify-center w-8 h-8 rounded"
                 disabled={isPending}
               >
                 −
-              </button>
+              </Button>
               <span className="px-3 text-foreground">{quantity}</span>
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 type="button"
                 onClick={() => onInc(movie.id, movie.stock ?? null)}
                 className="px-2 bg-card hover:brightness-95 transition-colors duration-150 text-foreground font-bold text-lg flex items-center justify-center w-8 h-8 rounded"
@@ -165,20 +170,22 @@ export default function CartClient({
                 }
               >
                 +
-              </button>
+              </Button>
               {typeof movie.stock === "number" && quantity >= movie.stock && (
                 <div className="text-xs text-red-600 ml-2">
                   Reached max stock
                 </div>
               )}
-              <button
+              <Button
+                variant="ghost"
+                size="sm"
                 type="button"
                 onClick={() => onRemove(movie.id)}
                 className="text-red-600 hover:text-red-700 font-medium px-2"
                 disabled={isPending}
               >
                 Remove
-              </button>
+              </Button>
               <br />
             </div>
           </div>

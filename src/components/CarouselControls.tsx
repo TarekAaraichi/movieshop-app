@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   containerId: string;
@@ -182,7 +183,7 @@ export default function CarouselControls({ containerId }: Props) {
   return (
     <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300">
       <div className="absolute left-0 sm:-left-3 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
-        <button
+        <Button
           aria-label={`Previous — ${currentIndex + 1} of ${totalCount}`}
           title={`Previous — ${currentIndex + 1} of ${totalCount}`}
           onClick={() => scroll(-1)}
@@ -203,11 +204,11 @@ export default function CarouselControls({ containerId }: Props) {
               strokeLinejoin="round"
             />
           </svg>
-        </button>
+        </Button>
       </div>
 
       <div className="absolute right-0 sm:-right-3 top-1/2 -translate-y-1/2 pointer-events-auto z-10">
-        <button
+        <Button
           aria-label={`Next — ${currentIndex + 1} of ${totalCount}`}
           title={`Next — ${currentIndex + 1} of ${totalCount}`}
           onClick={() => scroll(1)}
@@ -228,7 +229,7 @@ export default function CarouselControls({ containerId }: Props) {
               strokeLinejoin="round"
             />
           </svg>
-        </button>
+        </Button>
       </div>
       {/* SR-only live region for screen readers */}
       <div role="status" aria-live="polite" className="sr-only">
@@ -240,7 +241,7 @@ export default function CarouselControls({ containerId }: Props) {
       {totalPages > 1 && (
         <div className="absolute left-1/2 bottom-2 -translate-x-1/2 pointer-events-auto flex gap-2">
           {Array.from({ length: totalPages }).map((_, i) => (
-            <button
+            <Button
               key={i}
               onClick={() => goToPage(i)}
               aria-label={`Show page ${i + 1} of ${totalPages}`}

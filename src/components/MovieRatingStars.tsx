@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "@/components/ui";
 
 interface MovieRatingStarsProps {
   rating: number;
@@ -14,16 +15,18 @@ export function MovieRatingStars({
   return (
     <div className="flex items-center gap-1">
       {[1, 2, 3, 4, 5].map((star) => (
-        <button
+        <Button
           key={star}
           type="button"
-          className={`text-xl ${star <= rating ? "text-yellow-400" : "text-muted"}`}
+          variant="ghost"
+          size="sm"
+          className={`text-xl p-1 ${star <= rating ? "text-yellow-400" : "text-muted"}`}
           onClick={() => onRate && onRate(star)}
           disabled={disabled}
           aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
         >
           ★
-        </button>
+        </Button>
       ))}
     </div>
   );

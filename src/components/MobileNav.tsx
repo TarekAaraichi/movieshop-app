@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -57,7 +58,7 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
 
   return (
     <div className="md:hidden">
-      <button
+      <Button
         ref={openBtnRef}
         onClick={() => setIsOpen(true)}
         className="p-2 rounded-md hover:bg-card/60 focus:outline-none focus:ring-2 focus:ring-indigo-300/50"
@@ -65,7 +66,7 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
         aria-expanded={isOpen}
       >
         <Menu className="h-6 w-6" />
-      </button>
+      </Button>
 
       {isOpen && (
         <div
@@ -84,14 +85,14 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
               <Link href="/" className="font-bold text-xl text-foreground">
                 MovieShop
               </Link>
-              <button
+              <Button
                 ref={closeBtnRef}
                 onClick={() => setIsOpen(false)}
                 className="p-2 rounded-md hover:bg-card/60 focus:outline-none focus:ring-2 focus:ring-indigo-300/50"
                 aria-label="Close navigation menu"
               >
                 <X className="h-6 w-6" />
-              </button>
+              </Button>
             </div>
 
             <nav className="flex flex-col gap-4 text-lg">
@@ -108,7 +109,7 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
                         className={`pl-6 pr-3 py-2 rounded-md font-medium ${
                           pathname === child.href
                             ? "bg-card text-foreground"
-                            : "text-muted hover:bg-card/60 hover:text-foreground"
+                            : "text-muted hover:bg-card/60 hover:text-blue-600 dark:hover:text-blue-300"
                         }`}
                       >
                         {child.label}
@@ -122,7 +123,7 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
                     className={`px-3 py-2 rounded-md font-medium ${
                       pathname === link.href
                         ? "bg-card text-foreground"
-                        : "text-muted hover:bg-card/60 hover:text-foreground"
+                        : "text-muted hover:bg-card/60 hover:text-blue-600 dark:hover:text-blue-300"
                     }`}
                   >
                     {link.label}

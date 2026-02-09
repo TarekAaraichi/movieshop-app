@@ -12,6 +12,7 @@
 import { useTransition } from "react";
 import { useCart } from "@/hooks";
 import toast from "react-hot-toast";
+import { Button } from "@/components/ui";
 
 export default function AddToCartClientButton({
   movieId,
@@ -49,10 +50,10 @@ export default function AddToCartClientButton({
   if (effectiveDisabled) {
     return (
       <div className={className ?? "flex flex-col items-start"}>
-        <button
+        <Button
           type="button"
           disabled
-          className={`w-full bg-card text-muted py-2 px-4 rounded-md shadow disabled:opacity-60 flex items-center justify-center gap-2 cursor-not-allowed ${
+          className={`w-full bg-card text-muted py-2 px-4 rounded-md shadow disabled:opacity-60 flex items-center justify-center gap-2 ${
             buttonClassName ?? ""
           }`}
         >
@@ -73,14 +74,14 @@ export default function AddToCartClientButton({
             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
           </svg>
           <span>{stock === 0 ? "Out of stock" : "Add to cart"}</span>
-        </button>
+        </Button>
       </div>
     );
   }
 
   return (
     <div className={className ?? "flex flex-col items-start"}>
-      <button
+      <Button
         type="button"
         onClick={handleAdd}
         disabled={isPending}
@@ -133,7 +134,7 @@ export default function AddToCartClientButton({
             <span>Add to cart</span>
           </>
         )}
-      </button>
+      </Button>
     </div>
   );
 }
