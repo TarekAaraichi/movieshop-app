@@ -66,6 +66,7 @@ export default async function RootLayout({
         { href: "/collections/genres", label: "By Genre" },
       ],
     },
+    { href: "/about", label: "About" },
   ];
 
   return (

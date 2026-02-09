@@ -4,6 +4,7 @@
  */
 
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { PageWrapper } from "@/components/PageThemeContext";
 
 export default function AboutPage() {
@@ -12,94 +13,90 @@ export default function AboutPage() {
       <div className="grow flex items-center justify-center">
         <div className="max-w-4xl w-full p-4">
           <Card className="p-6 sm:p-8 bg-card">
-            <header className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-linear-to-r from-indigo-400 to-pink-400 pb-2">
+            <header className="text-center mb-8">
+              <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-foreground pb-2">
                 About MovieShop
               </h1>
               <p className="mt-3 text-lg text-muted">
-                A feature-rich, full-stack e-commerce platform for movies, built
-                with modern web technologies.
+                MovieShop is a demo portfolio app I built as my graduation
+                project for the React JavaScript System Development program. It
+                showcases a full-stack e-commerce flow, server actions, and UI
+                patterns I used while learning modern React/Next.js development.
               </p>
             </header>
 
-            <section className="mb-12">
+            <section className="mb-10">
               <h2 className="text-2xl font-bold text-foreground mb-4 pl-2">
-                Project Vision
+                What this project demonstrates
               </h2>
-              <div className="prose max-w-none dark:prose-invert text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-4">
+              <div className="prose max-w-none dark:prose-invert text-muted leading-relaxed space-y-4">
                 <p>
-                  MovieShop was developed as a portfolio project to demonstrate
-                  a comprehensive understanding of full-stack web development
-                  using the Next.js 15 App Router. The goal was to create a
-                  production-quality, feature-complete e-commerce application
-                  that not only looks great but also incorporates best practices
-                  in architecture, performance, and user experience.
+                  The primary goal of this project was to apply concepts from
+                  the React JavaScript System Development curriculum in a
+                  single, cohesive app. MovieShop demonstrates:
                 </p>
+                <ul>
+                  <li>
+                    Server components and client boundaries with Next.js App
+                    Router
+                  </li>
+                  <li>Type-safe database access using Prisma and PostgreSQL</li>
+                  <li>
+                    Modern UX patterns: skeleton loading, accessible controls,
+                    and responsive layout
+                  </li>
+                  <li>Persistent cart behavior and simulated checkout flows</li>
+                  <li>
+                    Role-based admin UI and server actions for secure mutations
+                  </li>
+                </ul>
                 <p>
-                  This project showcases everything from database design and
-                  server-side data fetching to secure authentication, complex
-                  state management, and a polished, responsive user interface.
-                  It serves as a testament to the skills required to build and
-                  deploy a modern, scalable web application from the ground up.
+                  This is a learning & portfolio project — payments are
+                  simulated and the site is intentionally self-contained for
+                  demonstration purposes.
                 </p>
               </div>
             </section>
 
-            <section className="mb-12">
-              <h2 className="text-2xl font-bold text-foreground mb-6 pl-2">
-                Core Features
+            <section className="mb-10">
+              <h2 className="text-2xl font-bold text-foreground mb-4 pl-2">
+                Core features
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FeatureCard
-                  title="Full E-commerce Flow"
-                  description="Browse, search, and filter movies. Add them to a persistent cart and complete a simulated checkout process."
+                  title="Full E‑commerce Flow"
+                  description="Search, browse, add to cart, and complete a simulated checkout."
                 />
                 <FeatureCard
-                  title="Robust Authentication"
-                  description="Secure user sign-up, sign-in, and session management with both credential and OAuth providers via Better Auth."
+                  title="Auth & Profiles"
+                  description="Sign up / sign in, profile editing, and order history."
                 />
                 <FeatureCard
-                  title="Dynamic Movie Collections"
-                  description="Explore curated collections like 'New Releases', 'Top Rated', and browse by genre, budget, and more."
+                  title="Admin Area"
+                  description="Protected admin dashboard with CRUD for movies, people, and users."
                 />
                 <FeatureCard
-                  title="Persistent Shopping Cart"
-                  description="Advanced cart logic that persists for anonymous users and merges with their account cart upon login."
+                  title="Theming & Accessibility"
+                  description="Light/dark themes with persisted preference and accessible components."
                 />
                 <FeatureCard
-                  title="User Profiles & Order History"
-                  description="Registered users can manage their profile and view a history of their past orders."
-                />
-                <FeatureCard
-                  title="Consistent Loading UI"
-                  description="A seamless user experience with animated loading skeletons for all data-heavy pages, powered by Next.js Suspense."
-                />
-                <FeatureCard
-                  title="Theming"
-                  description="Switch between light and dark modes for a personalized viewing experience."
-                />
-                <FeatureCard
-                  title="Secure Admin Dashboard"
-                  description="A role-protected area accessible only to administrators with full CRUD operations for movies, people, and users."
-                />
-                <FeatureCard
-                  title="Automated Code Quality"
-                  description="Pre-commit and pre-push hooks powered by Husky automatically run linting and build checks to ensure code quality."
+                  title="Loading UX"
+                  description="Consistent skeletons and progressive loading for large pages."
                 />
                 <FeatureCard
                   title="Server Actions"
-                  description="Modern data mutation patterns using Next.js Server Actions for type-safe and secure interactions."
+                  description="Uses Next.js server actions for secure, type-safe mutations."
                 />
               </div>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6 pl-2">
-                Technology Stack
+              <h2 className="text-2xl font-bold text-foreground mb-6 pl-2">
+                Technology stack
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-center">
                 <TechItem name="Next.js 15" category="Framework" />
-                <TechItem name="React & RSC" category="UI Library" />
+                <TechItem name="React" category="UI" />
                 <TechItem name="Prisma" category="ORM" />
                 <TechItem name="PostgreSQL" category="Database" />
                 <TechItem name="Tailwind CSS" category="Styling" />
@@ -112,15 +109,21 @@ export default function AboutPage() {
               </div>
             </section>
 
-            <div className="mt-16 text-center">
-              <a
-                href="https://github.com/TarekAaraichi/movieshop-app"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center rounded-md border border-border bg-card text-sm text-foreground px-6 py-3 hover:bg-card/90 transition-colors duration-300 font-semibold"
+            <div className="mt-12 text-center">
+              <Button
+                asChild
+                variant="default"
+                size="lg"
+                className="bg-linear-to-r from-indigo-600 to-pink-500 hover:brightness-95 text-white"
               >
-                View Source Code on GitHub
-              </a>
+                <a
+                  href="https://github.com/TarekAaraichi/movieshop-app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View source on GitHub
+                </a>
+              </Button>
             </div>
           </Card>
         </div>
@@ -135,16 +138,53 @@ const FeatureCard = ({
 }: {
   title: string;
   description: string;
-}) => (
-  <div className="bg-card border border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
-    <h3 className="font-bold text-foreground text-lg mb-2">{title}</h3>
-    <p className="text-muted text-sm">{description}</p>
-  </div>
-);
+}) => {
+  const icons: Record<string, string> = {
+    "Full E‑commerce Flow": "🛒",
+    "Auth & Profiles": "👤",
+    "Admin Area": "🛠️",
+    "Theming & Accessibility": "🌓",
+    "Loading UX": "⏳",
+    "Server Actions": "⚙️",
+  };
 
-const TechItem = ({ name, category }: { name: string; category: string }) => (
-  <div className="bg-card border border-border rounded-lg p-4 flex flex-col justify-center items-center shadow-sm hover:shadow-md transition-shadow">
-    <p className="font-bold text-foreground">{name}</p>
-    <p className="text-xs text-muted">{category}</p>
-  </div>
-);
+  const icon = icons[title] ?? "🔸";
+
+  return (
+    <div className="bg-card border border-border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col items-start gap-3">
+      <div className="text-2xl" aria-hidden>
+        {icon}
+      </div>
+      <h3 className="font-bold text-foreground text-lg">{title}</h3>
+      <p className="text-muted text-sm">{description}</p>
+    </div>
+  );
+};
+
+const TechItem = ({ name, category }: { name: string; category: string }) => {
+  const icons: Record<string, string> = {
+    "Next.js 15": "🟪",
+    React: "⚛️",
+    Prisma: "🔷",
+    PostgreSQL: "🐘",
+    "Tailwind CSS": "🎨",
+    "shadcn/ui": "🧩",
+    "Better Auth": "🔒",
+    TypeScript: "🟦",
+    Vitest: "✅",
+    Husky: "🐶",
+    Vercel: "▲",
+  };
+
+  const icon = icons[name] ?? "🔹";
+
+  return (
+    <div className="bg-card border border-border rounded-lg p-4 flex flex-col justify-center items-center shadow-sm hover:shadow-md transition-shadow">
+      <div className="text-2xl mb-3" aria-hidden>
+        {icon}
+      </div>
+      <p className="font-bold text-foreground">{name}</p>
+      <p className="text-xs text-muted">{category}</p>
+    </div>
+  );
+};
