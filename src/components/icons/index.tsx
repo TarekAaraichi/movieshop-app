@@ -263,4 +263,5 @@ export const VercelIcon: React.FC<IconProps> = ({ className }) => (
   </svg>
 );
 
-export default {};
+const icons = {};
+export default icons;

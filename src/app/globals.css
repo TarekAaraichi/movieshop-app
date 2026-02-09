@@ -1,9 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* @custom-variant dark (&:is(.dark *));
+  Removed: this at-rule isn't recognized by the project's PostCSS/stylelint
+  setup and produced a warning. If you rely on a Tailwind plugin that
+  provides `@custom-variant`, re-enable it after installing/configuring
+  that plugin. */
 
-@theme inline {
+/* @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -41,7 +45,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-}
+} */
 
 :root {
   --radius: 0.625rem;
@@ -147,20 +151,33 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    /* Provide sensible defaults using the project's theme variables so the
+       rule isn't empty and we avoid unknown at-rule warnings. */
+    border-color: var(--border);
+    outline-color: var(--ring);
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--background);
+    color: var(--foreground);
   }
 }
 
 /* hide native scrollbars but keep scrolling for carousel containers */
 .hide-scrollbar {
   -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 }
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
+}
+
+/* Apply Firefox-only property inside a feature query to avoid
+   triggering compatibility warnings for engines that don't support it. */
+@supports (scrollbar-width: none) {
+  .hide-scrollbar {
+    scrollbar-width: none; /* Firefox only */
+  }
 }
 
 /* Main content theme toggle: only toggle backgrounds for the main content area. */
