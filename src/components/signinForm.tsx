@@ -20,6 +20,8 @@ import { Input } from "@/components";
 import { Card } from "@/components";
 import { authClient } from "@/lib/auth-client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 const formSchema = z.object({
   email: z.email("Invalid email").min(1, "Email is required"),
@@ -44,8 +46,10 @@ export function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = (searchParams?.get("callbackUrl") as string) || "";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function onSubmit(values: FormValues) {
+    setIsSubmitting(true);
     // Snapshot the anonymous cart so the server-side migration can merge it
     try {
       const pre = await fetch("/api/cart");
@@ -82,15 +86,24 @@ export function SignInForm() {
       }
     } catch {}
 
-    const { error } = await authClient.signIn.email({
-      email: values.email,
-      password: values.password,
-    });
+    let error: any = null;
+    try {
+      const res = await authClient.signIn.email({
+        email: values.email,
+        password: values.password,
+      });
+      error = (res as any)?.error ?? null;
+    } catch (e) {
+      error = e;
+    }
 
     if (error) {
-      alert("Sign in failed. Please check your input and try again.");
+      toast.error("Sign in failed. Please check your input and try again.");
+      setIsSubmitting(false);
       return;
     }
+
+    toast.success("Signed in successfully.");
 
     // Signed in successfully. Navigate to server-side migration helper so
     // the migration runs with session cookies available and then redirects
@@ -109,6 +122,7 @@ export function SignInForm() {
         router.push(cb);
       }
     }
+    setIsSubmitting(false);
   }
 
   return (
@@ -153,9 +167,40 @@ export function SignInForm() {
 
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition shadow-md"
+              disabled={isSubmitting}
+              className={`w-full flex items-center justify-center gap-2 ${
+                isSubmitting
+                  ? "opacity-80 cursor-wait bg-indigo-600 text-white py-2 px-4 rounded-md shadow-md"
+                  : "cursor-pointer bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition shadow-md"
+              }`}
             >
-              Sign in
+              {isSubmitting ? (
+                <>
+                  <svg
+                    className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <span>Signing in…</span>
+                </>
+              ) : (
+                <span>Sign in</span>
+              )}
             </button>
           </form>
         </Form>
