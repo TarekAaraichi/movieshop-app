@@ -23,7 +23,7 @@ export default function UserProfileMenuClient({
 
   const summary = (
     <summary className="cursor-pointer list-none flex items-center gap-3 px-2 py-1 rounded-md text-sm transition hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-blue-300/40">
-      <div className="w-8 h-8 rounded-full shrink-0 bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
+      <div className="w-8 h-8 rounded-full shrink-0 bg-linear-to-r from-indigo-600 via-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
         {initials(name)}
       </div>
       <span className="text-sm font-medium">{label}</span>

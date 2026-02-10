@@ -92,7 +92,7 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
                 { value: "", label: "All" },
                 ...personRoles.map((r) => ({ value: r, label: r })),
               ]}
-              className="w-full bg-card text-foreground dark:bg-[#23272e] dark:text-[#e0e6ed] dark:hover:bg-[#2a2f38] dark:hover:text-[#fff]"
+              className="w-full bg-card text-foreground dark:bg-[#23272e] dark:text-[#e0e6ed] dark:hover:bg-[#2a2f38] dark:hover:text-white"
             />
           </div>
         </form>
