@@ -13,6 +13,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { PageWrapper } from "@/components/PageThemeContext";
+import FocusOnServerErrorsClient from "@/components/FocusOnServerErrorsClient";
 
 export default async function CheckoutPage({
   searchParams,
@@ -94,7 +95,9 @@ export default async function CheckoutPage({
                   tabIndex={-1}
                   className="mb-6 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-600 text-red-900 dark:text-red-200 px-5 py-4 text-base shadow"
                 >
-                  <p className="sr-only">There was a problem with your submission</p>
+                  <p className="sr-only">
+                    There was a problem with your submission
+                  </p>
                   <ul className="list-disc list-inside space-y-1">
                     {serverErrors.map((e, i) => (
                       <li key={i}>{e}</li>
@@ -108,7 +111,9 @@ export default async function CheckoutPage({
                 action={createOrder}
                 className="grid grid-cols-1 gap-6 min-w-0"
                 autoComplete="off"
-                aria-describedby={serverErrors.length > 0 ? "server-errors" : undefined}
+                aria-describedby={
+                  serverErrors.length > 0 ? "server-errors" : undefined
+                }
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="flex items-center gap-4 min-w-0">
@@ -187,7 +192,8 @@ export default async function CheckoutPage({
                     aria-describedby="address-hint"
                   >
                     <span id="address-hint" className="sr-only">
-                      Enter your street, city, postal code and country for delivery.
+                      Enter your street, city, postal code and country for
+                      delivery.
                     </span>
                     <label className="flex items-center gap-4 sm:col-span-2 min-w-0">
                       <span className="w-32 text-base font-medium text-foreground">
@@ -295,6 +301,7 @@ export default async function CheckoutPage({
           </Card>
 
           {/* Client controller enables submit when form is valid */}
+          {serverErrors.length > 0 && <FocusOnServerErrorsClient />}
           <CheckoutFormController
             formId="checkout-form"
             submitId="checkout-submit"
