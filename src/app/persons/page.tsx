@@ -88,8 +88,11 @@ export default async function PersonsPage({ searchParams }: PersonsPageProps) {
               name="role"
               value={role}
               ariaLabel="Filter by role"
-              options={personRoles.map((r) => ({ value: r, label: r }))}
-              className="w-full"
+              options={[
+                { value: "", label: "All" },
+                ...personRoles.map((r) => ({ value: r, label: r })),
+              ]}
+              className="w-full bg-card text-foreground dark:bg-[#23272e] dark:text-[#e0e6ed] dark:hover:bg-[#2a2f38] dark:hover:text-[#fff]"
             />
           </div>
         </form>

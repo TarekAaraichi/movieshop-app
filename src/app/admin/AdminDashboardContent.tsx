@@ -956,7 +956,7 @@ export default function AdminDashboardContent({
                           />
                           <Button
                             type="submit"
-                            className="ml-2 rounded-full"
+                            className="ml-2 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 focus:outline-none focus:ring-2 focus:ring-ring"
                             size="sm"
                             variant="destructive"
                             aria-label={`Cancel order ${order.id}`}

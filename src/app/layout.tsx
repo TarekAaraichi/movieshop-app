@@ -9,9 +9,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClientShell } from "@/components";
 import Link from "next/link";
-import Image from "next/image";
-import SignOutButton from "@/components/SignOutButton";
 import DetailsMenu from "@/components/DetailsMenu";
+import UserProfileMenuClient from "@/components/UserProfileMenuClient";
 import { CartCountBadge } from "@/components";
 import {
   PageThemeProvider,
@@ -70,19 +69,14 @@ export default async function RootLayout({
   ];
 
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      suppressHydrationWarning
+    >
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
-        {/* Inline theme sync: only add a stored theme class (do not remove
-            any server-provided classes). This avoids hydration warnings by
-            leaving the server DOM untouched when no explicit stored theme
-            exists. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `try{(function(){var t=null;try{t=localStorage.getItem('theme')}catch(e){}if(t==='dark'){try{document.documentElement.classList.add('dark')}catch(e){} }else if(t==='light'){try{document.documentElement.classList.add('light')}catch(e){} }})()}catch(e){};`,
-          }}
-        />
         <a
           href="#main-content-start"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-white/90 focus:dark:bg-gray-900/80 focus:text-indigo-600 focus:px-3 focus:py-2 rounded"
@@ -98,7 +92,7 @@ export default async function RootLayout({
             <div className="flex flex-col min-h-screen">
               <header
                 role="banner"
-                className="sticky top-0 z-50 backdrop-blur-md bg-card border-b border-border dark:bg-black/40 dark:border-gray-800 shadow-sm"
+                className="sticky top-0 z-50 backdrop-blur-md bg-card border-b border-border shadow-sm"
               >
                 <div className="max-w-7xl mx-auto flex flex-wrap items-center gap-3 px-4 py-3">
                   <Link
@@ -146,7 +140,7 @@ export default async function RootLayout({
                               <Link
                                 key={child.href}
                                 href={child.href}
-                                className="block px-4 py-2 text-sm text-muted hover:bg-slate-100 dark:hover:bg-popover hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
+                                className="block px-4 py-2 text-sm text-foreground hover:bg-accent hover:text-accent-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
                               >
                                 {child.label}
                               </Link>
@@ -163,14 +157,7 @@ export default async function RootLayout({
                         </Link>
                       ),
                     )}
-                    {session && (
-                      <Link
-                        href="/admin"
-                        className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm text-muted hover:text-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-300/40"
-                      >
-                        Admin
-                      </Link>
-                    )}
+                    {/* Admin moved into user menu for desktop */}
                   </nav>
 
                   <div className="grow" />
@@ -178,35 +165,16 @@ export default async function RootLayout({
                   <div className="hidden md:flex items-center gap-4">
                     {session ? (
                       <>
-                        {session && (
-                          <Link
-                            href="/admin"
-                            className="px-3 py-1 rounded-md text-sm font-semibold bg-red-600/80 text-white hover:bg-red-500"
-                          >
-                            Admin
-                          </Link>
-                        )}
-
-                        <Image
-                          src={
-                            session.user?.image || "/images/default-avatar.png"
-                          }
-                          alt="User avatar"
-                          width={32}
-                          height={32}
-                          className="rounded-full"
+                        <UserProfileMenuClient
+                          name={session.user?.name}
+                          showAdmin={Boolean(session)}
                         />
-                        <span className="text-sm font-medium">
-                          {session.user?.name}
-                        </span>
-
-                        <SignOutButton />
                       </>
                     ) : (
                       <>
                         <Link
                           href="/sign-in"
-                          className="px-4 py-2 rounded-md text-sm font-semibold bg-indigo-600 text-white hover:bg-indigo-500 shadow-md"
+                          className="px-4 py-2 rounded-md text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-md"
                         >
                           Sign In
                         </Link>
@@ -220,7 +188,30 @@ export default async function RootLayout({
                     )}
                   </div>
 
-                  <CartCountBadge />
+                  <Link
+                    href="/cart"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm hover:bg-slate-100 dark:hover:bg-popover focus:outline-none focus:ring-2 focus:ring-blue-300/40"
+                    aria-label="View cart"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      className="w-6 h-6 text-emerald-600 dark:text-emerald-400"
+                      aria-hidden
+                    >
+                      <path
+                        d="M3 3h2l1.6 9.6A2 2 0 0 0 8.5 15h9a2 2 0 0 0 1.95-1.58L21 6H6"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <circle cx="10" cy="19" r="1.5" fill="currentColor" />
+                      <circle cx="18" cy="19" r="1.5" fill="currentColor" />
+                    </svg>
+                    <CartCountBadge />
+                  </Link>
                   <PageThemeSwitcher />
                   <MobileNav session={session} navLinks={navLinks} />
                 </div>
@@ -231,13 +222,13 @@ export default async function RootLayout({
                 tabIndex={-1}
                 className="grow container mx-auto px-4 sm:px-6 lg:px-8 py-6"
               >
-                <div className="bg-card dark:bg-gray-900/80 backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 md:p-10">
+                <div className="bg-card backdrop-blur-sm rounded-xl shadow-lg p-4 sm:p-6 md:p-10">
                   {children}
                 </div>
               </main>
 
-              <footer className="bg-card backdrop-blur-sm border-t border-border dark:bg-gray-900/60 dark:border-gray-800 py-4 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-muted">
+              <footer className="bg-secondary backdrop-blur-sm border-t border-border py-4 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center text-sm text-muted-foreground">
                   <p>
                     &copy; {new Date().getFullYear()} MovieShop — Tarek Aarachi
                   </p>

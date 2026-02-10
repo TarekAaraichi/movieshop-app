@@ -34,10 +34,8 @@ export default function CheckoutSecureButton({ initialItems }: Props) {
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`w-full inline-flex justify-center items-center px-4 py-3 rounded-md text-white bg-blue-600 shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-200 transition-colors ${
-        disabled
-          ? "opacity-50 cursor-not-allowed"
-          : "hover:bg-blue-700 dark:hover:bg-blue-500"
+      className={`w-full inline-flex justify-center items-center px-4 py-3 rounded-md bg-primary text-primary-foreground shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-colors ${
+        disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-primary/90"
       }`}
     >
       {navigating ? "Redirecting..." : "Checkout securely"}

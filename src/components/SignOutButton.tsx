@@ -41,7 +41,7 @@ export default function SignOutButton({ className }: { className?: string }) {
     <Button
       type="button"
       variant="destructive"
-      className={`px-4 py-2 text-sm font-medium rounded-md ${className ?? ""}`}
+      className={`px-4 py-2 text-sm font-medium rounded-md bg-red-600 text-white hover:bg-red-500 ${className ?? ""}`}
       onClick={handleSignOut}
       aria-label="Sign out of your account"
     >

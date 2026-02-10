@@ -200,7 +200,7 @@ export default async function MoviePage({ params }: Props) {
 
             <Link
               href="/movies"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-card text-foreground border border-border px-4 py-3 text-sm font-medium shadow-lg active:scale-95 transition-all duration-150"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-blue-100 text-blue-800 border border-blue-200 px-4 py-3 text-sm font-medium shadow-lg active:scale-95 transition-all duration-150 hover:bg-blue-200 dark:bg-blue-400 dark:text-black dark:border-blue-500 dark:hover:bg-blue-500"
             >
               Back to Movies
             </Link>
@@ -222,7 +222,7 @@ export default async function MoviePage({ params }: Props) {
                 {genres.map((g, i) => (
                   <span
                     key={i}
-                    className="inline-flex items-center rounded-full bg-card text-muted border border-border px-3 py-1 text-xs font-medium"
+                    className="inline-flex items-center rounded-md bg-neutral-200 text-neutral-800 dark:bg-neutral-600 dark:text-neutral-100 border border-neutral-300 dark:border-neutral-500 px-2 py-0.5 text-xs font-medium"
                   >
                     {g}
                   </span>
@@ -328,7 +328,7 @@ export default async function MoviePage({ params }: Props) {
                       <Link
                         key={a.id}
                         href={`/persons/${a.id}`}
-                        className="flex items-center gap-3 p-2 rounded-lg bg-card text-foreground border border-border hover:scale-105 hover:shadow-xl transition-colors"
+                        className="flex items-center gap-3 p-2 rounded-lg bg-neutral-200 text-neutral-800 border border-neutral-300 hover:scale-105 hover:shadow-xl transition-colors dark:bg-neutral-700 dark:text-neutral-100 dark:border-neutral-600"
                       >
                         <div className="w-12 h-12 rounded-full overflow-hidden bg-[rgba(0,0,0,0.06)] dark:bg-[rgba(255,255,255,0.04)] shrink-0">
                           {a.imageUrl ? (

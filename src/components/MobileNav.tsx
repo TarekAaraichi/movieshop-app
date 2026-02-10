@@ -139,7 +139,7 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
                 <>
                   <Link
                     href="/profile"
-                    className="flex items-center gap-3 px-3 py-2 rounded-md font-medium text-muted hover:bg-slate-100 dark:hover:bg-popover hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
+                    className="flex items-center gap-3 px-3 py-2 rounded-md font-medium text-muted hover:bg-accent hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
                   >
                     <Image
                       src={session.user.image || "/images/default-avatar.png"}
@@ -150,7 +150,7 @@ export function MobileNav({ session, navLinks }: MobileNavProps) {
                     />
                     <span>{session.user.name}</span>
                   </Link>
-                  <SignOutButton className="w-full text-left px-3 py-2 text-sm hover:bg-slate-100 dark:hover:bg-popover hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition" />
+                  <SignOutButton className="w-full text-left px-3 py-2 text-sm hover:bg-accent hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition" />
                 </>
               ) : (
                 <>

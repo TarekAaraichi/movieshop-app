@@ -49,118 +49,86 @@
 
 :root {
   --radius: 0.625rem;
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+
+  /* HSL format for Tailwind consumption */
+  --background: 210 20% 98%;
+  --foreground: 222 47% 11%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222 47% 11%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 221 83% 53%;
+  --chart-1: 12 76% 61%;
+  --chart-2: 173 58% 39%;
+  --chart-3: 197 37% 24%;
+  --chart-4: 43 74% 66%;
+  --chart-5: 27 87% 67%;
+  --sidebar: 0 0% 98%;
+  --sidebar-foreground: 240 5% 26%;
+  --sidebar-primary: 240 6% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 5% 96%;
+  --sidebar-accent-foreground: 240 6% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217 19% 71%;
 }
 
 .dark {
-  --background: oklch(0.17 0.03 230); /* Slate 900 */
-  --foreground: oklch(0.95 0.01 230); /* Slate 50 */
-  --card: oklch(0.21 0.03 230); /* Slate 850 */
-  --card-foreground: oklch(0.95 0.01 230);
-  --popover: oklch(0.17 0.03 230);
-  --popover-foreground: oklch(0.95 0.01 230);
-  --primary: oklch(0.8 0.15 260); /* A vibrant purple */
-  --primary-foreground: oklch(0.1, 0.03, 260);
-  --secondary: oklch(0.3 0.03 230); /* Slate 700 */
-  --secondary-foreground: oklch(0.95 0.01 230);
-  --muted: oklch(0.3 0.03 230);
-  --muted-foreground: oklch(0.65 0.02 230); /* Slate 400 */
-  --accent: oklch(0.45 0.15 260); /* A lighter purple */
-  --accent-foreground: oklch(0.98, 0.01, 260);
-  --destructive: oklch(0.6 0.22 25); /* A safer red */
-  --border: oklch(0.3 0.03 230);
-  --input: oklch(0.3 0.03 230);
-  --ring: oklch(0.8 0.15 260);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: 222 47% 8%;
+  --foreground: 210 40% 98%;
+  --card: 222 47% 13%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 222 47% 11%;
+  --secondary: 217 33% 17%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 217 33% 20%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217 33% 17%;
+  --input: 217 33% 17%;
+  --ring: 217 91% 60%;
+  --chart-1: 220 70% 50%;
+  --chart-2: 160 60% 45%;
+  --chart-3: 30 80% 55%;
+  --chart-4: 280 65% 60%;
+  --chart-5: 340 75% 55%;
+  --sidebar: 240 6% 10%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-primary: 224 71% 41%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4% 16%;
+  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-border: 240 4% 16%;
+  --sidebar-ring: 217 19% 71%;
 }
 
-/* Make light vs dark theme more visually distinct by adjusting
-   a few light-mode variables and providing dark-mode overrides
-   for common utility classes that hard-code "white"/"black".
-   This helps ensure switching themes produces a clear UX change
-   without modifying every component class. */
-
-/* Slightly warm card/background in light mode to differentiate from pure white */
-:root {
-  --background: oklch(0.99 0.005 90); /* almost white but subtly warm */
-  --card: oklch(0.995 0.01 95);
-  --primary: oklch(0.23 0.17 220); /* blue-ish accent for light theme */
-  --primary-foreground: oklch(0.98 0.01 220);
-}
-
-/* Dark-mode overrides for utility classes that reference `white` or `black`.
-   We use attribute selectors to remap classes like `bg-white`, `bg-white/5`,
-   and `text-black` to the theme variables so most components immediately
-   reflect the theme difference. Use !important to ensure these overrides
-   take precedence over the generated utility classes where needed. */
-.dark [class*="bg-white"] {
-  background-color: var(--card) !important;
-}
-.dark [class*="text-black"] {
-  color: var(--foreground) !important;
-}
-.dark [class*="border-gray-200"] {
-  border-color: var(--border) !important;
-}
-.dark [class*="bg-white/"] {
-  /* some utilities include opacity like bg-white/5 — handle them too */
-  background-color: rgba(0, 0, 0, 0.2) !important;
-}
+/* Make light vs dark theme more visibly distinct by ensuring proper contrast */
 
 @layer base {
   * {
-    box-sizing: border-box;
-    -webkit-font-smoothing: antialiased;
-    /* Provide sensible defaults using the project's theme variables so the
-       rule isn't empty and we avoid unknown at-rule warnings. */
-    border-color: var(--border);
-    outline-color: var(--ring);
+    border-color: hsl(var(--border));
   }
   body {
-    background-color: var(--background);
-    color: var(--foreground);
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
 
@@ -180,65 +148,16 @@
   }
 }
 
-/* Main content theme toggle: only toggle backgrounds for the main content area. */
-.main-content {
-  /* default (light) main background — subtle card-like surface */
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.9),
-    rgba(248, 249, 250, 0.95)
-  );
-}
-
-.main-dark .main-content {
-  /* dark main background when user toggles 'dark' for main area */
-  background: linear-gradient(
-    180deg,
-    rgba(6, 10, 15, 0.9),
-    rgba(12, 18, 26, 0.95)
-  ) !important;
-}
-
-/* Small theme utility classes to encourage token usage in components */
+/* Utility classes for theme-aware components */
 @layer components {
-  .bg-card {
-    background-color: var(--card) !important;
-  }
-  .bg-popover {
-    background-color: var(--popover) !important;
-  }
-  .text-foreground {
-    color: var(--foreground) !important;
-  }
-  .text-muted {
-    color: var(--muted-foreground) !important;
-  }
-  .border-border {
-    border-color: var(--border) !important;
-  }
-  .btn-primary {
-    background-color: var(--primary) !important;
-    color: var(--primary-foreground) !important;
+  .main-nav-link {
+    color: hsl(var(--foreground));
     transition:
-      filter 120ms ease,
-      box-shadow 120ms ease;
+      color 150ms,
+      background-color 150ms;
   }
-  .btn-primary:hover {
-    filter: brightness(0.92);
-  }
-  /* Scoped nav link utility: higher-specificity selector to reliably set hover */
-  nav[aria-label="Main navigation"] .main-nav-link {
-    color: var(--primary);
-    transition:
-      color 160ms ease,
-      background-color 120ms ease;
-  }
-  nav[aria-label="Main navigation"] .main-nav-link:hover {
-    color: #2563eb; /* blue-600 */
-    background-color: #f1f5f9; /* slate-100 */
-  }
-  .dark nav[aria-label="Main navigation"] .main-nav-link:hover {
-    color: #93c5fd; /* blue-300 */
-    background-color: var(--popover);
+  .main-nav-link:hover {
+    color: hsl(var(--primary));
+    background-color: hsl(var(--accent));
   }
 }

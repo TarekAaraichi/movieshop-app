@@ -72,13 +72,13 @@ export default async function PersonPage({
           <div className="mt-4 w-64 min-w-66">
             <Link
               href="/persons"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-card text-foreground border border-border px-4 py-3 text-sm font-medium shadow-lg active:scale-95 transition-all duration-150"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-neutral-100 text-neutral-800 border border-neutral-200 px-4 py-3 text-sm font-medium shadow-lg active:scale-95 transition-all duration-150 hover:bg-neutral-200 dark:bg-blue-400 dark:text-black dark:border-blue-500 dark:hover:bg-blue-500"
             >
               Go to People
             </Link>
             <Link
               href="/movies"
-              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-card text-foreground border border-border px-4 py-3 text-sm font-medium shadow-lg active:scale-95 transition-all duration-150"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-xl bg-neutral-100 text-neutral-800 border border-neutral-200 px-4 py-3 text-sm font-medium shadow-lg active:scale-95 transition-all duration-150 hover:bg-neutral-200 dark:bg-emerald-400 dark:text-black dark:border-emerald-500 dark:hover:bg-emerald-500"
             >
               Go to Movies
             </Link>
@@ -90,7 +90,7 @@ export default async function PersonPage({
               <h1 className="text-[32px] font-extrabold m-0 flex items-center gap-3 bg-clip-text text-transparent bg-linear-to-r from-emerald-500 to-blue-500 dark:from-emerald-400 dark:to-blue-400">
                 {person.fullName}
                 {rolesDisplay ? (
-                  <span className="inline-flex items-center rounded-full bg-card text-muted border border-border px-3 py-1 text-xs font-medium">
+                  <span className="inline-flex items-center rounded-full bg-neutral-200 text-neutral-800 border border-neutral-300 px-3 py-1 text-xs font-medium dark:bg-neutral-700 dark:text-neutral-100 dark:border-neutral-600">
                     {rolesDisplay}
                   </span>
                 ) : null}

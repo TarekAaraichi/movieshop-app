@@ -17,7 +17,7 @@ export default async function OrdersPage() {
         </p>
         <Link
           href="/sign-in"
-          className="bg-blue-600 text-white py-2 px-4 rounded-md shadow hover:bg-blue-700"
+          className="bg-primary text-primary-foreground py-2 px-4 rounded-md shadow hover:bg-primary/90"
         >
           Sign In
         </Link>

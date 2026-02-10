@@ -13,7 +13,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { PageWrapper } from "@/components/PageThemeContext";
-import FocusOnServerErrorsClient from "@/components/FocusOnServerErrorsClient";
+import { Button } from "@/components/ui/button";
+// Focus-on-server-errors component removed in favor of inline field errors
+import AddressToggleClient from "@/components/AddressToggleClient";
+import ToastMessagesClient from "@/components/ToastMessagesClient";
+import PaymentValidationClient from "@/components/PaymentValidationClient";
 
 export default async function CheckoutPage({
   searchParams,
@@ -52,21 +56,18 @@ export default async function CheckoutPage({
   let serverErrors: string[] = [];
   if (sp?.errors) {
     try {
-      const parsed = JSON.parse(decodeURIComponent(sp.errors));
-      if (parsed && parsed._type === "validation" && parsed.fields) {
-        // flatten validation field messages
-        serverErrors = Object.values(
-          parsed.fields as Record<string, unknown>,
-        ).flatMap((f) =>
-          Array.isArray(f)
-            ? (f as unknown[]).map(String)
-            : Object.values(f as Record<string, unknown>).map(String),
-        );
-      } else if (parsed && parsed._type === "business" && parsed.message) {
+      const parsed = JSON.parse(decodeURIComponent(String(sp.errors)));
+      if (parsed && parsed._type === "business" && parsed.message) {
         serverErrors = [String(parsed.message)];
+      } else {
+        serverErrors = [
+          "There was a problem with your submission. Please verify your details and try again.",
+        ];
       }
     } catch {
-      // ignore parse errors
+      serverErrors = [
+        "There was a problem with your submission. Please verify your details and try again.",
+      ];
     }
   }
   // Track if user has a default address and should show "Save this address" checkbox
@@ -87,24 +88,7 @@ export default async function CheckoutPage({
                 </div>
               </div>
 
-              {serverErrors.length > 0 && (
-                <div
-                  id="server-errors"
-                  role="alert"
-                  aria-live="polite"
-                  tabIndex={-1}
-                  className="mb-6 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-600 text-red-900 dark:text-red-200 px-5 py-4 text-base shadow"
-                >
-                  <p className="sr-only">
-                    There was a problem with your submission
-                  </p>
-                  <ul className="list-disc list-inside space-y-1">
-                    {serverErrors.map((e, i) => (
-                      <li key={i}>{e}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+              {/* Business-level server errors are shown as toasts; field errors render inline below inputs. */}
 
               <form
                 id="checkout-form"
@@ -115,6 +99,9 @@ export default async function CheckoutPage({
                   serverErrors.length > 0 ? "server-errors" : undefined
                 }
               >
+                {/* Provide fullName/email to server action for signed-in users */}
+                <input type="hidden" name="fullName" value={dbUser?.name ?? ""} />
+                <input type="hidden" name="email" value={dbUser?.email ?? ""} />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="flex items-center gap-4 min-w-0">
                     <span className="w-32 text-base font-medium text-foreground">
@@ -150,7 +137,7 @@ export default async function CheckoutPage({
                           name="selectedAddressId"
                           value={dbAddress.id}
                         />
-                        <div className="text-base text-gray-900 dark:text-neutral-100 space-y-0.5">
+                        <div className="w-32 text-base text-foreground">
                           <div>{dbAddress.line1}</div>
                           {dbAddress.line2 ? (
                             <div>{dbAddress.line2}</div>
@@ -161,18 +148,18 @@ export default async function CheckoutPage({
                           <div>{dbAddress.country}</div>
                         </div>
                       </div>
-                      <label className="flex items-center gap-2 text-base text-indigo-600 dark:text-indigo-300 cursor-pointer select-none">
+                        <label className="flex items-center gap-2 text-base text-blue-600 dark:text-blue-400 cursor-pointer select-none">
                         <input
                           type="checkbox"
                           name="useNewAddress"
                           value="1"
-                          className="rounded border-indigo-400 dark:border-indigo-300 text-slate-600 focus:ring-2 focus:ring-slate-500 dark:focus:ring-slate-100 focus:border-slate-600 dark:focus:border-white transition"
+                          className="rounded border-blue-400 dark:border-blue-500 text-blue-600 dark:text-blue-500 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-600 dark:focus:border-blue-400 transition"
                           data-toggle-save-address
                           aria-controls="address-fields"
                           aria-expanded={false}
                         />
                         <span>Deliver to another address</span>
-                      </label>
+                        </label>
                     </div>
                   ) : (
                     <div className="flex items-start gap-4">
@@ -208,8 +195,9 @@ export default async function CheckoutPage({
                         required
                         aria-required="true"
                         aria-describedby="address-hint"
-                        className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
+                        className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
                       />
+                      
                     </label>
 
                     <label className="flex items-center gap-4 min-w-0">
@@ -225,8 +213,9 @@ export default async function CheckoutPage({
                         required
                         aria-required="true"
                         aria-describedby="address-hint"
-                        className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
+                        className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
                       />
+                      
                     </label>
 
                     <label className="flex items-center gap-4 min-w-0">
@@ -242,8 +231,10 @@ export default async function CheckoutPage({
                         required
                         aria-required="true"
                         aria-describedby="address-hint"
-                        className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
+                        className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
                       />
+                        <p id="postal-code-error" className="mt-1 text-sm text-red-600 dark:text-red-400" aria-live="polite"></p>
+                      
                     </label>
 
                     <label className="flex items-center gap-4 min-w-0">
@@ -259,8 +250,9 @@ export default async function CheckoutPage({
                         required
                         aria-required="true"
                         aria-describedby="address-hint"
-                        className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
+                        className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
                       />
+                      
                     </label>
                   </div>
                 </div>
@@ -276,19 +268,22 @@ export default async function CheckoutPage({
                       type="text"
                       placeholder="Card token"
                       required
-                      className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
+                      aria-describedby="payment-token-error"
+                      className="w-full rounded-lg border border-border px-4 py-2.5 text-sm text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
                     />
+                    <p id="payment-token-error" className="mt-1 text-sm text-red-600 dark:text-red-400" aria-live="polite"></p>
                   </label>
 
                   <div className="sm:col-span-1 flex items-center justify-end">
-                    <button
+                    <Button
                       id="checkout-submit"
                       type="submit"
+                      variant="default"
                       disabled
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 font-semibold shadow-xl transition-all btn-primary disabled:opacity-60"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 font-semibold shadow-lg transition-transform transform-gpu active:scale-[0.995] disabled:opacity-60 bg-emerald-600 text-white hover:bg-emerald-500"
                     >
                       Complete Purchase
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </form>
@@ -301,7 +296,19 @@ export default async function CheckoutPage({
           </Card>
 
           {/* Client controller enables submit when form is valid */}
-          {serverErrors.length > 0 && <FocusOnServerErrorsClient />}
+          {/* field errors render inline; business errors shown as toasts */}
+            {dbAddress && <script
+              // placeholder to ensure client mount order when rendered server-side
+              dangerouslySetInnerHTML={{ __html: "" }}
+            />}
+            {dbAddress && (
+              // Mount address toggle when a saved address exists
+              <AddressToggleClient />
+            )}
+            {/* Client-side payment validation: ensures card is numeric and length-valid
+                so native form validity and the submit controller behave correctly. */}
+            <PaymentValidationClient />
+            {serverErrors.length > 0 && <ToastMessagesClient errors={serverErrors} />}
           <CheckoutFormController
             formId="checkout-form"
             submitId="checkout-submit"

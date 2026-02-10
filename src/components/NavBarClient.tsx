@@ -71,21 +71,21 @@ export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
         <div className="flex gap-6 items-center">
           <Link
             href="/movies"
-            className="hover:bg-blue-900 dark:hover:bg-popover hover:text-blue-600 dark:hover:text-blue-300 focus:text-blue-600 active:text-blue-700 transition"
+            className="hover:bg-accent hover:text-primary focus:text-primary active:text-primary transition"
           >
             Movies
           </Link>
 
           <Link
             href="/admin"
-            className="hover:bg-slate-100 dark:hover:bg-popover hover:text-blue-600 dark:hover:text-blue-300 focus:text-blue-600 active:text-blue-700 transition"
+            className="hover:bg-accent hover:text-primary focus:text-primary active:text-primary transition"
           >
             Admin Panel
           </Link>
 
           <Link
             href="/cart"
-            className="hover:bg-slate-100 dark:hover:bg-popover hover:text-blue-600 dark:hover:text-blue-300 focus:text-blue-600 active:text-blue-700 transition flex items-center"
+            className="hover:bg-accent hover:text-primary focus:text-primary active:text-primary transition flex items-center"
           >
             Cart <CartCountBadge />
           </Link>
@@ -165,20 +165,20 @@ export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
         <div className="flex gap-6 items-center">
           <Link
             href="/movies"
-            className="hover:bg-slate-100 dark:hover:bg-popover hover:text-blue-600 dark:hover:text-blue-300 focus:text-blue-600 active:text-blue-700 transition"
+            className="hover:bg-accent hover:text-primary focus:text-primary active:text-primary transition"
           >
             Movies
           </Link>
           <Link
             href="/cart"
-            className="hover:bg-slate-100 dark:hover:bg-popover hover:text-blue-600 dark:hover:text-blue-300 focus:text-blue-600 active:text-blue-700 transition flex items-center"
+            className="hover:bg-accent hover:text-primary focus:text-primary active:text-primary transition flex items-center"
           >
             Cart <CartCountBadge />
           </Link>
           <div className="ml-auto flex items-center gap-3" ref={menuRef}>
             <Link
               href="/profile"
-              className="hidden sm:inline-block hover:bg-slate-100 dark:hover:bg-popover hover:text-blue-600 dark:hover:text-blue-300 focus:text-blue-600 active:text-blue-700 transition"
+              className="hidden sm:inline-block hover:bg-accent hover:text-primary focus:text-primary active:text-primary transition"
             >
               Profile
             </Link>
@@ -213,7 +213,7 @@ export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
                 <a
                   href="/profile"
                   role="menuitem"
-                  className="block px-3 py-2 text-sm text-foreground hover:bg-slate-100 dark:hover:bg-popover hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
+                  className="block px-3 py-2 text-sm text-foreground hover:bg-accent hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
                   onClick={() => setMenuOpen(false)}
                 >
                   Profile
@@ -221,7 +221,7 @@ export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
                 <button
                   role="menuitem"
                   onClick={handleSignOut}
-                  className="w-full text-left px-3 py-2 text-sm text-foreground hover:bg-slate-100 dark:hover:bg-popover hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
+                  className="w-full text-left px-3 py-2 text-sm text-foreground hover:bg-accent hover:text-foreground first:rounded-t-md last:rounded-b-md mx-1 my-1 transition"
                 >
                   Sign Out
                 </button>
@@ -238,7 +238,7 @@ export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
       <div className="text-2xl font-bold tracking-wide">
         <Link
           href="/"
-          className="text-foreground hover:text-blue-600 dark:hover:text-blue-300 focus:text-blue-600 active:text-blue-700 transition"
+          className="text-foreground hover:text-primary focus:text-primary active:text-primary transition"
         >
           MovieShop
         </Link>
@@ -246,13 +246,13 @@ export default function NavBarClient({ isAuthenticated = false }: NavBarProps) {
       <div className="flex gap-6 items-center">
         <Link
           href="/movies"
-          className="hover:bg-slate-100 dark:hover:bg-popover hover:text-blue-600 dark:hover:text-blue-300 focus:text-blue-600 active:text-blue-700 transition"
+          className="hover:bg-accent hover:text-primary focus:text-primary active:text-primary transition"
         >
           Movies
         </Link>
         <Link
           href="/cart"
-          className="hover:bg-slate-100 dark:hover:bg-popover hover:text-blue-600 dark:hover:text-blue-300 focus:text-blue-600 active:text-blue-700 transition flex items-center"
+          className="hover:bg-accent hover:text-primary focus:text-primary active:text-primary transition flex items-center"
         >
           Cart <CartCountBadge />
         </Link>

@@ -62,7 +62,7 @@ export default function CheckoutLoading() {
             </div>
 
             <div className="sm:col-span-1 flex items-center justify-end">
-              <div className="w-full sm:w-44 h-11 bg-neutral-300 dark:bg-neutral-700 rounded-lg" />
+              <div className="w-full sm:w-44 h-11 bg-emerald-600 dark:bg-emerald-700 rounded-lg" />
             </div>
           </div>
         </div>

@@ -21,11 +21,18 @@ const checkoutSchema = z.object({
   line1: z.string().min(2).optional(),
   line2: z.string().optional(),
   city: z.string().min(1).optional(),
-  postalCode: z.string().min(1).optional(),
+  postalCode: z
+    .string()
+    .min(1)
+    .regex(/^[A-Za-z0-9 \-]+$/, "Postal code contains invalid characters")
+    .optional(),
   country: z.string().min(1).optional(),
   selectedAddressId: z.string().optional(),
   saveAddress: z.string().optional(),
-  paymentToken: z.string().optional(),
+  paymentToken: z
+    .string()
+    .regex(/^[0-9]{13,19}$/, "Payment token must be 13–19 digits")
+    .optional(),
 });
 
 type CartItem = { movieId: string; quantity: number };

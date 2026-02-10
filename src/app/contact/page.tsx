@@ -141,7 +141,7 @@ export default function ContactPage() {
                   </div>
 
                   <div className="text-right">
-                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                    <div className="text-xs text-muted-foreground">
                       Open source
                     </div>
                     <a
