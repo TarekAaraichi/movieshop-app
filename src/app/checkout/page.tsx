@@ -88,10 +88,13 @@ export default async function CheckoutPage({
 
               {serverErrors.length > 0 && (
                 <div
+                  id="server-errors"
                   role="alert"
                   aria-live="polite"
+                  tabIndex={-1}
                   className="mb-6 rounded-lg bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-600 text-red-900 dark:text-red-200 px-5 py-4 text-base shadow"
                 >
+                  <p className="sr-only">There was a problem with your submission</p>
                   <ul className="list-disc list-inside space-y-1">
                     {serverErrors.map((e, i) => (
                       <li key={i}>{e}</li>
@@ -105,6 +108,7 @@ export default async function CheckoutPage({
                 action={createOrder}
                 className="grid grid-cols-1 gap-6 min-w-0"
                 autoComplete="off"
+                aria-describedby={serverErrors.length > 0 ? "server-errors" : undefined}
               >
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div className="flex items-center gap-4 min-w-0">
@@ -159,6 +163,8 @@ export default async function CheckoutPage({
                           value="1"
                           className="rounded border-indigo-400 dark:border-indigo-300 text-slate-600 focus:ring-2 focus:ring-slate-500 dark:focus:ring-slate-100 focus:border-slate-600 dark:focus:border-white transition"
                           data-toggle-save-address
+                          aria-controls="address-fields"
+                          aria-expanded={false}
                         />
                         <span>Deliver to another address</span>
                       </label>
@@ -177,7 +183,12 @@ export default async function CheckoutPage({
                   <div
                     id="address-fields"
                     className="grid grid-cols-1 sm:grid-cols-2 gap-5"
+                    aria-hidden={dbAddress ? true : false}
+                    aria-describedby="address-hint"
                   >
+                    <span id="address-hint" className="sr-only">
+                      Enter your street, city, postal code and country for delivery.
+                    </span>
                     <label className="flex items-center gap-4 sm:col-span-2 min-w-0">
                       <span className="w-32 text-base font-medium text-foreground">
                         Street
@@ -189,6 +200,8 @@ export default async function CheckoutPage({
                         placeholder="Street address"
                         defaultValue={dbAddress?.line1 ?? undefined}
                         required
+                        aria-required="true"
+                        aria-describedby="address-hint"
                         className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
                       />
                     </label>
@@ -204,6 +217,8 @@ export default async function CheckoutPage({
                         placeholder="City"
                         defaultValue={dbAddress?.city ?? undefined}
                         required
+                        aria-required="true"
+                        aria-describedby="address-hint"
                         className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
                       />
                     </label>
@@ -219,6 +234,8 @@ export default async function CheckoutPage({
                         placeholder="ZIP"
                         defaultValue={dbAddress?.postalCode ?? undefined}
                         required
+                        aria-required="true"
+                        aria-describedby="address-hint"
                         className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
                       />
                     </label>
@@ -234,6 +251,8 @@ export default async function CheckoutPage({
                         placeholder="Country"
                         defaultValue={dbAddress?.country ?? undefined}
                         required
+                        aria-required="true"
+                        aria-describedby="address-hint"
                         className="w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-neutral-500 focus:outline-none focus:ring-2 focus:ring-neutral-500/40 placeholder:text-muted bg-card"
                       />
                     </label>
