@@ -91,16 +91,26 @@ This project is more than just a demo; it's a fully-realized application with a 
 
 MovieShop is built with a modern, type-safe, and scalable technology stack.
 
-- **Framework**: **Next.js 15** (with App Router, React Server Components)
-- **Database ORM**: **Prisma**
-- **Database**: **PostgreSQL**
-- **Authentication**: **Better Auth**
-- **UI Styling**: **Tailwind CSS**
-- **UI Components**: **shadcn/ui**
-- **Language**: **TypeScript**
-- **Testing**: **Vitest**
-- **Code Quality**: **ESLint**, **Prettier**, **Husky**
-- **Deployment**: **Vercel**
+| Icon | Technology      | Role/Category        |
+| ---- | --------------- | -------------------- |
+| 🟪   | Next.js 15      | Framework            |
+| ⚛️   | React           | UI                   |
+| 🔷   | Prisma          | ORM                  |
+| 🐘   | PostgreSQL      | Database             |
+| 🎨   | Tailwind CSS    | Styling              |
+| 🧩   | shadcn/ui       | UI Components        |
+| 🔒   | Better Auth     | Authentication       |
+| 🟦   | TypeScript      | Language             |
+| ✅   | Vitest          | Testing              |
+| 🐶   | Husky           | Git Hooks            |
+| 🔍   | ESLint          | Linting              |
+| ✨   | Prettier        | Formatting           |
+| ▲    | Vercel          | Deployment           |
+| 🧪   | React Hook Form | Forms/Validation     |
+| 🧬   | Zod             | Schema Validation    |
+| 🗂️   | clsx            | Utility (Classnames) |
+| 🔄   | use-debounce    | Utility (Debounce)   |
+| 🍞   | react-hot-toast | Notifications        |
 
 ### Architectural Highlights
 
