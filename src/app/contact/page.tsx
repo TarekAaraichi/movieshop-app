@@ -9,8 +9,8 @@ import { PageWrapper } from "@/components/PageThemeContext";
 export default function ContactPage() {
   return (
     <PageWrapper>
-      <div className="m-auto max-w-4xl w-full">
-        <Card className="p-6 sm:p-8 bg-card border border-border">
+      <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col md:flex-row gap-8 items-start">
+        <main className="flex-1 bg-card border border-border rounded-2xl shadow-sm p-6 md:p-8">
           <header className="mb-6 sm:mb-8">
             <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">
               Contact
@@ -173,7 +173,18 @@ export default function ContactPage() {
               </div>
             </section>
           </div>
-        </Card>
+        </main>
+
+        <aside className="w-full md:w-96 sticky top-6 self-start">
+          <div className="bg-card border border-border rounded-2xl shadow-sm p-0 flex flex-col gap-4 overflow-hidden">
+            <div className="p-6">
+              {/* You can add a contact summary or quick links here if desired */}
+            </div>
+            <div className="text-xs text-neutral-500 dark:text-slate-500 pt-2 px-6 pb-4">
+              For demo purposes only. Please do not send sensitive information.
+            </div>
+          </div>
+        </aside>
       </div>
     </PageWrapper>
   );
