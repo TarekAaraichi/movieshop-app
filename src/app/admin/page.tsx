@@ -162,38 +162,43 @@ export default async function AdminPage({
   return (
     <PageWrapper>
       <AdminToastsClient />
-      <div className="rounded-3xl bg-transparent">
-        <div className="min-h-screen space-y-8 text-foreground p-4 sm:p-6 lg:p-8">
-          <header className="max-w-7xl mx-auto">
-            <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-xl">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-                <div>
-                  <span className="inline-flex items-center gap-2 rounded-full border border-border bg-popover px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted">
-                    Control Center
-                  </span>
-                  <h1 className="mt-3 text-3xl md:text-4xl font-bold text-foreground">
-                    Admin Dashboard
-                  </h1>
-                  {adminUser?.name && (
-                    <p className="mt-2 text-sm text-muted">
-                      Welcome back, {adminUser.name}. Manage content, people,
-                      and users from one place.
-                    </p>
-                  )}
-                </div>
-              </div>
+      <div className="w-full max-w-6xl mx-auto px-4 md:px-0 flex flex-col gap-8 items-start">
+        <main className="flex-1 bg-card border border-border rounded-2xl shadow-sm p-6 md:p-8 w-full">
+          <div className="flex items-start justify-between mb-6 gap-4">
+            <div>
+              <h1 className="text-lg md:text-2xl font-semibold text-foreground">
+                Admin Dashboard
+              </h1>
+              <p className="text-sm text-muted mt-1">
+                Manage movies, people, users, and orders from one place
+              </p>
+              {adminUser?.name && (
+                <p className="mt-2 text-sm text-muted">
+                  Welcome back, {adminUser.name}.
+                </p>
+              )}
             </div>
-          </header>
+          </div>
 
-          <section className="max-w-7xl mx-auto">
+          <section className="mb-8">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
               {stats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-3xl border border-border bg-card p-5 shadow-lg transition hover:-translate-y-0.5 hover:shadow-2xl"
+                  className="rounded-2xl border border-border bg-card p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
                 >
                   <div
-                    className={`inline-flex items-center rounded-full bg-linear-to-r ${stat.accent} px-3 py-1 text-xs font-semibold text-foreground opacity-90`}
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold text-foreground opacity-90 ${
+                      stat.label === "Movies"
+                        ? "bg-gradient-to-r from-indigo-500 to-sky-500"
+                        : stat.label === "People"
+                          ? "bg-gradient-to-r from-emerald-500 to-teal-500"
+                          : stat.label === "Users"
+                            ? "bg-gradient-to-r from-purple-500 to-pink-500"
+                            : stat.label === "Genres"
+                              ? "bg-gradient-to-r from-amber-500 to-orange-500"
+                              : "bg-gradient-to-r from-rose-500 to-red-500"
+                    }`}
                   >
                     {stat.label}
                   </div>
@@ -262,7 +267,7 @@ export default async function AdminPage({
               userEmail: users.find((u) => u.id === o.userId)?.email ?? null,
             }))}
           />
-        </div>
+        </main>
       </div>
     </PageWrapper>
   );
