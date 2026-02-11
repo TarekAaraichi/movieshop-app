@@ -103,7 +103,7 @@ export default function CreateMoviePage() {
   }
 
   const inputClasses =
-    "w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/40 bg-popover placeholder:text-muted";
+    "w-full rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-foreground shadow-sm transition focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-400/40 bg-white dark:bg-card placeholder:text-muted";
   const fieldLabelClasses = "text-sm font-semibold text-foreground";
   const fieldHintClasses = "mt-1 text-xs font-medium text-muted";
   const fieldGrid = "grid gap-2 sm:grid-cols-[160px_1fr] sm:items-center";
@@ -112,7 +112,7 @@ export default function CreateMoviePage() {
     <PageWrapper>
       <div className="min-h-screen bg-transparent px-4 py-6 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl space-y-10">
-          <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-2xl">
+          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm">
             <h1 className="text-3xl font-bold text-foreground sm:text-4xl">
               Create Movie
             </h1>
@@ -122,7 +122,7 @@ export default function CreateMoviePage() {
             </p>
           </div>
 
-          <Card className="rounded-3xl border-border bg-card p-6 text-foreground shadow-2xl sm:p-8">
+          <Card className="rounded-2xl border border-border bg-card p-6 text-foreground shadow-sm sm:p-8">
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
@@ -145,7 +145,10 @@ export default function CreateMoviePage() {
                         <Input
                           placeholder="e.g., The Great Adventure"
                           {...field}
-                          className={inputClasses}
+                          className={inputClasses.replace(
+                            "bg-white",
+                            "bg-card",
+                          )}
                         />
                       </FormControl>
                       <FormMessage />
@@ -171,7 +174,10 @@ export default function CreateMoviePage() {
                           <Input
                             type="date"
                             {...field}
-                            className={inputClasses}
+                            className={inputClasses.replace(
+                              "bg-white",
+                              "bg-card",
+                            )}
                           />
                         </FormControl>
                         <FormMessage />
@@ -198,7 +204,10 @@ export default function CreateMoviePage() {
                             min={1}
                             placeholder="120"
                             {...field}
-                            className={inputClasses}
+                            className={inputClasses.replace(
+                              "bg-white",
+                              "bg-card",
+                            )}
                           />
                         </FormControl>
                         <FormMessage />
@@ -225,7 +234,10 @@ export default function CreateMoviePage() {
                           <Input
                             placeholder="Director name"
                             {...field}
-                            className={inputClasses}
+                            className={inputClasses.replace(
+                              "bg-white",
+                              "bg-card",
+                            )}
                           />
                         </FormControl>
                         <FormMessage />
@@ -251,7 +263,10 @@ export default function CreateMoviePage() {
                             placeholder="Lead Actor, Supporting Actor"
                             {...field}
                             value={field.value ?? ""}
-                            className={inputClasses}
+                            className={inputClasses.replace(
+                              "bg-white",
+                              "bg-card",
+                            )}
                           />
                         </FormControl>
                         <FormMessage />
@@ -281,7 +296,10 @@ export default function CreateMoviePage() {
                             min={0}
                             placeholder="19.99"
                             {...field}
-                            className={inputClasses}
+                            className={inputClasses.replace(
+                              "bg-white",
+                              "bg-card",
+                            )}
                           />
                         </FormControl>
                         <FormMessage />
@@ -308,7 +326,10 @@ export default function CreateMoviePage() {
                             min={0}
                             placeholder="50"
                             {...field}
-                            className={inputClasses}
+                            className={inputClasses.replace(
+                              "bg-white",
+                              "bg-card",
+                            )}
                           />
                         </FormControl>
                         <FormMessage />
@@ -336,7 +357,10 @@ export default function CreateMoviePage() {
                           placeholder="https://..."
                           {...field}
                           value={field.value ?? ""}
-                          className={inputClasses}
+                          className={inputClasses.replace(
+                            "bg-white",
+                            "bg-card",
+                          )}
                         />
                       </FormControl>
                       <FormMessage />
@@ -362,7 +386,10 @@ export default function CreateMoviePage() {
                           placeholder="Action, Adventure, Sci-Fi"
                           {...field}
                           value={field.value ?? ""}
-                          className={inputClasses}
+                          className={inputClasses.replace(
+                            "bg-white",
+                            "bg-card",
+                          )}
                         />
                       </FormControl>
                       <FormMessage />
