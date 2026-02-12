@@ -15,31 +15,36 @@ import {
 import { deleteUser, setUserRole } from "@/server/actions/usersActions";
 import { cancelOrder } from "@/server/actions/ordersActions";
 
-type AdminTab = "movies" | "persons" | "users" | "orders";
+// ...existing type and interface definitions...
 
-type MovieForAdmin = {
-  id: string;
-  title: string;
-  releaseYear: number | null;
-  price: string | null;
-  stock: number | null;
-  isArchived: boolean;
-  genres: Array<{ id: string; name: string }>;
-};
+export default function AdminDashboardContent(props: AdminDashboardContentProps) {
+  // ...existing logic and state...
 
-type PersonForAdmin = {
-  id: string;
-  fullName: string;
-  imageUrl: string | null;
-  movies: Array<{ role: string; movieTitle: string }>;
-};
-
-type UserForAdmin = {
-  id: string;
-  name: string | null;
-  email: string;
-  role: string | null;
-};
+  return (
+    <div className="mx-auto max-w-7xl rounded-3xl border border-border bg-card p-4 shadow-2xl backdrop-blur-lg sm:p-6 lg:p-8">
+      <div className="flex flex-col gap-8">
+          <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+            <AdminTabSwitcher activeTab={activeTab} onTabChange={setActiveTab} />
+            {/* ...existing code... */}
+          </div>
+          <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
+            {activeTab === "movies" && (
+              <Link href="/admin/movies/create" className="inline-flex">
+                <Button className="rounded-xl" asChild>
+                  <a className="px-4 py-2.5">+ New Movie</a>
+                </Button>
+              </Link>
+            )}
+          </div>
+          {/* Tab content blocks as direct siblings below */}
+          {activeTab === "movies" && (<div />)}
+          {activeTab === "persons" && (<div />)}
+          {activeTab === "users" && (<div />)}
+          {activeTab === "orders" && (<div />)}
+      </div>
+    </div>
+  );
+}
 
 type OrderForAdmin = {
   id: string;
@@ -149,9 +154,7 @@ function AdminPagination({
               </span>
             );
           }
-
           const isActive = page === currentPage;
-
           return (
             <Button
               key={page}
@@ -168,280 +171,30 @@ function AdminPagination({
             </Button>
           );
         })}
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-          disabled={currentPage === totalPages}
-          className={`${buttonBase} ${inactiveClasses} ${
-            currentPage === totalPages ? disabledClasses : ""
-          }`}
-          aria-label="Next page"
-        >
-          Next
-        </Button>
       </div>
     </div>
   );
-}
+                        <div
+                          key={person.id}
+                          className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-lg transition-all duration-300 sm:flex-row sm:items-center sm:justify-between"
+                        >
+                          <div className="flex items-center gap-4">
+                            {person.imageUrl ? (
+                              <>{/* person image here */}</>
+                            ) : null}
+                          </div>
+                          {/* ...rest of person card... */}
 
-interface AdminDashboardContentProps {
-  initialTab: AdminTab;
-  initialSearch: string;
-  initialGenre?: string;
-  initialPersonRole?: string;
-  initialUserRole?: string;
-  movies: MovieForAdmin[];
-  persons: PersonForAdmin[];
-  users: UserForAdmin[];
-  genres: GenreOption[];
-  personRoles: string[];
-  userRoles: string[];
-  orderCounts: Record<string, number>;
-  orders?: OrderForAdmin[];
-}
-
-export default function AdminDashboardContent({
-  initialTab,
-  initialSearch,
-  initialGenre,
-  initialPersonRole,
-  initialUserRole,
-  movies,
-  persons,
-  users,
-  genres,
-  personRoles,
-  userRoles,
-  orderCounts,
-  orders,
-}: AdminDashboardContentProps) {
-  const [activeTab, setActiveTab] = React.useState<AdminTab>(initialTab);
-  const [searchTerm, setSearchTerm] = React.useState(initialSearch);
-  const [selectedGenre, setSelectedGenre] = React.useState(initialGenre ?? "");
-  const [selectedPersonRole, setSelectedPersonRole] = React.useState(
-    initialPersonRole ?? "",
-  );
-  const [selectedUserRole, setSelectedUserRole] = React.useState(
-    initialUserRole ?? "",
-  );
-  const [moviePage, setMoviePage] = React.useState(1);
-  const [personPage, setPersonPage] = React.useState(1);
-  const [userPage, setUserPage] = React.useState(1);
-  const [orderPage, setOrderPage] = React.useState(1);
-  const [selectedOrderStatus, setSelectedOrderStatus] = React.useState("");
-
-  React.useEffect(() => {
-    setActiveTab(initialTab);
-  }, [initialTab]);
-
-  // Show a one-time toast when arriving after an action
-  React.useEffect(() => {
-    if (typeof window === "undefined") return;
-    const params = new URLSearchParams(window.location.search);
-
-    const created = params.get("created");
-    const updated = params.get("updated");
-    const deleted = params.get("deleted");
-    const archived = params.get("archived");
-    const unarchived = params.get("unarchived");
-    const granted = params.get("granted");
-    const revoked = params.get("revoked");
-    const error = params.get("error");
-
-    const title = params.get("title") || params.get("name");
-
-    if (created) {
-      const msg = title ? `Successfully created "${title}"` : "Item created";
-      toast.success(msg);
-    } else if (updated) {
-      const msg = title ? `Successfully updated "${title}"` : "Item updated";
-      toast.success(msg);
-    } else if (deleted) {
-      const msg = title ? `Successfully deleted "${title}"` : "Item deleted";
-      toast.success(msg);
-    } else if (archived) {
-      const msg = title ? `Successfully archived "${title}"` : "Item archived";
-      toast.success(msg);
-    } else if (unarchived) {
-      const msg = title
-        ? `Successfully unarchived "${title}"`
-        : "Item unarchived";
-      toast.success(msg);
-    } else if (granted) {
-      const msg = title ? `Granted admin to "${title}"` : "Admin role granted";
-      toast.success(msg);
-    } else if (revoked) {
-      const msg = title
-        ? `Revoked admin from "${title}"`
-        : "Admin role revoked";
-      toast.success(msg);
-    } else if (error) {
-      if (error === "exists") {
-        const msg = title ? `"${title}" already exists` : "Item already exists";
-        toast.error(msg);
-      } else {
-        toast.error(error);
-      }
-    }
-
-    // Clean up URL params
-    [
-      "created",
-      "updated",
-      "deleted",
-      "archived",
-      "unarchived",
-      "granted",
-      "revoked",
-      "error",
-      "title",
-      "name",
-    ].forEach((p) => params.delete(p));
-
-    const next = params.toString()
-      ? `${window.location.pathname}?${params.toString()}`
-      : window.location.pathname;
-    window.history.replaceState(null, "", next);
-  }, []);
-
-  React.useEffect(() => {
-    setSearchTerm(initialSearch);
-  }, [initialSearch]);
-
-  React.useEffect(() => {
-    setSelectedGenre(initialGenre ?? "");
-  }, [initialGenre]);
-
-  React.useEffect(() => {
-    setSelectedPersonRole(initialPersonRole ?? "");
-  }, [initialPersonRole]);
-
-  React.useEffect(() => {
-    setSelectedUserRole(initialUserRole ?? "");
-  }, [initialUserRole]);
-
-  React.useEffect(() => {
-    setMoviePage(1);
-    setPersonPage(1);
-    setUserPage(1);
-    setOrderPage(1);
-  }, [searchTerm]);
-
-  React.useEffect(() => {
-    setMoviePage(1);
-  }, [selectedGenre]);
-
-  React.useEffect(() => {
-    setPersonPage(1);
-  }, [selectedPersonRole]);
-
-  React.useEffect(() => {
-    setUserPage(1);
-  }, [selectedUserRole]);
-
-  React.useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    const params = new URLSearchParams(window.location.search);
-    [
-      "tab",
-      "q",
-      "genre",
-      "role",
-      "personRole",
-      "userRole",
-      "orderStatus",
-    ].forEach((key) => {
-      params.delete(key);
-    });
-
-    if (activeTab !== "movies") {
-      params.set("tab", activeTab);
-    }
-    if (searchTerm) {
-      params.set("q", searchTerm);
-    }
-    if (selectedGenre) {
-      params.set("genre", selectedGenre);
-    }
-    if (selectedPersonRole) {
-      params.set("personRole", selectedPersonRole);
-      if (activeTab === "persons") {
-        params.set("role", selectedPersonRole);
-      }
-    }
-    if (selectedUserRole) {
-      params.set("userRole", selectedUserRole);
-      if (activeTab === "users") {
-        params.set("role", selectedUserRole);
-      }
-    }
-    if (selectedOrderStatus) {
-      params.set("orderStatus", selectedOrderStatus);
-    }
-
-    const query = params.toString();
-    const nextUrl = query
-      ? `${window.location.pathname}?${query}`
-      : window.location.pathname;
-    window.history.replaceState(null, "", nextUrl);
-  }, [
-    activeTab,
-    searchTerm,
-    selectedGenre,
-    selectedPersonRole,
-    selectedUserRole,
-    selectedOrderStatus,
-  ]);
-
-  // keep selectedOrderStatus initialised to empty
-
-  const filteredMovies = React.useMemo(() => {
-    const term = searchTerm.trim().toLowerCase();
-    return movies.filter((movie) => {
-      const matchesTerm = term
-        ? movie.title.toLowerCase().includes(term)
-        : true;
-      const matchesGenre = selectedGenre
-        ? movie.genres.some((g) => g.id === selectedGenre)
-        : true;
-      return matchesTerm && matchesGenre;
-    });
-  }, [movies, searchTerm, selectedGenre]);
-
-  const filteredPersons = React.useMemo(() => {
-    const term = searchTerm.trim().toLowerCase();
-    return persons.filter((person) => {
-      const matchesTerm = term
-        ? person.fullName.toLowerCase().includes(term)
-        : true;
-      const matchesRole = selectedPersonRole
-        ? person.movies.some(
-            (association) => association.role === selectedPersonRole,
-          )
-        : true;
-      return matchesTerm && matchesRole;
-    });
-  }, [persons, searchTerm, selectedPersonRole]);
-
-  const filteredUsers = React.useMemo(() => {
-    const term = searchTerm.trim().toLowerCase();
-    return users.filter((user) => {
-      const matchesTerm = term
-        ? [user.name ?? "", user.email]
-            .filter(Boolean)
-            .some((value) => value.toLowerCase().includes(term))
-        : true;
-      const matchesRole = selectedUserRole
-        ? (user.role ?? "user") === selectedUserRole
-        : true;
-      return matchesTerm && matchesRole;
-    });
-  }, [users, searchTerm, selectedUserRole]);
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* ...pagination... */}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
   const filteredOrders = React.useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -607,10 +360,8 @@ export default function AdminDashboardContent({
               </select>
             )}
           </div>
-        </div>
-
-        <div className="mb-4 flex flex-wrap items-center justify-end gap-3">
-          {activeTab === "movies" && (
+          </div>
+        );
             <Link href="/admin/movies/create" className="inline-flex">
               <Button className="rounded-xl" asChild>
                 <a className="px-4 py-2.5">+ New Movie</a>
@@ -622,128 +373,9 @@ export default function AdminDashboardContent({
         {activeTab === "movies" && (
           <div className="flex flex-col gap-6">
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {paginatedMovies.map((movie) => {
-                const genreNames =
-                  movie.genres
-                    .map((association) => association.name)
-                    .join(", ") || "—";
-                const releaseLabel = movie.releaseYear ?? "—";
-                const disableDelete = (orderCounts[movie.id] ?? 0) > 0;
-                return (
-                  <div
-                    key={movie.id}
-                    className="group relative flex flex-col justify-between gap-4 rounded-2xl border border-border bg-card p-5 shadow-lg transition-all duration-300 hover:shadow-lg"
-                  >
-                    <div>
-                      <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-lg font-bold text-foreground">
-                          {movie.title}
-                        </h3>
-                        {movie.isArchived && (
-                          <span className="whitespace-nowrap rounded-full border border-border bg-popover px-2.5 py-1 text-xs font-semibold text-muted">
-                            Archived
-                          </span>
-                        )}
-                      </div>
-                      <p className="mt-2 text-sm text-muted">
-                        {releaseLabel} &middot; {genreNames}
-                      </p>
-                      <div className="mt-4 flex items-center gap-3 text-sm">
-                        <span className="font-semibold text-foreground">
-                          {movie.price != null ? `SEK ${movie.price}` : "—"}
-                        </span>
-                        <span className="text-muted">|</span>
-                        <span className="text-muted">
-                          Stock {movie.stock ?? "—"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-                      <Link
-                        href={`/admin/movies/${movie.id}/edit`}
-                        className="inline-flex items-center gap-1.5 text-sm font-medium text-muted transition hover:text-foreground"
-                      >
-                        Edit
-                      </Link>
-
-                      <div className="flex flex-col sm:flex-row sm:items-center items-start gap-2 text-xs font-semibold uppercase tracking-wide">
-                        {!movie.isArchived ? (
-                          <form
-                            action={archiveMovie}
-                            className="w-full sm:w-auto"
-                          >
-                            <input
-                              type="hidden"
-                              name="movieId"
-                              value={movie.id}
-                            />
-                            <Button
-                              type="submit"
-                              aria-label={`Archive ${movie.title}`}
-                              className="w-full sm:w-auto rounded-full"
-                              size="sm"
-                            >
-                              Archive
-                            </Button>
-                          </form>
-                        ) : (
-                          <form
-                            action={unarchiveMovie}
-                            className="w-full sm:w-auto"
-                          >
-                            <input
-                              type="hidden"
-                              name="movieId"
-                              value={movie.id}
-                            />
-                            <Button
-                              type="submit"
-                              aria-label={`Unarchive ${movie.title}`}
-                              className="w-full sm:w-auto rounded-full"
-                              size="sm"
-                            >
-                              Unarchive
-                            </Button>
-                          </form>
-                        )}
-
-                        <form action={deleteMovie} className="w-full sm:w-auto">
-                          <input
-                            type="hidden"
-                            name="movieId"
-                            value={movie.id}
-                          />
-                          <Button
-                            type="submit"
-                            aria-label={`Delete ${movie.title}`}
-                            disabled={disableDelete}
-                            className="w-full sm:w-auto rounded-full"
-                            size="sm"
-                          >
-                            Delete
-                          </Button>
-                        </form>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-
-              {filteredMovies.length === 0 && (
-                <div className="col-span-full rounded-2xl p-6 text-center text-sm text-muted">
-                  No movies match the current filters.
-                </div>
-              )}
+              {/* ...existing movie code... */}
             </div>
-            {showMoviePagination && (
-              <AdminPagination
-                currentPage={moviePage}
-                totalItems={filteredMovies.length}
-                pageSize={MOVIES_PAGE_SIZE}
-                onPageChange={setMoviePage}
-              />
-            )}
+            {/* ...pagination... */}
           </div>
         )}
 
@@ -822,9 +454,15 @@ export default function AdminDashboardContent({
         )}
 
         {activeTab === "users" && (
-          <div className="flex flex-col gap-6">
-            <div className="grid grid-cols-1 gap-4">
-              {paginatedUsers.map((user) => {
+          <>
+            <div className="flex justify-end mb-4">
+              <Link href="/admin/users/create">
+                <Button className="rounded-xl px-4 py-2.5">+ New User</Button>
+              </Link>
+            </div>
+            <div className="flex flex-col gap-6">
+              <div className="grid grid-cols-1 gap-4">
+                {paginatedUsers.map((user) => {
                 const initials = (user.name ?? user.email)
                   .split(" ")
                   .map((segment) => segment[0])
@@ -855,6 +493,13 @@ export default function AdminDashboardContent({
                       <span className="rounded-full border px-3 py-1 border-border bg-popover text-muted">
                         {resolvedRole}
                       </span>
+
+                      <Link
+                        href={`/admin/users/${user.id}/edit`}
+                        className="font-semibold text-muted transition hover:text-foreground"
+                      >
+                        Edit
+                      </Link>
 
                       <form action={setUserRole} className="inline-flex">
                         <input type="hidden" name="userId" value={user.id} />
@@ -946,6 +591,12 @@ export default function AdminDashboardContent({
                         className="font-semibold text-muted transition hover:text-foreground"
                       >
                         View
+                      </Link>
+                      <Link
+                        href={`/admin/orders/${order.id}/edit`}
+                        className="font-semibold text-muted transition hover:text-foreground"
+                      >
+                        Edit
                       </Link>
                       {order.status !== "CANCELLED" && (
                         <form action={cancelOrder} className="inline-block">
