@@ -111,7 +111,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
         </Link>
 
         {year && (
-          <div className="mt-0.5 text-sm text-primary font-semibold">
+          <div className="mt-0.5 text-sm text-blue-900 dark:text-blue-300 font-semibold">
             {year}
           </div>
         )}
@@ -121,7 +121,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             {movie.genres.slice(0, 3).map((g, i) => (
               <span
                 key={i}
-                className="inline-flex items-center rounded-md bg-accent text-accent-foreground border border-border px-2 py-0.5 text-xs font-medium"
+                className="inline-flex items-center rounded-md bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100 border border-border px-2 py-0.5 text-xs font-medium"
               >
                 {g.genre.name}
               </span>
@@ -131,7 +131,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
 
         {/* Director + main cast */}
         <div className="mt-3 text-sm">
-          <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
+          <div className="text-xs font-semibold text-green-900 dark:text-green-300">
             Director
           </div>
           <div className="mt-1">
@@ -149,10 +149,10 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
 
           {actors.length > 0 && (
             <div className="mt-2">
-              <div className="text-xs font-semibold text-indigo-700 dark:text-indigo-300">
+              <div className="text-xs font-semibold text-purple-900 dark:text-purple-300">
                 Starring
               </div>
-              <div className="mt-1 text-sm text-indigo-900 dark:text-indigo-200">
+              <div className="mt-1 text-sm text-purple-900 dark:text-purple-100">
                 {actors.slice(0, 2).map((a, i) => (
                   <span key={a.id}>
                     {i > 0 && ", "}
@@ -184,7 +184,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             <AddToCartClientButton
               movieId={movie.id}
               stock={stock}
-              buttonClassName="rounded-xl bg-primary text-primary-foreground px-3 py-2 text-sm font-semibold shadow-sm hover:bg-primary/90 transition"
+              buttonClassName="rounded-xl bg-emerald-800 text-white border border-emerald-900 dark:bg-emerald-600 dark:border-emerald-700 px-3 py-2 text-sm font-semibold shadow-sm hover:bg-emerald-900 hover:text-white dark:hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-400/60 focus:outline-none transition"
             />
           )}
         </div>
