@@ -54,12 +54,12 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
   return (
     <Card
       className={
-        "group relative overflow-hidden flex flex-col h-full w-full min-w-0 transition duration-200 ease-in-out hover:scale-105 hover:shadow-2xl rounded-xl pt-0 border border-border shadow-md backdrop-blur-sm bg-white dark:bg-[linear-gradient(90deg,rgba(36,41,46,0.98),rgba(30,34,40,0.98))]"
+        "group relative overflow-hidden flex flex-col h-full w-full min-w-0 transition duration-200 ease-in-out hover:scale-105 hover:shadow-2xl rounded-xl pt-0 border border-border shadow-md backdrop-blur-sm bg-card text-foreground"
       }
     >
       <CardHeader className="p-0 mb-1">
         <Link href={`/movies/${movie.id}`} className="block">
-          <div className="relative w-full aspect-2/3 rounded-t-xl overflow-hidden shadow-inner bg-gray-100 dark:bg-muted border-b border-border">
+          <div className="relative w-full aspect-2/3 rounded-t-xl overflow-hidden shadow-inner bg-muted border-b border-border">
             <Image
               src={img}
               alt={movie.title}
@@ -73,11 +73,11 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             />
 
             {/* subtle overlay for contrast */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent pointer-events-none" />
 
             {/* price badge */}
             <div className="absolute top-3 right-3 z-10">
-              <span className="inline-flex items-center px-3 py-1 rounded-full bg-linear-to-r from-emerald-500 to-blue-500 text-white text-sm font-semibold shadow-sm">
+              <span className="inline-flex items-center px-3 py-1 rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-sm border border-border">
                 SEK{price}
               </span>
             </div>
@@ -85,7 +85,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             {/* low stock badge */}
             {typeof stock === "number" && stock > 0 && stock <= 5 && (
               <div className="absolute bottom-3 left-3 z-10">
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-600 text-white text-xs font-semibold shadow-sm">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground text-xs font-semibold shadow-sm">
                   Only {stock} left
                 </span>
               </div>
@@ -94,7 +94,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             {/* out of stock overlay */}
             {stock === 0 && (
               <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                <span className="text-white font-bold text-base">
+                <span className="text-destructive-foreground font-bold text-base">
                   Out of stock
                 </span>
               </div>
@@ -105,13 +105,13 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
 
       <CardContent className={compact ? "p-1" : "p-2 grow"}>
         <Link href={`/movies/${movie.id}`}>
-          <CardTitle className="text-base sm:text-lg font-semibold leading-tight wrap-break-word whitespace-normal text-foreground mt-1">
+          <CardTitle className="text-base sm:text-lg font-semibold leading-tight wrap-break-word whitespace-normal mt-1">
             {movie.title}
           </CardTitle>
         </Link>
 
         {year && (
-          <div className="mt-0.5 text-sm text-blue-600 dark:text-blue-300 font-semibold">
+          <div className="mt-0.5 text-sm text-primary font-semibold">
             {year}
           </div>
         )}
@@ -121,7 +121,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             {movie.genres.slice(0, 3).map((g, i) => (
               <span
                 key={i}
-                className="inline-flex items-center rounded-md bg-neutral-200 text-neutral-800 dark:bg-neutral-600 dark:text-neutral-100 border border-neutral-300 dark:border-neutral-500 px-2 py-0.5 text-xs font-medium"
+                className="inline-flex items-center rounded-md bg-accent text-accent-foreground border border-border px-2 py-0.5 text-xs font-medium"
               >
                 {g.genre.name}
               </span>
@@ -131,14 +131,14 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
 
         {/* Director + main cast */}
         <div className="mt-3 text-sm">
-          <div className="text-xs font-semibold text-green-700 dark:text-emerald-300">
+          <div className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">
             Director
           </div>
           <div className="mt-1">
             {director ? (
               <Link
                 href={`/persons/${director.id}`}
-                className="font-medium text-green-900 dark:text-emerald-200 hover:underline"
+                className="font-medium text-emerald-900 dark:text-emerald-200 hover:underline"
               >
                 {director.fullName}
               </Link>
@@ -149,10 +149,10 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
 
           {actors.length > 0 && (
             <div className="mt-2">
-              <div className="text-xs font-semibold text-purple-700 dark:text-indigo-300">
+              <div className="text-xs font-semibold text-indigo-700 dark:text-indigo-300">
                 Starring
               </div>
-              <div className="mt-1 text-sm text-purple-900 dark:text-indigo-200">
+              <div className="mt-1 text-sm text-indigo-900 dark:text-indigo-200">
                 {actors.slice(0, 2).map((a, i) => (
                   <span key={a.id}>
                     {i > 0 && ", "}
@@ -184,7 +184,7 @@ export function MovieCard({ movie, compact = false }: MovieCardProps) {
             <AddToCartClientButton
               movieId={movie.id}
               stock={stock}
-              buttonClassName="rounded-xl bg-gradient-to-r from-emerald-500 to-blue-500 px-3 py-2 text-sm font-semibold text-white hover:from-emerald-600 hover:to-blue-600"
+              buttonClassName="rounded-xl bg-primary text-primary-foreground px-3 py-2 text-sm font-semibold shadow-sm hover:bg-primary/90 transition"
             />
           )}
         </div>
