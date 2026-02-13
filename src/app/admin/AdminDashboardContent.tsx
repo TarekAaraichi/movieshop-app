@@ -287,13 +287,6 @@ export default function AdminDashboardContent({
                   className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-4 shadow-lg transition-all duration-300 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border bg-popover text-lg font-bold uppercase text-muted">
-                      {movie.title
-                        .split(" ")
-                        .map((segment) => segment[0])
-                        .join("")
-                        .slice(0, 2)}
-                    </div>
                     <div>
                       <div className="text-base font-semibold text-foreground">
                         {movie.title}
@@ -383,14 +376,12 @@ export default function AdminDashboardContent({
                 </div>
               )}
             </div>
-            {showMoviePagination && (
-              <AdminPagination
-                currentPage={moviePage}
-                totalItems={filteredMovies.length}
-                pageSize={MOVIES_PAGE_SIZE}
-                onPageChange={setMoviePage}
-              />
-            )}
+            <AdminPagination
+              currentPage={moviePage}
+              totalItems={filteredMovies.length}
+              pageSize={MOVIES_PAGE_SIZE}
+              onPageChange={setMoviePage}
+            />
           </div>
         )}
 
@@ -697,13 +688,51 @@ function AdminPagination({
     return null;
   }
 
-  // Removed unused: firstItem, lastItem, pages
   const maxVisible = 5;
-  const startPage = Math.max(1, currentPage - 2);
+  const startPage = Math.max(
+    1,
+    Math.min(currentPage - 2, totalPages - maxVisible + 1),
+  );
   const endPage = Math.min(totalPages, startPage + maxVisible - 1);
 
-  if (endPage - startPage + 1 < maxVisible) {
-    // ...existing code...
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pages.push(i);
   }
-  // ...existing code...
+
+  return (
+    <nav className="flex justify-center mt-4">
+      <ul className="flex gap-2">
+        <li>
+          <button
+            className="px-2 py-1 rounded border border-border bg-popover text-muted disabled:opacity-50"
+            disabled={currentPage === 1}
+            onClick={() => onPageChange(currentPage - 1)}
+          >
+            Prev
+          </button>
+        </li>
+        {pages.map((page) => (
+          <li key={page}>
+            <button
+              className={`px-2 py-1 rounded border border-border ${page === currentPage ? "bg-ring text-ring-foreground font-bold" : "bg-popover text-muted"}`}
+              onClick={() => onPageChange(page)}
+              disabled={page === currentPage}
+            >
+              {page}
+            </button>
+          </li>
+        ))}
+        <li>
+          <button
+            className="px-2 py-1 rounded border border-border bg-popover text-muted disabled:opacity-50"
+            disabled={currentPage === totalPages}
+            onClick={() => onPageChange(currentPage + 1)}
+          >
+            Next
+          </button>
+        </li>
+      </ul>
+    </nav>
+  );
 }
