@@ -280,6 +280,13 @@ export default function AdminDashboardContent({
         {/* Tab content blocks as direct siblings below */}
         {activeTab === "movies" && (
           <div className="flex flex-col gap-6">
+            <div className="flex justify-end mb-4">
+              <Link href="/admin/movies/create">
+                <Button className="rounded-xl px-4 py-2.5 bg-blue-600 text-white hover:bg-blue-700 transition">
+                  + New Movie
+                </Button>
+              </Link>
+            </div>
             <div className="grid grid-cols-1 gap-4">
               {paginatedMovies.map((movie) => (
                 <div
@@ -463,7 +470,7 @@ export default function AdminDashboardContent({
           <>
             <div className="flex justify-end mb-4">
               <Link href="/admin/users/create">
-                <Button className="rounded-xl px-4 py-2.5">+ New User</Button>
+                <Button className="rounded-xl px-4 py-2.5 bg-blue-600 text-white hover:bg-blue-700 transition">+ New User</Button>
               </Link>
             </div>
             <div className="flex flex-col gap-6">
