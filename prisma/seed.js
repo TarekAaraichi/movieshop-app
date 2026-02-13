@@ -44,38 +44,38 @@ const prisma = new PrismaClient();
  *                 can detect and respond to failures.
  */
 async function main() {
-    // Seed demo users
-    console.log("Seeding demo users...");
-    await prisma.movieRating.deleteMany();
-    await prisma.user.deleteMany();
-    const demoUsers = [];
-    for (let i = 1; i <= 15; i++) {
-      demoUsers.push({
-        id: `demo-user-${i}`,
-        name: `Demo User ${i}`,
-        email: `demo${i}@example.com`,
-        role: i % 2 === 0 ? "admin" : "user",
-      });
-    }
-    for (const user of demoUsers) {
-      await prisma.user.create({ data: user });
-    }
+  // Seed demo users
+  console.log("Seeding demo users...");
+  await prisma.movieRating.deleteMany();
+  await prisma.user.deleteMany();
+  const demoUsers = [];
+  for (let i = 1; i <= 15; i++) {
+    demoUsers.push({
+      id: `demo-user-${i}`,
+      name: `Demo User ${i}`,
+      email: `demo${i}@example.com`,
+      role: i % 2 === 0 ? "admin" : "user",
+    });
+  }
+  for (const user of demoUsers) {
+    await prisma.user.create({ data: user });
+  }
 
-    // Seed demo orders
-    console.log("Seeding demo orders...");
-    await prisma.order.deleteMany();
-    const users = await prisma.user.findMany();
-    for (let i = 1; i <= 15; i++) {
-      const user = users[i % users.length];
-      await prisma.order.create({
-        data: {
-          userId: user.id,
-          totalAmount: (100 + i * 10).toString(),
-          status: i % 3 === 0 ? "PAID" : i % 3 === 1 ? "PENDING" : "CANCELLED",
-          orderDate: new Date(Date.now() - i * 86400000),
-        },
-      });
-    }
+  // Seed demo orders
+  console.log("Seeding demo orders...");
+  await prisma.order.deleteMany();
+  const users = await prisma.user.findMany();
+  for (let i = 1; i <= 15; i++) {
+    const user = users[i % users.length];
+    await prisma.order.create({
+      data: {
+        userId: user.id,
+        totalAmount: (100 + i * 10).toString(),
+        status: i % 3 === 0 ? "PAID" : i % 3 === 1 ? "PENDING" : "CANCELLED",
+        orderDate: new Date(Date.now() - i * 86400000),
+      },
+    });
+  }
   console.log("Seeding movies, genres and people (no users/accounts)...");
   // Clear only movie-related tables so seed is idempotent for movie data.
   // Delete in dependency order to avoid foreign-key constraint failures.
@@ -92,7 +92,7 @@ async function main() {
 
     console.log(
       "Deleted counts (cartItem, orderItem, moviePerson, movieGenre, movie, genre, person):",
-      deleted
+      deleted,
     );
   } catch (err) {
     // If a transaction fails, log the error so the developer can inspect schema constraints.
