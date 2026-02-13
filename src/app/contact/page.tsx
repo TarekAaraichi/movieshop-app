@@ -129,18 +129,18 @@ export default function ContactPage() {
                 Get in touch
               </h2>
               <div className="mt-3 text-sm text-muted space-y-3">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="min-w-0">
                     <div className="text-xs text-muted">General</div>
                     <a
                       href="mailto:hello@movieshop.example"
-                      className="text-teal-600 dark:text-teal-300 font-medium hover:underline text-sm"
+                      className="text-teal-600 dark:text-teal-300 font-medium hover:underline text-sm break-all"
                     >
                       hello@movieshop.example
                     </a>
                   </div>
 
-                  <div className="text-right">
+                  <div>
                     <div className="text-xs text-muted-foreground">
                       Open source
                     </div>
@@ -148,7 +148,7 @@ export default function ContactPage() {
                       href="https://github.com/TarekAaraichi/movieshop-app"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-md bg-card hover:bg-card/90 transition-colors text-foreground border border-border"
+                      className="inline-flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-md bg-card hover:bg-card/90 transition-colors text-foreground border border-border block sm:inline-flex w-full sm:w-auto"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -157,10 +157,11 @@ export default function ContactPage() {
                         viewBox="0 0 24 24"
                         fill="currentColor"
                         aria-hidden="true"
+                        className="shrink-0"
                       >
                         <path d="M12 .5C5.65.5.5 5.66.5 12.02c0 5.09 3.29 9.41 7.86 10.94.58.11.79-.25.79-.56 0-.28-.01-1.02-.02-2-3.2.7-3.88-1.38-3.88-1.38-.53-1.36-1.3-1.72-1.3-1.72-1.06-.73.08-.72.08-.72 1.17.08 1.79 1.2 1.79 1.2 1.04 1.78 2.72 1.26 3.39.96.11-.75.41-1.26.75-1.55-2.55-.29-5.23-1.28-5.23-5.71 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11.06 11.06 0 0 1 2.9-.39c.98 0 1.97.13 2.9.39 2.21-1.5 3.18-1.18 3.18-1.18.63 1.58.23 2.75.11 3.04.74.81 1.19 1.84 1.19 3.1 0 4.44-2.69 5.41-5.25 5.69.42.36.8 1.08.8 2.18 0 1.57-.01 2.83-.01 3.22 0 .31.21.68.8.56A11.53 11.53 0 0 0 23.5 12.02C23.5 5.66 18.35.5 12 .5z" />
                       </svg>
-                      Repository
+                      <span>Repository</span>
                     </a>
                   </div>
                 </div>
