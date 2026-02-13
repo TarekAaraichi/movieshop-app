@@ -312,69 +312,69 @@ export default function AdminDashboardContent({
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
-                    <Link
-                      href={`/admin/movies/${movie.id}`}
-                      className="font-semibold text-muted transition hover:text-foreground"
+                    <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
+                    <Button
+                      asChild
+                      className="ml-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-ring"
                     >
-                      View
-                    </Link>
-                    <Link
-                      href={`/admin/movies/${movie.id}/edit`}
-                      className="font-semibold text-muted transition hover:text-foreground"
+                      <Link href={`/admin/movies/${movie.id}`}>View</Link>
+                    </Button>
+                    <Button
+                      asChild
+                      className="ml-2 rounded-full bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-ring"
                     >
-                      Edit
-                    </Link>
+                      <Link href={`/admin/movies/${movie.id}/edit`}>Edit</Link>
+                    </Button>
                     {movie.isArchived ? (
                       <form action={unarchiveMovie} className="inline-block">
-                        <input type="hidden" name="movieId" value={movie.id} />
-                        <Button
-                          type="submit"
-                          className="ml-2 rounded-full bg-success text-success-foreground hover:bg-success/90 focus:outline-none focus:ring-2 focus:ring-ring"
-                          size="sm"
-                          variant="default"
-                          aria-label={`Unarchive movie ${movie.title}`}
-                        >
-                          Unarchive
-                        </Button>
+                      <input type="hidden" name="movieId" value={movie.id} />
+                      <Button
+                        type="submit"
+                        className="ml-2 rounded-full bg-yellow-400 text-black hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-ring"
+                        size="sm"
+                        variant="default"
+                        aria-label={`Unarchive movie ${movie.title}`}
+                      >
+                        Unarchive
+                      </Button>
                       </form>
                     ) : (
                       <>
-                        <form action={archiveMovie} className="inline-block">
-                          <input
-                            type="hidden"
-                            name="movieId"
-                            value={movie.id}
-                          />
-                          <Button
-                            type="submit"
-                            className="ml-2 rounded-full bg-muted text-foreground hover:bg-muted/90 focus:outline-none focus:ring-2 focus:ring-ring"
-                            size="sm"
-                            variant="secondary"
-                            aria-label={`Archive movie ${movie.title}`}
-                          >
-                            Archive
-                          </Button>
-                        </form>
-                        <form action={deleteMovie} className="inline-block">
-                          <input
-                            type="hidden"
-                            name="movieId"
-                            value={movie.id}
-                          />
-                          <Button
-                            type="submit"
-                            className="ml-2 rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90 focus:outline-none focus:ring-2 focus:ring-ring"
-                            size="sm"
-                            variant="destructive"
-                            aria-label={`Delete movie ${movie.title}`}
-                          >
-                            Delete
-                          </Button>
-                        </form>
+                      <form action={archiveMovie} className="inline-block">
+                        <input
+                        type="hidden"
+                        name="movieId"
+                        value={movie.id}
+                        />
+                        <Button
+                        type="submit"
+                        className="ml-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-ring"
+                        size="sm"
+                        variant="secondary"
+                        aria-label={`Archive movie ${movie.title}`}
+                        >
+                        Archive
+                        </Button>
+                      </form>
+                      <form action={deleteMovie} className="inline-block">
+                        <input
+                        type="hidden"
+                        name="movieId"
+                        value={movie.id}
+                        />
+                        <Button
+                        type="submit"
+                        className="ml-2 rounded-full bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-ring"
+                        size="sm"
+                        variant="destructive"
+                        aria-label={`Delete movie ${movie.title}`}
+                        >
+                        Delete
+                        </Button>
+                      </form>
                       </>
                     )}
-                  </div>
+                    </div>
                 </div>
               ))}
               {filteredMovies.length === 0 && (
@@ -438,12 +438,12 @@ export default function AdminDashboardContent({
                     </div>
 
                     <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wide">
-                      <Link
-                        href={`/admin/persons/${person.id}/edit`}
-                        className="font-semibold text-muted transition hover:text-foreground"
-                      >
-                        Edit
-                      </Link>
+                      <Button
+                      asChild
+                      className="ml-2 rounded-full bg-green-600 text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      <Link href={`/admin/persons/${person.id}/edit`}>Edit</Link>
+                    </Button>
                     </div>
                   </div>
                 );
@@ -470,7 +470,9 @@ export default function AdminDashboardContent({
           <>
             <div className="flex justify-end mb-4">
               <Link href="/admin/users/create">
-                <Button className="rounded-xl px-4 py-2.5 bg-blue-600 text-white hover:bg-blue-700 transition">+ New User</Button>
+                <Button className="rounded-xl px-4 py-2.5 bg-blue-600 text-white hover:bg-blue-700 transition">
+                  + New User
+                </Button>
               </Link>
             </div>
             <div className="flex flex-col gap-6">
